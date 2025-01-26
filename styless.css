@@ -1,74 +1,41 @@
-/* 전체 레이아웃 */
-body {
-  margin: 0;
-  font-family: Arial, sans-serif;
-  display: flex;
-  height: 100vh;
-}
-
-.container {
-  display: flex;
-  width: 100%;
-}
-
-/* 사이드바 스타일 */
-.sidebar {
-  width: 250px;
-  background-color: #2c3e50;
-  color: white;
-  padding: 20px;
-  box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
-}
-
-.sidebar h2 {
-  font-size: 20px;
-  margin-bottom: 20px;
-}
-
-.sidebar ul {
-  list-style: none;
-  padding: 0;
-}
-
-.sidebar ul li {
-  margin-bottom: 10px;
-}
-
-.sidebar ul li a {
-  color: white;
-  text-decoration: none;
-  font-size: 16px;
+/* 검색창 스타일 */
+#nickname {
   padding: 10px;
-  display: block;
+  font-size: 16px;
+  margin-right: 10px;
+  width: 250px;
+  border: 1px solid #ccc;
   border-radius: 5px;
 }
 
-.sidebar ul li a:hover,
-.sidebar ul li a.active {
+#search-button {
+  padding: 10px 20px;
+  font-size: 16px;
+  background-color: #2c3e50;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+#search-button:hover {
   background-color: #34495e;
 }
 
-/* 메인 컨텐츠 스타일 */
-.main-content {
-  flex-grow: 1;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  padding: 20px;
-  background-color: #f4f4f4;
+/* 결과 및 플레이어 머리 스타일 */
+#result {
+  margin-top: 20px;
+  font-size: 18px;
+  font-weight: bold;
 }
 
-/* 섹션 기본 스타일 */
-.section {
-  display: none; /* 기본적으로 숨김 */
-  text-align: center;
-  max-width: 600px;
+.player-head {
+  margin-top: 20px;
 }
 
-/* 활성화된 섹션만 보이도록 설정 */
-.section.active {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
+.player-head img {
+  width: 100px;
+  height: 100px;
+  border-radius: 10%;
+  border: 2px solid #2c3e50;
 }
