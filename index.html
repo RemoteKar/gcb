@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>GitHub Pages Layout</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div class="container">
+    <!-- 사이드바 -->
+    <aside class="sidebar">
+      <h2>Menu</h2>
+      <ul>
+        <li><a href="#" class="menu-link active" data-section="user-search">유저 검색</a></li>
+        <li><a href="#" class="menu-link" data-section="character">캐릭터</a></li>
+        <li><a href="#" class="menu-link" data-section="augmentation">증강</a></li>
+      </ul>
+    </aside>
+
+    <!-- 메인 컨텐츠 -->
+    <main class="main-content">
+      <section id="user-search" class="section active">
+        <h1>유저 검색</h1>
+        <p>여기에서 유저를 검색하세요.</p>
+        <!-- 검색 기능은 script.js에서 추가 -->
+      </section>
+      
+      <section id="character" class="section">
+        <h1>캐릭터</h1>
+        <p>캐릭터 정보를 여기에 표시합니다.</p>
+      </section>
+      
+      <section id="augmentation" class="section">
+        <h1>증강</h1>
+        <p>증강 정보를 여기에 표시합니다.</p>
+      </section>
+    </main>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
