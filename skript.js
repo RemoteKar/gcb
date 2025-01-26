@@ -29,7 +29,7 @@ document.addEventListener('DOMContentLoaded', () => {
       const data = await response.json();
       return data.id; // UUID 반환
     } catch (error) {
-      console.error(error);
+      console.error('API 오류:', error); // 오류 로그 확인
       return null;
     }
   }
