@@ -1,7 +1,5 @@
 // netlify/functions/fetch-minecraft.js
 const fetch = require('node-fetch');
-const fs = require('fs');
-const path = require('path');
 const yaml = require('js-yaml');
 
 // Helper function to add hyphens to UUID
@@ -27,13 +25,14 @@ exports.handler = async (event, context) => {
   // Format UUID with hyphens
   const formattedUUID = formatUUID(uuid);
 
-  // Construct the file path
-  const badgeFilePath = path.join(__dirname, 'playerData', 'badge', `${formattedUUID}.yaml`);
-  console.log('Looking for badge file at:', badgeFilePath); // Log the file path
-
-  // Read badge data from YAML file
+  // Fetch badge data from GitHub
+  const badgeUrl = `https://raw.githubusercontent.com/RemoteKar/gcb/main/netlify/functions/playerData/badge/${formattedUUID}.yaml`;
   try {
-    const fileContents = fs.readFileSync(badgeFilePath, 'utf8');
+    const response = await fetch(badgeUrl);
+    if (!response.ok) {
+      throw new Error('배지 데이터를 찾을 수 없습니다.');
+    }
+    const fileContents = await response.text();
     const badgeData = yaml.load(fileContents); // Parse YAML to JSON
     return {
       statusCode: 200,
