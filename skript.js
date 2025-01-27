@@ -20,7 +20,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // API 호출: 닉네임으로 UUID 검색
   async function fetchUUID(nickname) {
-    const url = `/api/fetch-minecraft?nickname=${nickname}`; // Netlify Function 경로
+    const url = `.netlify/functions/fetch-minecraft?nickname=${nickname}`; // Netlify Function 경로
     try {
       const response = await fetch(url);
       if (!response.ok) {
