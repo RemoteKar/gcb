@@ -1,3 +1,2 @@
 [build]
   functions = "netlify/functions"
-  publish = "public" # Or the correct directory for your site files
