@@ -3,46 +3,23 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>GCB.GG</title>
-  <link rel="icon" href="favicon.ico" type="image/x-icon"> 
+  <title>GCB.gg</title>
+  <link rel="icon" href="favicon.ico" type="image/x-icon">
+  <link rel="stylesheet" href="styles.css">
 </head>
 <body>
   <div class="container">
-    <!-- 사이드바 -->
-    <aside class="sidebar">
-      <h2>Menu</h2>
-      <ul>
-        <li><a href="#" class="menu-link active" data-section="user-search">유저 검색</a></li>
-        <li><a href="#" class="menu-link" data-section="character">캐릭터</a></li>
-        <li><a href="#" class="menu-link" data-section="augmentation">증강</a></li>
-      </ul>
-    </aside>
-
-    <!-- 메인 컨텐츠 -->
-    <main class="main-content">
-      <!-- 유저 검색 섹션 -->
-      <section id="user-search" class="section active">
-        <h1>유저 검색</h1>
-        <input type="text" id="nickname" placeholder="마크 닉네임을 입력하세요" />
-        <button id="search-button">검색</button>
-        <p id="result"></p>
-        <div id="player-head" class="player-head"></div> <!-- 플레이어 머리 영역 -->
-      </section>
-      
-      <!-- 캐릭터 섹션 -->
-      <section id="character" class="section">
-        <h1>캐릭터</h1>
-        <p>캐릭터 정보를 여기에 표시합니다.</p>
-      </section>
-      
-      <!-- 증강 섹션 -->
-      <section id="augmentation" class="section">
-        <h1>증강</h1>
-        <p>증강 정보를 여기에 표시합니다.</p>
-      </section>
-    </main>
+    <!-- 유저 검색 -->
+    <section id="user-search" class="section active">
+      <h1>유저 검색</h1>
+      <input type="text" id="nickname" placeholder="마크 닉네임을 입력하세요" />
+      <button id="search-button">검색</button>
+      <p id="result"></p>
+      <div id="player-head" class="player-head"></div> <!-- 플레이어 머리 -->
+    </section>
   </div>
 
-  <script type="text/javascript" src="/js/script.js"></script>
+  <!-- 스크립트 -->
+  <script src="skript.js"></script>
 </body>
 </html>
