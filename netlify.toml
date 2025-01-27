@@ -1,3 +1,3 @@
 [build]
   functions = "netlify/functions"
-  include = ["playerData/badge/*"] # Include the badge directory
+  publish = "public" # Or the correct directory for your site files
