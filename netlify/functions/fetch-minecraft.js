@@ -3,7 +3,7 @@ const fetch = require('node-fetch');
 const yaml = require('js-yaml');
 
 // GitHub token (replace with your actual token)
-const GITHUB_TOKEN = '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';
+const GITHUB_TOKEN = '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';
 
 // Helper function to add hyphens to UUID
 function formatUUID(uuid) {
@@ -30,7 +30,7 @@ exports.handler = async (event, context) => {
   console.log('Formatted UUID:', formattedUUID); // Log the formatted UUID
 
   // Fetch badge data from GitHub API
-  const githubUrl = `https://api.github.com/repos/RemoteKar/gcb/contents/netlify/functions/playerData/badge/${formattedUUID}.yaml`;
+  const githubUrl = `https://api.github.com/repos/RemoteKar/gcb/contents/playerData/badge/${formattedUUID}.yaml`;
   console.log('Fetching badge data from:', githubUrl); // Log the GitHub API URL
 
   try {
