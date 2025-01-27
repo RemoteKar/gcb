@@ -28,7 +28,7 @@ exports.handler = async (event, context) => {
   const formattedUUID = formatUUID(uuid);
 
   // Construct the file path
-  const badgeFilePath = path.join(__dirname, '..', '..', 'playerData', 'badge', `${formattedUUID}.yaml`);
+  const badgeFilePath = path.join(__dirname, '..', '..', '..', 'playerData', 'badge', `${formattedUUID}.yaml`);
   console.log('Looking for badge file at:', badgeFilePath); // Log the file path
 
   // Read badge data from YAML file
