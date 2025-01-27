@@ -1,4 +1,3 @@
 [build]
   functions = "netlify/functions"
-  publish = "var/task/" # Or your build output directory
   include = ["playerData/badge/*"] # Include the badge directory
