@@ -4,8 +4,8 @@
   "description": "Netlify Functions for Minecraft API",
   "main": "index.js",
   "dependencies": {
-    "node-fetch": "^2.6.7"
-	"js-yaml": "^4.1.0"
+    "node-fetch": "^2.6.7",
+    "js-yaml": "^4.1.0"
   },
   "devDependencies": {},
   "scripts": {
@@ -15,4 +15,3 @@
   "author": "",
   "license": "MIT"
 }
-
