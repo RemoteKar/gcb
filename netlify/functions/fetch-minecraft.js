@@ -1,37 +1,38 @@
+// netlify/functions/fetch-minecraft.js
 const fetch = require('node-fetch');
+const fs = require('fs');
+const path = require('path');
+const yaml = require('js-yaml');
 
-exports.handler = async (event) => {
-  console.log('Function triggered with event:', event); // 요청 이벤트 로그
+exports.handler = async (event, context) => {
+  const { nickname } = event.queryStringParameters;
 
-  const nickname = event.queryStringParameters.nickname;
-  console.log('Nickname:', nickname); // 닉네임 확인
+  // Fetch UUID from Mojang API
+  const mojangUrl = `https://api.mojang.com/users/profiles/minecraft/${nickname}`;
+  const mojangResponse = await fetch(mojangUrl);
+  if (!mojangResponse.ok) {
+    return {
+      statusCode: 404,
+      body: JSON.stringify({ error: '유저를 찾을 수 없습니다.' }),
+    };
+  }
+  const mojangData = await mojangResponse.json();
+  const uuid = mojangData.id;
 
-  const url = `https://api.mojang.com/users/profiles/minecraft/${nickname}`;
-  console.log('Mojang API URL:', url); // API URL 로그
-
+  // Read badge data from YAML file
+  const badgeFilePath = path.join(__dirname, '..', '..', 'playerData', 'badge', `${uuid}.yaml`);
   try {
-    const response = await fetch(url);
-    console.log('Mojang API Response:', response.status); // 응답 상태 코드 로그
-
-    if (!response.ok) {
-      return {
-        statusCode: 404,
-        body: JSON.stringify({ error: '유저를 찾을 수 없습니다.' }),
-      };
-    }
-
-    const data = await response.json();
-    console.log('Mojang API Data:', data); // API 응답 데이터 로그
-
+    const fileContents = fs.readFileSync(badgeFilePath, 'utf8');
+    const badgeData = yaml.load(fileContents); // Parse YAML to JSON
     return {
       statusCode: 200,
-      body: JSON.stringify(data),
+      body: JSON.stringify({ id: uuid, badges: badgeData.badge }), // Return UUID and badge data
     };
   } catch (error) {
-    console.error('Error occurred:', error); // 에러 로그
+    console.error('YAML 파일 읽기 오류:', error);
     return {
-      statusCode: 500,
-      body: JSON.stringify({ error: error.message }),
+      statusCode: 200,
+      body: JSON.stringify({ id: uuid, badges: null }), // Return UUID even if badges are not found
     };
   }
 };
