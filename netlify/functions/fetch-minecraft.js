@@ -2,6 +2,9 @@
 const fetch = require('node-fetch');
 const yaml = require('js-yaml');
 
+// GitHub token (replace with your actual token)
+const GITHUB_TOKEN = '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';
+
 // Helper function to add hyphens to UUID
 function formatUUID(uuid) {
   return `${uuid.slice(0, 8)}-${uuid.slice(8, 12)}-${uuid.slice(12, 16)}-${uuid.slice(16, 20)}-${uuid.slice(20)}`;
@@ -24,14 +27,24 @@ exports.handler = async (event, context) => {
 
   // Format UUID with hyphens
   const formattedUUID = formatUUID(uuid);
+  console.log('Formatted UUID:', formattedUUID); // Log the formatted UUID
 
-  // Fetch badge data from GitHub
-  const badgeUrl = `https://raw.githubusercontent.com/RemoteKar/gcb/main/netlify/functions/playerData/badge/${formattedUUID}.yaml`;
+  // Fetch badge data from GitHub API
+  const githubUrl = `https://api.github.com/repos/RemoteKar/gcb/contents/netlify/functions/playerData/badge/${formattedUUID}.yaml`;
+  console.log('Fetching badge data from:', githubUrl); // Log the GitHub API URL
+
   try {
-    const response = await fetch(badgeUrl);
+    const response = await fetch(githubUrl, {
+      headers: {
+        Authorization: `Bearer ${GITHUB_TOKEN}`, // Use the GitHub token
+        Accept: 'application/vnd.github.v3.raw', // Request raw file content
+      },
+    });
+
     if (!response.ok) {
       throw new Error('배지 데이터를 찾을 수 없습니다.');
     }
+
     const fileContents = await response.text();
     const badgeData = yaml.load(fileContents); // Parse YAML to JSON
     return {
