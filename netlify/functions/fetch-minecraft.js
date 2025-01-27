@@ -4,6 +4,11 @@ const fs = require('fs');
 const path = require('path');
 const yaml = require('js-yaml');
 
+// Helper function to add hyphens to UUID
+function formatUUID(uuid) {
+  return `${uuid.slice(0, 8)}-${uuid.slice(8, 12)}-${uuid.slice(12, 16)}-${uuid.slice(16, 20)}-${uuid.slice(20)}`;
+}
+
 exports.handler = async (event, context) => {
   const { nickname } = event.queryStringParameters;
 
@@ -19,8 +24,11 @@ exports.handler = async (event, context) => {
   const mojangData = await mojangResponse.json();
   const uuid = mojangData.id;
 
+  // Format UUID with hyphens
+  const formattedUUID = formatUUID(uuid);
+
   // Read badge data from YAML file
-  const badgeFilePath = path.join(__dirname, '..', '..', 'playerData', 'badge', `${uuid}.yaml`);
+  const badgeFilePath = path.join(__dirname, '..', '..', 'playerData', 'badge', `${formattedUUID}.yaml`);
   try {
     const fileContents = fs.readFileSync(badgeFilePath, 'utf8');
     const badgeData = yaml.load(fileContents); // Parse YAML to JSON
