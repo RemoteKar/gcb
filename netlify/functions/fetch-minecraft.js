@@ -27,8 +27,11 @@ exports.handler = async (event, context) => {
   // Format UUID with hyphens
   const formattedUUID = formatUUID(uuid);
 
-  // Read badge data from YAML file
+  // Construct the file path
   const badgeFilePath = path.join(__dirname, '..', '..', 'playerData', 'badge', `${formattedUUID}.yaml`);
+  console.log('Looking for badge file at:', badgeFilePath); // Log the file path
+
+  // Read badge data from YAML file
   try {
     const fileContents = fs.readFileSync(badgeFilePath, 'utf8');
     const badgeData = yaml.load(fileContents); // Parse YAML to JSON
@@ -37,7 +40,7 @@ exports.handler = async (event, context) => {
       body: JSON.stringify({ id: uuid, badges: badgeData.badge }), // Return UUID and badge data
     };
   } catch (error) {
-    console.error('YAML 파일 읽기 오류:', error);
+    console.error('YAML 파일 읽기 오류:', error); // Log the error
     return {
       statusCode: 200,
       body: JSON.stringify({ id: uuid, badges: null }), // Return UUID even if badges are not found
