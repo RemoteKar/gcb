@@ -8,6 +8,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const resultDisplay = document.getElementById('result'); // 결과 출력 영역
   const playerHead = document.getElementById('player-head'); // 플레이어 머리 영역
   const badgeDisplay = document.getElementById('badge-display'); // 배지 출력 영역
+  const statsDisplay = document.getElementById('stats-display'); // 통계 출력 영역 (add this to HTML)
 
   // 메뉴 클릭 이벤트
   menuLinks.forEach(link => {
@@ -82,10 +83,11 @@ document.addEventListener('DOMContentLoaded', () => {
     resultDisplay.textContent = '검색 중...';
     playerHead.innerHTML = ''; // 이전 머리 이미지 초기화
     badgeDisplay.innerHTML = ''; // 이전 배지 데이터 초기화
+    statsDisplay.innerHTML = ''; // 이전 통계 데이터 초기화
 
     const data = await fetchUUID(nickname);
     if (data) {
-      const { id: uuid, badges } = data;
+      const { id: uuid, badges, statistics } = data;
 
       // Format UUID with hyphens
       const formattedUUID = `${uuid.slice(0, 8)}-${uuid.slice(8, 12)}-${uuid.slice(12, 16)}-${uuid.slice(16, 20)}-${uuid.slice(20)}`;
@@ -118,6 +120,19 @@ document.addEventListener('DOMContentLoaded', () => {
         badgeDisplay.appendChild(ownedBadgesContainer);
       } else {
         badgeDisplay.textContent = '배지 데이터가 없습니다.';
+      }
+
+      // 통계 데이터 표시
+      if (statistics) {
+        statsDisplay.innerHTML = `
+          <p><strong>승률:</strong> ${statistics.winRate}%</p>
+          <p><strong>가장 많이 사용한 캐릭터:</strong> ${statistics.mostUsedCharacter}</p>
+          <p><strong>가장 많이 사용한 어그먼트:</strong> ${statistics.mostUsedAugments.join(', ')}</p>
+          <p><strong>평균 데미지:</strong> ${statistics.averageDamageDealt}</p>
+          <p><strong>평균 킬 수:</strong> ${statistics.averageKillRate}</p>
+        `;
+      } else {
+        statsDisplay.textContent = '통계 데이터가 없습니다.';
       }
     } else {
       resultDisplay.textContent = 'UUID를 찾을 수 없습니다.';

@@ -67,3 +67,17 @@
 #badge-display strong {
   margin-right: 10px;
 }
+
+/* 통계 데이터 스타일 */
+#stats-display {
+  margin-top: 20px;
+  font-size: 16px;
+}
+
+#stats-display p {
+  margin: 5px 0;
+}
+
+#stats-display strong {
+  margin-right: 10px;
+}
