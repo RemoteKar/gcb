@@ -1,3 +1,5 @@
+const GITHUB_TOKEN = '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';
+
 document.addEventListener('DOMContentLoaded', () => {
   const menuLinks = document.querySelectorAll('.menu-link'); // 메뉴 링크
   const sections = document.querySelectorAll('.section'); // 모든 섹션
@@ -40,10 +42,26 @@ document.addEventListener('DOMContentLoaded', () => {
     return `https://crafatar.com/avatars/${uuid}?size=100&overlay`; // 플레이어 머리 이미지 URL
   }
 
+  // GitHub에서 배지 이미지 가져오기
+  async function fetchBadgeImage(badgeName) {
+    const githubUrl = `https://raw.githubusercontent.com/RemoteKar/gcb/contents/Resource/badge/${badgeName}.png`;
+    try {
+      const response = await fetch(githubUrl);
+      if (!response.ok) {
+        throw new Error('배지 이미지를 찾을 수 없습니다.');
+      }
+      return githubUrl; // 이미지 URL 반환
+    } catch (error) {
+      console.error('배지 이미지 오류:', error); // 오류 로그 확인
+      return null;
+    }
+  }
+
   // 배지 아이콘 생성
-  function createBadgeIcon(badgeName) {
+  async function createBadgeIcon(badgeName) {
     const img = document.createElement('img');
-    img.src = `public/badge/${badgeName}.png`; // 배지 이미지 경로
+    const imageUrl = await fetchBadgeImage(badgeName); // GitHub에서 이미지 URL 가져오기
+    img.src = imageUrl || 'path/to/default-image.png'; // 기본 이미지 사용 (옵션)
     img.alt = badgeName; // 배지 이름 (alt 텍스트)
     img.classList.add('badge-icon'); // CSS 클래스 추가
     return img;
@@ -84,15 +102,15 @@ document.addEventListener('DOMContentLoaded', () => {
         // 현재 배지 표시
         const currentBadgeContainer = document.createElement('div');
         currentBadgeContainer.innerHTML = `<strong>현재 배지:</strong>`;
-        currentBadgeContainer.appendChild(createBadgeIcon(currentBadge));
+        currentBadgeContainer.appendChild(await createBadgeIcon(currentBadge));
         badgeDisplay.appendChild(currentBadgeContainer);
 
         // 보유 배지 표시
         const ownedBadgesContainer = document.createElement('div');
         ownedBadgesContainer.innerHTML = `<strong>보유 배지:</strong>`;
-        badgeList.forEach(badgeName => {
-          ownedBadgesContainer.appendChild(createBadgeIcon(badgeName));
-        });
+        for (const badgeName of badgeList) {
+          ownedBadgesContainer.appendChild(await createBadgeIcon(badgeName));
+        }
         badgeDisplay.appendChild(ownedBadgesContainer);
       } else {
         badgeDisplay.textContent = '배지 데이터가 없습니다.';
