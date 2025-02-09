@@ -91,14 +91,18 @@ function calculateStatistics(uuid, gameHistory) {
   const winRate = totalGames > 0 ? (wins / totalGames) * 100 : 0;
 
   // Find most used character
-  const mostUsedCharacter = Object.keys(characterUsage).reduce((a, b) =>
-    characterUsage[a] > characterUsage[b] ? a : b
-  );
+  const mostUsedCharacter = Object.keys(characterUsage).length > 0
+    ? Object.keys(characterUsage).reduce((a, b) =>
+        characterUsage[a] > characterUsage[b] ? a : b
+      )
+    : '없음'; // Default value if no character data is found
 
   // Find most used augments
-  const mostUsedAugments = Object.keys(augmentUsage)
-    .sort((a, b) => augmentUsage[b] - augmentUsage[a])
-    .slice(0, 3); // Top 3 most used augments
+  const mostUsedAugments = Object.keys(augmentUsage).length > 0
+    ? Object.keys(augmentUsage)
+        .sort((a, b) => augmentUsage[b] - augmentUsage[a])
+        .slice(0, 3) // Top 3 most used augments
+    : ['없음']; // Default value if no augment data is found
 
   // Calculate average damage dealt and kill rate
   const averageDamageDealt = totalGames > 0 ? totalDamageDealt / totalGames : 0;
