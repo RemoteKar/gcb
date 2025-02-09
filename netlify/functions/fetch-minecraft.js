@@ -10,6 +10,109 @@ function formatUUID(uuid) {
   return `${uuid.slice(0, 8)}-${uuid.slice(8, 12)}-${uuid.slice(12, 16)}-${uuid.slice(16, 20)}-${uuid.slice(20)}`;
 }
 
+// Fetch all game history YAML files
+async function fetchGameHistory() {
+  const githubUrl = 'https://api.github.com/repos/RemoteKar/gcb/contents/Data/gameHistory';
+  try {
+    const response = await fetch(githubUrl, {
+      headers: {
+        Authorization: `Bearer ${GITHUB_TOKEN}`,
+        Accept: 'application/vnd.github.v3+json',
+      },
+    });
+    if (!response.ok) {
+      throw new Error('게임 기록을 찾을 수 없습니다.');
+    }
+    const files = await response.json();
+    return files;
+  } catch (error) {
+    console.error('게임 기록 오류:', error);
+    return null;
+  }
+}
+
+// Parse YAML file content
+async function parseYamlFile(fileUrl) {
+  try {
+    const response = await fetch(fileUrl, {
+      headers: {
+        Authorization: `Bearer ${GITHUB_TOKEN}`,
+        Accept: 'application/vnd.github.v3.raw',
+      },
+    });
+    if (!response.ok) {
+      throw new Error('YAML 파일을 읽을 수 없습니다.');
+    }
+    const fileContents = await response.text();
+    return yaml.load(fileContents);
+  } catch (error) {
+    console.error('YAML 파일 파싱 오류:', error);
+    return null;
+  }
+}
+
+// Calculate statistics for a UUID owner
+function calculateStatistics(uuid, gameHistory) {
+  let totalGames = 0;
+  let wins = 0;
+  const characterUsage = {};
+  const augmentUsage = {};
+  let totalDamageDealt = 0;
+  let totalKills = 0;
+
+  gameHistory.forEach(game => {
+    if (game.Player && game.Player[uuid]) {
+      totalGames++;
+      const playerData = game.Player[uuid];
+
+      // Check if the player won the game
+      if (playerData.outCuase === '우승') {
+        wins++;
+      }
+
+      // Track character usage
+      const character = playerData.Character;
+      characterUsage[character] = (characterUsage[character] || 0) + 1;
+
+      // Track augment usage
+      if (playerData.Augment) {
+        Object.values(playerData.Augment).forEach(augment => {
+          augmentUsage[augment] = (augmentUsage[augment] || 0) + 1;
+        });
+      }
+
+      // Sum damage dealt and kills
+      totalDamageDealt += playerData.Damage?.Dealt || 0;
+      totalKills += playerData.kill || 0;
+    }
+  });
+
+  // Calculate win rate
+  const winRate = totalGames > 0 ? (wins / totalGames) * 100 : 0;
+
+  // Find most used character
+  const mostUsedCharacter = Object.keys(characterUsage).reduce((a, b) =>
+    characterUsage[a] > characterUsage[b] ? a : b
+  );
+
+  // Find most used augments
+  const mostUsedAugments = Object.keys(augmentUsage)
+    .sort((a, b) => augmentUsage[b] - augmentUsage[a])
+    .slice(0, 3); // Top 3 most used augments
+
+  // Calculate average damage dealt and kill rate
+  const averageDamageDealt = totalGames > 0 ? totalDamageDealt / totalGames : 0;
+  const averageKillRate = totalGames > 0 ? totalKills / totalGames : 0;
+
+  return {
+    winRate: winRate.toFixed(2),
+    mostUsedCharacter,
+    mostUsedAugments,
+    averageDamageDealt: averageDamageDealt.toFixed(2),
+    averageKillRate: averageKillRate.toFixed(2),
+  };
+}
+
 exports.handler = async (event, context) => {
   const { nickname } = event.queryStringParameters;
 
@@ -27,35 +130,49 @@ exports.handler = async (event, context) => {
 
   // Format UUID with hyphens
   const formattedUUID = formatUUID(uuid);
-  console.log('Formatted UUID:', formattedUUID); // Log the formatted UUID
+  console.log('Formatted UUID:', formattedUUID);
 
   // Fetch badge data from GitHub API
-  const githubUrl = `https://api.github.com/repos/RemoteKar/gcb/contents/Data/player/badge/${formattedUUID}.yaml`;
-  console.log('Fetching badge data from:', githubUrl); // Log the GitHub API URL
+  const badgeUrl = `https://api.github.com/repos/RemoteKar/gcb/contents/Data/player/badge/${formattedUUID}.yaml`;
+  console.log('Fetching badge data from:', badgeUrl);
 
+  let badgeData = null;
   try {
-    const response = await fetch(githubUrl, {
+    const badgeResponse = await fetch(badgeUrl, {
       headers: {
-        Authorization: `Bearer ${GITHUB_TOKEN}`, // Use the GitHub token
-        Accept: 'application/vnd.github.v3.raw', // Request raw file content
+        Authorization: `Bearer ${GITHUB_TOKEN}`,
+        Accept: 'application/vnd.github.v3.raw',
       },
     });
-
-    if (!response.ok) {
-      throw new Error('배지 데이터를 찾을 수 없습니다.');
+    if (badgeResponse.ok) {
+      const fileContents = await badgeResponse.text();
+      badgeData = yaml.load(fileContents);
     }
-
-    const fileContents = await response.text();
-    const badgeData = yaml.load(fileContents); // Parse YAML to JSON
-    return {
-      statusCode: 200,
-      body: JSON.stringify({ id: uuid, badges: badgeData.badge }), // Return UUID and badge data
-    };
   } catch (error) {
-    console.error('YAML 파일 읽기 오류:', error); // Log the error
-    return {
-      statusCode: 200,
-      body: JSON.stringify({ id: uuid, badges: null }), // Return UUID even if badges are not found
-    };
+    console.error('배지 데이터 오류:', error);
   }
+
+  // Fetch game history and calculate statistics
+  const gameHistoryFiles = await fetchGameHistory();
+  let statistics = null;
+  if (gameHistoryFiles) {
+    const gameHistory = [];
+    for (const file of gameHistoryFiles) {
+      const fileUrl = file.download_url;
+      const gameData = await parseYamlFile(fileUrl);
+      if (gameData) {
+        gameHistory.push(gameData);
+      }
+    }
+    statistics = calculateStatistics(uuid, gameHistory);
+  }
+
+  return {
+    statusCode: 200,
+    body: JSON.stringify({
+      id: uuid,
+      badges: badgeData?.badge || null,
+      statistics: statistics || null,
+    }),
+  };
 };
