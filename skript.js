@@ -44,22 +44,22 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // GitHub에서 배지 이미지 가져오기
   async function fetchBadgeImage(badgeName) {
-  const githubUrl = `https://raw.githubusercontent.com/RemoteKar/gcb/contents/Resource/badge/${badgeName}.png`;
-  try {
-    const response = await fetch(githubUrl, {
-      headers: {
-        Authorization: `Bearer ${process.env.GITHUB_TOKEN}`, // Use GitHub token for private repos
-      },
-    });
-    if (!response.ok) {
-      throw new Error('배지 이미지를 찾을 수 없습니다.');
+    const githubUrl = `https://raw.githubusercontent.com/RemoteKar/gcb/main/Resource/badge/${badgeName}.png`;
+    try {
+      const response = await fetch(githubUrl, {
+        headers: {
+          Authorization: `Bearer ${GITHUB_TOKEN}`, // Use GitHub token for private repos
+        },
+      });
+      if (!response.ok) {
+        throw new Error('배지 이미지를 찾을 수 없습니다.');
+      }
+      return githubUrl; // 이미지 URL 반환
+    } catch (error) {
+      console.error('배지 이미지 오류:', error); // 오류 로그 확인
+      return null;
     }
-    return githubUrl; // 이미지 URL 반환
-  } catch (error) {
-    console.error('배지 이미지 오류:', error); // 오류 로그 확인
-    return null;
   }
-}
 
   // 배지 아이콘 생성
   async function createBadgeIcon(badgeName) {
