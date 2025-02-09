@@ -49,3 +49,21 @@
 #badge-display p {
   margin: 5px 0;
 }
+
+/* 배지 아이콘 스타일 */
+.badge-icon {
+  width: 32px; /* 아이콘 크기 */
+  height: 32px;
+  margin: 5px; /* 간격 */
+  border-radius: 50%; /* 원형 아이콘 */
+  border: 2px solid #2c3e50; /* 테두리 */
+}
+
+/* 현재 배지 및 보유 배지 컨테이너 스타일 */
+#badge-display div {
+  margin-top: 10px;
+}
+
+#badge-display strong {
+  margin-right: 10px;
+}

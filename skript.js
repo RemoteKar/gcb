@@ -40,6 +40,15 @@ document.addEventListener('DOMContentLoaded', () => {
     return `https://crafatar.com/avatars/${uuid}?size=100&overlay`; // 플레이어 머리 이미지 URL
   }
 
+  // 배지 아이콘 생성
+  function createBadgeIcon(badgeName) {
+    const img = document.createElement('img');
+    img.src = `badge/${badgeName}.png`; // 배지 이미지 경로
+    img.alt = badgeName; // 배지 이름 (alt 텍스트)
+    img.classList.add('badge-icon'); // CSS 클래스 추가
+    return img;
+  }
+
   // 검색 버튼 클릭 이벤트
   searchButton.addEventListener('click', async () => {
     const nickname = nicknameInput.value.trim();
@@ -71,10 +80,20 @@ document.addEventListener('DOMContentLoaded', () => {
       if (badges) {
         const badgeList = badges.List || [];
         const currentBadge = badges.current || '없음';
-        badgeDisplay.innerHTML = `
-          <p><strong>현재 배지:</strong> ${currentBadge}</p>
-          <p><strong>보유 배지:</strong> ${badgeList.join(', ')}</p>
-        `;
+
+        // 현재 배지 표시
+        const currentBadgeContainer = document.createElement('div');
+        currentBadgeContainer.innerHTML = `<strong>현재 배지:</strong>`;
+        currentBadgeContainer.appendChild(createBadgeIcon(currentBadge));
+        badgeDisplay.appendChild(currentBadgeContainer);
+
+        // 보유 배지 표시
+        const ownedBadgesContainer = document.createElement('div');
+        ownedBadgesContainer.innerHTML = `<strong>보유 배지:</strong>`;
+        badgeList.forEach(badgeName => {
+          ownedBadgesContainer.appendChild(createBadgeIcon(badgeName));
+        });
+        badgeDisplay.appendChild(ownedBadgesContainer);
       } else {
         badgeDisplay.textContent = '배지 데이터가 없습니다.';
       }
