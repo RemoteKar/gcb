@@ -30,7 +30,7 @@ exports.handler = async (event, context) => {
   console.log('Formatted UUID:', formattedUUID); // Log the formatted UUID
 
   // Fetch badge data from GitHub API
-  const githubUrl = `https://api.github.com/repos/RemoteKar/gcb/contents/playerData/badge/${formattedUUID}.yaml`;
+  const githubUrl = `https://api.github.com/repos/RemoteKar/gcb/contents/Data/player/badge/${formattedUUID}.yaml`;
   console.log('Fetching badge data from:', githubUrl); // Log the GitHub API URL
 
   try {
