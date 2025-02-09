@@ -43,7 +43,7 @@ document.addEventListener('DOMContentLoaded', () => {
   // 배지 아이콘 생성
   function createBadgeIcon(badgeName) {
     const img = document.createElement('img');
-    img.src = `badge/${badgeName}.png`; // 배지 이미지 경로
+    img.src = `public/badge/${badgeName}.png`; // 배지 이미지 경로
     img.alt = badgeName; // 배지 이름 (alt 텍스트)
     img.classList.add('badge-icon'); // CSS 클래스 추가
     return img;
