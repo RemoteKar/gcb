@@ -61,10 +61,13 @@ function calculateStatistics(uuid, gameHistory) {
   const augmentUsage = {};
   let totalDamageDealt = 0;
   let totalKills = 0;
-  let totalAliveTime = 0; // Total time alive in seconds
+  let totalAliveTime = 0;
+
+  console.log('Calculating statistics for UUID:', uuid); // Log UUID being processed
 
   gameHistory.forEach(game => {
     if (game.Player && game.Player[uuid]) {
+      console.log('Player data found in game:', game); // Log game where player data is found
       totalGames++;
       const playerData = game.Player[uuid];
 
@@ -80,7 +83,9 @@ function calculateStatistics(uuid, gameHistory) {
       // Track augment usage
       if (playerData.Augment) {
         Object.values(playerData.Augment).forEach(augment => {
-          augmentUsage[augment] = (augmentUsage[augment] || 0) + 1;
+          if (augment) {
+            augmentUsage[augment] = (augmentUsage[augment] || 0) + 1;
+          }
         });
       }
 
@@ -89,9 +94,11 @@ function calculateStatistics(uuid, gameHistory) {
       totalKills += playerData.kill || 0;
 
       // Sum alive time
-      if (playerData.aliveTime) {
-        totalAliveTime += playerData.aliveTime;
+      if (playerData.TimeSurvived) {
+        totalAliveTime += playerData.TimeSurvived;
       }
+    } else {
+      console.log('Player data not found in game:', game); // Log game where player data is missing
     }
   });
 
@@ -125,7 +132,7 @@ function calculateStatistics(uuid, gameHistory) {
     mostUsedAugments,
     averageDamageDealt: averageDamageDealt.toFixed(2),
     averageKillRate: averageKillRate.toFixed(2),
-    averageAliveTime: averageAliveTime.toFixed(2),
+    averageAliveTime: averageAliveTime.toFixed(2), // Add average alive time
   };
 }
 
