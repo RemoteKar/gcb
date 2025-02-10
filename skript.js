@@ -8,7 +8,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const resultDisplay = document.getElementById('result'); // 결과 출력 영역
   const playerHead = document.getElementById('player-head'); // 플레이어 머리 영역
   const badgeDisplay = document.getElementById('badge-display'); // 배지 출력 영역
-  const statsDisplay = document.getElementById('stats-display'); // 통계 출력 영역 (add this to HTML)
+  const statsDisplay = document.getElementById('stats-display'); // 통계 출력 영역
 
   // 메뉴 클릭 이벤트
   menuLinks.forEach(link => {
@@ -58,7 +58,7 @@ document.addEventListener('DOMContentLoaded', () => {
       return githubUrl; // 이미지 URL 반환
     } catch (error) {
       console.error('배지 이미지 오류:', error); // 오류 로그 확인
-      return null;
+      return 'path/to/default-image.png'; // 기본 이미지 사용
     }
   }
 
@@ -66,9 +66,16 @@ document.addEventListener('DOMContentLoaded', () => {
   async function createBadgeIcon(badgeName) {
     const img = document.createElement('img');
     const imageUrl = await fetchBadgeImage(badgeName); // GitHub에서 이미지 URL 가져오기
-    img.src = imageUrl || 'path/to/default-image.png'; // 기본 이미지 사용 (옵션)
+    img.src = imageUrl; // 이미지 URL 설정
     img.alt = badgeName; // 배지 이름 (alt 텍스트)
     img.classList.add('badge-icon'); // CSS 클래스 추가
+
+    // 이미지 로드 실패 시 기본 이미지로 대체
+    img.onerror = () => {
+      img.src = 'path/to/default-image.png'; // 기본 이미지로 대체
+      console.error(`Failed to load badge image: ${badgeName}`);
+    };
+
     return img;
   }
 
