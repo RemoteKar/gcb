@@ -78,7 +78,9 @@ function calculateStatistics(uuid, gameHistory) {
 
       // Track character usage
       const character = playerData.Character;
-      characterUsage[character] = (characterUsage[character] || 0) + 1;
+      if (character) {
+        characterUsage[character] = (characterUsage[character] || 0) + 1;
+      }
 
       // Track augment usage
       if (playerData.Augment) {
@@ -90,8 +92,12 @@ function calculateStatistics(uuid, gameHistory) {
       }
 
       // Sum damage dealt and kills
-      totalDamageDealt += playerData.Damage?.Dealt || 0;
-      totalKills += playerData.kill || 0;
+      if (playerData.Damage && playerData.Damage.Dealt) {
+        totalDamageDealt += playerData.Damage.Dealt;
+      }
+      if (playerData.kill) {
+        totalKills += playerData.kill;
+      }
 
       // Sum alive time
       if (playerData.TimeSurvived) {
