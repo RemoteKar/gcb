@@ -24,6 +24,7 @@ async function fetchGameHistory() {
       throw new Error('게임 기록을 찾을 수 없습니다.');
     }
     const files = await response.json();
+    console.log('Fetched Game History Files:', files); // Log fetched files
     return files;
   } catch (error) {
     console.error('게임 기록 오류:', error);
@@ -44,7 +45,9 @@ async function parseYamlFile(fileUrl) {
       throw new Error('YAML 파일을 읽을 수 없습니다.');
     }
     const fileContents = await response.text();
-    return yaml.load(fileContents);
+    const parsedData = yaml.load(fileContents);
+    console.log('Parsed YAML Data:', parsedData); // Log parsed YAML data
+    return parsedData;
   } catch (error) {
     console.error('YAML 파일 파싱 오류:', error);
     return null;
@@ -60,10 +63,14 @@ function calculateStatistics(uuid, gameHistory) {
   let totalDamageDealt = 0;
   let totalKills = 0;
 
+  console.log('Game History:', gameHistory); // Log the entire game history
+
   gameHistory.forEach(game => {
+    console.log('Processing Game:', game); // Log each game
     if (game.Player && game.Player[uuid]) {
       totalGames++;
       const playerData = game.Player[uuid];
+      console.log('Player Data:', playerData); // Log player data
 
       // Check if the player won the game
       if (playerData.outCuase === '우승') {
@@ -86,6 +93,9 @@ function calculateStatistics(uuid, gameHistory) {
       totalKills += playerData.kill || 0;
     }
   });
+
+  console.log('Character Usage:', characterUsage); // Log character usage
+  console.log('Augment Usage:', augmentUsage); // Log augment usage
 
   // Calculate win rate
   const winRate = totalGames > 0 ? (wins / totalGames) * 100 : 0;
