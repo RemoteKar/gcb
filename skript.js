@@ -127,9 +127,10 @@ document.addEventListener('DOMContentLoaded', () => {
         statsDisplay.innerHTML = `
           <p><strong>승률:</strong> ${statistics.winRate}%</p>
           <p><strong>가장 많이 사용한 캐릭터:</strong> ${statistics.mostUsedCharacter}</p>
-          <p><strong>가장 많이 사용한 어그먼트:</strong> ${statistics.mostUsedAugments.join(', ')}</p>
+          <p><strong>가장 많이 사용한 증강:</strong> ${statistics.mostUsedAugments.join(', ')}</p>
           <p><strong>평균 데미지:</strong> ${statistics.averageDamageDealt}</p>
           <p><strong>평균 킬 수:</strong> ${statistics.averageKillRate}</p>
+		  <p><strong>평균 생존시간:</strong> ${statistics.averageAliveTime}</p>
         `;
       } else {
         statsDisplay.textContent = '통계 데이터가 없습니다.';

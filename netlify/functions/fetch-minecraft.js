@@ -24,7 +24,7 @@ async function fetchGameHistory() {
       throw new Error('게임 기록을 찾을 수 없습니다.');
     }
     const files = await response.json();
-    console.log('Fetched Game History Files:', files); // Log fetched files
+    console.log('Fetched Game History Files:', files.length); // Log number of files fetched
     return files;
   } catch (error) {
     console.error('게임 기록 오류:', error);
@@ -46,7 +46,6 @@ async function parseYamlFile(fileUrl) {
     }
     const fileContents = await response.text();
     const parsedData = yaml.load(fileContents);
-    console.log('Parsed YAML Data:', parsedData); // Log parsed YAML data
     return parsedData;
   } catch (error) {
     console.error('YAML 파일 파싱 오류:', error);
@@ -62,15 +61,12 @@ function calculateStatistics(uuid, gameHistory) {
   const augmentUsage = {};
   let totalDamageDealt = 0;
   let totalKills = 0;
-
-  console.log('Game History:', gameHistory); // Log the entire game history
+  let totalAliveTime = 0; // Total time alive in seconds
 
   gameHistory.forEach(game => {
-    console.log('Processing Game:', game); // Log each game
     if (game.Player && game.Player[uuid]) {
       totalGames++;
       const playerData = game.Player[uuid];
-      console.log('Player Data:', playerData); // Log player data
 
       // Check if the player won the game
       if (playerData.outCuase === '우승') {
@@ -91,11 +87,13 @@ function calculateStatistics(uuid, gameHistory) {
       // Sum damage dealt and kills
       totalDamageDealt += playerData.Damage?.Dealt || 0;
       totalKills += playerData.kill || 0;
+
+      // Sum alive time
+      if (playerData.aliveTime) {
+        totalAliveTime += playerData.aliveTime;
+      }
     }
   });
-
-  console.log('Character Usage:', characterUsage); // Log character usage
-  console.log('Augment Usage:', augmentUsage); // Log augment usage
 
   // Calculate win rate
   const winRate = totalGames > 0 ? (wins / totalGames) * 100 : 0;
@@ -118,12 +116,16 @@ function calculateStatistics(uuid, gameHistory) {
   const averageDamageDealt = totalGames > 0 ? totalDamageDealt / totalGames : 0;
   const averageKillRate = totalGames > 0 ? totalKills / totalGames : 0;
 
+  // Calculate average alive time
+  const averageAliveTime = totalGames > 0 ? totalAliveTime / totalGames : 0;
+
   return {
     winRate: winRate.toFixed(2),
     mostUsedCharacter,
     mostUsedAugments,
     averageDamageDealt: averageDamageDealt.toFixed(2),
     averageKillRate: averageKillRate.toFixed(2),
+    averageAliveTime: averageAliveTime.toFixed(2),
   };
 }
 
