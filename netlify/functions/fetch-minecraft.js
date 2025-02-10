@@ -193,7 +193,7 @@ exports.handler = async (event, context) => {
         gameHistory.push(gameData);
       }
     }
-    statistics = calculateStatistics(uuid, gameHistory);
+    statistics = calculateStatistics(formattedUUID, gameHistory);
   }
 
   return {
