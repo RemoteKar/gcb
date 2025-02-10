@@ -45,7 +45,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // GitHub에서 배지 이미지 가져오기
   async function fetchBadgeImage(badgeName) {
-    const githubUrl = `https://raw.githubusercontent.com/RemoteKar/gcb/main/Resource/badge/${badgeName}.png`;
+    const githubUrl = `https://raw.githubusercontent.com/RemoteKar/gcb/contents/Resource/badge/${badgeName}.png`;
     try {
       const response = await fetch(githubUrl, {
         headers: {
