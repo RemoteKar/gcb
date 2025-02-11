@@ -27,17 +27,21 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   });
 
-  //----------------------------------------
-  // API 호출: 닉네임을 이용하여 Netlify Function에서 UUID, 배지, 통계 데이터 검색
+  // Netlify Function을 호출하는 API 함수
   async function fetchMinecraftData(nickname) {
     const url = `.netlify/functions/fetch-minecraft?nickname=${encodeURIComponent(nickname)}`;
+    console.log(`Fetching data for: ${nickname}`); // 닉네임 로그
     try {
       const response = await fetch(url);
+      console.log('API Response:', response); // 응답 로그
+  
       if (!response.ok) {
-        throw new Error('유저를 찾을 수 없습니다.');
+        throw new Error(`유저를 찾을 수 없습니다. (HTTP ${response.status})`);
       }
+  
       const data = await response.json();
-      return data; // { id, badges, statistics }
+      console.log('Fetched Data:', data); // 가져온 데이터 로그
+      return data;
     } catch (error) {
       console.error('API 오류:', error);
       return null;
@@ -81,56 +85,59 @@ document.addEventListener('DOMContentLoaded', () => {
     statsDisplay.innerHTML = '';
 
     const data = await fetchMinecraftData(nickname);
-    if (data) {
-      const { id: uuid, badges, statistics } = data;
-      // UUID에 하이픈 추가 (예: 8-4-4-4-12)
-      const formattedUUID = `${uuid.slice(0, 8)}-${uuid.slice(8, 12)}-${uuid.slice(12, 16)}-${uuid.slice(16, 20)}-${uuid.slice(20)}`;
-      resultDisplay.textContent = `닉네임: ${nickname} | UUID: ${formattedUUID}`;
-
-      //----------------------------------------
-      // 플레이어 머리 이미지 표시
-      const img = document.createElement('img');
-      img.src = getSkinUrl(uuid);
-      img.alt = `${nickname}'s Head`;
-      playerHead.appendChild(img);
-
-      //----------------------------------------
-      // 배지 데이터 표시
-      if (badges) {
-        const badgeList = badges.List || [];
-        const currentBadge = badges.current || '없음';
-
-        const currentBadgeContainer = document.createElement('div');
-        currentBadgeContainer.innerHTML = `<strong>현재 배지:</strong>`;
-        currentBadgeContainer.appendChild(await createBadgeIcon(currentBadge));
-        badgeDisplay.appendChild(currentBadgeContainer);
-
-        const ownedBadgesContainer = document.createElement('div');
-        ownedBadgesContainer.innerHTML = `<strong>보유 배지:</strong>`;
-        for (const badgeName of badgeList) {
-          ownedBadgesContainer.appendChild(await createBadgeIcon(badgeName));
-        }
-        badgeDisplay.appendChild(ownedBadgesContainer);
-      } else {
-        badgeDisplay.textContent = '배지 데이터가 없습니다.';
-      }
-
-      //----------------------------------------
-      // 통계 데이터 표시
-      if (statistics) {
-        statsDisplay.innerHTML = `
-          <p><strong>승률:</strong> ${statistics.winRate}%</p>
-          <p><strong>가장 많이 사용한 캐릭터:</strong> ${statistics.mostUsedCharacter}</p>
-          <p><strong>가장 많이 사용한 증강:</strong> ${statistics.mostUsedAugments.join(', ')}</p>
-          <p><strong>평균 데미지:</strong> ${statistics.averageDamageDealt}</p>
-          <p><strong>평균 킬 수:</strong> ${statistics.averageKillRate}</p>
-          <p><strong>평균 생존시간:</strong> ${statistics.averageAliveTime}</p>
-        `;
-      } else {
-        statsDisplay.textContent = '통계 데이터가 없습니다.';
-      }
-    } else {
-      resultDisplay.textContent = 'UUID를 찾을 수 없습니다.';
+    
+    if (!data) {
+      resultDisplay.textContent = '검색 실패: 서버 응답 없음.';
+      return;
     }
+    
+    const { id: uuid, badges, statistics } = data;
+    // UUID에 하이픈 추가 (예: 8-4-4-4-12)
+    const formattedUUID = `${uuid.slice(0, 8)}-${uuid.slice(8, 12)}-${uuid.slice(12, 16)}-${uuid.slice(16, 20)}-${uuid.slice(20)}`;
+    resultDisplay.textContent = `닉네임: ${nickname} | UUID: ${formattedUUID}`;
+
+    //----------------------------------------
+    // 플레이어 머리 이미지 표시
+    const img = document.createElement('img');
+    img.src = getSkinUrl(uuid);
+    img.alt = `${nickname}'s Head`;
+    playerHead.appendChild(img);
+
+    //----------------------------------------
+    // 배지 데이터 표시
+    if (badges) {
+      const badgeList = badges.List || [];
+      const currentBadge = badges.current || '없음';
+
+      const currentBadgeContainer = document.createElement('div');
+      currentBadgeContainer.innerHTML = `<strong>현재 배지:</strong>`;
+      currentBadgeContainer.appendChild(await createBadgeIcon(currentBadge));
+      badgeDisplay.appendChild(currentBadgeContainer);
+
+      const ownedBadgesContainer = document.createElement('div');
+      ownedBadgesContainer.innerHTML = `<strong>보유 배지:</strong>`;
+      for (const badgeName of badgeList) {
+        ownedBadgesContainer.appendChild(await createBadgeIcon(badgeName));
+      }
+      badgeDisplay.appendChild(ownedBadgesContainer);
+    } else {
+      badgeDisplay.textContent = '배지 데이터가 없습니다.';
+    }
+
+    //----------------------------------------
+    // 통계 데이터 표시
+    if (statistics) {
+      statsDisplay.innerHTML = `
+        <p><strong>승률:</strong> ${statistics.winRate}%</p>
+        <p><strong>가장 많이 사용한 캐릭터:</strong> ${statistics.mostUsedCharacter}</p>
+        <p><strong>가장 많이 사용한 증강:</strong> ${statistics.mostUsedAugments.join(', ')}</p>
+        <p><strong>평균 데미지:</strong> ${statistics.averageDamageDealt}</p>
+        <p><strong>평균 킬 수:</strong> ${statistics.averageKillRate}</p>
+        <p><strong>평균 생존시간:</strong> ${statistics.averageAliveTime}</p>
+      `;
+    } else {
+      statsDisplay.textContent = '통계 데이터가 없습니다.';
+    }
+
   });
 });
