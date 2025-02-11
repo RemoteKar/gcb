@@ -1,8 +1,11 @@
 {
   "name": "minecraft-api",
   "version": "1.0.0",
-  "description": "Netlify Functions for Minecraft API",
-  "main": "index.js",
+  "description": "Express API for Minecraft Project",
+  "main": "server/server.js",
+  "scripts": {
+    "start": "node server/server.js"
+  },
   "dependencies": {
     "cors": "^2.8.5",
     "express": "^4.21.2",

@@ -1,5 +1,7 @@
 // server/server.js
 
+const MAX_RECORDS = 50;  
+
 const express = require('express');
 const path = require('path');
 const cors = require('cors');
@@ -79,7 +81,6 @@ app.get('/api/badge', (req, res) => {
     console.log(`✅ [서버] 전체 배지 데이터 응답: ${JSON.stringify(badgeData)}`);
     res.json(badgeData.badge || badgeData);
   } catch (error) {
-    console.error("❌ [서버] 배지 데이터 오류:", error);
     res.status(500).json({ error: "배지 데이터를 가져오는 중 오류가 발생했습니다." });
   }
 });
@@ -89,27 +90,40 @@ app.get('/api/badge', (req, res) => {
 //----------------------------------------
 app.get('/api/gameHistory', (req, res) => {
   const { uuid } = req.query;
+  console.log(`🔍 [서버] 게임 기록 요청: UUID = ${uuid}`);
 
   if (!uuid) {
     return res.status(400).json({ error: "UUID를 입력하세요." });
   }
+
+  // UUID를 하이픈 포함 형식으로 변환 (util.js에서 제공하는 formatUUID 함수를 사용)
   const formattedUUID = formatUUID(uuid);
 
-  // Data 폴더가 프로젝트 루트에 있으므로, __dirname(현재 server 폴더)에서 상위 디렉토리로 이동하여 경로 지정
+  // Data 폴더가 프로젝트 루트에 있으므로, __dirname (현재 server 폴더)에서 상위 디렉토리로 이동하여 경로 지정
   const gameHistoryDir = path.join(__dirname, '..', 'Data', 'gameHistory');
 
   if (!fs.existsSync(gameHistoryDir)) {
     return res.status(500).json({ error: "게임 기록 폴더가 존재하지 않습니다." });
   }
 
-  const files = fs.readdirSync(gameHistoryDir);
+  // 게임 기록 폴더 내의 파일들을 읽어옵니다.
+  let files = fs.readdirSync(gameHistoryDir);
+
+  // 파일들을 수정 시간(mtime)을 기준으로 내림차순(최신순) 정렬합니다.
+  files.sort((a, b) => {
+    const aTime = fs.statSync(path.join(gameHistoryDir, a)).mtime;
+    const bTime = fs.statSync(path.join(gameHistoryDir, b)).mtime;
+    return bTime - aTime;
+  });
+
   const gameHistory = [];
 
-  files.forEach(file => {
+  for (const file of files) {
+    if (gameHistory.length >= MAX_RECORDS) break;
     const filePath = path.join(gameHistoryDir, file);
     try {
       const fileContents = fs.readFileSync(filePath, 'utf8');
-      const parsedData = yml.load(fileContents); 
+      const parsedData = yml.load(fileContents);
       if (parsedData && parsedData.Game && parsedData.Game.joinedPlayers) {
         const players = parsedData.Game.joinedPlayers.split(',').map(s => s.trim());
         if (players.includes(formattedUUID)) {
@@ -119,11 +133,12 @@ app.get('/api/gameHistory', (req, res) => {
     } catch (error) {
       console.error(`❌ [서버] 게임 기록 파일 읽기 오류 (${file}):`, error);
     }
-  });
+  }
 
   if (gameHistory.length === 0) {
     return res.status(404).json({ error: "게임 기록을 찾을 수 없습니다." });
   }
+
   res.json(gameHistory);
 });
 
