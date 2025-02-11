@@ -5,13 +5,13 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>GCB.gg</title>
   <link rel="icon" href="favicon.ico" type="image/x-icon">
-  <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="./css/styles.css">
 </head>
 <body>
   <div class="header-bar"></div>
 
   <div class="container">
-    <!-- 유저 검색 -->
+    <!-- 유저 검색 섹션 -->
     <section id="user-search" class="section active">
       <h1>유저 검색</h1>
       <div class="search-box">
@@ -20,21 +20,18 @@
       </div>
       <p id="result"></p>
 
-      <div id="player-head" class="player-head"></div> <!-- 플레이어 머리 -->
+      <!-- 플레이어 머리 이미지 영역 -->
+      <div id="player-head" class="player-head"></div>
 
+      <!-- 게임 기록 표시 영역 -->
       <div class="info-card">
-        <h2>🎖 배지 정보</h2>
-        <div id="badge-display"></div>
-      </div>
-
-      <div class="info-card">
-        <h2>📊 통계 정보</h2>
-        <div id="stats-display"></div>
+        <h2>🎮 게임 기록</h2>
+        <div id="game-history"></div>
       </div>
     </section>
   </div>
 
-  <!-- 스크립트 -->
-  <script src="skript.js"></script>
+  <!-- 모듈 방식의 스크립트 로드 (JS 파일들은 ./js 폴더에 위치) -->
+  <script type="module" src="./js/main.js"></script>
 </body>
 </html>
