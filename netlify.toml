@@ -8,4 +8,4 @@
   status = 200
 
 [functions]
-  included_files = ["Data/**/*"]
+  included_files = ["Data/**"]
