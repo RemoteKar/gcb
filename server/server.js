@@ -67,12 +67,10 @@ app.get('/api/badge', (req, res) => {
   }
 
   const formattedUUID = formatUUID(uuid);
-  // 수정된 경로: 상위 두 단계로 올라가서 Data 폴더 접근
+
   const filePath = path.join(__dirname, 'Data', 'player', 'badge', `${formattedUUID}.yaml`);
   console.log(`🔍 [서버] 배지 데이터 파일 경로: ${filePath}`);
 
-  const fs = require('fs');
-  const path = require('path');
   const serverDir = __dirname;
   try {
     const files = fs.readdirSync(serverDir);
