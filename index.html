@@ -5,24 +5,22 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>GCB.gg</title>
   <link rel="icon" href="favicon.ico" type="image/x-icon">
-  <link rel="stylesheet" href="./css/styles.css">
+  <link rel="stylesheet" href="./public/css/styles.css">
 </head>
 <body>
   <div class="header-bar"></div>
-
   <div class="container">
     <!-- 유저 검색 섹션 -->
     <section id="user-search" class="section active">
       <h1>유저 검색</h1>
       <div class="search-box">
-        <input type="text" id="nickname" placeholder="마크 닉네임을 입력하세요" />
+        <!-- 닉네임 또는 UUID 입력 -->
+        <input type="text" id="nickname" placeholder="마크 닉네임 또는 UUID를 입력하세요">
         <button id="search-button">검색</button>
       </div>
       <p id="result"></p>
-
       <!-- 플레이어 머리 이미지 영역 -->
       <div id="player-head" class="player-head"></div>
-
       <!-- 게임 기록 표시 영역 -->
       <div class="info-card">
         <h2>🎮 게임 기록</h2>
@@ -30,8 +28,6 @@
       </div>
     </section>
   </div>
-
-  <!-- 모듈 방식의 스크립트 로드 (JS 파일들은 ./js 폴더에 위치) -->
-  <script type="module" src="./js/main.js"></script>
+  <script type="module" src="./public/js/main.js"></script>
 </body>
 </html>
