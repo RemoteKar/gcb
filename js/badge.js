@@ -1,3 +1,4 @@
+// js/badge.js
 //---------------------------------------------------------
 // 🔹 배지 관련 유틸리티 함수 모듈
 //---------------------------------------------------------
@@ -12,12 +13,13 @@ export async function createBadgeIcon(badgeName) {
     img.src = `Resource/badge/${badgeName}.png`; // 로컬 배지 이미지 경로
     img.alt = badgeName;
     img.classList.add('badge-icon');
-
+  
     img.onerror = () => {
-        // 이미지 로딩 실패 시 기본 이미지로 대체
-        img.src = 'path/to/default-image.png';
-        console.error(`Failed to load badge image: ${badgeName}`);
+      // 이미지 로딩 실패 시 기본 이미지로 대체
+      img.src = 'path/to/default-image.png';
+      console.error(`Failed to load badge image: ${badgeName}`);
     };
-
+  
     return img;
-}
+  }
+  

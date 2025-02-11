@@ -1,6 +1,4 @@
-//---------------------------------------------------------
-// 🔹 UI 업데이트 관련 함수 모듈
-//---------------------------------------------------------
+// js/ui.js
 import { getSkinUrl } from './api.js';
 import { createBadgeIcon } from './badge.js';
 
@@ -12,11 +10,11 @@ import { createBadgeIcon } from './badge.js';
  * @param {string} nickname - 유저 닉네임
  */
 export function updatePlayerHead(playerHeadContainer, uuid, nickname) {
-    playerHeadContainer.innerHTML = '';
-    const img = document.createElement('img');
-    img.src = getSkinUrl(uuid);
-    img.alt = `${nickname}'s Head`;
-    playerHeadContainer.appendChild(img);
+  playerHeadContainer.innerHTML = '';
+  const img = document.createElement('img');
+  img.src = getSkinUrl(uuid);
+  img.alt = `${nickname}'s Head`;
+  playerHeadContainer.appendChild(img);
 }
 
 /**
@@ -26,27 +24,27 @@ export function updatePlayerHead(playerHeadContainer, uuid, nickname) {
  * @param {object} badges - 배지 데이터 (예: { current: 'badgeName', List: ['badge1', 'badge2'] })
  */
 export async function updateBadgeDisplay(badgeContainer, badges) {
-    badgeContainer.innerHTML = '';
+  badgeContainer.innerHTML = '';
 
-    if (!badges) {
-        badgeContainer.textContent = '배지 데이터가 없습니다.';
-        return;
-    }
+  if (!badges) {
+    badgeContainer.textContent = '배지 데이터가 없습니다.';
+    return;
+  }
 
-    const badgeList = badges.List || [];
-    const currentBadge = badges.current || '없음';
+  const badgeList = badges.List || [];
+  const currentBadge = badges.current || '없음';
 
-    const currentBadgeContainer = document.createElement('div');
-    currentBadgeContainer.innerHTML = `<strong>현재 배지:</strong> `;
-    currentBadgeContainer.appendChild(await createBadgeIcon(currentBadge));
-    badgeContainer.appendChild(currentBadgeContainer);
+  const currentBadgeContainer = document.createElement('div');
+  currentBadgeContainer.innerHTML = `<strong>현재 배지:</strong> `;
+  currentBadgeContainer.appendChild(await createBadgeIcon(currentBadge));
+  badgeContainer.appendChild(currentBadgeContainer);
 
-    const ownedBadgesContainer = document.createElement('div');
-    ownedBadgesContainer.innerHTML = `<strong>보유 배지:</strong> `;
-    for (const badgeName of badgeList) {
-        ownedBadgesContainer.appendChild(await createBadgeIcon(badgeName));
-    }
-    badgeContainer.appendChild(ownedBadgesContainer);
+  const ownedBadgesContainer = document.createElement('div');
+  ownedBadgesContainer.innerHTML = `<strong>보유 배지:</strong> `;
+  for (const badgeName of badgeList) {
+    ownedBadgesContainer.appendChild(await createBadgeIcon(badgeName));
+  }
+  badgeContainer.appendChild(ownedBadgesContainer);
 }
 
 /**
@@ -56,19 +54,19 @@ export async function updateBadgeDisplay(badgeContainer, badges) {
  * @param {object|null} statistics - 통계 데이터
  */
 export function updateStatisticsDisplay(statsContainer, statistics) {
-    statsContainer.innerHTML = '';
+  statsContainer.innerHTML = '';
 
-    if (!statistics) {
-        statsContainer.textContent = '통계 데이터가 없습니다.';
-        return;
-    }
+  if (!statistics) {
+    statsContainer.textContent = '통계 데이터가 없습니다.';
+    return;
+  }
 
-    statsContainer.innerHTML = `
-        <p><strong>승률:</strong> ${statistics.winRate}%</p>
-        <p><strong>가장 많이 사용한 캐릭터:</strong> ${statistics.mostUsedCharacter}</p>
-        <p><strong>가장 많이 사용한 증강:</strong> ${statistics.mostUsedAugments.join(', ')}</p>
-        <p><strong>평균 데미지:</strong> ${statistics.averageDamageDealt}</p>
-        <p><strong>평균 킬 수:</strong> ${statistics.averageKillRate}</p>
-        <p><strong>평균 생존시간:</strong> ${statistics.averageAliveTime}</p>
-    `;
+  statsContainer.innerHTML = `
+    <p><strong>승률:</strong> ${statistics.winRate}%</p>
+    <p><strong>가장 많이 사용한 캐릭터:</strong> ${statistics.mostUsedCharacter}</p>
+    <p><strong>가장 많이 사용한 증강:</strong> ${statistics.mostUsedAugments.join(', ')}</p>
+    <p><strong>평균 데미지:</strong> ${statistics.averageDamageDealt}</p>
+    <p><strong>평균 킬 수:</strong> ${statistics.averageKillRate}</p>
+    <p><strong>평균 생존시간:</strong> ${statistics.averageAliveTime}</p>
+  `;
 }
