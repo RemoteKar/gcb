@@ -72,12 +72,12 @@ app.get('/api/badge', (req, res) => {
   console.log(`🔍 [서버] 배지 데이터 파일 경로: ${filePath}`);
 
   try {
-    const files = fs.readdirSync(dataBadgeDir);
+    const files = fs.readdirSync(filePath);
     console.log('Data/player/badge 폴더 파일 목록:', files);
   } catch (err) {
     console.error('Data/player/badge 폴더 읽기 실패:', err);
   }
-  
+
   if (!fs.existsSync(filePath)) {
     return res.status(404).json({ error: "배지 데이터를 찾을 수 없습니다." });
   }
