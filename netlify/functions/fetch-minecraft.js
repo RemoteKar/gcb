@@ -2,22 +2,15 @@
 const fetch = require('node-fetch');
 const yaml = require('js-yaml');
 
-// ※ GitHub 토큰은 실제 토큰으로 교체하세요.
+// GitHub token (replace with your actual token)
 const GITHUB_TOKEN = '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';
 
-/**
- * UUID에 하이픈을 추가하는 함수
- * @param {string} uuid - 하이픈 없는 UUID 문자열
- * @returns {string} - 하이픈이 포함된 UUID
- */
+// Helper function to add hyphens to UUID
 function formatUUID(uuid) {
   return `${uuid.slice(0, 8)}-${uuid.slice(8, 12)}-${uuid.slice(12, 16)}-${uuid.slice(16, 20)}-${uuid.slice(20)}`;
 }
 
-/**
- * GitHub API를 통해 게임 기록 파일 목록을 가져옵니다.
- * @returns {Promise<Array|null>} - 파일 목록 배열 또는 오류 시 null
- */
+// Fetch all game history YAML files
 async function fetchGameHistory() {
   const githubUrl = 'https://api.github.com/repos/RemoteKar/gcb/contents/Data/gameHistory';
   try {
@@ -31,7 +24,7 @@ async function fetchGameHistory() {
       throw new Error('게임 기록을 찾을 수 없습니다.');
     }
     const files = await response.json();
-    console.log('Fetched Game History Files:', files.length);
+    console.log('Fetched Game History Files:', files.length); // Log number of files fetched
     return files;
   } catch (error) {
     console.error('게임 기록 오류:', error);
@@ -39,11 +32,7 @@ async function fetchGameHistory() {
   }
 }
 
-/**
- * YAML 파일을 파싱하는 함수
- * @param {string} fileUrl - YAML 파일의 다운로드 URL
- * @returns {Promise<Object|null>} - 파싱된 객체 또는 오류 시 null
- */
+// Parse YAML file content
 async function parseYamlFile(fileUrl) {
   try {
     const response = await fetch(fileUrl, {
@@ -64,12 +53,7 @@ async function parseYamlFile(fileUrl) {
   }
 }
 
-/**
- * 주어진 UUID를 기준으로 게임 기록 데이터를 분석하여 통계를 계산합니다.
- * @param {string} uuid - 하이픈이 포함된 UUID
- * @param {Array} gameHistory - 게임 기록 객체 배열 (필터링된 데이터)
- * @returns {Object} - 통계 데이터 객체
- */
+// Calculate statistics for a UUID owner
 function calculateStatistics(uuid, gameHistory) {
   let totalGames = 0;
   let wins = 0;
@@ -79,26 +63,26 @@ function calculateStatistics(uuid, gameHistory) {
   let totalKills = 0;
   let totalAliveTime = 0;
 
-  console.log('Calculating statistics for UUID:', uuid);
+  console.log('Calculating statistics for UUID:', uuid); // Log UUID being processed
 
   gameHistory.forEach(game => {
-    // game.Player 객체에 해당 uuid가 있는 경우에만 처리
     if (game.Player && game.Player[uuid]) {
+      console.log('Player data found in game:', game); // Log game where player data is found
       totalGames++;
       const playerData = game.Player[uuid];
 
-      // 우승 여부 확인
+      // Check if the player won the game
       if (playerData.outCuase === '우승') {
         wins++;
       }
 
-      // 캐릭터 사용량
+      // Track character usage
       const character = playerData.Character;
       if (character) {
         characterUsage[character] = (characterUsage[character] || 0) + 1;
       }
 
-      // 증강 사용량
+      // Track augment usage
       if (playerData.Augment) {
         Object.values(playerData.Augment).forEach(augment => {
           if (augment) {
@@ -107,7 +91,7 @@ function calculateStatistics(uuid, gameHistory) {
         });
       }
 
-      // 데미지와 킬 수 합산
+      // Sum damage dealt and kills
       if (playerData.Damage && playerData.Damage.Dealt) {
         totalDamageDealt += playerData.Damage.Dealt;
       }
@@ -115,24 +99,37 @@ function calculateStatistics(uuid, gameHistory) {
         totalKills += playerData.kill;
       }
 
-      // 생존 시간 합산
+      // Sum alive time
       if (playerData.TimeSurvived) {
         totalAliveTime += playerData.TimeSurvived;
       }
+    } else {
+      console.log('Player data not found in game:', game); // Log game where player data is missing
     }
   });
 
+  // Calculate win rate
   const winRate = totalGames > 0 ? (wins / totalGames) * 100 : 0;
+
+  // Find most used character
   const mostUsedCharacter = Object.keys(characterUsage).length > 0
-    ? Object.keys(characterUsage).reduce((a, b) => (characterUsage[a] > characterUsage[b] ? a : b))
-    : '없음';
+    ? Object.keys(characterUsage).reduce((a, b) =>
+        characterUsage[a] > characterUsage[b] ? a : b
+      )
+    : '없음'; // Default value if no character data is found
+
+  // Find most used augments
   const mostUsedAugments = Object.keys(augmentUsage).length > 0
     ? Object.keys(augmentUsage)
         .sort((a, b) => augmentUsage[b] - augmentUsage[a])
-        .slice(0, 3)
-    : ['없음'];
+        .slice(0, 3) // Top 3 most used augments
+    : ['없음']; // Default value if no augment data is found
+
+  // Calculate average damage dealt and kill rate
   const averageDamageDealt = totalGames > 0 ? totalDamageDealt / totalGames : 0;
   const averageKillRate = totalGames > 0 ? totalKills / totalGames : 0;
+
+  // Calculate average alive time
   const averageAliveTime = totalGames > 0 ? totalAliveTime / totalGames : 0;
 
   return {
@@ -141,17 +138,14 @@ function calculateStatistics(uuid, gameHistory) {
     mostUsedAugments,
     averageDamageDealt: averageDamageDealt.toFixed(2),
     averageKillRate: averageKillRate.toFixed(2),
-    averageAliveTime: averageAliveTime.toFixed(2),
+    averageAliveTime: averageAliveTime.toFixed(2), // Add average alive time
   };
 }
 
-/**
- * Netlify Function 메인 핸들러
- */
 exports.handler = async (event, context) => {
   const { nickname } = event.queryStringParameters;
 
-  // Mojang API를 통해 UUID를 가져옵니다.
+  // Fetch UUID from Mojang API
   const mojangUrl = `https://api.mojang.com/users/profiles/minecraft/${nickname}`;
   const mojangResponse = await fetch(mojangUrl);
   if (!mojangResponse.ok) {
@@ -163,11 +157,11 @@ exports.handler = async (event, context) => {
   const mojangData = await mojangResponse.json();
   const uuid = mojangData.id;
 
-  // UUID 형식 변환 (하이픈 추가)
+  // Format UUID with hyphens
   const formattedUUID = formatUUID(uuid);
   console.log('Formatted UUID:', formattedUUID);
 
-  // GitHub API를 통해 배지 데이터를 가져옵니다.
+  // Fetch badge data from GitHub API
   const badgeUrl = `https://api.github.com/repos/RemoteKar/gcb/contents/Data/player/badge/${formattedUUID}.yaml`;
   console.log('Fetching badge data from:', badgeUrl);
 
@@ -187,12 +181,11 @@ exports.handler = async (event, context) => {
     console.error('배지 데이터 오류:', error);
   }
 
-  // 게임 기록 파일 목록을 가져옵니다.
+  // Fetch game history and calculate statistics
   const gameHistoryFiles = await fetchGameHistory();
   let statistics = null;
   if (gameHistoryFiles) {
     const gameHistory = [];
-    // 각 게임 기록 파일을 파싱하여 배열에 추가
     for (const file of gameHistoryFiles) {
       const fileUrl = file.download_url;
       const gameData = await parseYamlFile(fileUrl);
@@ -200,18 +193,7 @@ exports.handler = async (event, context) => {
         gameHistory.push(gameData);
       }
     }
-    // **여기서 필터링:** 각 게임 데이터의 Game.joinedPlayers 필드에서
-    // 콤마로 구분된 UUID 목록에 formattedUUID가 포함되어 있는 경우에만 사용합니다.
-    const filteredHistory = gameHistory.filter(record => {
-      if (record && record.Game && record.Game.joinedPlayers) {
-        const players = record.Game.joinedPlayers.split(',').map(p => p.trim());
-        return players.includes(formattedUUID);
-      }
-      return false;
-    });
-    console.log(`Filtered game records count: ${filteredHistory.length}`);
-    
-    statistics = calculateStatistics(formattedUUID, filteredHistory);
+    statistics = calculateStatistics(formattedUUID, gameHistory);
   }
 
   return {
