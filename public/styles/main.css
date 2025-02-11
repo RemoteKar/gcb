@@ -126,3 +126,13 @@ body {
 #stats-display strong {
     margin-right: 10px;
 }
+
+.badge-img {
+    position: relative;
+    width: 50px;      /* 원하는 너비 */
+    height: 50px;     /* 원하는 높이 */
+    object-fit: contain;
+    margin-top: -75px;
+    margin-left: 100px;
+  }
+  

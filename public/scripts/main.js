@@ -92,24 +92,48 @@ document.addEventListener("DOMContentLoaded", () => {
       let totalGames = gameRecords.length || 0;
       let winCount = 0;
       let totalDamageDealt = 0;
+      let totalDamageTaken = 0;
       let totalKills = 0;
       let totalAliveTime = 0;
+      let maxDamageDealt = 0;
+      let maxDamageTaken = 0;
+      let maxKill = 0;  
+      let rankAtLeast50 = 0;
       const characterCounts = {};
       const augmentCounts = {};
   
-      const formattedUUID = '"'+formatUUID(uuid)+'"';
+      const formattedUUID = formatUUID(uuid);
       gameRecords.forEach(record => {
         if (record.Player && record.Player[formattedUUID]) {
           totalGames++;
           const playerData = record.Player[formattedUUID];
-  
+      
+          if(playerData.Ranking/record.Game.amountOfPlayers <= 0.5){
+            rankAtLeast50++;
+          }
           if (playerData.outCuase === "우승") {
             winCount++;
           }
-          if (playerData.Damage && typeof playerData.Damage.Dealt === "number") {
-            totalDamageDealt += playerData.Damage.Dealt;
+
+          if (playerData.Damage) {
+            if (typeof playerData.Damage.Dealt === "number") {
+              if(playerData.Damage.Dealt >= maxDamageDealt){
+                maxDamageDealt = playerData.Damage.Dealt;
+              }
+              totalDamageDealt += playerData.Damage.Dealt;
+            }
+            if (typeof playerData.Damage.Taken === "number") {
+              if(playerData.Damage.Taken >= maxDamageTaken){
+                maxDamageTaken = playerData.Damage.Taken;
+              }
+              totalDamageTaken += playerData.Damage.Taken;
+            }
           }
+          
           if (typeof playerData.kill === "number") {
+            if (playerData.kill >= maxKill) {
+                maxKill = playerData.kill;
+            }
             totalKills += playerData.kill;
           }
           if (typeof playerData.TimeSurvived === "number") {
@@ -129,22 +153,33 @@ document.addEventListener("DOMContentLoaded", () => {
   
       if (totalGames === 0) {
         return {
-          winRate: "0.00",
+          winRate: "0.0",
+          winCount: "0",
+          avarageRankLeast50: 0.0,
           mostUsedCharacter: "N/A",
           mostUsedAugments: [],
-          averageDamageDealt: "0.00",
-          averageKillRate: "0.00",
-          averageAliveTime: "0.00"
+          averageDamageDealt: "0",
+          averageDamageTaken: "0",       
+          averageKillRate: "0.0",
+          averageAliveTime: "0.0",
+          maxDamageDealt: "0",
+          maxDamageTaken: "0",
+          maxKill: "0",   
+          totalGames: "0"
         };
       }
   
-      const winRate = ((winCount / totalGames) * 100).toFixed(2);
-      const averageDamageDealt = (totalDamageDealt / totalGames).toFixed(2);
+      const winRate = ((winCount / totalGames) * 100).toFixed(1);
+      const avarageRankLeast50 = ((rankAtLeast50 / totalGames) * 100).toFixed(1);
+      const averageDamageDealt = (totalDamageDealt / totalGames).toFixed(0);
+      const averageDamageTaken = (totalDamageTaken / totalGames).toFixed(0);
       const averageKillRate = (totalKills / totalGames).toFixed(2);
-      const averageAliveTime = (totalAliveTime / totalGames).toFixed(2);
-  
+      const averageAliveTime = (totalAliveTime / totalGames).toFixed(1);
       let mostUsedCharacter = "N/A";
       let maxCharacterCount = 0;
+      maxDamageDealt = maxDamageDealt.toFixed(0);
+      maxDamageTaken = maxDamageTaken.toFixed(0);
+
       for (const char in characterCounts) {
         if (characterCounts[char] > maxCharacterCount) {
           maxCharacterCount = characterCounts[char];
@@ -159,11 +194,17 @@ document.addEventListener("DOMContentLoaded", () => {
   
       return {
         winRate,
+        winCount,
+        avarageRankLeast50,
         mostUsedCharacter,
         mostUsedAugments,
         averageDamageDealt,
+        averageDamageTaken,        
         averageKillRate,
         averageAliveTime,
+        maxDamageDealt,
+        maxDamageTaken,   
+        maxKill,
         totalGames
       };
     }
@@ -193,8 +234,7 @@ document.addEventListener("DOMContentLoaded", () => {
       }
   
       const uuid = data.uuid;
-      console.log(`✅ [검색 완료] UUID: ${uuid}`);
-      resultDisplay.textContent = `UUID: ${uuid}`;
+      resultDisplay.textContent = `${nickname}`;
   
       //----------------------------------------
       // 📌 플레이어 머리 이미지 표시
@@ -203,13 +243,19 @@ document.addEventListener("DOMContentLoaded", () => {
       img.alt = `${nickname}'s Head`;
       playerHead.appendChild(img);
   
-      //----------------------------------------
-      // 📌 배지 데이터 가져오기 및 표시
+      // 📌 배지 데이터 가져오기 및 표시 (이미지 표기)
       const badges = await fetchBadgeData(uuid);
-      if (badges) {
-        badgeDisplay.innerHTML = `<strong>배지:</strong> ${badges.current || "없음"}`;
-      } else {
-        badgeDisplay.textContent = "배지 데이터 없음";
+      if (badges && badges.current) {
+        const badgeName = badges.current; // 예: "2주년기념"
+        // 이미지 엘리먼트 생성
+        const badgeImg = document.createElement("img");
+        badgeImg.src = `/Resource/badge/${badgeName}.png`; // 리소스 폴더 내에 해당 이미지가 있어야 합니다.
+        badgeImg.alt = badgeName;
+        badgeImg.classList.add("badge-img"); // 필요에 따라 CSS 스타일링 가능
+
+        // 텍스트 "배지:"와 함께 이미지 엘리먼트를 추가
+        badgeDisplay.innerHTML = `<strong></strong> `;
+        badgeDisplay.appendChild(badgeImg);
       }
   
       //----------------------------------------
@@ -218,12 +264,13 @@ document.addEventListener("DOMContentLoaded", () => {
       if (gameHistory) {
         const statistics = computeStatistics(gameHistory, uuid);
         statsDisplay.innerHTML = `
+          <p><strong>모스트:</strong> ${statistics.mostUsedCharacter}</p>
           <p><strong>총 게임 수:</strong> ${statistics.totalGames}게임</p>
-          <p><strong>승률:</strong> ${statistics.winRate}%</p>
-          <p><strong>가장 많이 사용한 캐릭터:</strong> ${statistics.mostUsedCharacter}</p>
-          <p><strong>가장 많이 사용한 증강:</strong> ${statistics.mostUsedAugments.join(', ')}</p>
-          <p><strong>평균 데미지:</strong> ${statistics.averageDamageDealt}</p>
-          <p><strong>평균 킬 수:</strong> ${statistics.averageKillRate}</p>
+          <p><strong>승률:</strong> ${statistics.winRate}%(${statistics.winCount})</p>
+          <p><strong>순방률:</strong> ${statistics.avarageRankLeast50}%</p>
+          <p><strong>가한피해:</strong> ${statistics.averageDamageDealt}(${statistics.maxDamageDealt})</p>
+          <p><strong>받은피해:</strong> ${statistics.averageDamageTaken}(${statistics.maxDamageTaken})</p>        
+          <p><strong>처치:</strong> ${statistics.averageKillRate}(${statistics.maxKill})</p>
           <p><strong>평균 생존시간:</strong> ${statistics.averageAliveTime}</p>
         `;
       } else {
