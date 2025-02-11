@@ -1,4 +1,4 @@
-// server/server.js
+// netlify/functions/server.js
 
 const MAX_RECORDS = 50;  
 
@@ -11,7 +11,7 @@ const yaml = require('js-yaml');
 const yml = require('js-yaml'); 
 const fetch = require('node-fetch'); // Node 18 이상에서는 글로벌 fetch가 내장되어 있을 수도 있음
 
-// 유틸 함수 가져오기: UUID 하이픈 추가
+// util.js는 netlify/functions 폴더 내에 있다고 가정(또는 올바른 경로로 수정)
 const { formatUUID } = require('./util');
 
 const app = express();
@@ -19,7 +19,6 @@ const PORT = process.env.PORT || 3000;
 
 app.use(cors());
 
-// API 엔드포인트가 정적 미들웨어보다 먼저 처리되도록 등록
 //----------------------------------------
 // 📌 UUID 조회 (Mojang API 사용)
 //----------------------------------------
@@ -67,9 +66,9 @@ app.get('/api/badge', (req, res) => {
     return res.status(400).json({ error: "UUID를 입력하세요." });
   }
 
-  // 하이픈 없는 UUID를 하이픈 포함 형식으로 변환
   const formattedUUID = formatUUID(uuid);
-  const filePath = path.join(__dirname, '..', 'Data', 'player', 'badge', `${formattedUUID}.yaml`);
+  // 수정된 경로: 상위 두 단계로 올라가서 Data 폴더 접근
+  const filePath = path.join(__dirname, '..', '..', 'Data', 'player', 'badge', `${formattedUUID}.yaml`);
   console.log(`🔍 [서버] 배지 데이터 파일 경로: ${filePath}`);
 
   if (!fs.existsSync(filePath)) {
@@ -97,20 +96,16 @@ app.get('/api/gameHistory', (req, res) => {
     return res.status(400).json({ error: "UUID를 입력하세요." });
   }
 
-  // UUID를 하이픈 포함 형식으로 변환 (util.js에서 제공하는 formatUUID 함수를 사용)
   const formattedUUID = formatUUID(uuid);
-
-  // Data 폴더가 프로젝트 루트에 있으므로, __dirname (현재 server 폴더)에서 상위 디렉토리로 이동하여 경로 지정
-  const gameHistoryDir = path.join(__dirname, '..', 'Data', 'gameHistory');
+  // 수정된 경로: 상위 두 단계로 올라가서 Data 폴더 접근
+  const gameHistoryDir = path.join(__dirname, '..', '..', 'Data', 'gameHistory');
+  console.log(`🔍 [서버] 게임 기록 폴더 경로: ${gameHistoryDir}`);
 
   if (!fs.existsSync(gameHistoryDir)) {
     return res.status(500).json({ error: "게임 기록 폴더가 존재하지 않습니다." });
   }
 
-  // 게임 기록 폴더 내의 파일들을 읽어옵니다.
   let files = fs.readdirSync(gameHistoryDir);
-
-  // 파일들을 수정 시간(mtime)을 기준으로 내림차순(최신순) 정렬합니다.
   files.sort((a, b) => {
     const aTime = fs.statSync(path.join(gameHistoryDir, a)).mtime;
     const bTime = fs.statSync(path.join(gameHistoryDir, b)).mtime;
@@ -118,7 +113,6 @@ app.get('/api/gameHistory', (req, res) => {
   });
 
   const gameHistory = [];
-
   for (const file of files) {
     if (gameHistory.length >= MAX_RECORDS) break;
     const filePath = path.join(gameHistoryDir, file);
@@ -143,6 +137,7 @@ app.get('/api/gameHistory', (req, res) => {
   res.json(gameHistory);
 });
 
-
+//----------------------------------------
 // Express 앱을 Netlify Functions로 래핑하여 핸들러 내보내기
+//----------------------------------------
 module.exports.handler = serverless(app);
