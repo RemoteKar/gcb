@@ -71,12 +71,14 @@ app.get('/api/badge', (req, res) => {
   const filePath = path.join(__dirname, 'Data', 'player', 'badge', `${formattedUUID}.yaml`);
   console.log(`🔍 [서버] 배지 데이터 파일 경로: ${filePath}`);
 
+  const badgeDir = path.join(__dirname, 'Data', 'player', 'badge');
   try {
-    const file = fs.readFileSync(filePath);
-    console.log('Data/player/badge 폴더 파일 목록:', file);
-  } catch (err) {
-    console.error('Data/player/badge 폴더 읽기 실패:', err);
+    const files = fs.readdirSync(badgeDir);
+    console.log('badge 디렉터리 파일 목록:', files);
+  } catch (error) {
+    console.error('badge 디렉터리 읽기 실패:', error);
   }
+  
 
   if (!fs.existsSync(filePath)) {
     return res.status(404).json({ error: "배지 데이터를 찾을 수 없습니다." });
