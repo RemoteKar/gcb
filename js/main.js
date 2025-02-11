@@ -80,7 +80,7 @@ document.addEventListener('DOMContentLoaded', () => {
       resultDisplay.textContent = '닉네임을 입력하세요!';
       return;
     }
-    resultDisplay.textContent = '검색 중...';
+    resultDisplay.textContent = '검색 중...1';
     playerHead.innerHTML = '';
     badgeDisplay.innerHTML = '';
     statsDisplay.innerHTML = '';
