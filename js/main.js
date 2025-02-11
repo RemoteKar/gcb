@@ -29,6 +29,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // Netlify Function을 호출하는 API 함수
   async function fetchMinecraftData(nickname) {
+    resultDisplay.textContent = '검색 중...2';
     const url = `.netlify/functions/fetch-minecraft?nickname=${encodeURIComponent(nickname)}`;
     console.log(`Fetching data for: ${nickname}`); // 닉네임 로그
     try {
@@ -90,7 +91,7 @@ document.addEventListener('DOMContentLoaded', () => {
       resultDisplay.textContent = '검색 실패: 서버 응답 없음.';
       return;
     }
-    
+
     const { id: uuid, badges, statistics } = data;
     // UUID에 하이픈 추가 (예: 8-4-4-4-12)
     const formattedUUID = `${uuid.slice(0, 8)}-${uuid.slice(8, 12)}-${uuid.slice(12, 16)}-${uuid.slice(16, 20)}-${uuid.slice(20)}`;
