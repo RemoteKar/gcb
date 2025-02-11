@@ -12,7 +12,7 @@ const yml = require('js-yaml');
 const fetch = require('node-fetch'); // Node 18 이상에서는 글로벌 fetch가 내장되어 있을 수도 있음
 
 // 유틸 함수 가져오기: UUID 하이픈 추가
-const { formatUUID } = require('../../server/util');
+const { formatUUID } = require('./util');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
