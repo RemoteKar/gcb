@@ -4,12 +4,10 @@
   "description": "Netlify Functions for Minecraft API",
   "main": "index.js",
   "dependencies": {
-    "node-fetch": "^2.6.7",
-    "js-yaml": "^4.1.0"
-  },
-  "devDependencies": {},
-  "scripts": {
-    "start": "netlify dev"
+    "cors": "^2.8.5",
+    "express": "^4.21.2",
+    "js-yaml": "^4.1.0",
+    "node-fetch": "^2.6.7"
   },
   "keywords": [],
   "author": "",
