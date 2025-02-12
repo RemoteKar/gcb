@@ -270,7 +270,6 @@ document.addEventListener("DOMContentLoaded", () => {
       statsDisplay.innerHTML = `<strong></strong> `;
       statsDisplay.appendChild(charImg);
 
-
       const statistics = computeStatistics(gameHistory, uuid);
       statsDisplay.innerHTML = `
         <p><strong>모스트:</strong> ${statistics.mostUsedCharacter}</p>

@@ -135,4 +135,11 @@ body {
     margin-top: -75px;
     margin-left: 100px;
   }
-  
+
+.char-img {
+    position: relative;
+    width: 100px;    
+    height: 100px;    
+    object-fit: contain;
+  }
+    
