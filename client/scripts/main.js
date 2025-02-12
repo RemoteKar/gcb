@@ -262,27 +262,45 @@ document.addEventListener("DOMContentLoaded", () => {
     // 📌 게임 기록 가져오기 및 통계 계산 후 표시
     const gameHistory = await fetchGameHistory(uuid);
     if (gameHistory) {
+      // 먼저 통계 데이터를 계산합니다.
       const statistics = computeStatistics(gameHistory, uuid);
-
-      const charImg = document.createElement("img");
-      charImg.src = `/Resource/character/${statistics.mostUsedCharacter}.png`; // 리소스 폴더 내에 해당 이미지가 있어야 합니다.
-      charImg.alt = badgeName;
-      charImg.classList.add("char-img"); 
-      statsDisplay.innerHTML = `<strong></strong> `;
-      statsDisplay.appendChild(charImg);
-
+      
+      // 기존 statsDisplay의 통계 텍스트 설정
       statsDisplay.innerHTML = `
-        <p><strong>모스트:</strong> ${statistics.mostUsedCharacter}</p>
         <p><strong>총 게임 수:</strong> ${statistics.totalGames}게임</p>
-        <p><strong>승률:</strong> ${statistics.winRate}%(${statistics.winCount})</p>
+        <p><strong>승률:</strong> ${statistics.winRate}% (${statistics.winCount}승)</p>
         <p><strong>순방률:</strong> ${statistics.avarageRankLeast50}%</p>
-        <p><strong>가한피해:</strong> ${statistics.averageDamageDealt}(${statistics.maxDamageDealt})</p>
-        <p><strong>받은피해:</strong> ${statistics.averageDamageTaken}(${statistics.maxDamageTaken})</p>        
-        <p><strong>처치:</strong> ${statistics.averageKillRate}(${statistics.maxKill})</p>
+        <p><strong>가한 피해:</strong> ${statistics.averageDamageDealt} (${statistics.maxDamageDealt})</p>
+        <p><strong>받은 피해:</strong> ${statistics.averageDamageTaken} (${statistics.maxDamageTaken})</p>        
+        <p><strong>처치:</strong> ${statistics.averageKillRate} (${statistics.maxKill})</p>
         <p><strong>평균 생존시간:</strong> ${statistics.averageAliveTime}</p>
       `;
+    
+      // 캐릭터 이미지를 감싸는 컨테이너 생성
+      const charContainer = document.createElement("div");
+      charContainer.classList.add("char-container");
+    
+      // 원본 캐릭터 이미지 생성
+      const charImg = document.createElement("img");
+      charImg.src = `/Resource/character/${statistics.mostUsedCharacter}.png`;
+      charImg.alt = statistics.mostUsedCharacter;
+      charImg.classList.add("char-img");
+    
+      // 테두리 역할을 할 nemo.png 이미지 생성 (중앙이 투명한 이미지)
+      const borderImg = document.createElement("img");
+      borderImg.src = `/Resource/character/nemo.png`;
+      borderImg.alt = "border";
+      borderImg.classList.add("border-img");
+    
+      // 컨테이너에 원본 이미지와 테두리 이미지를 추가 (테두리 이미지가 원본 위에 겹치게)
+      charContainer.appendChild(charImg);
+      charContainer.appendChild(borderImg);
+    
+      // 컨테이너를 통계 영역의 최상단에 삽입
+      statsDisplay.prepend(charContainer);
     } else {
       statsDisplay.textContent = "게임 기록 없음";
     }
+    
   });
 });
