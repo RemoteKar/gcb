@@ -16,10 +16,10 @@ app.use(cors());
 
 // GitHub 관련 설정
 // 환경 변수 또는 아래 기본값을 사용합니다.
-const repoOwner = process.env.GITHUB_REPO_OWNER || 'eiqq';
-const repoName = process.env.GITHUB_REPO_NAME || 'personal';
-const branch = process.env.GITHUB_BRANCH || 'main';
-const githubToken = process.env.GITHUB_TOKEN || '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'; 
+const repoOwner = process.env.GITHUB_REPO_OWNER;
+const repoName = process.env.GITHUB_REPO_NAME;
+const branch = process.env.GITHUB_BRANCH;
+const githubToken = process.env.GITHUB_TOKEN; 
 
 // Repository 루트 기준 Data 폴더의 경로는 다음과 같습니다.
 const baseDataPath = '파오캐/plugins/Skript/scripts/Data';
