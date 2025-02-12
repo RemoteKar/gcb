@@ -14,7 +14,7 @@ document.addEventListener("DOMContentLoaded", async () => {
       document.body.innerHTML = "<h1>닉네임이 없습니다.</h1>";
       return;
     }
-    userTitle.textContent = `${nickname}님의 프로필`;
+    userTitle.textContent = `${nickname}`;
   
     // ──────────────────────────────
     // API 호출 함수들 (index.html의 main.js 코드 일부를 재사용)
@@ -206,7 +206,7 @@ document.addEventListener("DOMContentLoaded", async () => {
       badgeImg.src = `/Resource/badge/${badgeName}.png`;
       badgeImg.alt = badgeName;
       badgeImg.classList.add("badge-img");
-      badgeDisplay.innerHTML = `<strong>배지:</strong> `;
+      badgeDisplay.innerHTML = `<strong></strong> `;
       badgeDisplay.appendChild(badgeImg);
     }
   
