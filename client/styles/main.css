@@ -63,7 +63,7 @@ body {
 
 /* 결과 텍스트 */
 #result {
-    margin-top: 5px;
+    margin-top: 0px;
     font-size: 18px;
     font-weight: bold;
 }
