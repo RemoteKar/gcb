@@ -1,23 +1,28 @@
 // netlify/functions/server.js
 
-const MAX_RECORDS = 50;  
+const MAX_RECORDS = 50;
 
 const serverless = require('serverless-http');
 const express = require('express');
-const path = require('path');
 const cors = require('cors');
-const fs = require('fs');
+const fetch = require('node-fetch');
 const yaml = require('js-yaml');
-const yml = require('js-yaml'); 
-const fetch = require('node-fetch'); // Node 18 이상에서는 글로벌 fetch가 내장되어 있을 수도 있음
-
-// util.js는 netlify/functions 폴더 내에 있다고 가정(또는 올바른 경로로 수정)
 const { formatUUID } = require('./util');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
 
 app.use(cors());
+
+// GitHub 관련 설정
+// 환경 변수 또는 아래 기본값을 사용합니다.
+const repoOwner = process.env.GITHUB_REPO_OWNER || 'eiqq';
+const repoName = process.env.GITHUB_REPO_NAME || 'personal';
+const branch = process.env.GITHUB_BRANCH || 'main';
+const githubToken = process.env.GITHUB_TOKEN || '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'; 
+
+// Repository 루트 기준 Data 폴더의 경로는 다음과 같습니다.
+const baseDataPath = '파오캐/plugins/Skript/scripts/Data';
 
 //----------------------------------------
 // 📌 UUID 조회 (Mojang API 사용)
@@ -56,9 +61,9 @@ app.get('/api/uuid', async (req, res) => {
 });
 
 //----------------------------------------
-// 📌 배지 데이터 조회 (로컬 Data 폴더에서)
+// 📌 배지 데이터 조회 (GitHub Private Repository 사용)
 //----------------------------------------
-app.get('/api/badge', (req, res) => {
+app.get('/api/badge', async (req, res) => {
   const { uuid } = req.query;
   console.log(`🔍 [서버] 배지 데이터 요청: UUID = ${uuid}`);
 
@@ -67,36 +72,48 @@ app.get('/api/badge', (req, res) => {
   }
 
   const formattedUUID = formatUUID(uuid);
-
-  const filePath = path.join(__dirname, 'Data', 'player', 'badge', `${formattedUUID}.yaml`);
-  console.log(`🔍 [서버] 배지 데이터 파일 경로: ${filePath}`);
-
-  const serverDir = __dirname;
-  try {
-    const files = fs.readdirSync(serverDir);
-    console.log('Server 폴더 파일 목록:', files);
-  } catch (err) {
-    console.error('Server 폴더 읽기 실패:', err);
-  } 
-
-  if (!fs.existsSync(filePath)) {
-    return res.status(404).json({ error: "배지 데이터를 찾을 수 없습니다." });
-  }
+  // Repository 내의 파일 경로: Data/player/badge/{formattedUUID}.yaml
+  const filePath = `${baseDataPath}/player/badge/${formattedUUID}.yaml`;
+  // 한글 경로 등 문제가 발생할 수 있으므로 인코딩 처리
+  const encodedFilePath = encodeURIComponent(filePath);
+  const githubApiUrl = `https://api.github.com/repos/${repoOwner}/${repoName}/contents/${encodedFilePath}?ref=${branch}`;
+  console.log(`🔍 [서버] GitHub API 요청 URL: ${githubApiUrl}`);
 
   try {
-    const fileContents = fs.readFileSync(filePath, 'utf8');
+    const response = await fetch(githubApiUrl, {
+      headers: {
+        'Authorization': `token ${githubToken}`,
+        'User-Agent': 'Your App Name'
+      }
+    });
+
+    if (!response.ok) {
+      console.error(`❌ [서버] GitHub API 응답 코드: ${response.status}`);
+      return res.status(404).json({ error: "배지 데이터를 찾을 수 없습니다." });
+    }
+
+    const data = await response.json();
+    if (!data.content) {
+      return res.status(404).json({ error: "배지 데이터가 없습니다." });
+    }
+
+    // Base64 디코딩
+    const buff = Buffer.from(data.content, 'base64');
+    const fileContents = buff.toString('utf8');
+
     const badgeData = yaml.load(fileContents);
-    console.log(`✅ [서버] 전체 배지 데이터 응답: ${JSON.stringify(badgeData)}`);
+    console.log(`✅ [서버] 배지 데이터 응답: ${JSON.stringify(badgeData)}`);
     res.json(badgeData.badge || badgeData);
   } catch (error) {
+    console.error("❌ [서버] 배지 데이터 조회 오류:", error);
     res.status(500).json({ error: "배지 데이터를 가져오는 중 오류가 발생했습니다." });
   }
 });
 
 //----------------------------------------
-// 📌 게임 기록 조회 (로컬 Data 폴더에서)
+// 📌 게임 기록 조회 (GitHub Private Repository 사용)
 //----------------------------------------
-app.get('/api/gameHistory', (req, res) => {
+app.get('/api/gameHistory', async (req, res) => {
   const { uuid } = req.query;
   console.log(`🔍 [서버] 게임 기록 요청: UUID = ${uuid}`);
 
@@ -105,45 +122,66 @@ app.get('/api/gameHistory', (req, res) => {
   }
 
   const formattedUUID = formatUUID(uuid);
-  // 수정된 경로: 상위 두 단계로 올라가서 Data 폴더 접근
-  const gameHistoryDir = path.join(__dirname, 'Data', 'gameHistory');
-  console.log(`🔍 [서버] 게임 기록 폴더 경로: ${gameHistoryDir}`);
+  // Repository 내 게임 기록 폴더 경로: Data/gameHistory
+  const dirPath = `${baseDataPath}/gameHistory`;
+  const encodedDirPath = encodeURIComponent(dirPath);
+  const githubApiUrl = `https://api.github.com/repos/${repoOwner}/${repoName}/contents/${encodedDirPath}?ref=${branch}`;
+  console.log(`🔍 [서버] GitHub API 게임 기록 폴더 URL: ${githubApiUrl}`);
 
-  if (!fs.existsSync(gameHistoryDir)) {
-    return res.status(500).json({ error: "게임 기록 폴더가 존재하지 않습니다." });
-  }
-
-  let files = fs.readdirSync(gameHistoryDir);
-  files.sort((a, b) => {
-    const aTime = fs.statSync(path.join(gameHistoryDir, a)).mtime;
-    const bTime = fs.statSync(path.join(gameHistoryDir, b)).mtime;
-    return bTime - aTime;
-  });
-
-  const gameHistory = [];
-  for (const file of files) {
-    if (gameHistory.length >= MAX_RECORDS) break;
-    const filePath = path.join(gameHistoryDir, file);
-    try {
-      const fileContents = fs.readFileSync(filePath, 'utf8');
-      const parsedData = yml.load(fileContents);
-      if (parsedData && parsedData.Game && parsedData.Game.joinedPlayers) {
-        const players = parsedData.Game.joinedPlayers.split(',').map(s => s.trim());
-        if (players.includes(formattedUUID)) {
-          gameHistory.push(parsedData);
-        }
+  try {
+    // 디렉터리 내 파일 목록 조회
+    const dirResponse = await fetch(githubApiUrl, {
+      headers: {
+        'Authorization': `token ${githubToken}`,
+        'User-Agent': 'Your App Name'
       }
-    } catch (error) {
-      console.error(`❌ [서버] 게임 기록 파일 읽기 오류 (${file}):`, error);
+    });
+
+    if (!dirResponse.ok) {
+      console.error(`❌ [서버] GitHub API 게임 기록 폴더 응답 코드: ${dirResponse.status}`);
+      return res.status(500).json({ error: "게임 기록 폴더가 존재하지 않습니다." });
     }
-  }
 
-  if (gameHistory.length === 0) {
-    return res.status(404).json({ error: "게임 기록을 찾을 수 없습니다." });
-  }
+    const filesList = await dirResponse.json();
+    const gameHistory = [];
 
-  res.json(gameHistory);
+    // 파일 목록에서 각 파일의 내용을 읽어와 파싱
+    for (const file of filesList) {
+      if (gameHistory.length >= MAX_RECORDS) break;
+
+      const fileResponse = await fetch(file.download_url, {
+        headers: {
+          'Authorization': `token ${githubToken}`,
+          'User-Agent': 'Your App Name'
+        }
+      });
+      if (!fileResponse.ok) {
+        console.error(`❌ [서버] 파일 ${file.name} 다운로드 실패: ${fileResponse.status}`);
+        continue;
+      }
+      const fileContents = await fileResponse.text();
+      try {
+        const parsedData = yaml.load(fileContents);
+        if (parsedData && parsedData.Game && parsedData.Game.joinedPlayers) {
+          const players = parsedData.Game.joinedPlayers.split(',').map(s => s.trim());
+          if (players.includes(formattedUUID)) {
+            gameHistory.push(parsedData);
+          }
+        }
+      } catch (parseError) {
+        console.error(`❌ [서버] 게임 기록 파일 파싱 오류 (${file.name}):`, parseError);
+      }
+    }
+
+    if (gameHistory.length === 0) {
+      return res.status(404).json({ error: "게임 기록을 찾을 수 없습니다." });
+    }
+
+    res.json(gameHistory);
+  } catch (error) {
+    console.error("❌ [서버] 게임 기록 조회 오류:", error);
+    res.status(500).json({ error: "게임 기록을 가져오는 중 오류가 발생했습니다." });
+  }
 });
-
 
 module.exports.handler = serverless(app);
