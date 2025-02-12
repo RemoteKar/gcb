@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>GCB.gg - 유저 프로필</title>
+  <link rel="icon" href="favicon.ico" type="image/x-icon">
+  <!-- 메인 페이지와 같은 디자인 사용 -->
+  <link rel="stylesheet" href="styles/main.css">
+</head>
+<body>
+  <div class="header-bar">
+    <a href="/" class="back-button" style="color: white; text-decoration: none; margin-left: 10px;">← 뒤로가기</a>
+  </div>
+  <div class="container">
+    <h1 id="user-title"></h1>
+    <div id="player-head" class="player-head"></div>
+    <div id="badge-display" class="badge-display"></div>
+    <div class="info-card">
+      <h2>🎮 게임 기록</h2>
+      <div id="game-history"></div>
+    </div>
+    <div id="stats-display" class="stats-display"></div>
+  </div>
+  <script type="module" src="scripts/user.js"></script>
+</body>
+</html>
