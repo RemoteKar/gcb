@@ -1,6 +1,6 @@
-// netlify/functions/server.js
 
 const MAX_RECORDS = 50;
+const CACHE_DURATION_MS = 30000; // 1분 (60,000ms) 동안 캐시 유지
 
 const serverless = require('serverless-http');
 const express = require('express');
@@ -10,12 +10,10 @@ const yaml = require('js-yaml');
 const { formatUUID } = require('./util');
 
 const app = express();
-const PORT = process.env.PORT || 3000;
 
 app.use(cors());
 
-// GitHub 관련 설정
-// 환경 변수 또는 아래 기본값을 사용합니다.
+// GitHub 관련 설정 (환경 변수로 관리)
 const repoOwner = process.env.GITHUB_REPO_OWNER;
 const repoName = process.env.GITHUB_REPO_NAME;
 const branch = process.env.GITHUB_BRANCH;
@@ -23,6 +21,11 @@ const githubToken = process.env.GITHUB_TOKEN;
 
 // Repository 루트 기준 Data 폴더의 경로는 다음과 같습니다.
 const baseDataPath = '파오캐/plugins/Skript/scripts/Data';
+
+
+// 캐시 객체들: key는 주로 UUID(또는 formattedUUID)로 사용
+const badgeCache = {};       // { [formattedUUID]: { data: 캐시된 결과, timestamp: 타임스탬프 } }
+const gameHistoryCache = {}; // { [formattedUUID]: { data: 캐시된 결과, timestamp: 타임스탬프 } }
 
 //----------------------------------------
 // 📌 UUID 조회 (Mojang API 사용)
@@ -60,8 +63,9 @@ app.get('/api/uuid', async (req, res) => {
   }
 });
 
+
 //----------------------------------------
-// 📌 배지 데이터 조회 (GitHub Private Repository 사용)
+// 📌 배지 데이터 조회 (GitHub Private Repository 사용 + 캐싱)
 //----------------------------------------
 app.get('/api/badge', async (req, res) => {
   const { uuid } = req.query;
@@ -72,6 +76,14 @@ app.get('/api/badge', async (req, res) => {
   }
 
   const formattedUUID = formatUUID(uuid);
+  const now = Date.now();
+
+  // 캐시된 결과가 있고, 1분 이내면 캐시 사용
+  if (badgeCache[formattedUUID] && (now - badgeCache[formattedUUID].timestamp < CACHE_DURATION_MS)) {
+    console.log(`🔍 [서버] 캐시된 배지 데이터 사용: UUID = ${formattedUUID}`);
+    return res.json(badgeCache[formattedUUID].data);
+  }
+
   // Repository 내의 파일 경로: Data/player/badge/{formattedUUID}.yaml
   const filePath = `${baseDataPath}/player/badge/${formattedUUID}.yaml`;
   // 한글 경로 등 문제가 발생할 수 있으므로 인코딩 처리
@@ -97,21 +109,29 @@ app.get('/api/badge', async (req, res) => {
       return res.status(404).json({ error: "배지 데이터가 없습니다." });
     }
 
-    // Base64 디코딩
+    // Base64 디코딩 후 YAML 파싱
     const buff = Buffer.from(data.content, 'base64');
     const fileContents = buff.toString('utf8');
-
     const badgeData = yaml.load(fileContents);
-    console.log(`✅ [서버] 배지 데이터 응답: ${JSON.stringify(badgeData)}`);
-    res.json(badgeData.badge || badgeData);
+    const responseData = badgeData.badge || badgeData;
+    console.log(`✅ [서버] 배지 데이터 응답: ${JSON.stringify(responseData)}`);
+
+    // 캐시에 저장
+    badgeCache[formattedUUID] = {
+      data: responseData,
+      timestamp: now
+    };
+
+    res.json(responseData);
   } catch (error) {
     console.error("❌ [서버] 배지 데이터 조회 오류:", error);
     res.status(500).json({ error: "배지 데이터를 가져오는 중 오류가 발생했습니다." });
   }
 });
 
+
 //----------------------------------------
-// 📌 게임 기록 조회 (GitHub Private Repository 사용)
+// 📌 게임 기록 조회 (GitHub Private Repository 사용 + 캐싱)
 //----------------------------------------
 app.get('/api/gameHistory', async (req, res) => {
   const { uuid } = req.query;
@@ -122,6 +142,14 @@ app.get('/api/gameHistory', async (req, res) => {
   }
 
   const formattedUUID = formatUUID(uuid);
+  const now = Date.now();
+
+  // 캐시된 결과가 있으면 사용
+  if (gameHistoryCache[formattedUUID] && (now - gameHistoryCache[formattedUUID].timestamp < CACHE_DURATION_MS)) {
+    console.log(`🔍 [서버] 캐시된 게임 기록 데이터 사용: UUID = ${formattedUUID}`);
+    return res.json(gameHistoryCache[formattedUUID].data);
+  }
+
   // Repository 내 게임 기록 폴더 경로: Data/gameHistory
   const dirPath = `${baseDataPath}/gameHistory`;
   const encodedDirPath = encodeURIComponent(dirPath);
@@ -176,6 +204,12 @@ app.get('/api/gameHistory', async (req, res) => {
     if (gameHistory.length === 0) {
       return res.status(404).json({ error: "게임 기록을 찾을 수 없습니다." });
     }
+
+    // 캐시에 저장
+    gameHistoryCache[formattedUUID] = {
+      data: gameHistory,
+      timestamp: now
+    };
 
     res.json(gameHistory);
   } catch (error) {
