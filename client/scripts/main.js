@@ -262,6 +262,7 @@ document.addEventListener("DOMContentLoaded", () => {
     // 📌 게임 기록 가져오기 및 통계 계산 후 표시
     const gameHistory = await fetchGameHistory(uuid);
     if (gameHistory) {
+      const statistics = computeStatistics(gameHistory, uuid);
 
       const charImg = document.createElement("img");
       charImg.src = `/Resource/character/${statistics.mostUsedCharacter}.png`; // 리소스 폴더 내에 해당 이미지가 있어야 합니다.
@@ -270,7 +271,6 @@ document.addEventListener("DOMContentLoaded", () => {
       statsDisplay.innerHTML = `<strong></strong> `;
       statsDisplay.appendChild(charImg);
 
-      const statistics = computeStatistics(gameHistory, uuid);
       statsDisplay.innerHTML = `
         <p><strong>모스트:</strong> ${statistics.mostUsedCharacter}</p>
         <p><strong>총 게임 수:</strong> ${statistics.totalGames}게임</p>
