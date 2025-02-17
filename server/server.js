@@ -20,7 +20,7 @@ const branch = process.env.GITHUB_BRANCH;
 const githubToken = process.env.GITHUB_TOKEN; 
 
 // Repository 루트 기준 Data 폴더의 경로는 다음과 같습니다.
-const baseDataPath = '파오캐/plugins/Skript/scripts/Data';
+const baseDataPath = 'Data';
 
 
 // 캐시 객체들: key는 주로 UUID(또는 formattedUUID)로 사용
