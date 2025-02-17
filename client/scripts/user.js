@@ -92,9 +92,14 @@ document.addEventListener("DOMContentLoaded", async () => {
       const formattedUUID = formatUUID(uuid);
       gameRecords.forEach(record => {
         if (record.Player && record.Player[formattedUUID]) {
-          totalGames++;
           const playerData = record.Player[formattedUUID];
-      
+          const character = playerData.Character;
+          
+          if(character >= 900){
+              return;
+          }
+
+          totalGames++;     
           if (playerData.Ranking / record.Game.amountOfPlayers <= 0.5) {
             rankAtLeast50++;
           }
@@ -124,10 +129,11 @@ document.addEventListener("DOMContentLoaded", async () => {
           if (typeof playerData.TimeSurvived === "number") {
             totalAliveTime += playerData.TimeSurvived;
           }
-          const character = playerData.Character;
+
           if (character !== undefined) {
             characterCounts[character] = (characterCounts[character] || 0) + 1;
           }
+
           if (playerData.Augment) {
             Object.values(playerData.Augment).forEach(augmentValue => {
               augmentCounts[augmentValue] = (augmentCounts[augmentValue] || 0) + 1;
