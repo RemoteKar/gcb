@@ -1,5 +1,5 @@
 
-const MAX_RECORDS = 50;
+const MAX_RECORDS = 200;
 const CACHE_DURATION_MS = 60000; // 1분 (60,000ms) 동안 캐시 유지
 
 const serverless = require('serverless-http');
