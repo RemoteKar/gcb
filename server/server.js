@@ -181,6 +181,7 @@ app.get('/api/statistic', async (req, res) => {
       // 파일 목록에서 각 파일의 내용을 읽어와 파싱
       gameHistory = [];
       for (const file of filesList) {
+        console.log("3");
         if (gameHistory.length >= MAX_RECORDS) break;
 
         const fileResponse = await fetch(file.download_url, {
@@ -206,6 +207,7 @@ app.get('/api/statistic', async (req, res) => {
           console.error(`❌ [서버] 게임 기록 파일 파싱 오류 (${file.name}):`, parseError);
         }
       }
+      console.log("4");
       if (gameHistory.length === 0) {
         return res.status(404).json({ error: "게임 기록을 찾을 수 없습니다." });
       }
