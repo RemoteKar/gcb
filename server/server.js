@@ -175,28 +175,37 @@ app.get('/api/statistic', async (req, res) => {
     let gameHistory;
     if (gameHistoryCache[formattedUUID] && (now - gameHistoryCache[formattedUUID].timestamp < CACHE_DURATION_MS)) {
       gameHistory = gameHistoryCache[formattedUUID].data;
-      console.log("1");
     }else{
-      console.log("2");
-      // 파일 목록에서 각 파일의 내용을 읽어와 파싱
-      gameHistory = [];
-      for (const file of filesList) {
-        console.log("3");
-        if (gameHistory.length >= MAX_RECORDS) break;
-
-        const fileResponse = await fetch(file.download_url, {
+      // 모든 파일을 병렬로 다운로드하여 gameHistory 배열에 넣기
+      const filesToFetch = filesList.slice(0, MAX_RECORDS);
+      const filePromises = filesToFetch.map(file =>
+        fetch(file.download_url, {
           headers: {
             'Authorization': `token ${githubToken}`,
             'User-Agent': 'Your App Name'
           }
-        });
-        if (!fileResponse.ok) {
-          console.error(`❌ [서버] 파일 ${file.name} 다운로드 실패: ${fileResponse.status}`);
-          continue;
-        }
-        const fileContents = await fileResponse.text();
+        })
+          .then(async (response) => {
+            if (!response.ok) {
+              console.error(`❌ [서버] 파일 ${file.name} 다운로드 실패: ${response.status}`);
+              return null;
+            }
+            const text = await response.text();
+            return { fileName: file.name, content: text };
+          })
+          .catch((error) => {
+            console.error(`❌ [서버] 파일 ${file.name} 다운로드 오류: ${error}`);
+            return null;
+          })
+      );
+      const fileResults = await Promise.all(filePromises);
+      gameHistory = [];
+
+      fileResults.forEach(result => {
+        if (!result) return;
         try {
-          const parsedData = yaml.load(fileContents);
+          console.log("3");
+          const parsedData = yaml.load(result.content);
           if (parsedData && parsedData.Game && parsedData.Game.joinedPlayers) {
             const players = parsedData.Game.joinedPlayers.split(',').map(s => s.trim());
             if (players.includes(formattedUUID)) {
@@ -204,9 +213,9 @@ app.get('/api/statistic', async (req, res) => {
             }
           }
         } catch (parseError) {
-          console.error(`❌ [서버] 게임 기록 파일 파싱 오류 (${file.name}):`, parseError);
+          console.error(`❌ [서버] 게임 기록 파일 파싱 오류 (${result.fileName}):`, parseError);
         }
-      }
+      });
       console.log("4");
       if (gameHistory.length === 0) {
         return res.status(404).json({ error: "게임 기록을 찾을 수 없습니다." });
