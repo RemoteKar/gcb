@@ -134,7 +134,7 @@ app.get('/api/badge', async (req, res) => {
 //----------------------------------------
 // 📌 게임 기록 조회 (GitHub Private Repository 사용 + 캐싱)
 //----------------------------------------
-app.get('/api/Statistic', async (req, res) => {
+app.get('/api/statistic', async (req, res) => {
   const { uuid } = req.query;
   console.log(`🔍 [서버] 게임 기록 요청: UUID = ${uuid}`);
 
@@ -146,9 +146,9 @@ app.get('/api/Statistic', async (req, res) => {
   const now = Date.now();
 
   // 캐시된 결과가 있으면 사용
-  if (statisticsCache[formattedUUID] && (now - statisticsCache[formattedUUID].timestamp < CACHE_DURATION_MS)) {
+  if (statisticCache[formattedUUID] && (now - statisticCache[formattedUUID].timestamp < CACHE_DURATION_MS)) {
     console.log(`🔍 [서버] 캐시된 게임 기록 데이터 사용: UUID = ${formattedUUID}`);
-    return res.json(statisticsCache[formattedUUID].data);
+    return res.json(statisticCache[formattedUUID].data);
   }
 
   // Repository 내 게임 기록 폴더 경로: Data/gameHistory
@@ -214,7 +214,7 @@ app.get('/api/Statistic', async (req, res) => {
 
     const statistics = computeStatistics(gameHistory,uuid);
     // 캐시에 저장
-    statisticsCache[formattedUUID] = {
+    statisticCache[formattedUUID] = {
       data: statistics,
       timestamp: now
     };

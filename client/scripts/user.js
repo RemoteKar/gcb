@@ -58,7 +58,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     }
   
     async function fetchStatistic(uuid) {
-      const url = `/api/Statistic?uuid=${uuid}`;
+      const url = `/api/statistic?uuid=${uuid}`;
       try {
         const response = await fetch(url);
         if (!response.ok) throw new Error("게임 기록을 찾을 수 없습니다.");
@@ -101,7 +101,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   
     // 4. 게임 기록 및 통계 데이터 가져오기 및 표시
     const statistics = await fetchStatistic(uuid);
-    if (statisticsy) {
+    if (statistics) {
       statsDisplay.innerHTML = `
         <p><strong>총 게임 수:</strong> ${statistics.totalGames}게임</p>
         <p><strong>승률:</strong> ${statistics.winRate}% (${statistics.winCount}승)</p>
@@ -130,7 +130,7 @@ document.addEventListener("DOMContentLoaded", async () => {
       charContainer.appendChild(borderImg);
     
       statsDisplay.prepend(charContainer);
-      
+
     } else {
       statsDisplay.textContent = "게임 기록 없음";
     }
