@@ -172,11 +172,12 @@ app.get('/api/statistic', async (req, res) => {
     }
 
     const filesList = await dirResponse.json();
-    const gameHistory = [];
+    let gameHistory;
     if (gameHistoryCache[formattedUUID] && (now - gameHistoryCache[formattedUUID].timestamp < CACHE_DURATION_MS)) {
-      gameHistory.push(gameHistoryCache[formattedUUID].data)
+      gameHistory = gameHistoryCache[formattedUUID].data;
     }else{
       // 파일 목록에서 각 파일의 내용을 읽어와 파싱
+      gameHistory = [];
       for (const file of filesList) {
         if (gameHistory.length >= MAX_RECORDS) break;
 
