@@ -1,0 +1,183 @@
+---
+Game:
+  mode: "일반"
+  joinedPlayers: "839e3db7-eb5c-4935-9b32-81094431e3db,b41b73a8-92c2-46b5-96f2-66acc910f248,4e58a25d-7d55-4e84-a790-290fe169193f,e9c9f6f8-5f42-4fe4-8eaf-af341f0dea85,4ddf6d9c-e1c7-4128-874b-6dc63d6db3cd,ea3001f3-3430-4bf2-b275-9796baaa6baf,b9f180d9-05df-4906-8fd9-04c927aa1273,bcb16c70-6973-4f79-9bbc-c278f6ceb75f,d2578e1a-015c-4260-b6c2-6364b821c1b1,d9450747-f048-4bbd-9a80-c1011a22a336,9937b375-a6cb-497d-a3c0-1395207ce7ed,f69709e0-cfcb-4912-aba8-0d8aa3a48bba,ca2b6079-2de1-4c99-838b-dcd25888afb6,eb47da01-9c15-4f96-b708-e6c3769ddd0b,7ab4d452-a7e4-4b79-b26c-5c455eb9ecfb,22707baa-3388-4415-9176-0e8b3054f3ff,273809c6-04c9-4fc8-a67c-a345f4cf9a6e,cec21a9a-e2c2-4aeb-a5ec-4dfc0232ffa1,ebf692db-d0ec-483e-a4dc-d34487755d26,a3aabde4-22bd-4b08-8876-b3312c439d80,4f30090f-78a4-4a97-97de-1aa9331c35b9,0af6b4d4-fa1d-40cd-bc6a-4176c7da989d,c5651f7a-b562-42f8-b502-45cfe6c66bba,08dbf9ea-178a-4ebb-8af2-49b2f01bc103,aec9f7e4-046a-4d93-ae45-de9d97683b43"
+  amountOfPlayers: 25
+  totalTime: "-42"
+Player:
+  "839e3db7-eb5c-4935-9b32-81094431e3db":
+    Character: 34
+    Augment:
+      "1": 18
+      "2": 17
+      "3": 1
+      "4": 22
+  b41b73a8-92c2-46b5-96f2-66acc910f248:
+    Character: 1044
+    Augment:
+      "1": 14
+      "2": null
+      "3": null
+      "4": null
+  "4e58a25d-7d55-4e84-a790-290fe169193f":
+    Character: 67
+    Augment:
+      "1": 6
+      "2": 11
+      "3": 7
+      "4": 1
+  e9c9f6f8-5f42-4fe4-8eaf-af341f0dea85:
+    Character: 38
+    Augment:
+      "1": 1
+      "2": 17
+      "3": 15
+      "4": 34
+  "4ddf6d9c-e1c7-4128-874b-6dc63d6db3cd":
+    Character: 7
+    Augment:
+      "1": 3
+      "2": 33
+      "3": 18
+      "4": 32
+  ea3001f3-3430-4bf2-b275-9796baaa6baf:
+    Character: 14
+    Augment:
+      "1": 1
+      "2": 15
+      "3": 17
+      "4": 31
+  b9f180d9-05df-4906-8fd9-04c927aa1273:
+    Character: 65
+    Augment:
+      "1": 17
+      "2": 15
+      "3": 5
+      "4": 28
+  bcb16c70-6973-4f79-9bbc-c278f6ceb75f:
+    Character: 26
+    Augment:
+      "1": 17
+      "2": 6
+      "3": 3
+      "4": 11
+  d2578e1a-015c-4260-b6c2-6364b821c1b1:
+    Character: 28
+    Augment:
+      "1": 7
+      "2": 13
+      "3": 11
+      "4": 28
+  d9450747-f048-4bbd-9a80-c1011a22a336:
+    Character: 7
+    Augment:
+      "1": 33
+      "2": 32
+      "3": 6
+      "4": 30
+  "9937b375-a6cb-497d-a3c0-1395207ce7ed":
+    Character: 34
+    Augment:
+      "1": 13
+      "2": 8
+      "3": 1
+      "4": 17
+  f69709e0-cfcb-4912-aba8-0d8aa3a48bba:
+    Character: 55
+    Augment:
+      "1": 21
+      "2": 4
+      "3": 14
+      "4": 35
+  ca2b6079-2de1-4c99-838b-dcd25888afb6:
+    Character: 4
+    Augment:
+      "1": 32
+      "2": 30
+      "3": 3
+      "4": 34
+  eb47da01-9c15-4f96-b708-e6c3769ddd0b:
+    Character: 24
+    Augment:
+      "1": 30
+      "2": 26
+      "3": 18
+      "4": 33
+  "7ab4d452-a7e4-4b79-b26c-5c455eb9ecfb":
+    Character: 3
+    Augment:
+      "1": 11
+      "2": 12
+      "3": 4
+      "4": 17
+  "22707baa-3388-4415-9176-0e8b3054f3ff":
+    Character: 67
+    Augment:
+      "1": 7
+      "2": 2
+      "3": 8
+      "4": 11
+  "273809c6-04c9-4fc8-a67c-a345f4cf9a6e":
+    Character: 1019
+    Augment:
+      "1": 6
+      "2": null
+      "3": null
+      "4": null
+  cec21a9a-e2c2-4aeb-a5ec-4dfc0232ffa1:
+    Character: 38
+    Augment:
+      "1": 15
+      "2": 5
+      "3": 1
+      "4": 28
+  ebf692db-d0ec-483e-a4dc-d34487755d26:
+    Character: 31
+    Augment:
+      "1": 14
+      "2": 6
+      "3": 4
+      "4": 7
+  a3aabde4-22bd-4b08-8876-b3312c439d80:
+    Character: 38
+    Augment:
+      "1": 26
+      "2": 11
+      "3": 6
+      "4": 7
+  "4f30090f-78a4-4a97-97de-1aa9331c35b9":
+    Character: 18
+    Augment:
+      "1": 28
+      "2": 5
+      "3": 21
+      "4": 16
+  "0af6b4d4-fa1d-40cd-bc6a-4176c7da989d":
+    Character: 29
+    Augment:
+      "1": 18
+      "2": 14
+      "3": 35
+      "4": 32
+  c5651f7a-b562-42f8-b502-45cfe6c66bba:
+    Character: 8
+    Augment:
+      "1": 35
+      "2": 14
+      "3": 30
+      "4": 6
+  "08dbf9ea-178a-4ebb-8af2-49b2f01bc103":
+    Character: 64
+    Augment:
+      "1": 32
+      "2": 6
+      "3": 17
+      "4": 1
+  aec9f7e4-046a-4d93-ae45-de9d97683b43:
+    Character: 7
+    Augment:
+      "1": 33
+      "2": 6
+      "3": 7
+      "4": 30
+title: "일반"

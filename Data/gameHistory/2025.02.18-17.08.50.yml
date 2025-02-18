@@ -1,0 +1,18 @@
+---
+Game:
+  mode: "일반"
+  joinedPlayers: "ea3001f3-3430-4bf2-b275-9796baaa6baf"
+  amountOfPlayers: 1
+  totalTime: "-45"
+Player:
+  ea3001f3-3430-4bf2-b275-9796baaa6baf:
+    Character: 14
+    Augment:
+      "1": 1
+      "2": 15
+      "3": 17
+      "4": 31
+    Ranking: 1
+    TimeSurvived: -45
+    outCuase: "탈주"
+title: "일반"
