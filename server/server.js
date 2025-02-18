@@ -242,7 +242,7 @@ app.get('/api/statistic', async (req, res) => {
 
 
 function computeStatistics(gameRecords, uuid) {
-  let totalGames = gameRecords.length || 0;
+  let totalGames = 0;
   let winCount = 0;
   let totalDamageDealt = 0;
   let totalDamageTaken = 0;
