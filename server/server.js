@@ -1,6 +1,6 @@
 
 const MAX_RECORDS = 200;
-const CACHE_DURATION_MS = 60000; // 1분 (60,000ms) 동안 캐시 유지
+const CACHE_DURATION_MS = 300*1000; // 1분 (60,000ms) 동안 캐시 유지
 
 const serverless = require('serverless-http');
 const express = require('express');
@@ -204,7 +204,6 @@ app.get('/api/statistic', async (req, res) => {
       fileResults.forEach(result => {
         if (!result) return;
         try {
-          console.log("3");
           const parsedData = yaml.load(result.content);
           if (parsedData && parsedData.Game && parsedData.Game.joinedPlayers) {
             const players = parsedData.Game.joinedPlayers.split(',').map(s => s.trim());
@@ -216,7 +215,7 @@ app.get('/api/statistic', async (req, res) => {
           console.error(`❌ [서버] 게임 기록 파일 파싱 오류 (${result.fileName}):`, parseError);
         }
       });
-      console.log("4");
+
       if (gameHistory.length === 0) {
         return res.status(404).json({ error: "게임 기록을 찾을 수 없습니다." });
       }
@@ -224,6 +223,7 @@ app.get('/api/statistic', async (req, res) => {
         data: gameHistory,
         timestamp: now
       };
+
     }
 
     const statistics = computeStatistics(gameHistory,uuid);
