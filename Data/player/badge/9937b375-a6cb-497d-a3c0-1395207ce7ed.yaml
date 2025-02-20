@@ -1,8 +1,8 @@
 badge:
     List:
-    - 분노I
-    - 각성
-    - 분노II
-    - 관리자
-    - 2주년기념
-    current: 관리자
+    - wrath_1
+    - wake
+    - wrath_2
+    - op
+    - anniversary_year_2
+    current: op

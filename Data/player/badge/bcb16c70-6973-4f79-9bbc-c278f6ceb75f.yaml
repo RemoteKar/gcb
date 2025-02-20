@@ -1,7 +1,7 @@
 badge:
     List:
-    - 분노I
-    - 각성
-    - 분노II
-    - 관리자
-    current: 관리자
+    - wrath_1
+    - wake
+    - wrath_2
+    - op
+    current: op

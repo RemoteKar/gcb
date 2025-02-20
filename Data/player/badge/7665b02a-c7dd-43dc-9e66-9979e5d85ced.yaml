@@ -1,6 +1,6 @@
 badge:
     List:
-    - 분노I
-    - 각성
-    - 분노II
-    current: 각성
+    - wrath_1
+    - wake
+    - wrath_2
+    current: wake
