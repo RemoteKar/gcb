@@ -23,7 +23,6 @@ const baseDataPath = '/Data';
 
 // 캐시 객체들
 const badgeCache = {};       // { [formattedUUID]: { data, timestamp } }
-const gameHistoryCache = {}; // { [formattedUUID]: { data, timestamp } }
 const statisticCache = {};   // { [formattedUUID]: { data, timestamp } }
 
 //----------------------------------------
@@ -142,8 +141,8 @@ app.get('/api/statistic', async (req, res) => {
 
   // 캐시된 결과가 있으면 사용
   if (statisticCache[formattedUUID] && (now - statisticCache[formattedUUID].timestamp < CACHE_DURATION_MS)) {
-    //console.log(`🔍 [서버] 캐시된 게임 기록 데이터 사용: UUID = ${formattedUUID}`);
-    //return res.json(statisticCache[formattedUUID].data);
+    console.log(`🔍 [서버] 캐시된 게임 기록 데이터 사용: UUID = ${formattedUUID}`);
+    return res.json(statisticCache[formattedUUID].data);
   }
 
   // GitHub Repository 내 게임 기록 폴더 경로: Data/gameHistory
@@ -168,59 +167,51 @@ app.get('/api/statistic', async (req, res) => {
 
     const filesList = await dirResponse.json();
     let gameHistory;
-    if (gameHistoryCache[formattedUUID] && (now - gameHistoryCache[formattedUUID].timestamp < CACHE_DURATION_MS)) {
-      gameHistory = gameHistoryCache[formattedUUID].data;
-    } else {
-      // 파일 목록 중 최대 MAX_RECORDS개 파일만 가져오기
-      const filesToFetch = filesList.slice(0, MAX_RECORDS);
-      const filePromises = filesToFetch.map(file =>
-        fetch(file.download_url, {
-          headers: {
-            'Authorization': `token ${githubToken}`,
-            'User-Agent': 'Your App Name'
-          }
-        })
-          .then(async (response) => {
-            if (!response.ok) {
-              console.error(`❌ [서버] 파일 ${file.name} 다운로드 실패: ${response.status}`);
-              return null;
-            }
-            const text = await response.text();
-            return { fileName: file.name, content: text };
-          })
-          .catch((error) => {
-            console.error(`❌ [서버] 파일 ${file.name} 다운로드 오류: ${error}`);
-            return null;
-          })
-      );
-      const fileResults = await Promise.all(filePromises);
-      gameHistory = [];
-
-      fileResults.forEach(result => {
-        if (!result) return;
-        try {
-          const parsedData = yaml.load(result.content);
-          if (parsedData && parsedData.Game && parsedData.Game.joinedPlayers) {
-            const players = parsedData.Game.joinedPlayers.split(',').map(s => s.trim());
-            if (players.includes(formattedUUID)) {
-              // 여기서 fileName(예: "2025.02.09-18.57.05")를 함께 저장하여,
-              // 클라이언트에서 날짜로 표시할 수 있도록 함.
-              parsedData.fileName = result.fileName;
-              gameHistory.push(parsedData);
-            }
-          }
-        } catch (parseError) {
-          console.error(`❌ [서버] 게임 기록 파일 파싱 오류 (${result.fileName}):`, parseError);
+    // 파일 목록 중 최대 MAX_RECORDS개 파일만 가져오기
+    const filesToFetch = filesList.slice(0, MAX_RECORDS);
+    const filePromises = filesToFetch.map(file =>
+      fetch(file.download_url, {
+        headers: {
+          'Authorization': `token ${githubToken}`,
+          'User-Agent': 'Your App Name'
         }
-      });
+      })
+        .then(async (response) => {
+          if (!response.ok) {
+            console.error(`❌ [서버] 파일 ${file.name} 다운로드 실패: ${response.status}`);
+            return null;
+          }
+          const text = await response.text();
+          return { fileName: file.name, content: text };
+        })
+        .catch((error) => {
+          console.error(`❌ [서버] 파일 ${file.name} 다운로드 오류: ${error}`);
+          return null;
+        })
+    );
+    const fileResults = await Promise.all(filePromises);
+    gameHistory = [];
 
-      if (gameHistory.length === 0) {
-        return res.status(404).json({ error: "게임 기록을 찾을 수 없습니다." });
+    fileResults.forEach(result => {
+      if (!result) return;
+      try {
+        const parsedData = yaml.load(result.content);
+        if (parsedData && parsedData.Game && parsedData.Game.joinedPlayers) {
+          const players = parsedData.Game.joinedPlayers.split(',').map(s => s.trim());
+          if (players.includes(formattedUUID)) {
+            // 여기서 fileName(예: "2025.02.09-18.57.05")를 함께 저장하여,
+            // 클라이언트에서 날짜로 표시할 수 있도록 함.
+            parsedData.fileName = result.fileName;
+            gameHistory.push(parsedData);
+          }
+        }
+      } catch (parseError) {
+        console.error(`❌ [서버] 게임 기록 파일 파싱 오류 (${result.fileName}):`, parseError);
       }
-      gameHistoryCache[formattedUUID] = {
-        data: gameHistory,
-        timestamp: now
-      };
+    });
+
+    if (gameHistory.length === 0) {
+      return res.status(404).json({ error: "게임 기록을 찾을 수 없습니다." });
     }
 
     // 통계 계산
