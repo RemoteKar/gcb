@@ -156,7 +156,7 @@ body {
 }
 
 .left-panel {
-    width: 300px;       /* 고정 너비 */
+    width: 500px;       /* 고정 너비 */
     padding: 20px;
     box-sizing: border-box;
     background-color: #1c1c1c;
@@ -219,10 +219,10 @@ body {
 }
 
 .game-card-left img{
-    width: 120px;
-    height: 120px;
+    width: 150px;
+    height: 150px;
     object-fit: cover;
-    border-radius: 12px;
+    border-radius: 15px;
 }
 
 .game-card-right {
