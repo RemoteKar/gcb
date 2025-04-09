@@ -190,7 +190,7 @@ function renderNextGames(uuid) {
 
   nextSlice.forEach(game => {
     const gameItem = document.createElement("div");
-
+  
     // YAML 데이터에 파일 이름이 있다면(서버에서 추가됨) 날짜 형식으로 파싱해서 사용,
     // 그렇지 않으면 game.Game.date 필드를 사용 (없으면 'N/A')
     let displayDate = 'N/A';
@@ -204,10 +204,18 @@ function renderNextGames(uuid) {
     const playerData = (game.Player && game.Player[formattedUUID]);
     const ranking = (playerData.Ranking !== undefined)? playerData.Ranking: (playerData.ranking !== undefined ? playerData.ranking : '0');
     const kills = (playerData.kill !== undefined)? playerData.kill: (playerData.Kill !== undefined ? playerData.Kill : 0);
+    const joins = game.Game.amountOfPlayers;
 
-
-    const cardBg = (ranking === 1) ? "#4066B2" : "#2c2c2c";
-    const cardBorder = (ranking === 1) ? "#5383E8" : "#3c3c3c";
+    const cardBg = "#2c2c2c";
+    const cardBorder = "#3c3c3c";
+    if(ranking === 1){
+      cardBg = "#4066B2"
+      cardBorder = "#5383E8";
+    }else if(ranking/joins < 0.5){
+      cardBg = "#59343B"
+      cardBorder = "#E84057";
+    }
+    
     gameItem.innerHTML = `
     <div class="game-card" style="background-color: ${cardBg}; border-color: ${cardBorder};">
         <div class="game-card-left">
@@ -215,7 +223,7 @@ function renderNextGames(uuid) {
         </div>
         <div class="game-card-right">
           <p><strong>${displayDate}<strong></p>
-          <p><strong>랭킹:</strong> ${ranking} / ${game.Game.amountOfPlayers}</p>
+          <p><strong>랭킹:</strong> ${ranking} / ${joins}</p>
           <p><strong>처치:</strong> ${kills}</p>
           <p><strong>생존:</strong> ${playerData.TimeSurvived}</p>
         </div>

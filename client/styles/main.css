@@ -218,13 +218,13 @@ body {
 }
 
 .game-card-left {
-    flex: 0 0 125px; /* 왼쪽 이미지 고정 영역 */
+    flex: 0 0 120px; /* 왼쪽 이미지 고정 영역 */
     margin-right: 10px;
 }
 
 .game-card-left img{
-    width: 125px;
-    height: 125px;
+    width: 120px;
+    height: 120px;
     object-fit: cover;
     border-radius: 15px;
 }
