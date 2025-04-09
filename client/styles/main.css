@@ -229,21 +229,35 @@ body {
     border-radius: 15px;
 }
 
+/* .game-card-info: 날짜 + 서브 정보를 세로로 쌓기 */
 .game-card-info {
-    display: flex; 
-    color: white;
-    line-height: 1.0;
-    flex-direction: row;
-    gap: 5px;
-    font-size: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;             /* 날짜와 서브영역 간격 */
 }
-.game-card-info-sub{
-    gap: 2px;           
+  
+/* 녹색 영역: 날짜 (첫 번째 <p>) */
+.game-card-info > p:first-of-type {
+    font-size: 24px;      /* 크게 */
+    font-weight: 600;
     color: white;
-    font-size: 12px;
-    align-items: flex-start;
-    line-height: 0.9;
+    margin: 0;            /* 불필요한 기본 margin 제거 */
 }
+
+/* 노란 영역: 서브 정보 */
+.game-card-info-sub {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;             /* 항목 간 간격 */
+}
+
+.game-card-info-sub > p {
+    font-size: 12px;      /* 작게 */
+    color: white;
+    margin: 0;            /* 기본 margin 제거 */
+    line-height: 1.2;
+}
+
 
 /* 오른쪽 영역: 4개 이미지 가로 배치 */
 .game-card-augment {
@@ -253,6 +267,7 @@ body {
     gap: 10px; /* 이미지 간 간격 */
     align-items: flex-end;
 }
+
 .game-card-augment img {
     width: 100px;
     height: 100px;
