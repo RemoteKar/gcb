@@ -5,29 +5,37 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>GCB.gg - 유저 프로필</title>
   <link rel="icon" href="favicon.ico" type="image/x-icon">
-  <!-- 메인 페이지와 같은 디자인 사용 -->
   <link rel="stylesheet" href="/styles/main.css">
 </head>
 <body>
-    <div class="header-bar"></div>
-    <div class="container">
-        <!-- 유저 검색 섹션 -->
-        <section id="user-search" class="section active">
+  <div class="header-bar"></div>
+  <!-- 최상위 래퍼 -->
+  <div class="wrapper">
+    <!-- 왼쪽 영역 -->
+    <div class="left-panel">
+      <!-- 검색 섹션 (원한다면 숨기거나 유지) -->
+      <section id="user-search" class="section active">
         <h1>GCB.GG</h1>
         <div class="search-box">
-            <!-- 닉네임 또는 UUID 입력 -->
             <input type="text" id="nickname" placeholder="닉네임을 입력하세요">
             <button id="search-button">검색</button>
         </div>
-        <p id="result"></p>
-        </section>
+      </section>
+
+      <!-- 유저 정보 표시 -->
+      <h2 id="user-title"></h2>
+      <div id="player-head" class="player-head"></div>
+      <div id="badge-display" class="badge-display"></div>
+      <div id="stats-display" class="stats-display"></div>
     </div>
-  <div class="container">
-    <h1 id="user-title"></h1>
-    <div id="player-head" class="player-head"></div>
-    <div id="badge-display" class="badge-display"></div>
-    <div id="stats-display" class="stats-display"></div>
+
+    <!-- 오른쪽 영역: 게임 리스트 -->
+    <div class="right-panel">
+      <div id="gameList" class="game-list"></div>
+      <button id="loadMoreButton" class="load-more-btn">더보기</button>
+    </div>
   </div>
+
   <script type="module" src="/scripts/user.js"></script>
 </body>
 </html>

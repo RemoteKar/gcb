@@ -1,6 +1,5 @@
-
 const MAX_RECORDS = 200;
-const CACHE_DURATION_MS = 300*1000; // 1분 (60,000ms) 동안 캐시 유지
+const CACHE_DURATION_MS = 300 * 1000; // 캐시 유지 시간 (300초 = 5분)
 
 const serverless = require('serverless-http');
 const express = require('express');
@@ -19,14 +18,13 @@ const repoName = process.env.GITHUB_REPO_NAME;
 const branch = process.env.GITHUB_BRANCH;
 const githubToken = process.env.GITHUB_TOKEN; 
 
-// Repository 루트 기준 Data 폴더의 경로는 다음과 같습니다.
+// Repository 루트 기준 Data 폴더 경로
 const baseDataPath = '/Data';
 
-
-// 캐시 객체들: key는 주로 UUID(또는 formattedUUID)로 사용
-const badgeCache = {};       // { [formattedUUID]: { data: 캐시된 결과, timestamp: 타임스탬프 } }
-const gameHistoryCache = {}; // { [formattedUUID]: { data: 캐시된 결과, timestamp: 타임스탬프 } }
-const statisticCache = {}; // { [formattedUUID]: { data: 캐시된 결과, timestamp: 타임스탬프 } }
+// 캐시 객체들
+const badgeCache = {};       // { [formattedUUID]: { data, timestamp } }
+const gameHistoryCache = {}; // { [formattedUUID]: { data, timestamp } }
+const statisticCache = {};   // { [formattedUUID]: { data, timestamp } }
 
 //----------------------------------------
 // 📌 UUID 조회 (Mojang API 사용)
@@ -64,7 +62,6 @@ app.get('/api/uuid', async (req, res) => {
   }
 });
 
-
 //----------------------------------------
 // 📌 배지 데이터 조회 (GitHub Private Repository 사용 + 캐싱)
 //----------------------------------------
@@ -79,15 +76,14 @@ app.get('/api/badge', async (req, res) => {
   const formattedUUID = formatUUID(uuid);
   const now = Date.now();
 
-  // 캐시된 결과가 있고, 1분 이내면 캐시 사용
+  // 캐시된 결과가 있으면 사용
   if (badgeCache[formattedUUID] && (now - badgeCache[formattedUUID].timestamp < CACHE_DURATION_MS)) {
     console.log(`🔍 [서버] 캐시된 배지 데이터 사용: UUID = ${formattedUUID}`);
     return res.json(badgeCache[formattedUUID].data);
   }
 
-  // Repository 내의 파일 경로: Data/player/badge/{formattedUUID}.yaml
+  // GitHub Repository 내의 파일 경로: Data/player/badge/{formattedUUID}.yaml
   const filePath = `${baseDataPath}/player/badge/${formattedUUID}.yaml`;
-  // 한글 경로 등 문제가 발생할 수 있으므로 인코딩 처리
   const encodedFilePath = encodeURIComponent(filePath);
   const githubApiUrl = `https://api.github.com/repos/${repoOwner}/${repoName}/contents/${encodedFilePath}?ref=${branch}`;
   console.log(`🔍 [서버] GitHub API 요청 URL: ${githubApiUrl}`);
@@ -130,9 +126,8 @@ app.get('/api/badge', async (req, res) => {
   }
 });
 
-
 //----------------------------------------
-// 📌 게임 기록 조회 (GitHub Private Repository 사용 + 캐싱)
+// 📌 게임 기록 조회 및 통계 계산 (GitHub Private Repository 사용 + 캐싱)
 //----------------------------------------
 app.get('/api/statistic', async (req, res) => {
   const { uuid } = req.query;
@@ -151,7 +146,7 @@ app.get('/api/statistic', async (req, res) => {
     return res.json(statisticCache[formattedUUID].data);
   }
 
-  // Repository 내 게임 기록 폴더 경로: Data/gameHistory
+  // GitHub Repository 내 게임 기록 폴더 경로: Data/gameHistory
   const dirPath = `${baseDataPath}/gameHistory`;
   const encodedDirPath = encodeURIComponent(dirPath);
   const githubApiUrl = `https://api.github.com/repos/${repoOwner}/${repoName}/contents/${encodedDirPath}?ref=${branch}`;
@@ -175,8 +170,8 @@ app.get('/api/statistic', async (req, res) => {
     let gameHistory;
     if (gameHistoryCache[formattedUUID] && (now - gameHistoryCache[formattedUUID].timestamp < CACHE_DURATION_MS)) {
       gameHistory = gameHistoryCache[formattedUUID].data;
-    }else{
-      // 모든 파일을 병렬로 다운로드하여 gameHistory 배열에 넣기
+    } else {
+      // 파일 목록 중 최대 MAX_RECORDS개 파일만 가져오기
       const filesToFetch = filesList.slice(0, MAX_RECORDS);
       const filePromises = filesToFetch.map(file =>
         fetch(file.download_url, {
@@ -219,28 +214,37 @@ app.get('/api/statistic', async (req, res) => {
       if (gameHistory.length === 0) {
         return res.status(404).json({ error: "게임 기록을 찾을 수 없습니다." });
       }
+
       gameHistoryCache[formattedUUID] = {
         data: gameHistory,
         timestamp: now
       };
-
     }
 
-    const statistics = computeStatistics(gameHistory,uuid);
+    // 통계 계산
+    const statistics = computeStatistics(gameHistory, uuid);
+    // 통계와 원본 게임 기록을 함께 반환하도록 응답 객체 구성
+    const responsePayload = {
+      statistics,       // 계산된 통계 정보
+      gameRecords: gameHistory // 해당 유저의 전체 게임 기록
+    };
+
     // 캐시에 저장
     statisticCache[formattedUUID] = {
-      data: statistics,
+      data: responsePayload,
       timestamp: now
     };
 
-    res.json(statistics);
+    res.json(responsePayload);
   } catch (error) {
     console.error("❌ [서버] 게임 기록 조회 오류:", error);
     res.status(500).json({ error: "게임 기록을 가져오는 중 오류가 발생했습니다." });
   }
 });
 
-
+//----------------------------------------
+// 📌 게임 기록 기반 통계 계산 함수
+//----------------------------------------
 function computeStatistics(gameRecords, uuid) {
   let totalGames = 0;
   let winCount = 0;
@@ -250,7 +254,7 @@ function computeStatistics(gameRecords, uuid) {
   let totalAliveTime = 0;
   let maxDamageDealt = 0;
   let maxDamageTaken = 0;
-  let maxKill = 0;  
+  let maxKill = 0;
   let rankAtLeast50 = 0;
   const characterCounts = {};
   const augmentCounts = {};
@@ -260,12 +264,13 @@ function computeStatistics(gameRecords, uuid) {
     if (record.Player && record.Player[formattedUUID]) {
       const playerData = record.Player[formattedUUID];
       const character = playerData.Character;
-      
-      if(character >= 900){
+
+      // 예: 특정 값 이상인 캐릭터는 계산 대상에서 제외
+      if (character >= 900) {
           return;
       }
 
-      totalGames++;     
+      totalGames++;
       if (playerData.Ranking / record.Game.amountOfPlayers <= 0.5) {
         rankAtLeast50++;
       }
@@ -316,12 +321,12 @@ function computeStatistics(gameRecords, uuid) {
       mostUsedCharacter: "N/A",
       mostUsedAugments: [],
       averageDamageDealt: "0",
-      averageDamageTaken: "0",       
+      averageDamageTaken: "0",
       averageKillRate: "0.0",
       averageAliveTime: "0.0",
       maxDamageDealt: "0",
       maxDamageTaken: "0",
-      maxKill: "0",   
+      maxKill: "0",
       totalGames: "0"
     };
   }
@@ -356,15 +361,14 @@ function computeStatistics(gameRecords, uuid) {
     mostUsedCharacter,
     mostUsedAugments,
     averageDamageDealt,
-    averageDamageTaken,        
+    averageDamageTaken,
     averageKillRate,
     averageAliveTime,
     maxDamageDealt,
-    maxDamageTaken,   
+    maxDamageTaken,
     maxKill,
     totalGames
   };
 }
-
 
 module.exports.handler = serverless(app);
