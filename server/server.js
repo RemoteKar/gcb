@@ -254,7 +254,7 @@ function computeStatistics(gameRecords, uuid) {
   gameRecords.forEach(record => {
     if (record.Player && record.Player[formattedUUID]) {
       const playerData = record.Player[formattedUUID];
-      const character = playerData.Character;
+      const character = playerData.Character ?? 99999;
 
       // 예: 특정 값 이상인 캐릭터는 계산 대상에서 제외
       if (character >= 900) {
