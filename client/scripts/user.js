@@ -229,7 +229,7 @@ function renderNextGames(uuid) {
           <img src="/Resource/character/${playerData.Character}.png" alt="캐릭터">
         </div>
         <div class="game-card-info">
-          <p><strong>${displayDate}<strong></p>
+          <p><strong>${displayDate}</strong></p>
           <div class="game-card-info-sub">
             <p><strong>랭킹:</strong> ${ranking} / ${joins}</p>
             <p><strong>처치:</strong> ${kills}</p>

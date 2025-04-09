@@ -230,6 +230,7 @@ body {
 }
 
 .game-card-info {
+    display: flex; 
     color: white;
     line-height: 1.0;
     flex-direction: row;
@@ -237,6 +238,7 @@ body {
     font-size: 20px;
 }
 .game-card-info-sub{
+    display: flex; 
     flex-direction: column;
     gap: 5px;           
     color: white;
