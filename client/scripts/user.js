@@ -211,9 +211,12 @@ function renderNextGames(uuid) {
     if(ranking === 1){
       cardBg = "#4066B2"
       cardBorder = "#5383E8";
-    }else if(ranking/joins < 0.5){
+    }else if(ranking/joins < 0.25){
       cardBg = "#59343B"
       cardBorder = "#E84057";
+    }else if(ranking/joins > 0.75){
+      cardBg = "#267F00"
+      cardBorder = "#32A800";
     }
     
     gameItem.innerHTML = `
