@@ -215,7 +215,7 @@ body {
 .game-card {
     display: flex;
     align-items: center;
-    padding: 10px;
+    padding: 5px;
     background-color: #2c2c2c;
     border: 0.5px; 
     border-style: solid;
