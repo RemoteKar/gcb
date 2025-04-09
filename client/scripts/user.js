@@ -208,15 +208,16 @@ function renderNextGames(uuid) {
 
     let cardBg = "#2c2c2c";
     let cardBorder = "#3c3c3c";
+    const rankp = (ranking/joins);
     if(ranking === 1){
       cardBg = "#4066B2"
       cardBorder = "#5383E8";
-    }else if(ranking/joins < 0.25){
-      cardBg = "#59343B"
-      cardBorder = "#E84057";
-    }else if(ranking/joins > 0.75){
+    }else if(rankp < 0.25){
       cardBg = "#267F00"
       cardBorder = "#32A800";
+    }else if(rankp >= 0.75){
+      cardBg = "#59343B"
+      cardBorder = "#E84057";
     }
     
     gameItem.innerHTML = `
