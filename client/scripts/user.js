@@ -204,13 +204,12 @@ function renderNextGames(uuid) {
     const formattedUUID = formatUUID(uuid);
     const playerData = (game.Player && game.Player[formattedUUID]) || {};
     const ranking = (playerData.Ranking !== undefined)? playerData.Ranking: (playerData.ranking !== undefined ? playerData.ranking : '0');
-    const kills = (playerData.kill !== undefined)? playerData.kill: (playerData.Kill !== undefined ? playerData.Kill : 1);
+    const kills = (playerData.kill !== undefined)? playerData.kill: (playerData.Kill !== undefined ? playerData.Kill : 0);
 
-    
     gameItem.innerHTML = `
     <div class="game-card">
       <div class="game-card-left">
-        <img src="/Resource/character/${playerData.mostUsedCharacter}.png" alt="Game Image" class="game-card-img">
+        <img src="/Resource/character/${playerData.Character}.png" alt="Game Image" class="game-card-img">
       </div>
       <div class="game-card-right">
         <p><strong>플레이 날짜:</strong> ${displayDate}</p>
