@@ -212,16 +212,16 @@ function renderNextGames(uuid) {
         <img src="/Resource/character/${playerData.Character}.png" alt="Game Image" class="game-card-img">
       </div>
       <div class="game-card-right">
-        <p><strong>플레이 날짜:</strong> ${displayDate}</p>
+        </strong> ${displayDate}</p>
         <p><strong>랭킹:</strong> ${ranking}/${game.Game.amountOfPlayers}</p>
         <p><strong>처치:</strong> ${kills}</p>
         <p><strong>생존:</strong> ${playerData.TimeSurvived}</p>
       </div>
       <div class="game-card-extra">
-        <img src="/Resource/augment/icon/${playerData.Augment[1]}.png" alt="Augment1">
-        <img src="/Resource/augment/icon/${playerData.Augment[2]}.png" alt="Augment2">
-        <img src="/Resource/augment/icon/${playerData.Augment[3]}.png" alt="Augment3">
-        <img src="/Resource/augment/icon/${playerData.Augment[4]}.png" alt="Augment4">
+        <img src="/Resource/augment/icon/${playerData.Augment[1]}.png" alt="Augment1" class="game-card-augment">
+        <img src="/Resource/augment/icon/${playerData.Augment[2]}.png" alt="Augment2" class="game-card-augment">
+        <img src="/Resource/augment/icon/${playerData.Augment[3]}.png" alt="Augment3" class="game-card-augment">
+        <img src="/Resource/augment/icon/${playerData.Augment[4]}.png" alt="Augment4" class="game-card-augment">
       </div>
     </div>
   `;
