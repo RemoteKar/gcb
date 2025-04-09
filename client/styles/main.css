@@ -234,7 +234,7 @@ body {
     line-height: 1.0;
     flex-direction: row;
     gap: 5px;
-    font-size: 15px;
+    font-size: 20px;
 }
 .game-card-info-sub{
     flex-direction: column;
@@ -247,6 +247,7 @@ body {
 
 /* 오른쪽 영역: 4개 이미지 가로 배치 */
 .game-card-augment {
+    margin-left: auto;
     display: flex;
     flex-direction: row;
     gap: 10px; /* 이미지 간 간격 */
