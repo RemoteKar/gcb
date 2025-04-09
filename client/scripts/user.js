@@ -157,13 +157,17 @@ let allGames = [];
 let currentOffset = 0;
 const PAGE_SIZE = 10;
 
-// 파일 이름(날짜 형식) 파싱 함수
 function parseDateFromFileName(fileName) {
   // 파일 이름 예시: "2025.02.09-18.57.05"
   const parts = fileName.split('-');
-  const time = parts.split('.');
-  return `${parts[0]}-${time[0]}`;
+  if (parts.length !== 2) return fileName; // 포맷이 예상과 다르면 그대로 반환
+  const datePart = parts[0];           // 예: "2025.02.09"
+  const timeArr = parts[1].split('.');  // 예: ["18", "57", "05"]
+  if (timeArr.length !== 3) return fileName;
+  // 원하는 포맷에 따라 반환 (예: "2025-02-09 18:57:05")
+  return `${datePart.replace(/\./g, "-")} ${timeArr.join(":")}`;
 }
+
 
 // 초기화 및 [더보기] 버튼 클릭 시 추가 렌더링 함수
 function initGameList(gameRecords, uuid) {
