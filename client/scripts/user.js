@@ -223,12 +223,11 @@ function renderNextGames(uuid) {
     gameItem.innerHTML = `
     <div class="game-card" style="background-color: ${cardBg}; border-color: ${cardBorder};">
         <div class="game-card-left">
-
           <img src="/Resource/character/${playerData.Character}.png" alt="캐릭터">
         </div>
         <div class="game-card-right">
           <p><strong>${displayDate}<strong></p>
-          <p><strong></strong> ${ranking} / ${joins}</p>  
+          <p><strong>랭킹:</strong> ${ranking} / ${joins}</p>
           <p><strong>처치:</strong> ${kills}</p>
           <p><strong>생존:</strong> ${playerData.TimeSurvived}</p>
         </div>
