@@ -228,7 +228,7 @@ function renderNextGames(uuid) {
           <p><strong>생존:</strong> ${playerData.TimeSurvived}</p>
         </div>
         <div class="game-card-augment">
-          <img src="/Resource/augment/icon/0.png" alt="Augment1">
+          <img src="/Resource/augment/icon/${playerData.Augment?.[1] ?? 0}.png" alt="Augment1">
           <img src="/Resource/augment/icon/${playerData.Augment?.[2] ?? 0}.png" alt="Augment2">
           <img src="/Resource/augment/icon/${playerData.Augment?.[3] ?? 0}.png" alt="Augment3">
           <img src="/Resource/augment/icon/${playerData.Augment?.[4] ?? 0}.png" alt="Augment4">
