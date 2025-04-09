@@ -189,19 +189,14 @@ function renderNextGames(uuid) {
     // 유저별 데이터 접근 (UUID 포맷에 따라 조정)
     const formattedUUID = uuid.replace(/-/g, '').toLowerCase();
     const playerData = (game.Player && game.Player[formattedUUID]) || {};
-    // 순위: Ranking (대문자) 또는 ranking
-    const ranking = (playerData.Ranking !== undefined)
-      ? playerData.Ranking
-      : (playerData.ranking !== undefined ? playerData.ranking : 'N/A');
-    // 처치 수: kill (소문자) 또는 Kill
-    const kills = (playerData.kill !== undefined)
-      ? playerData.kill
-      : (playerData.Kill !== undefined ? playerData.Kill : 1);
+    const ranking = (playerData.Ranking !== undefined)? playerData.Ranking: (playerData.ranking !== undefined ? playerData.ranking : '0');
+    const kills = (playerData.kill !== undefined)? playerData.kill: (playerData.Kill !== undefined ? playerData.Kill : 1);
 
     gameItem.innerHTML = `
       <p><strong>플레이 날짜:</strong> ${displayDate}</p>
       <p><strong>랭킹:</strong> ${ranking}</p>
       <p><strong>킬 수:</strong> ${kills}</p>
+      <p><strong>킬 수:</strong> ${uuid}</p>
     `;
 
     gameListContainer.appendChild(gameItem);
