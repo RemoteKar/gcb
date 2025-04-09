@@ -238,7 +238,7 @@ body {
   
 /* 녹색 영역: 날짜 (첫 번째 <p>) */
 .game-card-info > p:first-of-type {
-    font-size: 20px;      /* 크게 */
+    font-size: 18px;      /* 크게 */
     font-weight: 600;
     color: white;
     margin: 0;            /* 불필요한 기본 margin 제거 */
