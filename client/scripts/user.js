@@ -229,13 +229,11 @@ function renderNextGames(uuid) {
           <img src="/Resource/character/${playerData.Character}.png" alt="캐릭터">
         </div>
         <div class="game-card-info">
+          <p><strong>${displayDate}<strong></p>
           <div class="game-card-info-left">
-            <p><strong>${displayDate}<strong></p>
             <p><strong>랭킹:</strong> ${ranking} / ${joins}</p>
             <p><strong>처치:</strong> ${kills}</p>
             <p><strong>생존:</strong> ${playerData.TimeSurvived}</p>
-          </div>
-          <div class="game-card-info-right">
             <p><strong>D/D:</strong> ${damageDealt} / ${damageTaken}</p>
           </div>
         </div>
