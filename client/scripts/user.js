@@ -147,13 +147,7 @@ const PAGE_SIZE = 10;
 function parseDateFromFileName(fileName) {
   // 파일 이름 예시: "2025.02.09-18.57.05"
   const parts = fileName.split('-');
-  if (parts.length !== 2) return fileName; // 포맷이 다르면 그대로 반환
-  const [datePart, timePart] = parts;
-  const dateParts = datePart.split('.');
-  const timeParts = timePart.split('.');
-  if (dateParts.length !== 3 || timeParts.length !== 3) return fileName;
-  // 예시 출력: "2025년 02월 09일 18시 57분 05초"
-  return `${dateParts[0]}년 ${dateParts[1]}월 ${dateParts[2]}일 ${timeParts[0]}시 ${timeParts[1]}분 ${timeParts[2]}초`;
+  return `${parts[0]}`;
 }
 
 // 초기화 및 [더보기] 버튼 클릭 시 추가 렌더링 함수
