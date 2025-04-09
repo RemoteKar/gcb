@@ -167,7 +167,6 @@ function parseDateFromFileName(fileName) {
 
 // 초기화 및 [더보기] 버튼 클릭 시 추가 렌더링 함수
 function initGameList(gameRecords, uuid) {
-  console.log(`${gameRecords.length}`);
   allGames = gameRecords.slice().reverse(); // 전체 게임 기록 배열 저장
   currentOffset = 0;      // 페이지 시작 인덱스 초기화
 
@@ -207,8 +206,8 @@ function renderNextGames(uuid) {
     const kills = (playerData.kill !== undefined)? playerData.kill: (playerData.Kill !== undefined ? playerData.Kill : 0);
     const joins = game.Game.amountOfPlayers;
 
-    const damageDealt = (playerData.Damage.Dealt).toFixed(0);
-    const damageTaken = (playerData.Damage.Taken).toFixed(0);
+    const damageDealt = ((playerData.Damage.Dealt ?? 0)).toFixed(0);
+    const damageTaken = ((playerData.Damage.Taken) ?? 0).toFixed(0);
 
     let cardBg = "#2c2c2c";
     let cardBorder = "#3c3c3c";
@@ -249,9 +248,7 @@ function renderNextGames(uuid) {
           <img src="/Resource/augment/icon/${playerData.Augment?.[4] ?? 0}.png" alt="Augment4">
         </div>
       </div>
-    `;    
-  
-  
+    `;
 
     gameListContainer.appendChild(gameItem);
   });
