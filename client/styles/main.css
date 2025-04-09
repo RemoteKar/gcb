@@ -227,6 +227,8 @@ body {
     height: 120px;
     object-fit: cover;
     border-radius: 15px;
+    border-color: black;
+    border-width: 1px;
 }
 
 /* .game-card-info: 날짜 + 서브 정보를 세로로 쌓기 */
