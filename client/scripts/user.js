@@ -230,7 +230,7 @@ function renderNextGames(uuid) {
         </div>
         <div class="game-card-info">
           <p><strong>${displayDate}<strong></p>
-          <div class="game-card-info-left">
+          <div class="game-card-info-sub">
             <p><strong>랭킹:</strong> ${ranking} / ${joins}</p>
             <p><strong>처치:</strong> ${kills}</p>
             <p><strong>생존:</strong> ${playerData.TimeSurvived}</p>
