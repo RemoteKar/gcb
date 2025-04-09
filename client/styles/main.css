@@ -250,7 +250,7 @@ body {
     display: flex;
     flex-direction: row;
     gap: 10px; /* 이미지 간 간격 */
-    align-items: center;
+    align-items: flex-end;
 }
 .game-card-augment img {
     width: 100px;
