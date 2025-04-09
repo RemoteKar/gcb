@@ -230,7 +230,7 @@ function renderNextGames(uuid) {
         <div class="game-card-augment">
           <img src="/Resource/augment/icon/${(playerData.Augment[1] !== undefined)? playerData.Augment[1] : 0}.png" alt="Augment1">
           <img src="/Resource/augment/icon/${(playerData.Augment[2] !== undefined)? playerData.Augment[2] : 0}.png" alt="Augment2">
-          <img src="/Resource/augment/icon/${(playerData.Augment[3] !== undefined)? playerData.Augment[4] : 0}.png" alt="Augment3">
+          <img src="/Resource/augment/icon/${(playerData.Augment[3] !== undefined)? playerData.Augment[3] : 0}.png" alt="Augment3">
           <img src="/Resource/augment/icon/${(playerData.Augment[4] !== undefined)? playerData.Augment[4] : 0}.png" alt="Augment4">
         </div>
       </div>
