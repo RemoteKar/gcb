@@ -142,8 +142,8 @@ app.get('/api/statistic', async (req, res) => {
 
   // 캐시된 결과가 있으면 사용
   if (statisticCache[formattedUUID] && (now - statisticCache[formattedUUID].timestamp < CACHE_DURATION_MS)) {
-    console.log(`🔍 [서버] 캐시된 게임 기록 데이터 사용: UUID = ${formattedUUID}`);
-    return res.json(statisticCache[formattedUUID].data);
+    //console.log(`🔍 [서버] 캐시된 게임 기록 데이터 사용: UUID = ${formattedUUID}`);
+    //return res.json(statisticCache[formattedUUID].data);
   }
 
   // GitHub Repository 내 게임 기록 폴더 경로: Data/gameHistory
