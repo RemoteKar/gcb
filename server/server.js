@@ -141,8 +141,8 @@ app.get('/api/statistic', async (req, res) => {
 
   // 캐시된 결과가 있으면 사용
   if (statisticCache[formattedUUID] && (now - statisticCache[formattedUUID].timestamp < CACHE_DURATION_MS)) {
-    //console.log(`🔍 [서버] 캐시된 게임 기록 데이터 사용: UUID = ${formattedUUID}`);
-    //return res.json(statisticCache[formattedUUID].data);
+    console.log(`🔍 [서버] 캐시된 게임 기록 데이터 사용: UUID = ${formattedUUID}`);
+    return res.json(statisticCache[formattedUUID].data);
   }
 
   // GitHub Repository 내 게임 기록 폴더 경로: Data/gameHistory
@@ -211,7 +211,7 @@ app.get('/api/statistic', async (req, res) => {
     if (gameHistory.length === 0) {
       return res.status(404).json({ error: "게임 기록을 찾을 수 없습니다." });
     }
-    console.log(`test: ${gameHistory.length}`);
+
     // 통계 계산
     const statistics = computeStatistics(gameHistory, uuid);
     // 통계와 원본 게임 기록을 함께 반환하도록 응답 객체 구성

@@ -167,6 +167,7 @@ function parseDateFromFileName(fileName) {
 
 // 초기화 및 [더보기] 버튼 클릭 시 추가 렌더링 함수
 function initGameList(gameRecords, uuid) {
+  console.log(`${gameRecords.length}`);
   allGames = gameRecords.slice().reverse(); // 전체 게임 기록 배열 저장
   currentOffset = 0;      // 페이지 시작 인덱스 초기화
 
@@ -222,7 +223,7 @@ function renderNextGames(uuid) {
       cardBg = "#59343B"
       cardBorder = "#E84057";
     }
-    
+
     const dateColor = (playerData.Character >= 900) ? 'red' : 'white';
 
     gameItem.innerHTML = `
