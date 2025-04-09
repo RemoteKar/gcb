@@ -58,7 +58,7 @@
   }
 
 
-  
+
   .game-card {
     display: flex;
     align-items: center;
@@ -82,5 +82,6 @@
   
   .game-card-right {
     flex: 1;
+    color: white;
   }
   
