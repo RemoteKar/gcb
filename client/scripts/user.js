@@ -161,7 +161,8 @@ const PAGE_SIZE = 10;
 function parseDateFromFileName(fileName) {
   // 파일 이름 예시: "2025.02.09-18.57.05"
   const parts = fileName.split('-');
-  return `${parts[0]}`;
+  const time = parts.split('.');
+  return `${parts[0]}-${time[0]}`;
 }
 
 // 초기화 및 [더보기] 버튼 클릭 시 추가 렌더링 함수
@@ -200,20 +201,25 @@ function renderNextGames(uuid) {
       displayDate = game.Game.date;
     }
 
-    // 유저별 데이터 접근 (UUID 포맷에 따라 조정)
     const formattedUUID = formatUUID(uuid);
-    const playerData = (game.Player && game.Player[formattedUUID]) || {};
+    const playerData = (game.Player && game.Player[formattedUUID]);
+    if(!playerData){
+      return;
+    }
+
     const ranking = (playerData.Ranking !== undefined)? playerData.Ranking: (playerData.ranking !== undefined ? playerData.ranking : '0');
     const kills = (playerData.kill !== undefined)? playerData.kill: (playerData.Kill !== undefined ? playerData.Kill : 0);
 
+
+    const cardBg = (ranking === 1) ? "blue" : "#2c2c2c";
     gameItem.innerHTML = `
-    <div class="game-card">
+    <div class="game-card" style="background-color: ${cardBg};>
       <div class="game-card-left">
         <img src="/Resource/character/${playerData.Character}.png" alt="캐릭터">
       </div>
       <div class="game-card-right">
         </strong> ${displayDate}</p>
-        <p><strong>랭킹:</strong> ${ranking}/${game.Game.amountOfPlayers}</p>
+        <p><strong>랭킹:</strong> ${ranking} / ${game.Game.amountOfPlayers}</p>
         <p><strong>처치:</strong> ${kills}</p>
         <p><strong>생존:</strong> ${playerData.TimeSurvived}</p>
       </div>
