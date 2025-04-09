@@ -222,6 +222,8 @@ function renderNextGames(uuid) {
       cardBg = "#59343B"
       cardBorder = "#E84057";
     }
+    
+    const dateColor = (playerData.Character >= 900) ? 'red' : 'white';
 
     gameItem.innerHTML = `
     <div class="game-card" style="background-color: ${cardBg}; border-color: ${cardBorder};">
@@ -229,7 +231,9 @@ function renderNextGames(uuid) {
           <img src="/Resource/character/${playerData.Character ?? 0}.png" alt="캐릭터">
         </div>
         <div class="game-card-info">
-          <p><strong>${displayDate}</strong></p>
+          <p style="color: ${dateColor}; font-size: 24px; font-weight: 600; margin: 0;">
+            <strong>${displayDate}</strong>
+          </p>
           <div class="game-card-info-sub">
             <p><strong>랭킹:</strong> ${ranking} / ${joins}</p>
             <p><strong>처치:</strong> ${kills}</p>
