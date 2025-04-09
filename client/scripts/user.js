@@ -190,7 +190,6 @@ function renderNextGames(uuid) {
 
   nextSlice.forEach(game => {
     const gameItem = document.createElement("div");
-    gameItem.classList.add("game-item");
 
     // YAML 데이터에 파일 이름이 있다면(서버에서 추가됨) 날짜 형식으로 파싱해서 사용,
     // 그렇지 않으면 game.Game.date 필드를 사용 (없으면 'N/A')

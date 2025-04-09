@@ -187,14 +187,6 @@ body {
     gap: 10px; /* 카드 간 간격 */
 }
 
-/* 각 게임 아이템 (노란 칸) */
-.game-item {
-    background-color: #2c2c2c;
-    border: 1px solid #3c3c3c;
-    border-radius: 8px;
-    padding: 10px;
-}
-
 /* 더보기 버튼 */
 .load-more-btn {
     display: block;
@@ -217,7 +209,10 @@ body {
     align-items: center;
     padding: 10px;
     background-color: #2c2c2c;
-    box-shadow: #3c3c3c;
+    border-color: #3c3c3c;
+    border-width: 0px;
+    border-radius: 5;
+    border-style: solid;
     height: 150px; /* 고정 높이 지정 (예: 120px) */
     box-sizing: border-box; /* 패딩과 테두리를 포함하여 크기 계산 */
 }
