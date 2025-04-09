@@ -217,11 +217,11 @@ function renderNextGames(uuid) {
         <p><strong>처치:</strong> ${kills}</p>
         <p><strong>생존:</strong> ${playerData.TimeSurvived}</p>
       </div>
-      <div class="game-card-extra">
-        <img src="/Resource/augment/icon/${playerData.Augment[1]}.png" alt="Augment1" class="game-card-augment">
-        <img src="/Resource/augment/icon/${playerData.Augment[2]}.png" alt="Augment2" class="game-card-augment">
-        <img src="/Resource/augment/icon/${playerData.Augment[3]}.png" alt="Augment3" class="game-card-augment">
-        <img src="/Resource/augment/icon/${playerData.Augment[4]}.png" alt="Augment4" class="game-card-augment">
+      <div  class="game-card-augment">
+        <img src="/Resource/augment/icon/${playerData.Augment[1]}.png" alt="Augment1">
+        <img src="/Resource/augment/icon/${playerData.Augment[2]}.png" alt="Augment2">
+        <img src="/Resource/augment/icon/${playerData.Augment[3]}.png" alt="Augment3">
+        <img src="/Resource/augment/icon/${playerData.Augment[4]}.png" alt="Augment4">
       </div>
     </div>
   `;
