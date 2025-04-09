@@ -226,7 +226,7 @@ function renderNextGames(uuid) {
     gameItem.innerHTML = `
     <div class="game-card" style="background-color: ${cardBg}; border-color: ${cardBorder};">
         <div class="game-card-left">
-          <img src="/Resource/character/${playerData.Character}.png" alt="캐릭터">
+          <img src="/Resource/character/${playerData.Character ?? 0}.png" alt="캐릭터">
         </div>
         <div class="game-card-info">
           <p><strong>${displayDate}</strong></p>
