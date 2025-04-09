@@ -222,7 +222,7 @@ function renderNextGames(uuid) {
       cardBg = "#59343B"
       cardBorder = "#E84057";
     }
-    
+
     gameItem.innerHTML = `
     <div class="game-card" style="background-color: ${cardBg}; border-color: ${cardBorder};">
         <div class="game-card-left">
