@@ -203,10 +203,6 @@ function renderNextGames(uuid) {
 
     const formattedUUID = formatUUID(uuid);
     const playerData = (game.Player && game.Player[formattedUUID]);
-    if(!playerData){
-      return;
-    }
-
     const ranking = (playerData.Ranking !== undefined)? playerData.Ranking: (playerData.ranking !== undefined ? playerData.ranking : '0');
     const kills = (playerData.kill !== undefined)? playerData.kill: (playerData.Kill !== undefined ? playerData.Kill : 0);
 
