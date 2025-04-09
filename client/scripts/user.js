@@ -213,24 +213,24 @@ function renderNextGames(uuid) {
 
     const cardBg = (ranking === 1) ? "#5383E8" : "#2c2c2c";
     gameItem.innerHTML = `
-    <div class="game-card" style="background-color: ${cardBg};">
-      <div class="game-card-left">
-        <img src="/Resource/character/${playerData.Character}.png" alt="캐릭터">
+      <div class="game-card" style="background-color: ${cardBg};">
+        <div class="game-card-left">
+          <img src="/Resource/character/${playerData.Character}.png" alt="캐릭터">
+        </div>
+        <div class="game-card-right">
+          <p>${displayDate}</p>
+          <p><strong>랭킹:</strong> ${ranking} / ${game.Game.amountOfPlayers}</p>
+          <p><strong>처치:</strong> ${kills}</p>
+          <p><strong>생존:</strong> ${playerData.TimeSurvived}</p>
+        </div>
+        <div class="game-card-augment">
+          <img src="/Resource/augment/icon/${playerData.Augment[1]}.png" alt="Augment1">
+          <img src="/Resource/augment/icon/${playerData.Augment[2]}.png" alt="Augment2">
+          <img src="/Resource/augment/icon/${playerData.Augment[3]}.png" alt="Augment3">
+          <img src="/Resource/augment/icon/${playerData.Augment[4]}.png" alt="Augment4">
+        </div>
       </div>
-      <div class="game-card-right">
-        </strong> ${displayDate}</p>
-        <p><strong>랭킹:</strong> ${ranking} / ${game.Game.amountOfPlayers}</p>
-        <p><strong>처치:</strong> ${kills}</p>
-        <p><strong>생존:</strong> ${playerData.TimeSurvived}</p>
-      </div>
-      <div  class="game-card-augment">
-        <img src="/Resource/augment/icon/${playerData.Augment[1]}.png" alt="Augment1">
-        <img src="/Resource/augment/icon/${playerData.Augment[2]}.png" alt="Augment2">
-        <img src="/Resource/augment/icon/${playerData.Augment[3]}.png" alt="Augment3">
-        <img src="/Resource/augment/icon/${playerData.Augment[4]}.png" alt="Augment4">
-      </div>
-    </div>
-  `;
+    `;    
   
   
 

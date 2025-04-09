@@ -219,8 +219,6 @@ body {
     background-color: #2c2c2c;
     border: 1px solid #3c3c3c;
     border-radius: 8px;
-    height: 125px; /* 고정 높이 지정 (예: 120px) */
-    box-sizing: border-box; /* 패딩과 테두리를 포함하여 크기 계산 */
 }
 
 .game-card-left {
