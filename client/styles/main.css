@@ -238,7 +238,7 @@ body {
   
 /* 녹색 영역: 날짜 (첫 번째 <p>) */
 .game-card-info > p:first-of-type {
-    font-size: 24px;      /* 크게 */
+    font-size: 20px;      /* 크게 */
     font-weight: 600;
     color: white;
     margin: 0;            /* 불필요한 기본 margin 제거 */
@@ -248,14 +248,14 @@ body {
 .game-card-info-sub {
     display: flex;
     flex-direction: column;
-    gap: 2px;             /* 항목 간 간격 */
+    gap: 3px;             /* 항목 간 간격 */
 }
 
 .game-card-info-sub > p {
-    font-size: 12px;      /* 작게 */
+    font-size: 15px;      /* 작게 */
     color: white;
     margin: 0;            /* 기본 margin 제거 */
-    line-height: 1.2;
+    line-height: 1;
 }
 
 
