@@ -209,7 +209,7 @@ function renderNextGames(uuid) {
     gameItem.innerHTML = `
     <div class="game-card">
       <div class="game-card-left">
-        <img src="/Resource/character/${playerData.Character}.png" alt="Game Image" class="game-card-img">
+        <img src="/Resource/character/${playerData.Character}.png" alt="캐릭터">
       </div>
       <div class="game-card-right">
         </strong> ${displayDate}</p>

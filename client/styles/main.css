@@ -218,11 +218,11 @@ body {
     margin-right: 10px;
 }
 
-.game-card-left img.game-card-img {
-    width: 80px;
-    height: 80px;
+.game-card-left img{
+    width: 120px;
+    height: 120px;
     object-fit: cover;
-    border-radius: 4px;
+    border-radius: 12px;
 }
 
 .game-card-right {
@@ -234,12 +234,12 @@ body {
 .game-card-augment {
     display: flex;
     flex-direction: row;
-    gap: 10px; /* 이미지 간 간격 */
+    gap: 20px; /* 이미지 간 간격 */
     align-items: center;
 }
 .game-card-augment img {
-    width: 40px;
-    height: 40px;
+    width: 80px;
+    height: 80px;
     object-fit: cover;
-    border-radius: 4px;
+    border-radius: 8px;
 }
