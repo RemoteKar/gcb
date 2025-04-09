@@ -56,4 +56,31 @@
   .load-more-btn:hover {
     background-color: #3a7be0;
   }
+
+
+  
+  .game-card {
+    display: flex;
+    align-items: center;
+    padding: 10px;
+    background-color: #2c2c2c;
+    border: 1px solid #3c3c3c;
+    border-radius: 8px;
+  }
+  
+  .game-card-left {
+    flex: 0 0 80px; /* 왼쪽 이미지 영역의 고정 너비 */
+    margin-right: 10px;
+  }
+  
+  .game-card-left img.game-card-img {
+    width: 80px;
+    height: 80px;
+    object-fit: cover;
+    border-radius: 4px;
+  }
+  
+  .game-card-right {
+    flex: 1;
+  }
   

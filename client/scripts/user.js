@@ -1,3 +1,17 @@
+document.addEventListener("DOMContentLoaded", () => {
+  const searchButton = document.getElementById("search-button");
+  const nicknameInput = document.getElementById("nickname");
+  searchButton.addEventListener("click", () => {
+    const nickname = nicknameInput.value.trim();
+    if (!nickname) {
+      return;
+    }
+    // 검색 후 /user/{닉네임}으로 이동
+    window.location.href = `/user/${encodeURIComponent(nickname)}`;
+  });
+});
+
+
 document.addEventListener("DOMContentLoaded", async () => {
   // URL 경로에서 닉네임 추출 (예: /user/Steve)
   const pathParts = window.location.pathname.split('/');
@@ -152,7 +166,7 @@ function parseDateFromFileName(fileName) {
 
 // 초기화 및 [더보기] 버튼 클릭 시 추가 렌더링 함수
 function initGameList(gameRecords, uuid) {
-  allGames = gameRecords; // 전체 게임 기록 배열 저장
+  allGames = gameRecords.slice().reverse(); // 전체 게임 기록 배열 저장
   currentOffset = 0;      // 페이지 시작 인덱스 초기화
 
   // 최초 PAGE_SIZE개 렌더링
@@ -192,11 +206,20 @@ function renderNextGames(uuid) {
     const ranking = (playerData.Ranking !== undefined)? playerData.Ranking: (playerData.ranking !== undefined ? playerData.ranking : '0');
     const kills = (playerData.kill !== undefined)? playerData.kill: (playerData.Kill !== undefined ? playerData.Kill : 1);
 
+    
     gameItem.innerHTML = `
-      <p><strong>플레이 날짜:</strong> ${displayDate}</p>
-      <p><strong>랭킹:</strong> ${ranking}</p>
-      <p><strong>킬 수:</strong> ${kills}</p>
-    `;
+    <div class="game-card">
+      <div class="game-card-left">
+        <img src="/Resource/character/${playerData.mostUsedCharacter}.png" alt="Game Image" class="game-card-img">
+      </div>
+      <div class="game-card-right">
+        <p><strong>플레이 날짜:</strong> ${displayDate}</p>
+        <p><strong>랭킹:</strong> ${ranking}</p>
+        <p><strong>킬 수:</strong> ${kills}</p>
+      </div>
+    </div>
+  `;
+  
 
     gameListContainer.appendChild(gameItem);
   });
