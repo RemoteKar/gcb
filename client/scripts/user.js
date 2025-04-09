@@ -202,7 +202,7 @@ function renderNextGames(uuid) {
     // 처치 수: kill (소문자) 또는 Kill
     const kills = (playerData.kill !== undefined)
       ? playerData.kill
-      : (playerData.Kill !== undefined ? playerData.Kill : 0);
+      : (playerData.Kill !== undefined ? playerData.Kill : 1);
 
     gameItem.innerHTML = `
       <p><strong>플레이 날짜:</strong> ${displayDate}</p>
