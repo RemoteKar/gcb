@@ -193,14 +193,13 @@ app.get('/api/statistic', async (req, res) => {
     gameHistory = [];
 
     fileResults.forEach(result => {
+      console.log(`🔍 1`);
       if (!result) return;
       try {
         const parsedData = yaml.load(result.content);
         if (parsedData && parsedData.Game && parsedData.Game.joinedPlayers) {
           const players = parsedData.Game.joinedPlayers.split(',').map(s => s.trim());
           if (players.includes(formattedUUID)) {
-            // 여기서 fileName(예: "2025.02.09-18.57.05")를 함께 저장하여,
-            // 클라이언트에서 날짜로 표시할 수 있도록 함.
             parsedData.fileName = result.fileName;
             gameHistory.push(parsedData);
           }
