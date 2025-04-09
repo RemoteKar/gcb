@@ -187,7 +187,7 @@ function renderNextGames(uuid) {
     }
 
     // 유저별 데이터 접근 (UUID 포맷에 따라 조정)
-    const formattedUUID = uuid.replace(/-/g, '').toLowerCase();
+    const formattedUUID = formatUUID(uuid);
     const playerData = (game.Player && game.Player[formattedUUID]) || {};
     const ranking = (playerData.Ranking !== undefined)? playerData.Ranking: (playerData.ranking !== undefined ? playerData.ranking : '0');
     const kills = (playerData.kill !== undefined)? playerData.kill: (playerData.Kill !== undefined ? playerData.Kill : 1);
@@ -196,7 +196,6 @@ function renderNextGames(uuid) {
       <p><strong>플레이 날짜:</strong> ${displayDate}</p>
       <p><strong>랭킹:</strong> ${ranking}</p>
       <p><strong>킬 수:</strong> ${kills}</p>
-      <p><strong>킬 수:</strong> ${uuid}</p>
     `;
 
     gameListContainer.appendChild(gameItem);
@@ -208,3 +207,12 @@ function renderNextGames(uuid) {
     loadMoreButton.style.display = 'none';
   }
 }
+
+function formatUUID(uuid) {
+  if (typeof uuid !== "string" || uuid.length !== 32) {
+    return uuid;
+  }
+  return `${uuid.slice(0, 8)}-${uuid.slice(8, 12)}-${uuid.slice(12, 16)}-${uuid.slice(16, 20)}-${uuid.slice(20)}`;
+}
+
+module.exports = { formatUUID };
