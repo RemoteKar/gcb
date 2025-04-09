@@ -148,7 +148,7 @@ function initGameList(gameRecords, uuid) {
   allGames = gameRecords; // 전체 게임 기록 배열 저장
   currentOffset = 0;      // 페이지 시작 인덱스 초기화
 
-  // 최초 10개 렌더링
+  // 최초 PAGE_SIZE개 렌더링
   renderNextGames(uuid);
 
   // [더보기] 버튼에 이벤트 리스너 등록
@@ -158,7 +158,7 @@ function initGameList(gameRecords, uuid) {
   });
 }
 
-// 추가 로드할 10개의 게임 기록 렌더링 함수
+// 추가 로드할 PAGE_SIZE개의 게임 기록 렌더링 함수
 function renderNextGames(uuid) {
   const gameListContainer = document.getElementById("gameList");
 
@@ -170,17 +170,20 @@ function renderNextGames(uuid) {
     const gameItem = document.createElement("div");
     gameItem.classList.add("game-item");
 
-    // 게임 기록 데이터에서 날짜, 랭킹, 처치 등의 정보를 추출합니다.
-    // 실제 필드 이름은 YAML 데이터 구조에 맞게 수정하세요.
+    // 파일 이름(예: "2025.02.09-18.57.05")는 server.js에서 game.record에 추가되어 있음
+    const fileName = game.fileName || "N/A";
+    
+    // 플레이 날짜는 YAML에 date 필드가 있는 경우 사용, 없으면 "N/A"
     const dateInfo = game.Game.date || 'N/A';
 
-    // 유저별 데이터 접근 (UUID 포맷에 따라 하이픈 제거 등 조정)
+    // 유저별 데이터 접근 (UUID 포맷에 따라 조정)
     const formattedUUID = uuid.replace(/-/g, '').toLowerCase();
     const playerData = (game.Player && game.Player[formattedUUID]) || {};
     const ranking = (playerData.Ranking !== undefined) ? playerData.Ranking : 'N/A';
     const kills = (playerData.kill !== undefined) ? playerData.kill : 0;
 
     gameItem.innerHTML = `
+      <p><strong>파일명:</strong> ${fileName}</p>
       <p><strong>플레이 날짜:</strong> ${dateInfo}</p>
       <p><strong>랭킹:</strong> ${ranking}</p>
       <p><strong>킬 수:</strong> ${kills}</p>
