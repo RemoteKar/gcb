@@ -80,7 +80,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     badgeImg.src = `/Resource/badge/${badgeName}.png`;
     badgeImg.alt = badgeName;
     badgeImg.classList.add("badge-img");
-    badgeDisplay.innerHTML = `<strong></strong> `;
+    badgeDisplay.innerHTML = `<strong></strong>`;
     badgeDisplay.appendChild(badgeImg);
   }
 
@@ -143,6 +143,19 @@ let allGames = [];
 let currentOffset = 0;
 const PAGE_SIZE = 10;
 
+// 파일 이름(날짜 형식) 파싱 함수
+function parseDateFromFileName(fileName) {
+  // 파일 이름 예시: "2025.02.09-18.57.05"
+  const parts = fileName.split('-');
+  if (parts.length !== 2) return fileName; // 포맷이 다르면 그대로 반환
+  const [datePart, timePart] = parts;
+  const dateParts = datePart.split('.');
+  const timeParts = timePart.split('.');
+  if (dateParts.length !== 3 || timeParts.length !== 3) return fileName;
+  // 예시 출력: "2025년 02월 09일 18시 57분 05초"
+  return `${dateParts[0]}년 ${dateParts[1]}월 ${dateParts[2]}일 ${timeParts[0]}시 ${timeParts[1]}분 ${timeParts[2]}초`;
+}
+
 // 초기화 및 [더보기] 버튼 클릭 시 추가 렌더링 함수
 function initGameList(gameRecords, uuid) {
   allGames = gameRecords; // 전체 게임 기록 배열 저장
@@ -170,21 +183,29 @@ function renderNextGames(uuid) {
     const gameItem = document.createElement("div");
     gameItem.classList.add("game-item");
 
-    // 파일 이름(예: "2025.02.09-18.57.05")는 server.js에서 game.record에 추가되어 있음
-    const fileName = game.fileName || "N/A";
-    
-    // 플레이 날짜는 YAML에 date 필드가 있는 경우 사용, 없으면 "N/A"
-    const dateInfo = game.Game.date || 'N/A';
+    // YAML 데이터에 파일 이름이 있다면(서버에서 추가됨) 날짜 형식으로 파싱해서 사용,
+    // 그렇지 않으면 game.Game.date 필드를 사용 (없으면 'N/A')
+    let displayDate = 'N/A';
+    if (game.fileName) {
+      displayDate = parseDateFromFileName(game.fileName);
+    } else if (game.Game.date) {
+      displayDate = game.Game.date;
+    }
 
     // 유저별 데이터 접근 (UUID 포맷에 따라 조정)
     const formattedUUID = uuid.replace(/-/g, '').toLowerCase();
     const playerData = (game.Player && game.Player[formattedUUID]) || {};
-    const ranking = (playerData.Ranking !== undefined) ? playerData.Ranking : 'N/A';
-    const kills = (playerData.kill !== undefined) ? playerData.kill : 0;
+    // 순위: Ranking (대문자) 또는 ranking
+    const ranking = (playerData.Ranking !== undefined)
+      ? playerData.Ranking
+      : (playerData.ranking !== undefined ? playerData.ranking : 'N/A');
+    // 처치 수: kill (소문자) 또는 Kill
+    const kills = (playerData.kill !== undefined)
+      ? playerData.kill
+      : (playerData.Kill !== undefined ? playerData.Kill : 0);
 
     gameItem.innerHTML = `
-      <p><strong>파일명:</strong> ${fileName}</p>
-      <p><strong>플레이 날짜:</strong> ${dateInfo}</p>
+      <p><strong>플레이 날짜:</strong> ${displayDate}</p>
       <p><strong>랭킹:</strong> ${ranking}</p>
       <p><strong>킬 수:</strong> ${kills}</p>
     `;
