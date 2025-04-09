@@ -206,6 +206,9 @@ function renderNextGames(uuid) {
     const kills = (playerData.kill !== undefined)? playerData.kill: (playerData.Kill !== undefined ? playerData.Kill : 0);
     const joins = game.Game.amountOfPlayers;
 
+    const damageDealt = (playerData.Damage.Dealt).toFixed(0);
+    const damageTaken = (playerData.Damage.Taken).toFixed(0);
+
     let cardBg = "#2c2c2c";
     let cardBorder = "#3c3c3c";
     const rankp = (ranking/joins);
@@ -225,11 +228,16 @@ function renderNextGames(uuid) {
         <div class="game-card-left">
           <img src="/Resource/character/${playerData.Character}.png" alt="캐릭터">
         </div>
-        <div class="game-card-right">
-          <p><strong>${displayDate}<strong></p>
-          <p><strong>랭킹:</strong> ${ranking} / ${joins}</p>
-          <p><strong>처치:</strong> ${kills}</p>
-          <p><strong>생존:</strong> ${playerData.TimeSurvived}</p>
+        <div class="game-card-info">
+          <div class="game-card-info-left">
+            <p><strong>${displayDate}<strong></p>
+            <p><strong>랭킹:</strong> ${ranking} / ${joins}</p>
+            <p><strong>처치:</strong> ${kills}</p>
+            <p><strong>생존:</strong> ${playerData.TimeSurvived}</p>
+          </div>
+          <div class="game-card-info-left">
+            <p><strong>D/D:</strong> ${damageDealt} / ${damageTaken}</p>
+          </div>
         </div>
         <div class="game-card-augment">
           <img src="/Resource/augment/icon/${playerData.Augment?.[1] ?? 0}.png" alt="Augment1">
