@@ -196,7 +196,7 @@ function renderNextGames(uuid) {
     let displayDate = 'N/A';
     if (game.fileName) {
       displayDate = parseDateFromFileName(game.fileName);
-    } else if (game.Game.date) {
+    }else if (game.Game.date) {
       displayDate = game.Game.date;
     }
 
@@ -206,8 +206,8 @@ function renderNextGames(uuid) {
     const kills = (playerData.kill !== undefined)? playerData.kill: (playerData.Kill !== undefined ? playerData.Kill : 0);
     const joins = game.Game.amountOfPlayers;
 
-    const cardBg = "#2c2c2c";
-    const cardBorder = "#3c3c3c";
+    let cardBg = "#2c2c2c";
+    let cardBorder = "#3c3c3c";
     if(ranking === 1){
       cardBg = "#4066B2"
       cardBorder = "#5383E8";
