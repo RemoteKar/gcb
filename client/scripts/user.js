@@ -211,9 +211,9 @@ function renderNextGames(uuid) {
     const kills = (playerData.kill !== undefined)? playerData.kill: (playerData.Kill !== undefined ? playerData.Kill : 0);
 
 
-    const cardBg = (ranking === 1) ? "blue" : "#2c2c2c";
+    const cardBg = (ranking === 1) ? "#5383E8" : "#2c2c2c";
     gameItem.innerHTML = `
-    <div class="game-card" style="background-color: ${cardBg};>
+    <div class="game-card" style="background-color: ${cardBg};">
       <div class="game-card-left">
         <img src="/Resource/character/${playerData.Character}.png" alt="캐릭터">
       </div>
