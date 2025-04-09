@@ -207,9 +207,10 @@ function renderNextGames(uuid) {
     const kills = (playerData.kill !== undefined)? playerData.kill: (playerData.Kill !== undefined ? playerData.Kill : 0);
 
 
-    const cardBg = (ranking === 1) ? "#5383E8" : "#2c2c2c";
+    const cardBg = (ranking === 1) ? "#4066B2" : "#2c2c2c";
+    const cardBorder = (ranking === 1) ? "#5383E8" : "#3c3c3c";
     gameItem.innerHTML = `
-      <div class="game-card" style="background-color: ${cardBg};">
+      <div class="game-card" style="background-color: ${cardBg}; border-color: ${cardBorder};">
         <div class="game-card-left">
           <img src="/Resource/character/${playerData.Character}.png" alt="캐릭터">
         </div>
