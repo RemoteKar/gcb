@@ -1,5 +1,5 @@
-const MAX_RECORDS = 200;
-const CACHE_DURATION_MS = 300 * 1000; // 캐시 유지 시간 (300초 = 5분)
+const MAX_RECORDS = 400;
+const CACHE_DURATION_MS = 180 * 1000; // 캐시 유지 시간 (300초 = 5분)
 
 const serverless = require('serverless-http');
 const express = require('express');
