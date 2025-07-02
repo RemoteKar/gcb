@@ -6,7 +6,7 @@ const repoOwner = process.env.GITHUB_REPO_OWNER;
 const repoName = process.env.GITHUB_REPO_NAME;
 const branch = process.env.GITHUB_BRANCH;
 const githubToken = process.env.GITHUB_TOKEN;
-const baseDataPath = '/Data';
+const baseDataPath = 'Data';
 const MAX_RECORDS = 400;
 
 // 재시도 로직을 위한 헬퍼 함수
@@ -32,8 +32,7 @@ async function getBadgeData(formattedUUID) {
     }
 
     const filePath = `${baseDataPath}/player/badge/${formattedUUID}.yaml`;
-    const encodedFilePath = encodeURIComponent(filePath);
-    const githubApiUrl = `https://api.github.com/repos/${repoOwner}/${repoName}/contents/${encodedFilePath}?ref=${branch}`;
+    const githubApiUrl = `https://api.github.com/repos/${repoOwner}/${repoName}/contents/${filePath}?ref=${branch}`;
     console.log(`🔍 [GitHub API] 배지 데이터 요청 URL: ${githubApiUrl}`);
 
     const data = await retryOperation(async () => {
@@ -67,10 +66,7 @@ async function getBadgeData(formattedUUID) {
     return data;
 }
 
-async function getGameHistory(formattedUUID) {
-    const dirPath = `${baseDataPath}/gameHistory`;
-    const encodedDirPath = encodeURIComponent(dirPath);
-    const githubApiUrl = `https://api.github.com/repos/${repoOwner}/${repoName}/contents/${encodedDirPath}?ref=${branch}`;
+    const githubApiUrl = `https://api.github.com/repos/${repoOwner}/${repoName}/contents/${dirPath}?ref=${branch}`;
     console.log(`🔍 [GitHub API] 게임 기록 폴더 URL: ${githubApiUrl}`);
 
     return retryOperation(async () => {
@@ -139,8 +135,7 @@ async function getGameHistory(formattedUUID) {
 
 async function getAllGameHistoryFileMetadata() {
     const dirPath = `${baseDataPath}/gameHistory`;
-    const encodedDirPath = encodeURIComponent(dirPath);
-    const githubApiUrl = `https://api.github.com/repos/${repoOwner}/${repoName}/contents/${encodedDirPath}?ref=${branch}`;
+    const githubApiUrl = `https://api.github.com/repos/${repoOwner}/${repoName}/contents/${dirPath}?ref=${branch}`;
     console.log(`🔍 [GitHub API] 모든 게임 기록 파일 메타데이터 요청 URL: ${githubApiUrl}`);
 
     return retryOperation(async () => {
