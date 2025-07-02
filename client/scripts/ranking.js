@@ -25,6 +25,7 @@ document.addEventListener("DOMContentLoaded", async () => {
                 <h3>#${index + 1}</h3>
                 <img src="https://crafatar.com/avatars/${player.uuid}?size=100&overlay" alt="${player.uuid}'s Head" class="player-head-lg">
                 <img src="/Resource/character/${player.mostUsedCharacter}.png" alt="${player.mostUsedCharacter}" class="char-img-lg">
+                <p><strong>${player.uuid}</strong></p>
                 <p><strong>총 게임 수:</strong> ${player.totalGames}</p>
                 <p><strong>승률:</strong> ${player.winRate}%</p>
                 <p><strong>평균 처치:</strong> ${player.averageKillRate}</p>
@@ -36,7 +37,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     function renderOtherPlayers(players) {
         otherRankingSection.innerHTML = ''; // Clear previous content
         const ul = document.createElement('ul');
-        players.forEach((player, index) => {
+        players.slice(0, 7).forEach((player, index) => { // 상위 3명 제외하고 7명 더 표시 (총 10명)
             const li = document.createElement('li');
             li.classList.add('ranking-item');
             li.innerHTML = `

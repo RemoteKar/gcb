@@ -1,10 +1,51 @@
 const express = require('express');
 const router = express.Router();
 const { getUUID } = require('../services/mojang');
-const { getBadgeData, getGameHistory } = require('../services/github');
-const { computeStatistics } = require('../utils/statistics');
+const { getBadgeData, getGameHistory, getAllGameHistoryFileMetadata, fetchAndParseYamlFile } = require('../services/github');
+const { computeStatistics, aggregateAllPlayerStatistics } = require('../utils/statistics');
 const cacheMiddleware = require('../middleware/cache');
 const { formatUUID } = require('../util');
+
+let precalculatedLeaderboard = []; // 전역 변수로 랭킹 데이터 저장
+
+async function initializeLeaderboard() {
+  console.log("🚀 [서버] 랭킹 데이터 초기화 시작...");
+  try {
+    const filesMetadata = await getAllGameHistoryFileMetadata();
+    const allGameRecordsPromises = filesMetadata.map(file => fetchAndParseYamlFile(file.download_url));
+    const allParsedGameRecords = (await Promise.all(allGameRecordsPromises)).filter(record => record !== null);
+
+    const allPlayerStatistics = aggregateAllPlayerStatistics(allParsedGameRecords);
+
+    // 랭킹 기준: 승률 * 순방률
+    allPlayerStatistics.forEach(stats => {
+      stats.rankingScore = (stats.winRate / 100) * (stats.avarageRankLeast50 / 100);
+    });
+
+    allPlayerStatistics.sort((a, b) => b.rankingScore - a.rankingScore);
+
+    precalculatedLeaderboard = allPlayerStatistics.map(stats => ({
+      uuid: stats.uuid,
+      winRate: stats.winRate.toFixed(1),
+      winCount: stats.winCount.toString(),
+      avarageRankLeast50: stats.avarageRankLeast50.toFixed(1),
+      mostUsedCharacter: stats.mostUsedCharacter,
+      mostUsedAugments: stats.mostUsedAugments,
+      averageDamageDealt: stats.averageDamageDealt.toFixed(0),
+      averageDamageTaken: stats.averageDamageTaken.toFixed(0),
+      averageKillRate: stats.averageKillRate.toFixed(2),
+      averageAliveTime: stats.averageAliveTime.toFixed(1),
+      maxDamageDealt: stats.maxDamageDealt.toFixed(0),
+      maxDamageTaken: stats.maxDamageTaken.toFixed(0),
+      maxKill: stats.maxKill.toString(),
+      totalGames: stats.totalGames.toString()
+    }));
+
+    console.log("✅ [서버] 랭킹 데이터 초기화 완료.");
+  } catch (error) {
+    console.error("❌ [서버] 랭킹 데이터 초기화 오류:", error);
+  }
+}
 
 //----------------------------------------
 // 📌 UUID 조회 (Mojang API 사용)
@@ -94,44 +135,9 @@ router.get('/statistic', (req, res, next) => {
 //----------------------------------------
 router.get('/leaderboard', cacheMiddleware('leaderboard'), async (req, res) => {
   console.log(`🔍 [서버] 랭킹 데이터 요청`);
-  try {
-    // 1. 모든 게임 기록 파일 메타데이터 가져오기
-    const filesMetadata = await getAllGameHistoryFileMetadata();
-
-    // 2. 모든 게임 기록 파일 다운로드 및 파싱
-    const allGameRecordsPromises = filesMetadata.map(file => fetchAndParseYamlFile(file.download_url));
-    const allParsedGameRecords = (await Promise.all(allGameRecordsPromises)).filter(record => record !== null);
-
-    // 3. 모든 플레이어의 통계 집계
-    const allPlayerStatistics = aggregateAllPlayerStatistics(allParsedGameRecords);
-
-    // 4. 통계 기준으로 정렬 (예: totalGames 기준 내림차순)
-    // 필요에 따라 다른 정렬 기준을 추가할 수 있습니다 (예: winRate, averageKillRate 등)
-    allPlayerStatistics.sort((a, b) => b.totalGames - a.totalGames);
-
-    // 5. 클라이언트에 반환할 형식으로 포맷팅
-    const formattedLeaderboard = allPlayerStatistics.map(stats => ({
-      uuid: stats.uuid,
-      winRate: stats.winRate.toFixed(1),
-      winCount: stats.winCount.toString(),
-      avarageRankLeast50: stats.avarageRankLeast50.toFixed(1),
-      mostUsedCharacter: stats.mostUsedCharacter,
-      mostUsedAugments: stats.mostUsedAugments,
-      averageDamageDealt: stats.averageDamageDealt.toFixed(0),
-      averageDamageTaken: stats.averageDamageTaken.toFixed(0),
-      averageKillRate: stats.averageKillRate.toFixed(2),
-      averageAliveTime: stats.averageAliveTime.toFixed(1),
-      maxDamageDealt: stats.maxDamageDealt.toFixed(0),
-      maxDamageTaken: stats.maxDamageTaken.toFixed(0),
-      maxKill: stats.maxKill.toString(),
-      totalGames: stats.totalGames.toString()
-    }));
-
-    res.json(formattedLeaderboard);
-  } catch (error) {
-    console.error("❌ [서버] 랭킹 데이터 조회 오류:", error);
-    res.status(500).json({ error: "랭킹 데이터를 가져오는 중 오류가 발생했습니다." });
-  }
+  // 미리 계산된 랭킹 데이터를 반환
+  res.json(precalculatedLeaderboard);
 });
 
 module.exports = router;
+module.exports.initializeLeaderboard = initializeLeaderboard; // initializeLeaderboard 함수를 외부로 노출
