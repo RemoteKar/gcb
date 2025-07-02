@@ -6,6 +6,13 @@ const repoOwner = process.env.GITHUB_REPO_OWNER;
 const repoName = process.env.GITHUB_REPO_NAME;
 const branch = process.env.GITHUB_BRANCH;
 const githubToken = process.env.GITHUB_TOKEN;
+
+// --- 디버깅을 위한 추가 코드 시작 ---
+console.log(`[DEBUG] GITHUB_TOKEN: ${githubToken ? '*****' : 'UNDEFINED or EMPTY'}`); // 토큰 값 직접 노출 방지
+console.log(`[DEBUG] GITHUB_REPO_OWNER: ${repoOwner}`);
+console.log(`[DEBUG] GITHUB_REPO_NAME: ${repoName}`);
+console.log(`[DEBUG] GITHUB_BRANCH: ${branch}`);
+// --- 디버깅을 위한 추가 코드 끝 ---
 const baseDataPath = 'Data';
 const MAX_RECORDS = 400;
 
