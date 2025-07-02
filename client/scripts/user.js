@@ -94,7 +94,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     badgeImg.src = `/Resource/badge/${badgeName}.png`;
     badgeImg.alt = badgeName;
     badgeImg.classList.add("badge-img");
-    badgeDisplay.innerHTML = `<strong></strong>`;
+    
     badgeDisplay.appendChild(badgeImg);
   }
 
