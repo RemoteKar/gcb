@@ -31,7 +31,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         }
 
         // 최근 40게임으로 제한 (가장 최신 게임부터)
-        const recentGames = allGameRecords.slice(0, 40);
+        const recentGames = allGameRecords.slice(0, 60);
 
         const characterWinCounts = {}; // { characterId: winCount }
 
@@ -67,7 +67,7 @@ document.addEventListener("DOMContentLoaded", async () => {
             charDiv.classList.add('character-stat-item');
             charDiv.innerHTML = `
                 <img src="/Resource/character/${characterId}.png" alt="Character ${characterId}" class="character-stat-img">
-                <p>캐릭터 ${characterId}: <strong>${winCount}승</strong></p>
+                <p><strong>${winCount}승</strong></p>
             `;
             characterListDiv.appendChild(charDiv);
         });
