@@ -5,7 +5,7 @@ generator client {
 
 datasource db {
   provider = "postgresql"
-  url      = env("DATABASE_URL") 
+  url      = "prisma+postgres://accelerate.prisma-data.net/?api_key=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhcGlfa2V5IjoiMDFKWjZKU0c0VzY5WVpOR1ZXTjFZUEFGQlYiLCJ0ZW5hbnRfaWQiOiI1ZmI0NDYyZWJhZDczYTk3MDYxMjlhYjU3MDBjMTkwZDE1MjA1NTA3YjZlYmJjNjAyZjk1NmYyZGZjY2ZhMDYyIiwiaW50ZXJuYWxfc2VjcmV0IjoiYTg0YjBhOTEtZDQ1Zi00YmFiLWJkMDUtYmFiOTkxMmFiMWRhIn0.95Yh6qTz2lYW29s5O6hYg92QjUGkEpjN6SZ36JykM6U"
 }
 
 model MojangProfileCache {
