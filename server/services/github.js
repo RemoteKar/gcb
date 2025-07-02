@@ -1,6 +1,7 @@
 const fetch = require('node-fetch');
 const yaml = require('js-yaml');
 const { formatUUID, toNonHyphenatedUUID } = require('../util');
+const NodeCache = require('node-cache');
 
 const repoOwner = process.env.GITHUB_REPO_OWNER;
 const repoName = process.env.GITHUB_REPO_NAME;
@@ -9,7 +10,8 @@ const githubToken = process.env.GITHUB_TOKEN;
 const baseDataPath = 'Data';
 const MAX_RECORDS = 400;
 
-let badgeCache = {}; // 배지 데이터 캐시
+const badgeCache = new NodeCache({ stdTTL: 86400 }); // 24시간 캐시 (초 단위)
+const gameHistoryCache = new NodeCache({ stdTTL: 86400 }); // 24시간 캐시 (초 단위)
 
 // 재시도 로직을 위한 헬퍼 함수
 async function retryOperation(operation, retries = 5, delay = 2000) {
@@ -28,9 +30,10 @@ async function retryOperation(operation, retries = 5, delay = 2000) {
 }
 
 async function getBadgeData(formattedUUID) {
-    if (badgeCache[formattedUUID]) {
+    const cachedData = badgeCache.get(formattedUUID);
+    if (cachedData) {
         console.log(`✅ [GitHub API] 배지 데이터 캐시 히트: ${formattedUUID}`);
-        return badgeCache[formattedUUID];
+        return cachedData;
     }
 
     const filePath = `${baseDataPath}/player/badge/${formattedUUID}.yaml`;
@@ -64,77 +67,28 @@ async function getBadgeData(formattedUUID) {
         return badgeData.badge || badgeData;
     });
 
-    badgeCache[formattedUUID] = data; // 캐시에 저장
+    badgeCache.set(formattedUUID, data); // 캐시에 저장
     return data;
 }
 
 async function getGameHistory(formattedUUID) {
-    const dirPath = `${baseDataPath}/gameHistory`;
-    const githubApiUrl = `https://api.github.com/repos/${repoOwner}/${repoName}/contents/${dirPath}?ref=${branch}`;
-    console.log(`🔍 [GitHub API] 게임 기록 폴더 URL: ${githubApiUrl}`);
+    const allParsedGameRecords = await fetchAllGameRecords(); // 모든 게임 기록을 캐시에서 가져오거나 새로 가져옴
 
-    return retryOperation(async () => {
-        const dirResponse = await fetch(githubApiUrl, {
-            headers: {
-                'Authorization': `token ${githubToken}`,
-                'User-Agent': 'Your App Name'
+    const gameHistory = [];
+    allParsedGameRecords.forEach(parsedData => {
+        if (parsedData && parsedData.Game && parsedData.Game.joinedPlayers) {
+            const players = parsedData.Game.joinedPlayers.split(',').map(s => toNonHyphenatedUUID(s.trim()));
+            if (players.includes(toNonHyphenatedUUID(formattedUUID))) {
+                gameHistory.push(parsedData);
             }
-        });
-
-        if (!dirResponse.ok) {
-            console.error(`❌ [GitHub API] 게임 기록 폴더 응답 코드: ${dirResponse.status}`);
-            throw new Error('게임 기록 폴더가 존재하지 않습니다.');
         }
-
-        const filesList = await dirResponse.json();
-        const filesToFetch = filesList.slice(0, MAX_RECORDS); // MAX_RECORDS
-        const filePromises = filesToFetch.map(file =>
-            retryOperation(async () => {
-                const response = await fetch(file.download_url, {
-                    headers: {
-                        'Authorization': `token ${githubToken}`,
-                        'User-Agent': 'Your App Name'
-                    }
-                });
-
-                if (!response.ok) {
-                    console.error(`❌ [GitHub API] 파일 ${file.name} 다운로드 실패: ${response.status}`);
-                    throw new Error(`파일 ${file.name} 다운로드 실패: ${response.status}`);
-                }
-                const text = await response.text();
-                return { fileName: file.name, content: text };
-            })
-            .catch((error) => {
-                console.error(`❌ [GitHub API] 파일 ${file.name} 다운로드 오류: ${error}`);
-                return null;
-            })
-        );
-
-        const fileResults = await Promise.all(filePromises);
-        const gameHistory = [];
-
-        fileResults.forEach(result => {
-            if (!result) return;
-            try {
-                const parsedData = yaml.load(result.content);
-                if (parsedData && parsedData.Game && parsedData.Game.joinedPlayers) {
-                    const players = parsedData.Game.joinedPlayers.split(',').map(s => toNonHyphenatedUUID(s.trim()));
-                    if (players.includes(toNonHyphenatedUUID(formattedUUID))) {
-                        parsedData.fileName = result.fileName;
-                        gameHistory.push(parsedData);
-                    }
-                }
-            } catch (parseError) {
-                console.error(`❌ [GitHub API] 게임 기록 파일 파싱 오류 (${result.fileName}):`, parseError);
-            }
-        });
-
-        if (gameHistory.length === 0) {
-            throw new Error('게임 기록을 찾을 수 없습니다.');
-        }
-
-        return gameHistory;
     });
+
+    if (gameHistory.length === 0) {
+        throw new Error('게임 기록을 찾을 수 없습니다.');
+    }
+
+    return gameHistory;
 }
 
 async function getAllGameHistoryFileMetadata() {
@@ -178,9 +132,17 @@ async function fetchAndParseYamlFile(downloadUrl) {
 }
 
 async function fetchAllGameRecords() {
+    const cachedRecords = gameHistoryCache.get('allGameRecords');
+    if (cachedRecords) {
+        console.log(`✅ [GitHub API] 모든 게임 기록 캐시 히트`);
+        return cachedRecords;
+    }
+
     const filesMetadata = await getAllGameHistoryFileMetadata();
     const allGameRecordsPromises = filesMetadata.map(file => fetchAndParseYamlFile(file.download_url));
     const allParsedGameRecords = (await Promise.all(allGameRecordsPromises)).filter(record => record !== null);
+    
+    gameHistoryCache.set('allGameRecords', allParsedGameRecords); // 캐시에 저장
     return allParsedGameRecords;
 }
 

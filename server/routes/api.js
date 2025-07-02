@@ -8,16 +8,11 @@ const { formatUUID } = require('../util');
 const { toNonHyphenatedUUID } = require('../util'); // toNonHyphenatedUUID 추가
 
 module.exports.precalculatedLeaderboard = []; // 전역 변수로 랭킹 데이터 저장
-let allGameRecordsCache = null; // 모든 게임 기록 캐시 변수 선언
 
 async function initializeLeaderboard() {
   console.log("🚀 [서버] 랭킹 데이터 초기화 시작...");
   try {
-    const filesMetadata = await getAllGameHistoryFileMetadata();
-    console.log(`🔍 [서버] 가져온 파일 메타데이터 수: ${filesMetadata.length}`);
-
-    const allGameRecordsPromises = filesMetadata.map(file => fetchAndParseYamlFile(file.download_url));
-    const allParsedGameRecords = (await Promise.all(allGameRecordsPromises)).filter(record => record !== null);
+    const allParsedGameRecords = await fetchAllGameRecords();
     console.log(`🔍 [서버] 파싱된 게임 기록 수: ${allParsedGameRecords.length}`);
     if (allParsedGameRecords.length === 0) {
         console.warn("⚠️ [서버] 파싱된 게임 기록이 없습니다. 랭킹 초기화 실패.");
@@ -191,12 +186,7 @@ router.get('/leaderboard', cacheMiddleware('leaderboard'), async (req, res) => {
 router.get('/all_game_history', cacheMiddleware('all_game_history'), async (req, res) => {
   console.log(`🔍 [서버] 모든 게임 기록 요청`);
   try {
-    if (allGameRecordsCache) {
-      console.log(`✅ [서버] 모든 게임 기록 캐시 히트`);
-      return res.json({ gameRecords: allGameRecordsCache });
-    }
     const allParsedGameRecords = await fetchAllGameRecords();
-    allGameRecordsCache = allParsedGameRecords; // 캐시에 저장
     res.json({ gameRecords: allParsedGameRecords });
   } catch (error) {
     console.error("❌ [서버] 모든 게임 기록 조회 오류:", error);
