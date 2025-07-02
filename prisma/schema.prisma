@@ -22,3 +22,11 @@ model Post {
   author    User?   @relation(fields: [authorId], references: [id])
   authorId  Int?
 }
+
+model MojangProfileCache {
+  uuid        String    @id @unique
+  name        String
+  profileData Json
+  cachedAt    DateTime  @default(now())
+  expiresAt   DateTime?
+}
