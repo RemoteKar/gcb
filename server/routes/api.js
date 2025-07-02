@@ -7,7 +7,7 @@ const cacheMiddleware = require('../middleware/cache');
 const { formatUUID } = require('../util');
 const { toNonHyphenatedUUID } = require('../util'); // toNonHyphenatedUUID 추가
 
-let precalculatedLeaderboard = []; // 전역 변수로 랭킹 데이터 저장
+module.exports.precalculatedLeaderboard = []; // 전역 변수로 랭킹 데이터 저장
 
 async function initializeLeaderboard() {
   console.log("🚀 [서버] 랭킹 데이터 초기화 시작...");
@@ -38,7 +38,7 @@ async function initializeLeaderboard() {
     allPlayerStatistics.sort((a, b) => b.rankingScore - a.rankingScore);
     console.log(`🔍 [서버] 정렬된 플레이어 통계 수: ${allPlayerStatistics.length}`);
 
-    precalculatedLeaderboard = await Promise.all(allPlayerStatistics.map(async stats => {
+    module.exports.precalculatedLeaderboard = await Promise.all(allPlayerStatistics.map(async stats => {
       let nickname = stats.uuid; // 기본값은 UUID
       try {
         const profile = await getProfileByUUID(stats.uuid);
@@ -168,4 +168,3 @@ router.get('/leaderboard', cacheMiddleware('leaderboard'), async (req, res) => {
 
 module.exports = router;
 module.exports.initializeLeaderboard = initializeLeaderboard;
-module.exports.precalculatedLeaderboard = precalculatedLeaderboard;
