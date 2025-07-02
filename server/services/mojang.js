@@ -1,5 +1,7 @@
 const fetch = require('node-fetch');
 
+const nicknameCache = new Map(); // 닉네임 캐시
+
 async function getUUID(nickname) {
     if (!nickname) {
         throw new Error('닉네임을 입력하세요.');
@@ -38,6 +40,12 @@ async function getProfileByUUID(uuid) {
         throw new Error('UUID를 입력하세요.');
     }
 
+    // 캐시에서 닉네임 조회
+    if (nicknameCache.has(uuid)) {
+        console.log(`✅ [Mojang API] 캐시에서 프로필 조회: ${uuid}`);
+        return nicknameCache.get(uuid);
+    }
+
     const sessionServerUrl = `https://sessionserver.mojang.com/session/minecraft/profile/${uuid}`;
     console.log(`🔍 [Mojang API] 프로필 요청: ${sessionServerUrl}`);
 
@@ -59,6 +67,10 @@ async function getProfileByUUID(uuid) {
 
         const data = await response.json();
         console.log(`✅ [Mojang API] 프로필 응답 데이터: ${JSON.stringify(data)}`);
+        
+        // 캐시에 닉네임 저장
+        nicknameCache.set(uuid, data);
+
         return data;
     } catch (error) {
         console.error("❌ [Mojang API] 프로필 조회 중 오류 발생:", error);
