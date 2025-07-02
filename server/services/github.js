@@ -66,7 +66,7 @@ async function getBadgeData(formattedUUID) {
     return data;
 }
 
-    async function getGameHistory(formattedUUID) {
+async function getGameHistory(formattedUUID) {
     const dirPath = `${baseDataPath}/gameHistory`;
     const githubApiUrl = `https://api.github.com/repos/${repoOwner}/${repoName}/contents/${dirPath}?ref=${branch}`;
     console.log(`🔍 [GitHub API] 게임 기록 폴더 URL: ${githubApiUrl}`);
