@@ -164,7 +164,7 @@ router.get('/statistic', (req, res, next) => {
 router.get('/leaderboard', cacheMiddleware('leaderboard'), async (req, res) => {
   console.log(`🔍 [서버] 랭킹 데이터 요청`);
   // 미리 계산된 랭킹 데이터를 반환
-  res.json(precalculatedLeaderboard);
+  res.json(module.exports.precalculatedLeaderboard);
 });
 
 module.exports = router;
