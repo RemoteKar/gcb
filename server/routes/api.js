@@ -113,6 +113,11 @@ router.get('/badge', (req, res, next) => {
     res.json(badgeData);
   } catch (error) {
     console.error("❌ [서버] 배지 데이터 조회 오류:", error);
+    console.error("❌ [서버] 배지 데이터 조회 오류 상세:", error.stack);
+    // '배지 데이터를 찾을 수 없습니다.' 오류인 경우 404 응답
+    if (error.message === '배지 데이터를 찾을 수 없습니다.') {
+      return res.status(404).json({ error: error.message });
+    }
     res.status(500).json({ error: error.message });
   }
 });

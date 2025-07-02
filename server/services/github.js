@@ -41,7 +41,10 @@ async function getBadgeData(formattedUUID) {
 
         if (!response.ok) {
             console.error(`❌ [GitHub API] 응답 코드: ${response.status}`);
-            throw new Error('배지 데이터를 찾을 수 없습니다.');
+            if (response.status === 404) {
+                throw new Error('배지 데이터를 찾을 수 없습니다.');
+            }
+            throw new Error(`GitHub API 오류: ${response.status} ${response.statusText}`);
         }
 
         const data = await response.json();

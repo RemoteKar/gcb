@@ -54,7 +54,7 @@ document.addEventListener("DOMContentLoaded", async () => {
                 <span>${player.nickname}</span>
                 <span>총 게임: ${player.totalGames}</span>
                 <span>승률: ${player.winRate}%</span>
-                ${badgeHtml} // 배지 이미지 추가
+                ${badgeHtml}
             `;
             li.addEventListener('click', () => {
                 window.location.href = `/user/${encodeURIComponent(player.nickname)}`;
