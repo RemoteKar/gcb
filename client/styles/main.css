@@ -10,6 +10,7 @@ body {
     display: flex;
     flex-direction: column;
     align-items: center;
+    padding-bottom: 50px; /* 페이지 하단에 50px 여유 공간 추가 */
 }
 
 .header-bar {
