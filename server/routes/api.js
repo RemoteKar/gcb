@@ -1,12 +1,5 @@
 const express = require('express');
 const router = express.Router();
-const fetch = require('node-fetch');
-const yaml = require('js-yaml');
-const { getUUID } = require('../services/mojang');
-const { getBadgeData, getGameHistory } = require('../services/github');
-
-const express = require('express');
-const router = express.Router();
 const { getUUID } = require('../services/mojang');
 const { getBadgeData, getGameHistory } = require('../services/github');
 const { computeStatistics } = require('../utils/statistics');
