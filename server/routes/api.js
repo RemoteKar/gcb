@@ -90,6 +90,7 @@ router.get('/uuid', async (req, res) => {
     res.json({ uuid });
   } catch (error) {
     console.error("❌ [서버] UUID 조회 오류:", error);
+    console.error("❌ [서버] UUID 조회 오류 상세:", error.stack);
     res.status(500).json({ error: error.message });
   }
 });
