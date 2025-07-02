@@ -28,7 +28,7 @@ document.addEventListener("DOMContentLoaded", async () => {
                 <p><strong>${player.nickname}</strong></p>
                 <p><strong>총 게임 수:</strong> ${player.totalGames}</p>
                 <p><strong>승률:</strong> ${player.winRate}%</p>
-                <p><strong>평균 처치:</strong> ${player.averageKillRate}</p>
+                
             `;
             top3RankingSection.appendChild(rankDiv);
         });
@@ -47,6 +47,9 @@ document.addEventListener("DOMContentLoaded", async () => {
                 <span>총 게임: ${player.totalGames}</span>
                 <span>승률: ${player.winRate}%</span>
             `;
+            li.addEventListener('click', () => {
+                window.location.href = `/user/${encodeURIComponent(player.nickname)}`;
+            });
             ul.appendChild(li);
         });
         otherRankingSection.appendChild(ul);

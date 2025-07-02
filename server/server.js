@@ -10,4 +10,10 @@ const apiRoutes = require('./routes/api');
 
 app.use('/api', apiRoutes);
 
-module.exports.handler = serverless(app);
+// 서버 시작 시 랭킹 데이터 초기화가 완료될 때까지 기다림
+async function startServer() {
+  await apiRoutes.initializeLeaderboard();
+  module.exports.handler = serverless(app);
+}
+
+startServer();

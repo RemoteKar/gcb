@@ -105,6 +105,7 @@ body {
     justify-content: space-around;
     align-items: flex-end; /* 하단 정렬 */
     margin-bottom: 40px;
+    gap: 20px; /* 카드 사이의 간격 추가 */
 }
 
 .top-player-card {
