@@ -116,11 +116,19 @@ body {
     margin-bottom: 0; /* 기존 margin-bottom 제거 */
 }
 
+/* 1등 카드 반짝이는 효과 */
+@keyframes glow {
+    0% { box-shadow: 0 0 5px gold; }
+    50% { box-shadow: 0 0 20px gold, 0 0 30px gold; }
+    100% { box-shadow: 0 0 5px gold; }
+}
+
 .top-player-card.rank-1 {
     border-color: gold;
-    transform: scale(1.1); /* 1등 더 크게 */
+    transform: scale(1.1);
     z-index: 3;
     transform-origin: bottom;
+    animation: glow 1.5s infinite alternate; /* 애니메이션 적용 */
 }
 
 .top-player-card.rank-2 {
