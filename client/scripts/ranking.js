@@ -16,7 +16,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         }
     }
 
-    function renderTop3(players) {
+    async function renderTop3(players) {
         top3RankingSection.innerHTML = ''; // Clear previous content
         // 1등, 2등, 3등 플레이어 추출
         const player1 = players[0];
@@ -24,9 +24,9 @@ document.addEventListener("DOMContentLoaded", async () => {
         const player3 = players[2];
 
         // 2등, 1등, 3등 순서로 카드 생성 및 추가
-        if (player2) top3RankingSection.appendChild(createRankCard(player2, 2));
-        if (player1) top3RankingSection.appendChild(createRankCard(player1, 1));
-        if (player3) top3RankingSection.appendChild(createRankCard(player3, 3));
+        if (player2) top3RankingSection.appendChild(await createRankCard(player2, 2));
+        if (player1) top3RankingSection.appendChild(await createRankCard(player1, 1));
+        if (player3) top3RankingSection.appendChild(await createRankCard(player3, 3));
     }
 
     function renderOtherPlayers(players) {
