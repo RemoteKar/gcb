@@ -10,7 +10,7 @@ const baseDataPath = '/Data';
 const MAX_RECORDS = 400;
 
 // 재시도 로직을 위한 헬퍼 함수
-async function retryOperation(operation, retries = 3, delay = 1000) {
+async function retryOperation(operation, retries = 5, delay = 2000) {
     for (let i = 0; i < retries; i++) {
         try {
             return await operation();
