@@ -144,4 +144,5 @@ router.get('/leaderboard', cacheMiddleware('leaderboard'), async (req, res) => {
 });
 
 module.exports = router;
-module.exports.initializeLeaderboard = initializeLeaderboard; // initializeLeaderboard 함수를 외부로 노출
+
+initializeLeaderboard(); // 서버 시작 시 랭킹 데이터 초기화
