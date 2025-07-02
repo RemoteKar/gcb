@@ -89,4 +89,49 @@ router.get('/statistic', (req, res, next) => {
   }
 });
 
+//----------------------------------------
+// 📌 랭킹 데이터 조회 (모든 유저 통계 집계 및 정렬)
+//----------------------------------------
+router.get('/leaderboard', cacheMiddleware('leaderboard'), async (req, res) => {
+  console.log(`🔍 [서버] 랭킹 데이터 요청`);
+  try {
+    // 1. 모든 게임 기록 파일 메타데이터 가져오기
+    const filesMetadata = await getAllGameHistoryFileMetadata();
+
+    // 2. 모든 게임 기록 파일 다운로드 및 파싱
+    const allGameRecordsPromises = filesMetadata.map(file => fetchAndParseYamlFile(file.download_url));
+    const allParsedGameRecords = (await Promise.all(allGameRecordsPromises)).filter(record => record !== null);
+
+    // 3. 모든 플레이어의 통계 집계
+    const allPlayerStatistics = aggregateAllPlayerStatistics(allParsedGameRecords);
+
+    // 4. 통계 기준으로 정렬 (예: totalGames 기준 내림차순)
+    // 필요에 따라 다른 정렬 기준을 추가할 수 있습니다 (예: winRate, averageKillRate 등)
+    allPlayerStatistics.sort((a, b) => b.totalGames - a.totalGames);
+
+    // 5. 클라이언트에 반환할 형식으로 포맷팅
+    const formattedLeaderboard = allPlayerStatistics.map(stats => ({
+      uuid: stats.uuid,
+      winRate: stats.winRate.toFixed(1),
+      winCount: stats.winCount.toString(),
+      avarageRankLeast50: stats.avarageRankLeast50.toFixed(1),
+      mostUsedCharacter: stats.mostUsedCharacter,
+      mostUsedAugments: stats.mostUsedAugments,
+      averageDamageDealt: stats.averageDamageDealt.toFixed(0),
+      averageDamageTaken: stats.averageDamageTaken.toFixed(0),
+      averageKillRate: stats.averageKillRate.toFixed(2),
+      averageAliveTime: stats.averageAliveTime.toFixed(1),
+      maxDamageDealt: stats.maxDamageDealt.toFixed(0),
+      maxDamageTaken: stats.maxDamageTaken.toFixed(0),
+      maxKill: stats.maxKill.toString(),
+      totalGames: stats.totalGames.toString()
+    }));
+
+    res.json(formattedLeaderboard);
+  } catch (error) {
+    console.error("❌ [서버] 랭킹 데이터 조회 오류:", error);
+    res.status(500).json({ error: "랭킹 데이터를 가져오는 중 오류가 발생했습니다." });
+  }
+});
+
 module.exports = router;

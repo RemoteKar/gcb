@@ -105,4 +105,46 @@ async function getGameHistory(formattedUUID) {
     return gameHistory;
 }
 
-module.exports = { getBadgeData, getGameHistory };
+async function getAllGameHistoryFileMetadata() {
+    const dirPath = `${baseDataPath}/gameHistory`;
+    const encodedDirPath = encodeURIComponent(dirPath);
+    const githubApiUrl = `https://api.github.com/repos/${repoOwner}/${repoName}/contents/${encodedDirPath}?ref=${branch}`;
+    console.log(`🔍 [GitHub API] 모든 게임 기록 파일 메타데이터 요청 URL: ${githubApiUrl}`);
+
+    const dirResponse = await fetch(githubApiUrl, {
+        headers: {
+            'Authorization': `token ${githubToken}`,
+            'User-Agent': 'Your App Name'
+        }
+    });
+
+    if (!dirResponse.ok) {
+        console.error(`❌ [GitHub API] 모든 게임 기록 파일 메타데이터 응답 코드: ${dirResponse.status}`);
+        throw new Error('게임 기록 폴더가 존재하지 않거나 접근할 수 없습니다.');
+    }
+
+    return dirResponse.json();
+}
+
+async function fetchAndParseYamlFile(downloadUrl) {
+    try {
+        const response = await fetch(downloadUrl, {
+            headers: {
+                'Authorization': `token ${githubToken}`,
+                'User-Agent': 'Your App Name'
+            }
+        });
+
+        if (!response.ok) {
+            console.error(`❌ [GitHub API] 파일 다운로드 실패: ${response.status}`);
+            return null;
+        }
+        const text = await response.text();
+        return yaml.load(text);
+    } catch (error) {
+        console.error(`❌ [GitHub API] 파일 다운로드 또는 파싱 오류: ${error}`);
+        return null;
+    }
+}
+
+module.exports = { getBadgeData, getGameHistory, getAllGameHistoryFileMetadata, fetchAndParseYamlFile };
