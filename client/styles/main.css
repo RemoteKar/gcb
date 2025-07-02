@@ -125,7 +125,7 @@ body {
 
 .top-player-card.rank-1 {
     border-color: gold;
-    transform: scale(1.1);
+    transform: scale(1.2);
     z-index: 3;
     transform-origin: bottom;
     animation: glow 1.5s infinite alternate; /* 애니메이션 적용 */
@@ -133,7 +133,7 @@ body {
 
 .top-player-card.rank-2 {
     border-color: silver;
-    transform: scale(1.05); /* 2등 중간 크기 */
+    transform: scale(1.1); /* 2등 중간 크기 */
     z-index: 2;
     transform-origin: bottom;
 }
@@ -142,6 +142,7 @@ body {
     border-color: #cd7f32; /* 브론즈 색상 */
     z-index: 1;
     transform-origin: bottom;
+    transform: scale(1.0); /* 3등 카드 기본 크기 유지 (명시적 설정) */
 }
 
 .top-player-card h3 {
