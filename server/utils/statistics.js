@@ -405,7 +405,7 @@ function aggregateAllPlayerStatistics(allParsedGameRecords) {
         };
     });
 
-    return finalStats.filter(stats => stats.totalGames > 0);
+    return finalStats.filter(stats => stats.totalGames >= 20);
 }
 
 module.exports = { computeStatistics, aggregateAllPlayerStatistics };

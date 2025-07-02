@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const { getUUID } = require('../services/mojang');
+const { getUUID, getProfileByUUID } = require('../services/mojang');
 const { getBadgeData, getGameHistory, getAllGameHistoryFileMetadata, fetchAndParseYamlFile } = require('../services/github');
 const { computeStatistics, aggregateAllPlayerStatistics } = require('../utils/statistics');
 const cacheMiddleware = require('../middleware/cache');
@@ -38,21 +38,34 @@ async function initializeLeaderboard() {
     allPlayerStatistics.sort((a, b) => b.rankingScore - a.rankingScore);
     console.log(`🔍 [서버] 정렬된 플레이어 통계 수: ${allPlayerStatistics.length}`);
 
-    precalculatedLeaderboard = allPlayerStatistics.map(stats => ({
-      uuid: stats.uuid,
-      winRate: stats.winRate.toFixed(1),
-      winCount: stats.winCount.toString(),
-      avarageRankLeast50: stats.avarageRankLeast50.toFixed(1),
-      mostUsedCharacter: stats.mostUsedCharacter,
-      mostUsedAugments: stats.mostUsedAugments,
-      averageDamageDealt: stats.averageDamageDealt.toFixed(0),
-      averageDamageTaken: stats.averageDamageTaken.toFixed(0),
-      averageKillRate: stats.averageKillRate.toFixed(2),
-      averageAliveTime: stats.averageAliveTime.toFixed(1),
-      maxDamageDealt: stats.maxDamageDealt.toFixed(0),
-      maxDamageTaken: stats.maxDamageTaken.toFixed(0),
-      maxKill: stats.maxKill.toString(),
-      totalGames: stats.totalGames.toString()
+    precalculatedLeaderboard = await Promise.all(allPlayerStatistics.map(async stats => {
+      let nickname = stats.uuid; // 기본값은 UUID
+      try {
+        const profile = await getProfileByUUID(stats.uuid);
+        if (profile && profile.name) {
+          nickname = profile.name;
+        }
+      } catch (error) {
+        console.warn(`⚠️ [서버] UUID ${stats.uuid} 에 대한 닉네임 조회 실패: ${error.message}`);
+      }
+
+      return {
+        uuid: stats.uuid,
+        nickname: nickname,
+        winRate: stats.winRate.toFixed(1),
+        winCount: stats.winCount.toString(),
+        avarageRankLeast50: stats.avarageRankLeast50.toFixed(1),
+        mostUsedCharacter: stats.mostUsedCharacter,
+        mostUsedAugments: stats.mostUsedAugments,
+        averageDamageDealt: stats.averageDamageDealt.toFixed(0),
+        averageDamageTaken: stats.averageDamageTaken.toFixed(0),
+        averageKillRate: stats.averageKillRate.toFixed(2),
+        averageAliveTime: stats.averageAliveTime.toFixed(1),
+        maxDamageDealt: stats.maxDamageDealt.toFixed(0),
+        maxDamageTaken: stats.maxDamageTaken.toFixed(0),
+        maxKill: stats.maxKill.toString(),
+        totalGames: stats.totalGames.toString()
+      };
     }));
 
     console.log("✅ [서버] 랭킹 데이터 초기화 완료.");

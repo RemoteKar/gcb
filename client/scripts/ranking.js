@@ -20,12 +20,12 @@ document.addEventListener("DOMContentLoaded", async () => {
         top3RankingSection.innerHTML = ''; // Clear previous content
         players.forEach((player, index) => {
             const rankDiv = document.createElement('div');
-            rankDiv.classList.add('top-player-card');
+            rankDiv.classList.add('top-player-card', `rank-${index + 1}`);
             rankDiv.innerHTML = `
                 <h3>#${index + 1}</h3>
-                <img src="https://crafatar.com/avatars/${player.uuid}?size=100&overlay" alt="${player.uuid}'s Head" class="player-head-lg">
+                <img src="https://crafatar.com/avatars/${player.uuid}?size=100&overlay" alt="${player.nickname}'s Head" class="player-head-lg">
                 <img src="/Resource/character/${player.mostUsedCharacter}.png" alt="${player.mostUsedCharacter}" class="char-img-lg">
-                <p><strong>${player.uuid}</strong></p>
+                <p><strong>${player.nickname}</strong></p>
                 <p><strong>총 게임 수:</strong> ${player.totalGames}</p>
                 <p><strong>승률:</strong> ${player.winRate}%</p>
                 <p><strong>평균 처치:</strong> ${player.averageKillRate}</p>
@@ -42,8 +42,8 @@ document.addEventListener("DOMContentLoaded", async () => {
             li.classList.add('ranking-item');
             li.innerHTML = `
                 <span>#${index + 4}</span>
-                <img src="https://crafatar.com/avatars/${player.uuid}?size=32&overlay" alt="${player.uuid}'s Head" class="player-head-sm">
-                <span>${player.uuid}</span>
+                <img src="https://crafatar.com/avatars/${player.uuid}?size=32&overlay" alt="${player.nickname}'s Head" class="player-head-sm">
+                <span>${player.nickname}</span>
                 <span>총 게임: ${player.totalGames}</span>
                 <span>승률: ${player.winRate}%</span>
             `;
