@@ -25,7 +25,6 @@ document.addEventListener("DOMContentLoaded", async () => {
                 <h3>#${index + 1}</h3>
                 <div class="player-info-row">
                     <img src="https://crafatar.com/avatars/${player.uuid}?size=100&overlay" alt="${player.nickname}'s Head" class="player-head-lg">
-                    <img src="/Resource/character/${player.mostUsedCharacter}.png" alt="${player.mostUsedCharacter}" class="char-img-lg">
                 </div>
                 <p><strong>${player.nickname}</strong></p>
                 <p><strong>총 게임 수:</strong> ${player.totalGames}</p>

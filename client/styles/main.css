@@ -72,13 +72,7 @@ body {
     border: 5px solid #f7a400;
 }
 
-.top-player-card .char-img-lg {
-    width: 80px;
-    height: 80px;
-    position: absolute;
-    bottom: 5px;
-    right: 5px;
-}
+
 
 .ranking-item {
     display: flex;
@@ -126,17 +120,20 @@ body {
     border-color: gold;
     transform: scale(1.1); /* 1등 더 크게 */
     z-index: 3;
+    transform-origin: bottom;
 }
 
 .top-player-card.rank-2 {
     border-color: silver;
     transform: scale(1.05); /* 2등 중간 크기 */
     z-index: 2;
+    transform-origin: bottom;
 }
 
 .top-player-card.rank-3 {
     border-color: #cd7f32; /* 브론즈 색상 */
     z-index: 1;
+    transform-origin: bottom;
 }
 
 .top-player-card h3 {
@@ -159,12 +156,7 @@ body {
 .top-player-card.rank-2 .player-head-lg { border-color: silver; }
 .top-player-card.rank-3 .player-head-lg { border-color: #cd7f32; }
 
-.top-player-card .char-img-lg {
-    width: 75px; /* 150px의 1/2 (기존 80px -> 75px) */
-    height: 75px; /* 150px의 1/2 (기존 80px -> 75px) */
-    margin-left: 10px; /* 초상화와의 간격 */
-    vertical-align: middle; /* 초상화와 수직 정렬 */
-}
+
 
 .player-info-row {
     display: flex;
