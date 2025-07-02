@@ -284,7 +284,10 @@ function aggregateAllPlayerStatistics(allParsedGameRecords) {
                         rankAtLeast50: 0,
                         characterCounts: {},
                         augmentCounts: {},
-                        uuid: formattedPlayerUUID // Add UUID to the stats object
+                        uuid: formattedPlayerUUID,
+                        maxDamageDealt: 0,
+                        maxDamageTaken: 0,
+                        maxKill: 0
                     };
                 }
 
@@ -305,13 +308,22 @@ function aggregateAllPlayerStatistics(allParsedGameRecords) {
                         if (playerData.Damage) {
                             if (typeof playerData.Damage.Dealt === "number") {
                                 stats.totalDamageDealt += playerData.Damage.Dealt;
+                                if (playerData.Damage.Dealt > stats.maxDamageDealt) {
+                                    stats.maxDamageDealt = playerData.Damage.Dealt;
+                                }
                             }
                             if (typeof playerData.Damage.Taken === "number") {
                                 stats.totalDamageTaken += playerData.Damage.Taken;
+                                if (playerData.Damage.Taken > stats.maxDamageTaken) {
+                                    stats.maxDamageTaken = playerData.Damage.Taken;
+                                }
                             }
                         }
                         if (typeof playerData.kill === "number") {
                             stats.totalKills += playerData.kill;
+                            if (playerData.kill > stats.maxKill) {
+                                stats.maxKill = playerData.kill;
+                            }
                         }
                         if (typeof playerData.TimeSurvived === "number") {
                             stats.totalAliveTime += playerData.TimeSurvived;
