@@ -86,7 +86,7 @@ async function getGameHistory(formattedUUID) {
         try {
             const parsedData = yaml.load(result.content);
             if (parsedData && parsedData.Game && parsedData.Game.joinedPlayers) {
-                const players = parsedData.Game.joinedPlayers.split(',').map(s => formatUUID(s.trim()));
+                const players = parsedData.Game.joinedPlayers.split(',').map(s => s.trim());
                 if (players.includes(formattedUUID)) {
                     parsedData.fileName = result.fileName;
                     gameHistory.push(parsedData);
