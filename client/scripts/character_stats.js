@@ -48,7 +48,7 @@ document.addEventListener("DOMContentLoaded", async () => {
                     const playerData = game.Player[playerUUID];
                     if (playerData && playerData.Character !== undefined) {
                         const characterId = playerData.Character;
-                        if (characterId < 900) { // 특정 값 이상인 캐릭터는 계산 대상에서 제외
+                        if (characterId > 0 && characterId < 900) { // 특정 값 이상인 캐릭터는 계산 대상에서 제외
                             if (!characterStats[characterId]) {
                                 characterStats[characterId] = { wins: 0, plays: 0, kills: 0 };
                             }
