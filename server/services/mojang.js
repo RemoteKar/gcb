@@ -21,9 +21,12 @@ async function getUUID(nickname) {
         console.log(`🔍 [Mojang API] 응답 코드: ${response.status}`);
 
         if (!response.ok) {
+            if (response.status === 404) {
+                return null; // 유저를 찾을 수 없을 경우 null 반환
+            }
             const errorText = await response.text();
             console.error(`❌ [Mojang API] 응답 오류: ${response.status} ${response.statusText} - ${errorText}`);
-            throw new Error('유저를 찾을 수 없습니다.');
+            throw new Error('Mojang API 오류가 발생했습니다.');
         }
 
         const data = await response.json();
