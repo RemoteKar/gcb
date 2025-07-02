@@ -8,15 +8,39 @@ document.addEventListener("DOMContentLoaded", async () => {
             if (!response.ok) {
                 throw new Error('랭킹 데이터를 가져오는 데 실패했습니다.');
             }
-            const data = await response.json();
-            return data;
+            const leaderboardData = await response.json();
+
+            // Extract all unique UUIDs from the leaderboard data
+            const uuids = [...new Set(leaderboardData.map(player => player.uuid))];
+
+            // Fetch all badge data in parallel
+            const badgePromises = uuids.map(async uuid => {
+                try {
+                    const badge = await fetchBadgeData(uuid);
+                    return { uuid, badge };
+                } catch (error) {
+                    console.error(`배지 데이터 fetch 오류 (UUID: ${uuid}):`, error);
+                    return { uuid, badge: null }; // Return null for failed fetches
+                }
+            });
+
+            const badgeResults = await Promise.all(badgePromises);
+
+            // Create a map for easy lookup
+            const badgeDataMap = new Map();
+            badgeResults.forEach(({ uuid, badge }) => {
+                badgeDataMap.set(uuid, badge);
+            });
+
+            return { leaderboardData, badgeDataMap };
+
         } catch (error) {
             console.error("랭킹 데이터 fetch 오류:", error);
             return null;
         }
     }
 
-    async function renderTop3(players) {
+    async function renderTop3(players, badgeDataMap) { // Add badgeDataMap parameter
         top3RankingSection.innerHTML = ''; // Clear previous content
         // 1등, 2등, 3등 플레이어 추출
         const player1 = players[0];
@@ -24,28 +48,25 @@ document.addEventListener("DOMContentLoaded", async () => {
         const player3 = players[2];
 
         // 2등, 1등, 3등 순서로 카드 생성 및 추가
-        if (player2) top3RankingSection.appendChild(await createRankCard(player2, 2));
-        if (player1) top3RankingSection.appendChild(await createRankCard(player1, 1));
-        if (player3) top3RankingSection.appendChild(await createRankCard(player3, 3));
+        if (player2) top3RankingSection.appendChild(await createRankCard(player2, 2, badgeDataMap)); // Pass badgeDataMap
+        if (player1) top3RankingSection.appendChild(await createRankCard(player1, 1, badgeDataMap)); // Pass badgeDataMap
+        if (player3) top3RankingSection.appendChild(await createRankCard(player3, 3, badgeDataMap)); // Pass badgeDataMap
     }
 
-    async function renderOtherPlayers(players) {
+    async function renderOtherPlayers(players, badgeDataMap) { // Add badgeDataMap parameter
         otherRankingSection.innerHTML = ''; // Clear previous content
         const ul = document.createElement('ul');
-        for (const [index, player] of players.slice(0, 7).entries()) { // forEach 대신 for...of 사용 (await 때문)
+        // No need for async/await inside the loop if badge data is pre-fetched
+        for (const [index, player] of players.slice(0, 7).entries()) {
             const li = document.createElement('li');
             li.classList.add('ranking-item');
 
-            // 배지 데이터 가져오기
+            // 배지 데이터 가져오기 (이제 캐시된 맵에서 가져옴)
             let badgeHtml = '';
-            try {
-                const badgeData = await fetchBadgeData(player.uuid);
-                if (badgeData && badgeData.current) {
-                    const badgeName = badgeData.current;
-                    badgeHtml = `<img src="/Resource/badge/${badgeName}.png" alt="${badgeName}" class="badge-img-other-ranking">`; // 새로운 클래스 사용
-                }
-            } catch (error) {
-                console.error(`배지 데이터 fetch 오류 (UUID: ${player.uuid}):`, error);
+            const badgeData = badgeDataMap.get(player.uuid); // Get from map
+            if (badgeData && badgeData.current) {
+                const badgeName = badgeData.current;
+                badgeHtml = `<img src="/Resource/badge/${badgeName}.png" alt="${badgeName}" class="badge-img-other-ranking">`; // 새로운 클래스 사용
             }
 
             li.innerHTML = `
@@ -65,20 +86,16 @@ document.addEventListener("DOMContentLoaded", async () => {
     }
 
     // 랭킹 카드 생성 헬퍼 함수
-    async function createRankCard(player, rank) {
+    async function createRankCard(player, rank, badgeDataMap) { // Add badgeDataMap parameter
         const rankDiv = document.createElement('div');
         rankDiv.classList.add('top-player-card', `rank-${rank}`);
 
-        // 배지 데이터 가져오기
+        // 배지 데이터 가져오기 (이제 캐시된 맵에서 가져옴)
         let badgeHtml = '';
-        try {
-            const badgeData = await fetchBadgeData(player.uuid); // player.uuid 사용
-            if (badgeData && badgeData.current) {
-                const badgeName = badgeData.current;
-                badgeHtml = `<img src="/Resource/badge/${badgeName}.png" alt="${badgeName}" class="badge-img-ranking">`;
-            }
-        } catch (error) {
-            console.error(`배지 데이터 fetch 오류 (UUID: ${player.uuid}):`, error);
+        const badgeData = badgeDataMap.get(player.uuid); // Get from map
+        if (badgeData && badgeData.current) {
+            const badgeName = badgeData.current;
+            badgeHtml = `<img src="/Resource/badge/${badgeName}.png" alt="${badgeName}" class="badge-img-ranking">`;
         }
 
         rankDiv.innerHTML = `
@@ -97,10 +114,10 @@ document.addEventListener("DOMContentLoaded", async () => {
         return rankDiv;
     }
 
-    const leaderboardData = await fetchLeaderboardData();
+    const { leaderboardData, badgeDataMap } = await fetchLeaderboardData(); // Destructure the returned object
     if (leaderboardData && leaderboardData.length > 0) {
-        renderTop3(leaderboardData.slice(0, 3));
-        renderOtherPlayers(leaderboardData.slice(3));
+        renderTop3(leaderboardData.slice(0, 3), badgeDataMap); // Pass badgeDataMap
+        renderOtherPlayers(leaderboardData.slice(3), badgeDataMap); // Pass badgeDataMap
     } else {
         top3RankingSection.textContent = "랭킹 데이터를 찾을 수 없습니다.";
         otherRankingSection.textContent = "";
