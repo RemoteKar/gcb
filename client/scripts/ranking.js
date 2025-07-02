@@ -30,6 +30,9 @@ document.addEventListener("DOMContentLoaded", async () => {
                 <p><strong>승률:</strong> ${player.winRate}%</p>
                 
             `;
+            rankDiv.addEventListener('click', () => {
+                window.location.href = `/user/${encodeURIComponent(player.nickname)}`;
+            });
             top3RankingSection.appendChild(rankDiv);
         });
     }

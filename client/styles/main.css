@@ -73,10 +73,11 @@ body {
 }
 
 .top-player-card .char-img-lg {
-    width: 120px;
-    height: 120px;
-    margin-top: -60px; /* 캐릭터 이미지를 머리 이미지 위로 겹치게 */
-    margin-left: 80px;
+    width: 80px;
+    height: 80px;
+    position: absolute;
+    bottom: 5px;
+    right: 5px;
 }
 
 .ranking-item {
@@ -105,7 +106,7 @@ body {
     justify-content: center; /* space-around 대신 center로 변경 */
     align-items: flex-end;
     margin-bottom: 40px;
-    gap: 40px; /* 간격 더 늘림 */
+    gap: 80px; /* 간격 2배 이상으로 늘림 (기존 40px -> 80px) */
 }
 
 .top-player-card {
