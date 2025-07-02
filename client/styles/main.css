@@ -203,6 +203,36 @@ body {
     transform: scale(1.5); /* 마우스 오버 시 1.5배 확대 */
 }
 
+/* 통계 버튼 스타일 */
+.filter-buttons {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    margin-top: 20px;
+    margin-bottom: 20px;
+}
+
+.stat-button {
+    padding: 10px 20px;
+    font-size: 16px;
+    background-color: #5393ff;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.stat-button:hover {
+    background-color: #3a7be0;
+}
+
+.stat-button.active {
+    background-color: #f7a400; /* 활성화된 버튼 색상 */
+    color: #1c1c1c;
+    font-weight: bold;
+}
+
 /* 캐릭터 통계 페이지 스타일 */
 .character-list {
     display: flex;
