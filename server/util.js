@@ -15,4 +15,3 @@ function formatUUID(uuid) {
   }
   
   module.exports = { formatUUID };
-  

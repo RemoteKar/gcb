@@ -130,5 +130,6 @@ function computeStatistics(gameRecords, formattedUUID) {
       maxKill,
       totalGames
     };
+  }
 
   module.exports = { computeStatistics };

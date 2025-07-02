@@ -6,7 +6,6 @@ const repoName = process.env.GITHUB_REPO_NAME;
 const branch = process.env.GITHUB_BRANCH;
 const githubToken = process.env.GITHUB_TOKEN;
 const baseDataPath = '/Data';
-
 const MAX_RECORDS = 400;
 
 async function getBadgeData(formattedUUID) {
@@ -57,7 +56,7 @@ async function getGameHistory(formattedUUID) {
     }
 
     const filesList = await dirResponse.json();
-    const filesToFetch = filesList.slice(0, 400); // MAX_RECORDS
+    const filesToFetch = filesList.slice(0, MAX_RECORDS); // MAX_RECORDS
     const filePromises = filesToFetch.map(file =>
         fetch(file.download_url, {
             headers: {
