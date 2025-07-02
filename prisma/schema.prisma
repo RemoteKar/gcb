@@ -5,13 +5,13 @@ generator client {
 
 datasource db {
   provider = "postgresql"
-  url      = env("DATABASE_URL") // Netlify에서 제공하는 환경 변수
+  url      = env("DATABASE_URL") 
 }
 
 model MojangProfileCache {
   uuid       String    @id @unique
   name       String
-  profileData Json // Mojang API에서 받은 전체 프로필 데이터
+  profileData Json 
   cachedAt   DateTime  @default(now())
-  expiresAt  DateTime? // 캐시 만료 시간 (선택 사항)
+  expiresAt  DateTime?
 }
