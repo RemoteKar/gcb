@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const { getUUID, getProfileByUUID } = require('../services/mojang');
-const { getBadgeData, getGameHistory, getAllGameHistoryFileMetadata, fetchAndParseYamlFile } = require('../services/github');
+const { getBadgeData, getGameHistory, getAllGameHistoryFileMetadata, fetchAndParseYamlFile, fetchAllGameRecords } = require('../services/github');
 const { computeStatistics, aggregateAllPlayerStatistics } = require('../utils/statistics');
 const cacheMiddleware = require('../middleware/cache');
 const { formatUUID } = require('../util');
