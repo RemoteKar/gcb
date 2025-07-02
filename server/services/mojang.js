@@ -4,7 +4,7 @@ const NodeCache = require('node-cache');
 const profileCache = new NodeCache({ stdTTL: 82800 }); // 23 hours in seconds
 
 const fetch = require('node-fetch');
-const { PrismaClient } = require('@prisma/client');
+
 
 // 재시도 로직을 위한 헬퍼 함수
 async function retryOperation(operation, retries = 5, delay = 2000) {
