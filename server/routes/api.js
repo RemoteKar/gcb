@@ -79,6 +79,8 @@ async function initializeLeaderboard() {
     console.log("✅ [서버] 랭킹 데이터 초기화 완료.");
   } catch (error) {
     console.error("❌ [서버] 랭킹 데이터 초기화 오류:", error);
+  } finally {
+    isLeaderboardInitializing = false; // 초기화 완료 또는 오류 발생 시 플래그 해제
   }
 }
 
