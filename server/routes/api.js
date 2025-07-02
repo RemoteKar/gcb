@@ -18,9 +18,17 @@ async function initializeLeaderboard() {
     const allGameRecordsPromises = filesMetadata.map(file => fetchAndParseYamlFile(file.download_url));
     const allParsedGameRecords = (await Promise.all(allGameRecordsPromises)).filter(record => record !== null);
     console.log(`🔍 [서버] 파싱된 게임 기록 수: ${allParsedGameRecords.length}`);
+    if (allParsedGameRecords.length === 0) {
+        console.warn("⚠️ [서버] 파싱된 게임 기록이 없습니다. 랭킹 초기화 실패.");
+        return; // 데이터가 없으면 더 이상 진행하지 않음
+    }
 
     const allPlayerStatistics = aggregateAllPlayerStatistics(allParsedGameRecords);
     console.log(`🔍 [서버] 집계된 플레이어 통계 수: ${Object.keys(allPlayerStatistics).length}`);
+    if (Object.keys(allPlayerStatistics).length === 0) {
+        console.warn("⚠️ [서버] 집계된 플레이어 통계가 없습니다. 랭킹 초기화 실패.");
+        return; // 통계가 없으면 더 이상 진행하지 않음
+    }
 
     // 랭킹 기준: 승률 * 순방률
     allPlayerStatistics.forEach(stats => {
