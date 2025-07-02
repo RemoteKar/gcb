@@ -9,7 +9,6 @@ const { toNonHyphenatedUUID } = require('../util'); // toNonHyphenatedUUID 추�
 
 module.exports.precalculatedLeaderboard = []; // 전역 변수로 랭킹 데이터 저장
 let allGameRecordsCache = null; // 모든 게임 기록 캐시 변수 선언
-let allGameRecordsCache = null; // 모든 게임 기록 캐시 변수 선언
 
 async function initializeLeaderboard() {
   console.log("🚀 [서버] 랭킹 데이터 초기화 시작...");
