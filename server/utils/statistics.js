@@ -78,19 +78,19 @@ function computeStatistics(gameRecords, formattedUUID) {
   
     if (totalGames === 0) {
       return {
-        winRate: "0.0",
-        winCount: "0",
+        winRate: 0.0,
+        winCount: 0,
         avarageRankLeast50: 0.0,
         mostUsedCharacter: "N/A",
         mostUsedAugments: [],
-        averageDamageDealt: "0",
-        averageDamageTaken: "0",
-        averageKillRate: "0.0",
-        averageAliveTime: "0.0",
-        maxDamageDealt: "0",
-        maxDamageTaken: "0",
-        maxKill: "0",
-        totalGames: "0"
+        averageDamageDealt: 0,
+        averageDamageTaken: 0,
+        averageKillRate: 0.0,
+        averageAliveTime: 0.0,
+        maxDamageDealt: 0,
+        maxDamageTaken: 0,
+        maxKill: 0,
+        totalGames: 0
       };
     }
   
@@ -210,19 +210,19 @@ function computeStatistics(gameRecords, formattedUUID) {
   
     if (totalGames === 0) {
       return {
-        winRate: "0.0",
-        winCount: "0",
+        winRate: 0.0,
+        winCount: 0,
         avarageRankLeast50: 0.0,
         mostUsedCharacter: "N/A",
         mostUsedAugments: [],
-        averageDamageDealt: "0",
-        averageDamageTaken: "0",
-        averageKillRate: "0.0",
-        averageAliveTime: "0.0",
-        maxDamageDealt: "0",
-        maxDamageTaken: "0",
-        maxKill: "0",
-        totalGames: "0"
+        averageDamageDealt: 0,
+        averageDamageTaken: 0,
+        averageKillRate: 0.0,
+        averageAliveTime: 0.0,
+        maxDamageDealt: 0,
+        maxDamageTaken: 0,
+        maxKill: 0,
+        totalGames: 0
       };
     }
   
@@ -393,7 +393,7 @@ function aggregateAllPlayerStatistics(allParsedGameRecords) {
         };
     });
 
-    return finalStats;
+    return finalStats.filter(stats => stats.totalGames > 0);
 }
 
 module.exports = { computeStatistics, aggregateAllPlayerStatistics };
