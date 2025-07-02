@@ -1,6 +1,7 @@
 [build]
   functions = "server"
   publish = "client"
+  command = "npm install && npx prisma generate"
 
 [[redirects]]
   from = "/api/*"
