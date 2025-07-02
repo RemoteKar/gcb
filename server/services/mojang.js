@@ -1,5 +1,7 @@
-import { PrismaClient } from '@prisma/client/edge'
-import { withAccelerate } from '@prisma/extension-accelerate'
+const { PrismaClient } = require('@prisma/client/edge');
+const { withAccelerate } = require('@prisma/extension-accelerate');
+const NodeCache = require('node-cache');
+const profileCache = new NodeCache({ stdTTL: 82800 }); // 23 hours in seconds
 
 const fetch = require('node-fetch');
 const { PrismaClient } = require('@prisma/client');
@@ -79,21 +81,32 @@ async function getProfileByUUID(uuid) {
         throw new Error('UUID를 입력하세요.');
     }
 
-    // 캐시에서 프로필 조회 (Prisma)
-    try {
-        const cachedProfile = await prisma.mojangProfileCache.findUnique({
-            where: { uuid: uuid },
-        });
-
-        if (cachedProfile && (!cachedProfile.expiresAt || cachedProfile.expiresAt > new Date())) {
-            console.log(`✅ [Mojang API] Prisma 캐시 히트: ${uuid}`);
-            return cachedProfile.profileData;
-        }
-    } catch (error) {
-        console.error(`❌ [Mojang API] Prisma 캐시 조회 오류: ${error}`);
-        // 오류 발생 시 캐시 사용 안 하고 다음 로직으로 진행
+    // 1. 인메모리 캐시에서 프로필 조회
+    const inMemoryCachedProfile = profileCache.get(uuid);
+    if (inMemoryCachedProfile) {
+        console.log(`✅ [Mojang API] 인메모리 캐시 히트: ${uuid}`);
+        return inMemoryCachedProfile;
     }
 
+    // 2. Prisma 캐시에서 프로필 조회 (Prisma가 유효할 경우)
+    if (prisma) {
+        try {
+            const cachedProfile = await prisma.mojangProfileCache.findUnique({
+                where: { uuid: uuid },
+            });
+
+            if (cachedProfile && (!cachedProfile.expiresAt || cachedProfile.expiresAt > new Date())) {
+                console.log(`✅ [Mojang API] Prisma 캐시 히트: ${uuid}`);
+                profileCache.set(uuid, cachedProfile.profileData); // 인메모리 캐시에도 저장
+                return cachedProfile.profileData;
+            }
+        } catch (error) {
+            console.error(`❌ [Mojang API] Prisma 캐시 조회 오류: ${error}`);
+            // 오류 발생 시 캐시 사용 안 하고 다음 로직으로 진행
+        }
+    }
+
+    // 3. Mojang API에서 프로필 조회
     const sessionServerUrl = `https://sessionserver.mojang.com/session/minecraft/profile/${uuid}`;
 
     try {
@@ -119,8 +132,10 @@ async function getProfileByUUID(uuid) {
 
         const data = await response.json();
         
-        // 캐시에 닉네임 저장 (Prisma)
-        if (prisma) { // prisma가 유효할 때만 캐시 저장 로직 실행
+        // 4. 캐시에 저장
+        profileCache.set(uuid, data); // 인메모리 캐시에 저장
+
+        if (prisma) { // prisma가 유효할 때만 Prisma 캐시 저장 로직 실행
             try {
                 await prisma.mojangProfileCache.upsert({
                     where: { uuid: uuid },
