@@ -1,6 +1,15 @@
 const fetch = require('node-fetch');
 const { PrismaClient } = require('@prisma/client');
-const prisma = new PrismaClient();
+
+// DATABASE_URL에서 'prisma+' 접두사 제거 (Netlify Prisma Postgres 확장 호환성)
+const databaseUrl = process.env.DATABASE_URL ? process.env.DATABASE_URL.replace('prisma+', '') : undefined;
+const prisma = new PrismaClient({
+  datasources: {
+    db: {
+      url: databaseUrl,
+    },
+  },
+});
 
 async function getUUID(nickname) {
     if (!nickname) {
