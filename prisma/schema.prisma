@@ -30,3 +30,24 @@ model MojangProfileCache {
   cachedAt    DateTime  @default(now())
   expiresAt   DateTime?
 }
+
+model BadgeData {
+  uuid        String    @id @unique
+  badgeData   Json
+  cachedAt    DateTime  @default(now())
+  expiresAt   DateTime?
+}
+
+model GameRecord {
+  fileName    String    @id @unique
+  content     Json
+  cachedAt    DateTime  @default(now())
+  expiresAt   DateTime?
+}
+
+model UserGameHistoryCache {
+  uuid        String    @id @unique
+  gameRecords Json
+  cachedAt    DateTime  @default(now())
+  expiresAt   DateTime?
+}

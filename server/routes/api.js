@@ -34,12 +34,18 @@ async function initializeLeaderboard() {
     allPlayerStatistics.sort((a, b) => b.rankingScore - a.rankingScore);
     console.log(`🔍 [서버] 정렬된 플레이어 통계 수: ${allPlayerStatistics.length}`);
 
-    // 모든 고유 UUID에 대해 Mojang API 프로필을 미리 캐싱
+    // 모든 고유 UUID에 대해 Mojang API 프로필 및 배지 데이터를 미리 캐싱
     const uniqueUUIDs = [...new Set(allPlayerStatistics.map(stats => stats.uuid))];
-    await Promise.all(uniqueUUIDs.map(uuid => getProfileByUUID(uuid).catch(error => {
-        console.warn(`⚠️ [서버] 사전 캐싱 중 UUID ${uuid} 에 대한 닉네임 조회 실패: ${error.message}`);
-        return null; // 실패해도 진행
-    })));
+    await Promise.all(uniqueUUIDs.map(async uuid => {
+        await getProfileByUUID(uuid).catch(error => {
+            console.warn(`⚠️ [서버] 사전 캐싱 중 UUID ${uuid} 에 대한 닉네임 조회 실패: ${error.message}`);
+            return null; // 실패해도 진행
+        });
+        await getBadgeData(uuid).catch(error => {
+            console.warn(`⚠️ [서버] 사전 캐싱 중 UUID ${uuid} 에 대한 배지 데이터 조회 실패: ${error.message}`);
+            return null; // 실패해도 진행
+        });
+    }));
 
     module.exports.precalculatedLeaderboard = await Promise.all(allPlayerStatistics.map(async stats => {
       let nickname = stats.uuid; // 기본값은 UUID
