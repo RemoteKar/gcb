@@ -126,6 +126,4 @@ function computeStatistics(gameRecords, uuid) {
     };
   }
 
-  module.exports = {
-    computeStatistics
-  }
+  module.exports = { computeStatistics };

@@ -1,4 +1,4 @@
-// server/utils
+// server/util.js
 
 /**
  * 32자리 하이픈 없는 UUID 문자열을 표준 UUID 형식(8-4-4-4-12)으로 변환
