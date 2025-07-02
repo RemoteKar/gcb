@@ -167,3 +167,4 @@ router.get('/leaderboard', cacheMiddleware('leaderboard'), async (req, res) => {
 });
 
 module.exports = router;
+module.exports.initializeLeaderboard = initializeLeaderboard;
