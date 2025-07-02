@@ -43,10 +43,19 @@ async function getProfileByUUID(uuid) {
         throw new Error('UUID를 입력하세요.');
     }
 
-    // 캐시에서 닉네임 조회
-    if (nicknameCache.has(uuid)) {
-        console.log(`✅ [Mojang API] 캐시에서 프로필 조회: ${uuid}`);
-        return nicknameCache.get(uuid);
+    // 캐시에서 프로필 조회 (Prisma)
+    try {
+        const cachedProfile = await prisma.mojangProfileCache.findUnique({
+            where: { uuid: uuid },
+        });
+
+        if (cachedProfile && (!cachedProfile.expiresAt || cachedProfile.expiresAt > new Date())) {
+            console.log(`✅ [Mojang API] Prisma 캐시 히트: ${uuid}`);
+            return cachedProfile.profileData;
+        }
+    } catch (error) {
+        console.error(`❌ [Mojang API] Prisma 캐시 조회 오류: ${error}`);
+        // 오류 발생 시 캐시 사용 안 하고 다음 로직으로 진행
     }
 
     const sessionServerUrl = `https://sessionserver.mojang.com/session/minecraft/profile/${uuid}`;
