@@ -26,11 +26,15 @@ document.addEventListener("DOMContentLoaded", async () => {
     // 캐릭터 통계 계산 및 렌더링 함수
     async function renderCharacterStats() {
         characterListDiv.textContent = "데이터 로딩 중...";
-        if (allGameRecords.length === 0) { // 한 번만 가져오도록 수정
+        if (!allGameRecords || allGameRecords.length === 0) { // 한 번만 가져오도록 수정
             allGameRecords = await fetchAllGameHistory();
+            if (!allGameRecords) { // fetchAllGameHistory가 null을 반환하면 여기서 종료
+                characterListDiv.textContent = "캐릭터 통계를 불러오는 데 실패했습니다.";
+                return;
+            }
         }
 
-        if (!allGameRecords || allGameRecords.length === 0) {
+        if (allGameRecords.length === 0) {
             characterListDiv.textContent = "게임 기록이 없습니다.";
             return;
         }

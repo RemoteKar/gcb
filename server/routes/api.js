@@ -39,7 +39,7 @@ async function initializeLeaderboard() {
     allPlayerStatistics.sort((a, b) => b.rankingScore - a.rankingScore);
     console.log(`🔍 [서버] 정렬된 플레이어 통계 수: ${allPlayerStatistics.length}`);
 
-    module.exports.precalculatedLeaderboard = await Promise.all(allPlayerStatistics.map(async stats => {
+    const playerLeaderboardPromises = allPlayerStatistics.map(async stats => {
       let nickname = stats.uuid; // 기본값은 UUID
       try {
         const profile = await getProfileByUUID(stats.uuid);

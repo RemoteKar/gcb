@@ -69,7 +69,6 @@ async function getProfileByUUID(uuid) {
         }
 
         const data = await response.json();
-        console.log(`✅ [Mojang API] 프로필 응답 데이터: ${JSON.stringify(data)}`);
         
         // 캐시에 닉네임 저장
         nicknameCache.set(uuid, data);
