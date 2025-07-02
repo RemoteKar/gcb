@@ -139,8 +139,12 @@ async function getBadgeData(formattedUUID) {
         }
     }
 
+    }
+    }
+
     return data;
 }
+
 async function getGameHistory(formattedUUID) {
     // 1. Prisma 캐시에서 유저별 게임 기록 조회
     if (prisma) {
