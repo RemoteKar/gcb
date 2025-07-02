@@ -29,17 +29,15 @@ router.get('/uuid', async (req, res) => {
 //----------------------------------------
 // 📌 배지 데이터 조회 (GitHub Private Repository 사용 + 캐싱)
 //----------------------------------------
-router.get('/badge', cacheMiddleware('badge'), async (req, res, next) => {
+router.get('/badge', (req, res, next) => {
   const { uuid } = req.query;
-  console.log(`🔍 [서버] 배지 데이터 요청: UUID = ${uuid}`);
-
   if (!uuid) {
     return res.status(400).json({ error: "UUID를 입력하세요." });
   }
-
   req.formattedUUID = formatUUID(uuid);
   next();
-}, async (req, res) => {
+}, cacheMiddleware('badge'), async (req, res) => {
+  console.log(`🔍 [서버] 배지 데이터 요청: UUID = ${req.query.uuid}`);
   try {
     const badgeData = await getBadgeData(req.formattedUUID);
     console.log(`✅ [서버] 배지 데이터 응답: ${JSON.stringify(badgeData)}`);
@@ -53,17 +51,15 @@ router.get('/badge', cacheMiddleware('badge'), async (req, res, next) => {
 //----------------------------------------
 // 📌 게임 기록 조회 및 통계 계산 (GitHub Private Repository 사용 + 캐싱)
 //----------------------------------------
-router.get('/statistic', cacheMiddleware('statistic'), async (req, res, next) => {
+router.get('/statistic', (req, res, next) => {
   const { uuid } = req.query;
-  console.log(`🔍 [서버] 게임 기록 요청: UUID = ${uuid}`);
-
   if (!uuid) {
     return res.status(400).json({ error: "UUID를 입력하세요." });
   }
-
   req.formattedUUID = formatUUID(uuid);
   next();
-}, async (req, res) => {
+}, cacheMiddleware('statistic'), async (req, res) => {
+  console.log(`🔍 [서버] 게임 기록 요청: UUID = ${req.query.uuid}`);
   try {
     const gameHistory = await getGameHistory(req.formattedUUID);
     const statistics = computeStatistics(gameHistory, req.formattedUUID);
