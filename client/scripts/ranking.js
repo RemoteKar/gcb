@@ -23,8 +23,10 @@ document.addEventListener("DOMContentLoaded", async () => {
             rankDiv.classList.add('top-player-card', `rank-${index + 1}`);
             rankDiv.innerHTML = `
                 <h3>#${index + 1}</h3>
-                <img src="https://crafatar.com/avatars/${player.uuid}?size=100&overlay" alt="${player.nickname}'s Head" class="player-head-lg">
-                <img src="/Resource/character/${player.mostUsedCharacter}.png" alt="${player.mostUsedCharacter}" class="char-img-lg">
+                <div class="player-info-row">
+                    <img src="https://crafatar.com/avatars/${player.uuid}?size=100&overlay" alt="${player.nickname}'s Head" class="player-head-lg">
+                    <img src="/Resource/character/${player.mostUsedCharacter}.png" alt="${player.mostUsedCharacter}" class="char-img-lg">
+                </div>
                 <p><strong>${player.nickname}</strong></p>
                 <p><strong>총 게임 수:</strong> ${player.totalGames}</p>
                 <p><strong>승률:</strong> ${player.winRate}%</p>

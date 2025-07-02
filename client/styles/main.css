@@ -103,7 +103,7 @@ body {
 /* 랭킹 페이지 상위 3명 스타일 */
 .top-3-ranking {
     display: flex;
-    justify-content: center; /* space-around 대신 center로 변경 */
+    justify-content: center;
     align-items: flex-end;
     margin-bottom: 40px;
     gap: 80px; /* 간격 2배 이상으로 늘림 (기존 40px -> 80px) */
@@ -160,13 +160,17 @@ body {
 .top-player-card.rank-3 .player-head-lg { border-color: #cd7f32; }
 
 .top-player-card .char-img-lg {
-    width: 120px;
-    height: 120px;
-    position: absolute; /* 절대 위치 지정 */
-    bottom: 10px; /* 카드 하단에서 10px 위 */
-    right: 10px; /* 카드 오른쪽에서 10px 안쪽 */
-    margin-top: 0; /* 기존 margin-top 제거 */
-    margin-left: 0; /* 기존 margin-left 제거 */
+    width: 75px; /* 150px의 1/2 (기존 80px -> 75px) */
+    height: 75px; /* 150px의 1/2 (기존 80px -> 75px) */
+    margin-left: 10px; /* 초상화와의 간격 */
+    vertical-align: middle; /* 초상화와 수직 정렬 */
+}
+
+.player-info-row {
+    display: flex;
+    align-items: center; /* 수직 중앙 정렬 */
+    justify-content: center; /* 수평 중앙 정렬 (필요에 따라 조정) */
+    margin-bottom: 10px; /* 초상화/캐릭터 아래 텍스트와의 간격 */
 }
 
 /* 컨테이너 */
