@@ -62,7 +62,7 @@ document.addEventListener("DOMContentLoaded", async () => {
             return;
         }
 
-        sortedCharacters.forEach(([characterId, winCount]) => {
+        sortedCharacters.slice(0, 20).forEach(([characterId, winCount]) => {
             const charDiv = document.createElement('div');
             charDiv.classList.add('character-stat-item');
             charDiv.innerHTML = `
