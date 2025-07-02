@@ -18,14 +18,26 @@ async function retryOperation(operation, retries = 5, delay = 2000) {
 }
 
 // DATABASE_URL에서 'prisma+' 접두사 제거 (Netlify Prisma Postgres 확장 호환성)
-const databaseUrl = process.env.DATABASE_URL ? process.env.DATABASE_URL.replace('prisma+', '') : undefined;
-const prisma = new PrismaClient({
-  datasources: {
-    db: {
-      url: databaseUrl,
+let prisma; // prisma 인스턴스를 전역으로 선언
+
+try {
+  // DATABASE_URL에서 'prisma+' 접두사 제거 (Netlify Prisma Postgres 확장 호환성)
+  const databaseUrl = process.env.DATABASE_URL ? process.env.DATABASE_URL.replace('prisma+', '') : undefined;
+  console.log(`[DEBUG] DATABASE_URL (processed): ${databaseUrl ? '*****' : 'UNDEFINED'}`); // 민감 정보이므로 실제 값은 ***** 처리
+  prisma = new PrismaClient({
+    datasources: {
+      db: {
+        url: databaseUrl,
+      },
     },
-  },
-});
+  });
+  console.log("✅ [Prisma] PrismaClient 초기화 성공.");
+} catch (error) {
+  console.error("❌ [Prisma] PrismaClient 초기화 오류: 데이터베이스 연결 실패. 캐싱 기능 비활성화.", error);
+  console.error(`[DEBUG] DATABASE_URL (raw): ${process.env.DATABASE_URL ? '*****' : 'UNDEFINED'}`); // 민감 정보이므로 실제 값은 ***** 처리
+  console.error(`[DEBUG] PrismaClientInitializationError details: ${error.message}`);
+  prisma = null; // 초기화 실패 시 prisma를 null로 설정
+}
 
 async function getUUID(nickname) {
     if (!nickname) {
