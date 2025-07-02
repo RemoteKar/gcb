@@ -105,27 +105,29 @@ async function getProfileByUUID(uuid) {
         const data = await response.json();
         
         // 캐시에 닉네임 저장 (Prisma)
-        try {
-            await prisma.mojangProfileCache.upsert({
-                where: { uuid: uuid },
-                update: {
-                    name: data.name,
-                    profileData: data,
-                    cachedAt: new Date(),
-                    expiresAt: new Date(Date.now() + (1000 * 60 * 60 * 24)) // 24시간 캐시
-                },
-                create: {
-                    uuid: uuid,
-                    name: data.name,
-                    profileData: data,
-                    cachedAt: new Date(),
-                    expiresAt: new Date(Date.now() + (1000 * 60 * 60 * 24)) // 24시간 캐시
-                }
-            });
-            console.log(`✅ [Mojang API] Prisma에 프로필 저장: ${uuid}`);
-        } catch (error) {
-            console.error(`❌ [Mojang API] Prisma 저장 오류: ${error}`);
-            // 저장 실패해도 프로필 데이터는 반환
+        if (prisma) { // prisma가 유효할 때만 캐시 저장 로직 실행
+            try {
+                await prisma.mojangProfileCache.upsert({
+                    where: { uuid: uuid },
+                    update: {
+                        name: data.name,
+                        profileData: data,
+                        cachedAt: new Date(),
+                        expiresAt: new Date(Date.now() + (1000 * 60 * 60 * 24)) // 24시간 캐시
+                    },
+                    create: {
+                        uuid: uuid,
+                        name: data.name,
+                        profileData: data,
+                        cachedAt: new Date(),
+                        expiresAt: new Date(Date.now() + (1000 * 60 * 60 * 24)) // 24시간 캐시
+                    }
+                });
+                console.log(`✅ [Mojang API] Prisma에 프로필 저장: ${uuid}`);
+            } catch (error) {
+                console.error(`❌ [Mojang API] Prisma 저장 오류: ${error}`);
+                // 저장 실패해도 프로필 데이터는 반환
+            }
         }
 
         return data;
