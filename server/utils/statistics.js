@@ -268,7 +268,7 @@ function aggregateAllPlayerStatistics(allParsedGameRecords) {
     const playerStats = {}; // { formattedUUID: { totalGames, winCount, ... } }
 
     allParsedGameRecords.forEach(record => {
-        if (record.Game && record.Game.joinedPlayers && record.Player) {
+        if (record && typeof record.Game === 'object' && record.Game !== null && record.Game.joinedPlayers && record.Player) {
             const joinedPlayers = record.Game.joinedPlayers.split(',').map(s => s.trim());
 
             joinedPlayers.forEach(playerUUID => {
