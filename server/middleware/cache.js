@@ -1,8 +1,7 @@
 const NodeCache = require('node-cache');
 const { formatUUID } = require('../util');
 
-const CACHE_DURATION_MS = 180; // 3분 TTL (NodeCache는 초 단위)
-const cache = new NodeCache({ stdTTL: CACHE_DURATION_MS });
+const cache = new NodeCache({ stdTTL: 0 }); // 0은 영구 캐시를 의미합니다.
 
 function cacheMiddleware(keyPrefix) {
     return (req, res, next) => {

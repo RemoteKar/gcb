@@ -26,12 +26,17 @@ async function retryOperation(operation, retries = 5, delay = 2000) {
 }
 
 async function getBadgeData(formattedUUID) {
+    if (badgeCache[formattedUUID]) {
+        console.log(`✅ [GitHub API] 배지 데이터 캐시 히트: ${formattedUUID}`);
+        return badgeCache[formattedUUID];
+    }
+
     const filePath = `${baseDataPath}/player/badge/${formattedUUID}.yaml`;
     const encodedFilePath = encodeURIComponent(filePath);
     const githubApiUrl = `https://api.github.com/repos/${repoOwner}/${repoName}/contents/${encodedFilePath}?ref=${branch}`;
     console.log(`🔍 [GitHub API] 배지 데이터 요청 URL: ${githubApiUrl}`);
 
-    return retryOperation(async () => {
+    const data = await retryOperation(async () => {
         const response = await fetch(githubApiUrl, {
             headers: {
                 'Authorization': `token ${githubToken}`,
@@ -57,6 +62,9 @@ async function getBadgeData(formattedUUID) {
         const badgeData = yaml.load(fileContents);
         return badgeData.badge || badgeData;
     });
+
+    badgeCache[formattedUUID] = data; // 캐시에 저장
+    return data;
 }
 
 async function getGameHistory(formattedUUID) {
@@ -170,4 +178,11 @@ async function fetchAndParseYamlFile(downloadUrl) {
     });
 }
 
-module.exports = { getBadgeData, getGameHistory, getAllGameHistoryFileMetadata, fetchAndParseYamlFile };
+async function fetchAllGameRecords() {
+    const filesMetadata = await getAllGameHistoryFileMetadata();
+    const allGameRecordsPromises = filesMetadata.map(file => fetchAndParseYamlFile(file.download_url));
+    const allParsedGameRecords = (await Promise.all(allGameRecordsPromises)).filter(record => record !== null);
+    return allParsedGameRecords;
+}
+
+module.exports = { getBadgeData, getGameHistory, getAllGameHistoryFileMetadata, fetchAndParseYamlFile, fetchAllGameRecords };

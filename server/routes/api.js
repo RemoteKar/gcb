@@ -178,9 +178,12 @@ router.get('/leaderboard', cacheMiddleware('leaderboard'), async (req, res) => {
 router.get('/all_game_history', cacheMiddleware('all_game_history'), async (req, res) => {
   console.log(`🔍 [서버] 모든 게임 기록 요청`);
   try {
-    const filesMetadata = await getAllGameHistoryFileMetadata();
-    const allGameRecordsPromises = filesMetadata.map(file => fetchAndParseYamlFile(file.download_url));
-    const allParsedGameRecords = (await Promise.all(allGameRecordsPromises)).filter(record => record !== null);
+    if (allGameRecordsCache) {
+      console.log(`✅ [서버] 모든 게임 기록 캐시 히트`);
+      return res.json({ gameRecords: allGameRecordsCache });
+    }
+    const allParsedGameRecords = await fetchAllGameRecords();
+    allGameRecordsCache = allParsedGameRecords; // 캐시에 저장
     res.json({ gameRecords: allParsedGameRecords });
   } catch (error) {
     console.error("❌ [서버] 모든 게임 기록 조회 오류:", error);
