@@ -7,6 +7,7 @@ const app = express();
 app.use(cors());
 
 const apiRoutes = require('./routes/api');
+app.use('/api', apiRoutes);
 
 // 랭킹 데이터 초기화 함수
 async function initializeRankings() {
