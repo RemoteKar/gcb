@@ -26,8 +26,7 @@ async function retryOperation(operation, retries = 5, delay = 2000) {
 let prisma; // prisma 인스턴스를 전역으로 선언
 
 try {
-  // DATABASE_URL에서 'prisma+' 접두사 제거 (Netlify Prisma Postgres 확장 호환성)
-  const databaseUrl = process.env.DATABASE_URL ? process.env.DATABASE_URL.replace('prisma+', '') : undefined;
+  const databaseUrl = process.env.DATABASE_URL;
   console.log(`[DEBUG] DATABASE_URL (processed): ${databaseUrl ? '*****' : 'UNDEFINED'}`); // 민감 정보이므로 실제 값은 ***** 처리
   prisma = new PrismaClient({
     datasources: {
