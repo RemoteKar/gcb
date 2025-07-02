@@ -7,6 +7,10 @@ const app = express();
 app.use(cors());
 
 const apiRoutes = require('./routes/api');
+// apiRoutes.precalculatedLeaderboard가 undefined가 되지 않도록 초기화 보장
+if (!apiRoutes.precalculatedLeaderboard) {
+  apiRoutes.precalculatedLeaderboard = [];
+}
 app.use('/api', apiRoutes);
 
 // 랭킹 데이터 초기화 함수
