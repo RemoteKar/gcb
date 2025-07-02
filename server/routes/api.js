@@ -172,5 +172,21 @@ router.get('/leaderboard', cacheMiddleware('leaderboard'), async (req, res) => {
   res.json(module.exports.precalculatedLeaderboard);
 });
 
+//----------------------------------------
+// 📌 모든 게임 기록 조회
+//----------------------------------------
+router.get('/all_game_history', cacheMiddleware('all_game_history'), async (req, res) => {
+  console.log(`🔍 [서버] 모든 게임 기록 요청`);
+  try {
+    const filesMetadata = await getAllGameHistoryFileMetadata();
+    const allGameRecordsPromises = filesMetadata.map(file => fetchAndParseYamlFile(file.download_url));
+    const allParsedGameRecords = (await Promise.all(allGameRecordsPromises)).filter(record => record !== null);
+    res.json({ gameRecords: allParsedGameRecords });
+  } catch (error) {
+    console.error("❌ [서버] 모든 게임 기록 조회 오류:", error);
+    res.status(500).json({ error: error.message });
+  }
+});
+
 module.exports = router;
 module.exports.initializeLeaderboard = initializeLeaderboard;
