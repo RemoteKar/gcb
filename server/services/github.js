@@ -1,5 +1,6 @@
 const fetch = require('node-fetch');
 const yaml = require('js-yaml');
+const { formatUUID, toNonHyphenatedUUID } = require('../util');
 
 const repoOwner = process.env.GITHUB_REPO_OWNER;
 const repoName = process.env.GITHUB_REPO_NAME;
@@ -86,8 +87,8 @@ async function getGameHistory(formattedUUID) {
         try {
             const parsedData = yaml.load(result.content);
             if (parsedData && parsedData.Game && parsedData.Game.joinedPlayers) {
-                const players = parsedData.Game.joinedPlayers.split(',').map(s => s.trim());
-                if (players.includes(formattedUUID)) {
+                const players = parsedData.Game.joinedPlayers.split(',').map(s => toNonHyphenatedUUID(s.trim()));
+                if (players.includes(toNonHyphenatedUUID(formattedUUID))) {
                     parsedData.fileName = result.fileName;
                     gameHistory.push(parsedData);
                 }
