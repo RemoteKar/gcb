@@ -12,10 +12,14 @@ async function initializeLeaderboard() {
   console.log("🚀 [서버] 랭킹 데이터 초기화 시작...");
   try {
     const filesMetadata = await getAllGameHistoryFileMetadata();
+    console.log(`🔍 [서버] 가져온 파일 메타데이터 수: ${filesMetadata.length}`);
+
     const allGameRecordsPromises = filesMetadata.map(file => fetchAndParseYamlFile(file.download_url));
     const allParsedGameRecords = (await Promise.all(allGameRecordsPromises)).filter(record => record !== null);
+    console.log(`🔍 [서버] 파싱된 게임 기록 수: ${allParsedGameRecords.length}`);
 
     const allPlayerStatistics = aggregateAllPlayerStatistics(allParsedGameRecords);
+    console.log(`🔍 [서버] 집계된 플레이어 통계 수: ${Object.keys(allPlayerStatistics).length}`);
 
     // 랭킹 기준: 승률 * 순방률
     allPlayerStatistics.forEach(stats => {
@@ -23,6 +27,7 @@ async function initializeLeaderboard() {
     });
 
     allPlayerStatistics.sort((a, b) => b.rankingScore - a.rankingScore);
+    console.log(`🔍 [서버] 정렬된 플레이어 통계 수: ${allPlayerStatistics.length}`);
 
     precalculatedLeaderboard = allPlayerStatistics.map(stats => ({
       uuid: stats.uuid,
@@ -45,7 +50,6 @@ async function initializeLeaderboard() {
   } catch (error) {
     console.error("❌ [서버] 랭킹 데이터 초기화 오류:", error);
   }
-}
 
 //----------------------------------------
 // 📌 UUID 조회 (Mojang API 사용)
