@@ -29,24 +29,38 @@ document.addEventListener("DOMContentLoaded", async () => {
         if (player3) top3RankingSection.appendChild(await createRankCard(player3, 3));
     }
 
-    function renderOtherPlayers(players) {
+    async function renderOtherPlayers(players) {
         otherRankingSection.innerHTML = ''; // Clear previous content
         const ul = document.createElement('ul');
-        players.slice(0, 7).forEach((player, index) => { // 상위 3명 제외하고 7명 더 표시 (총 10명)
+        for (const [index, player] of players.slice(0, 7).entries()) { // forEach 대신 for...of 사용 (await 때문)
             const li = document.createElement('li');
             li.classList.add('ranking-item');
+
+            // 배지 데이터 가져오기
+            let badgeHtml = '';
+            try {
+                const badgeData = await fetchBadgeData(player.uuid);
+                if (badgeData && badgeData.current) {
+                    const badgeName = badgeData.current;
+                    badgeHtml = `<img src="/Resource/badge/${badgeName}.png" alt="${badgeName}" class="badge-img-other-ranking">`; // 새로운 클래스 사용
+                }
+            } catch (error) {
+                console.error(`배지 데이터 fetch 오류 (UUID: ${player.uuid}):`, error);
+            }
+
             li.innerHTML = `
                 <span>#${index + 4}</span>
                 <img src="https://crafatar.com/avatars/${player.uuid}?size=32&overlay" alt="${player.nickname}'s Head" class="player-head-sm">
                 <span>${player.nickname}</span>
                 <span>총 게임: ${player.totalGames}</span>
                 <span>승률: ${player.winRate}%</span>
+                ${badgeHtml} // 배지 이미지 추가
             `;
             li.addEventListener('click', () => {
                 window.location.href = `/user/${encodeURIComponent(player.nickname)}`;
             });
             ul.appendChild(li);
-        });
+        }
         otherRankingSection.appendChild(ul);
     }
 
@@ -71,7 +85,7 @@ document.addEventListener("DOMContentLoaded", async () => {
             <h3>#${rank}</h3>
             <div class="player-info-row">
                 <img src="https://crafatar.com/avatars/${player.uuid}?size=100&overlay" alt="${player.nickname}'s Head" class="player-head-lg">
-                ${badgeHtml} // 배지 이미지 추가
+                ${badgeHtml}
             </div>
             <p><strong>${player.nickname}</strong></p>
             <p><strong>총 게임 수:</strong> ${player.totalGames}</p>

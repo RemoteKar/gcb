@@ -190,6 +190,18 @@ body {
     transform: scale(1.5); /* 마우스 오버 시 1.5배 확대 */
 }
 
+/* 랭킹 4~10위 배지 이미지 스타일 */
+.badge-img-other-ranking {
+    width: 30px; /* 크기 조정 */
+    height: 30px; /* 크기 조정 */
+    margin-left: auto; /* 오른쪽 정렬 */
+    transition: transform 0.3s ease; /* 커지는 효과를 위한 transition 추가 */
+}
+
+.badge-img-other-ranking:hover {
+    transform: scale(1.5); /* 마우스 오버 시 1.5배 확대 */
+}
+
 /* 컨테이너 */
 .container {
     width: 90%;
