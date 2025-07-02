@@ -354,12 +354,12 @@ function aggregateAllPlayerStatistics(allParsedGameRecords) {
             };
         }
 
-        const winRate = (stats.winCount / totalGames) * 100;
-        const avarageRankLeast50 = (stats.rankAtLeast50 / totalGames) * 100;
-        const averageDamageDealt = stats.totalDamageDealt / totalGames;
-        const averageDamageTaken = stats.totalDamageTaken / totalGames;
-        const averageKillRate = stats.totalKills / totalGames;
-        const averageAliveTime = stats.totalAliveTime / totalGames;
+        const winRate = totalGames > 0 ? (stats.winCount / totalGames) * 100 : 0;
+        const avarageRankLeast50 = totalGames > 0 ? (stats.rankAtLeast50 / totalGames) * 100 : 0;
+        const averageDamageDealt = totalGames > 0 ? stats.totalDamageDealt / totalGames : 0;
+        const averageDamageTaken = totalGames > 0 ? stats.totalDamageTaken / totalGames : 0;
+        const averageKillRate = totalGames > 0 ? stats.totalKills / totalGames : 0;
+        const averageAliveTime = totalGames > 0 ? stats.totalAliveTime / totalGames : 0;
 
         let mostUsedCharacter = "N/A";
         let maxCharacterCount = 0;
