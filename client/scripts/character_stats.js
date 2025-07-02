@@ -84,7 +84,7 @@ document.addEventListener("DOMContentLoaded", async () => {
             return;
         }
 
-        sortedCharacters.forEach(([characterId, stats]) => {
+        sortedCharacters.forEach(([characterId, stats], index) => {
             const charDiv = document.createElement('div');
             charDiv.classList.add('character-stat-item');
             let statValue = 0;
@@ -97,6 +97,7 @@ document.addEventListener("DOMContentLoaded", async () => {
             }
 
             charDiv.innerHTML = `
+                <span class="rank-number">#${index + 1}</span> <!-- 순위 번호 추가 -->
                 <img src="/Resource/character/${characterId}.png" alt="Character ${characterId}" class="character-stat-img">
                 <p><strong>${statValue}${currentSortBy === 'wins' ? '승' : currentSortBy === 'plays' ? '회' : '킬'}</strong></p>
             `;

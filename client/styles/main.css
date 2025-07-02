@@ -203,6 +203,15 @@ body {
     transform: scale(1.5); /* 마우스 오버 시 1.5배 확대 */
 }
 
+/* 캐릭터 통계 순위 번호 스타일 */
+.character-stat-item .rank-number {
+    font-size: 1.2em;
+    font-weight: bold;
+    margin-right: 10px;
+    min-width: 30px; /* 번호가 길어져도 레이아웃이 깨지지 않도록 최소 너비 설정 */
+    text-align: right; /* 번호 오른쪽 정렬 */
+}
+
 /* 통계 버튼 스타일 */
 .filter-buttons {
     display: flex;
