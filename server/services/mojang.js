@@ -1,6 +1,22 @@
 const fetch = require('node-fetch');
 const { PrismaClient } = require('@prisma/client');
 
+// 재시도 로직을 위한 헬퍼 함수
+async function retryOperation(operation, retries = 5, delay = 2000) {
+    for (let i = 0; i < retries; i++) {
+        try {
+            return await operation();
+        } catch (error) {
+            if (error.message.includes('429') && i < retries - 1) {
+                console.warn(`⚠️ [Mojang API] 재시도 (${i + 1}/${retries}): ${error.message}`);
+                await new Promise(resolve => setTimeout(resolve, delay));
+            } else {
+                throw error; // 마지막 재시도에서도 실패하거나 다른 오류면 에러 발생
+            }
+        }
+    }
+}
+
 // DATABASE_URL에서 'prisma+' 접두사 제거 (Netlify Prisma Postgres 확장 호환성)
 const databaseUrl = process.env.DATABASE_URL ? process.env.DATABASE_URL.replace('prisma+', '') : undefined;
 const prisma = new PrismaClient({
@@ -66,11 +82,18 @@ async function getProfileByUUID(uuid) {
     const sessionServerUrl = `https://sessionserver.mojang.com/session/minecraft/profile/${uuid}`;
 
     try {
-        const response = await fetch(sessionServerUrl, {
-            headers: {
-                'User-Agent': 'Mozilla/5.0 (compatible; Node.js Server)',
-                'Accept': 'application/json'
+        const response = await retryOperation(async () => {
+            const res = await fetch(sessionServerUrl, {
+                headers: {
+                    'User-Agent': 'Mozilla/5.0 (compatible; Node.js Server)',
+                    'Accept': 'application/json'
+                }
+            });
+            if (!res.ok) {
+                const errorText = await res.text();
+                throw new Error(`${res.status} ${res.statusText} - ${errorText}`);
             }
+            return res;
         });
 
         if (!response.ok) {
