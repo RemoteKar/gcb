@@ -51,13 +51,27 @@ document.addEventListener("DOMContentLoaded", async () => {
     }
 
     // 랭킹 카드 생성 헬퍼 함수
-    function createRankCard(player, rank) {
+    async function createRankCard(player, rank) {
         const rankDiv = document.createElement('div');
         rankDiv.classList.add('top-player-card', `rank-${rank}`);
+
+        // 배지 데이터 가져오기
+        let badgeHtml = '';
+        try {
+            const badgeData = await fetchBadgeData(player.uuid); // player.uuid 사용
+            if (badgeData && badgeData.current) {
+                const badgeName = badgeData.current;
+                badgeHtml = `<img src="/Resource/badge/${badgeName}.png" alt="${badgeName}" class="badge-img-ranking">`;
+            }
+        } catch (error) {
+            console.error(`배지 데이터 fetch 오류 (UUID: ${player.uuid}):`, error);
+        }
+
         rankDiv.innerHTML = `
             <h3>#${rank}</h3>
             <div class="player-info-row">
                 <img src="https://crafatar.com/avatars/${player.uuid}?size=100&overlay" alt="${player.nickname}'s Head" class="player-head-lg">
+                ${badgeHtml} // 배지 이미지 추가
             </div>
             <p><strong>${player.nickname}</strong></p>
             <p><strong>총 게임 수:</strong> ${player.totalGames}</p>
@@ -78,3 +92,17 @@ document.addEventListener("DOMContentLoaded", async () => {
         otherRankingSection.textContent = "";
     }
 });
+
+// 배지 데이터 가져오는 함수 (user.js에서 복사)
+async function fetchBadgeData(uuid) {
+    const url = `/api/badge?uuid=${uuid}`;
+    try {
+        const response = await fetch(url);
+        if (!response.ok) throw new Error("배지 데이터를 찾을 수 없습니다.");
+        const data = await response.json();
+        return data;
+    } catch (error) {
+        console.error("fetchBadgeData error:", error);
+        return null;
+    }
+}

@@ -174,6 +174,22 @@ body {
     margin-bottom: 10px; /* 초상화/캐릭터 아래 텍스트와의 간격 */
 }
 
+/* 랭킹 페이지 배지 이미지 스타일 */
+.badge-img-ranking {
+    position: absolute;
+    width: 75px; /* 배지 크기 조정 (150px의 1/2) */
+    height: 75px; /* 배지 크기 조정 */
+    bottom: -10px; /* 초상화 아래쪽으로 더 내림 */
+    right: -10px; /* 초상화 오른쪽으로 더 뺌 */
+    /* transform: translate(25%, 25%); 제거 */ /* 이전에 사용했던 translate 제거 */
+    z-index: 5;
+    transition: transform 0.3s ease; /* 커지는 효과를 위한 transition 추가 */
+}
+
+.badge-img-ranking:hover {
+    transform: scale(1.5); /* 마우스 오버 시 1.5배 확대 */
+}
+
 /* 컨테이너 */
 .container {
     width: 90%;
