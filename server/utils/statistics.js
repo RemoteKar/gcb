@@ -1,6 +1,6 @@
 const { formatUUID } = require('../util');
 
-function computeStatistics(gameRecords, uuid) {
+function computeStatistics(gameRecords, formattedUUID) {
     let totalGames = 0;
     let winCount = 0;
     let totalDamageDealt = 0;
@@ -13,9 +13,17 @@ function computeStatistics(gameRecords, uuid) {
     let rankAtLeast50 = 0;
     const characterCounts = {};
     const augmentCounts = {};
-  
-    const formattedUUID = formatUUID(uuid);
-    gameRecords.forEach(record => {
+
+    const filteredGameRecords = gameRecords.filter(record => {
+        if (record.Player && record.Player[formattedUUID]) {
+            const playerData = record.Player[formattedUUID];
+            const character = playerData.Character ?? 99999;
+            return character < 900;
+        }
+        return false;
+    });
+
+    filteredGameRecords.forEach(record => {
       if (record.Player && record.Player[formattedUUID]) {
         const playerData = record.Player[formattedUUID];
         const character = playerData.Character ?? 99999;
@@ -86,17 +94,15 @@ function computeStatistics(gameRecords, uuid) {
       };
     }
   
-    const winRate = ((winCount / totalGames) * 100).toFixed(1);
-    const avarageRankLeast50 = ((rankAtLeast50 / totalGames) * 100).toFixed(1);
-    const averageDamageDealt = (totalDamageDealt / totalGames).toFixed(0);
-    const averageDamageTaken = (totalDamageTaken / totalGames).toFixed(0);
-    const averageKillRate = (totalKills / totalGames).toFixed(2);
-    const averageAliveTime = (totalAliveTime / totalGames).toFixed(1);
+    const winRate = (winCount / totalGames) * 100;
+    const avarageRankLeast50 = (rankAtLeast50 / totalGames) * 100;
+    const averageDamageDealt = totalDamageDealt / totalGames;
+    const averageDamageTaken = totalDamageTaken / totalGames;
+    const averageKillRate = totalKills / totalGames;
+    const averageAliveTime = totalAliveTime / totalGames;
     let mostUsedCharacter = "N/A";
     let maxCharacterCount = 0;
-    maxDamageDealt = maxDamageDealt.toFixed(0);
-    maxDamageTaken = maxDamageTaken.toFixed(0);
-  
+    
     for (const char in characterCounts) {
       if (characterCounts[char] > maxCharacterCount) {
         maxCharacterCount = characterCounts[char];
@@ -124,6 +130,5 @@ function computeStatistics(gameRecords, uuid) {
       maxKill,
       totalGames
     };
-  }
 
   module.exports = { computeStatistics };

@@ -29,7 +29,7 @@ router.get('/uuid', async (req, res) => {
 //----------------------------------------
 // 📌 배지 데이터 조회 (GitHub Private Repository 사용 + 캐싱)
 //----------------------------------------
-router.get('/badge', cacheMiddleware('badge'), async (req, res) => {
+router.get('/badge', cacheMiddleware('badge'), async (req, res, next) => {
   const { uuid } = req.query;
   console.log(`🔍 [서버] 배지 데이터 요청: UUID = ${uuid}`);
 
@@ -37,10 +37,11 @@ router.get('/badge', cacheMiddleware('badge'), async (req, res) => {
     return res.status(400).json({ error: "UUID를 입력하세요." });
   }
 
-  const formattedUUID = formatUUID(uuid);
-
+  req.formattedUUID = formatUUID(uuid);
+  next();
+}, async (req, res) => {
   try {
-    const badgeData = await getBadgeData(formattedUUID);
+    const badgeData = await getBadgeData(req.formattedUUID);
     console.log(`✅ [서버] 배지 데이터 응답: ${JSON.stringify(badgeData)}`);
     res.json(badgeData);
   } catch (error) {
@@ -52,7 +53,7 @@ router.get('/badge', cacheMiddleware('badge'), async (req, res) => {
 //----------------------------------------
 // 📌 게임 기록 조회 및 통계 계산 (GitHub Private Repository 사용 + 캐싱)
 //----------------------------------------
-router.get('/statistic', cacheMiddleware('statistic'), async (req, res) => {
+router.get('/statistic', cacheMiddleware('statistic'), async (req, res, next) => {
   const { uuid } = req.query;
   console.log(`🔍 [서버] 게임 기록 요청: UUID = ${uuid}`);
 
@@ -60,13 +61,29 @@ router.get('/statistic', cacheMiddleware('statistic'), async (req, res) => {
     return res.status(400).json({ error: "UUID를 입력하세요." });
   }
 
-  const formattedUUID = formatUUID(uuid);
-
+  req.formattedUUID = formatUUID(uuid);
+  next();
+}, async (req, res) => {
   try {
-    const gameHistory = await getGameHistory(formattedUUID);
-    const statistics = computeStatistics(gameHistory, uuid);
+    const gameHistory = await getGameHistory(req.formattedUUID);
+    const statistics = computeStatistics(gameHistory, req.formattedUUID);
+    const formattedStatistics = {
+      winRate: statistics.winRate.toFixed(1),
+      winCount: statistics.winCount.toString(),
+      avarageRankLeast50: statistics.avarageRankLeast50.toFixed(1),
+      mostUsedCharacter: statistics.mostUsedCharacter,
+      mostUsedAugments: statistics.mostUsedAugments,
+      averageDamageDealt: statistics.averageDamageDealt.toFixed(0),
+      averageDamageTaken: statistics.averageDamageTaken.toFixed(0),
+      averageKillRate: statistics.averageKillRate.toFixed(2),
+      averageAliveTime: statistics.averageAliveTime.toFixed(1),
+      maxDamageDealt: statistics.maxDamageDealt.toFixed(0),
+      maxDamageTaken: statistics.maxDamageTaken.toFixed(0),
+      maxKill: statistics.maxKill.toString(),
+      totalGames: statistics.totalGames.toString()
+    };
     const responsePayload = {
-      statistics,
+      statistics: formattedStatistics,
       gameRecords: gameHistory
     };
     res.json(responsePayload);

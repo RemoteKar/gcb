@@ -1,7 +1,8 @@
 const NodeCache = require('node-cache');
 const { formatUUID } = require('../util');
 
-const cache = new NodeCache({ stdTTL: 180 }); // 3분 TTL
+const CACHE_DURATION_MS = 180; // 3분 TTL (NodeCache는 초 단위)
+const cache = new NodeCache({ stdTTL: CACHE_DURATION_MS });
 
 function cacheMiddleware(keyPrefix) {
     return (req, res, next) => {
@@ -10,7 +11,7 @@ function cacheMiddleware(keyPrefix) {
             return next();
         }
 
-        const formattedUUID = formatUUID(uuid);
+        const formattedUUID = req.formattedUUID;
         const key = `${keyPrefix}_${formattedUUID}`;
         const cachedData = cache.get(key);
 

@@ -7,6 +7,8 @@ const branch = process.env.GITHUB_BRANCH;
 const githubToken = process.env.GITHUB_TOKEN;
 const baseDataPath = '/Data';
 
+const MAX_RECORDS = 400;
+
 async function getBadgeData(formattedUUID) {
     const filePath = `${baseDataPath}/player/badge/${formattedUUID}.yaml`;
     const encodedFilePath = encodeURIComponent(filePath);
