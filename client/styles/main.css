@@ -14,8 +14,25 @@ body {
 
 .header-bar {
     width: 100%;
-    height: 8px;
-    background-color: #f7a400;
+    height: 50px; /* 높이 증가 */
+    background-color: #1c1c1c; /* 배경색 변경 */
+    display: flex;
+    align-items: center;
+    padding: 0 20px;
+    box-sizing: border-box;
+    border-bottom: 2px solid #f7a400; /* 하단에 노란색 선 */
+}
+
+.header-logo {
+    font-size: 28px; /* 텍스트 크기 강조 */
+    font-weight: 700; /* 볼드체 */
+    color: #f7a400; /* 노란색으로 강조 */
+    text-decoration: none; /* 밑줄 제거 */
+    transition: color 0.3s ease; /* 호버 효과 */
+}
+
+.header-logo:hover {
+    color: #ffd700; /* 호버 시 더 밝은 노란색 */
 }
 
 /* 컨테이너 */
