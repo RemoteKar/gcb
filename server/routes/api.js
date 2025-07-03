@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const { getUUID, getProfileByUUID } = require('../services/mojang');
-const { getBadgeData, getGameHistory, getAllGameHistoryFileMetadata, fetchAndParseYamlFile, fetchAllGameRecords } = require('../services/github');
+const { getBadgeData, getGameHistory, getAllGameHistoryFileMetadata, fetchAndParseYamlFile, fetchAllGameRecords, refreshAllGameRecordsCache } = require('../services/github');
 const { computeStatistics, aggregateAllPlayerStatistics } = require('../utils/statistics');
 const cacheMiddleware = require('../middleware/cache');
 const { formatUUID } = require('../util');
@@ -12,7 +12,7 @@ module.exports.precalculatedLeaderboard = []; // 전역 변수로 랭킹 데이�
 async function initializeLeaderboard() {
   console.log("🚀 [서버] 랭킹 데이터 초기화 시작...");
   try {
-    const allParsedGameRecords = await fetchAllGameRecords();
+    const allParsedGameRecords = await refreshAllGameRecordsCache();
     console.log(`🔍 [서버] 파싱된 게임 기록 수: ${allParsedGameRecords.length}`);
     if (allParsedGameRecords.length === 0) {
         console.warn("⚠️ [서버] 파싱된 게임 기록이 없습니다. 랭킹 초기화 실패.");
