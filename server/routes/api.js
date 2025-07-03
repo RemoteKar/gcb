@@ -19,7 +19,7 @@ async function initializeLeaderboard() {
         return; // 데이터가 없으면 더 이상 진행하지 않음
     }
 
-    const allPlayerStatistics = aggregateAllPlayerStatistics(allParsedGameRecords);
+    const allPlayerStatistics = aggregateAllPlayerStatistics(allParsedGameRecords.map(record => record.content));
     console.log(`🔍 [서버] 집계된 플레이어 통계 수: ${Object.keys(allPlayerStatistics).length}`);
     if (Object.keys(allPlayerStatistics).length === 0) {
         console.warn("⚠️ [서버] 집계된 플레이어 통계가 없습니다. 랭킹 초기화 실패.");

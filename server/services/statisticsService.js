@@ -44,7 +44,7 @@ async function getCharacterStats() {
 
     const latest60Records = sortedRecords.slice(0, 60);
 
-    const stats = computeGlobalCharacterStatistics(latest60Records);
+    const stats = computeGlobalCharacterStatistics(latest60Records.map(record => record.content));
 
     // 4. 계산된 결과를 캐시에 저장
     const expiresAt = new Date(Date.now() + 3600 * 1000); // 1시간 후 만료

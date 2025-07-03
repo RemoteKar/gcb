@@ -161,14 +161,14 @@ async function getGameHistory(formattedUUID) {
     }
 
     // 2. 전체 게임 기록을 가져와 필터링 (Prisma 또는 GitHub)
-    const allParsedGameRecords = await fetchAllGameRecords(); // 이 함수는 이제 Prisma 캐시를 먼저 확인
+    const allParsedGameRecordsWithFileName = await fetchAllGameRecords(); // 이 함수는 이제 Prisma 캐시를 먼저 확인
 
     const gameHistory = [];
-    allParsedGameRecords.forEach(parsedData => {
-        if (parsedData && parsedData.Game && parsedData.Game.joinedPlayers) {
-            const players = parsedData.Game.joinedPlayers.split(',').map(s => toNonHyphenatedUUID(s.trim()));
+    allParsedGameRecordsWithFileName.forEach(record => {
+        if (record.content && record.content.Game && record.content.Game.joinedPlayers) {
+            const players = record.content.Game.joinedPlayers.split(',').map(s => toNonHyphenatedUUID(s.trim()));
             if (players.includes(toNonHyphenatedUUID(formattedUUID))) {
-                gameHistory.push(parsedData);
+                gameHistory.push(record.content);
             }
         }
     });

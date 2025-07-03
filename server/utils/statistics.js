@@ -131,12 +131,12 @@ const { formatUUID } = require('../util');
     };
   }
 
-function aggregateAllPlayerStatistics(allParsedGameRecords) {
+function aggregateAllPlayerStatistics(allGameRecordContents) {
     const playerStats = {}; // { formattedUUID: { totalGames, winCount, ... } }
 
-    allParsedGameRecords.forEach(record => {
-        if (record && typeof record.Game === 'object' && record.Game !== null && record.Game.joinedPlayers && record.Player) {
-            const joinedPlayers = record.Game.joinedPlayers.split(',').map(s => s.trim());
+    allGameRecordContents.forEach(recordContent => {
+        if (recordContent && typeof recordContent.Game === 'object' && recordContent.Game !== null && recordContent.Game.joinedPlayers && recordContent.Player) {
+            const joinedPlayers = recordContent.Game.joinedPlayers.split(',').map(s => s.trim());
 
             joinedPlayers.forEach(playerUUID => {
                 const formattedPlayerUUID = formatUUID(playerUUID); // Ensure consistent format
@@ -159,14 +159,14 @@ function aggregateAllPlayerStatistics(allParsedGameRecords) {
                 }
 
                 const stats = playerStats[formattedPlayerUUID];
-                const playerData = record.Player[formattedPlayerUUID];
+                const playerData = recordContent.Player[formattedPlayerUUID];
 
                 if (playerData) {
                     const character = playerData.Character ?? 99999;
 
                     if (character < 900) { // Apply character filter here as well
                         stats.totalGames++;
-                        if (playerData.Ranking / record.Game.amountOfPlayers <= 0.5) {
+                        if (playerData.Ranking / recordContent.Game.amountOfPlayers <= 0.5) {
                             stats.rankAtLeast50++;
                         }
                         if (playerData.outCuase === "우승") {
