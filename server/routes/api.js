@@ -73,11 +73,11 @@ async function initializeLeaderboard() {
         averageDamageDealt: stats.averageDamageDealt.toFixed(0),
         averageDamageTaken: stats.averageDamageTaken.toFixed(0),
         averageKillRate: stats.averageKillRate.toFixed(2),
-        averageAliveTime: statistics.averageAliveTime.toFixed(1),
-        maxDamageDealt: statistics.maxDamageDealt.toFixed(0),
-        maxDamageTaken: statistics.maxDamageTaken.toFixed(0),
-        maxKill: statistics.maxKill.toString(),
-        totalGames: statistics.totalGames.toString()
+        averageAliveTime: stats.averageAliveTime.toFixed(1),
+        maxDamageDealt: stats.maxDamageDealt.toFixed(0),
+        maxDamageTaken: stats.maxDamageTaken.toFixed(0),
+        maxKill: stats.maxKill.toString(),
+        totalGames: stats.totalGames.toString()
       };
     }));
 
