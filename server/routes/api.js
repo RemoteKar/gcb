@@ -7,15 +7,12 @@ const cacheMiddleware = require('../middleware/cache');
 const { formatUUID } = require('../util');
 const { toNonHyphenatedUUID } = require('../util'); // toNonHyphenatedUUID 추가
 
-// const { PrismaClient } = require('@prisma/client/edge'); // PrismaClient 제거
-// const prisma = new PrismaClient(); // PrismaClient 인스턴스 제거
-
 module.exports.precalculatedLeaderboard = []; // 전역 변수로 랭킹 데이터 저장
 
 async function initializeLeaderboard() {
   console.log("🚀 [서버] 랭킹 데이터 초기화 시작...");
   try {
-    // 1. GitHub API를 통해 모든 게임 기록을 가져옴
+    // GitHub API를 통해 모든 게임 기록을 가져옴
     const allParsedGameRecords = await refreshAllGameRecordsCache();
     console.log(`🔍 [서버] 파싱된 게임 기록 수: ${allParsedGameRecords.length}`);
     if (allParsedGameRecords.length === 0) {
