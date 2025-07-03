@@ -196,18 +196,18 @@ function renderNextGames(uuid) {
     let displayDate = 'N/A';
     if (game.fileName) {
       displayDate = parseDateFromFileName(game.fileName);
-    }else if (game.Game.date) {
-      displayDate = game.Game.date;
+    }else if (game.content.Game.date) {
+      displayDate = game.content.Game.date;
     }
 
     const formattedUUID = formatUUID(uuid);
-    const playerData = (game.Player && game.Player[formattedUUID]);
-    const ranking = (playerData.Ranking !== undefined)? playerData.Ranking: (playerData.ranking !== undefined ? playerData.ranking : '0');
-    const kills = (playerData.kill !== undefined)? playerData.kill: (playerData.Kill !== undefined ? playerData.Kill : 0);
-    const joins = game.Game.amountOfPlayers;
+    const playerData = (game.content.Player && game.content.Player[formattedUUID]);
+    const ranking = (playerData?.Ranking !== undefined)? playerData.Ranking: (playerData?.ranking !== undefined ? playerData.ranking : '0');
+    const kills = (playerData?.kill !== undefined)? playerData.kill: (playerData?.Kill !== undefined ? playerData.Kill : 0);
+    const joins = game.content.Game.amountOfPlayers;
 
-    const damageDealt = ((playerData.Damage.Dealt ?? 0)).toFixed(0);
-    const damageTaken = ((playerData.Damage.Taken) ?? 0).toFixed(0);
+    const damageDealt = ((playerData?.Damage?.Dealt ?? 0)).toFixed(0);
+    const damageTaken = ((playerData?.Damage?.Taken) ?? 0).toFixed(0);
 
     let cardBg = "#2c2c2c";
     let cardBorder = "#3c3c3c";
@@ -223,12 +223,12 @@ function renderNextGames(uuid) {
       cardBorder = "#E84057";
     }
 
-    const dateColor = (playerData.Character >= 900) ? 'red' : 'white';
+    const dateColor = (playerData?.Character >= 900) ? 'red' : 'white';
 
     gameItem.innerHTML = `
     <div class="game-card" style="background-color: ${cardBg}; border-color: ${cardBorder};">
         <div class="game-card-left">
-          <img src="/Resource/character/${playerData.Character ?? 0}.png" alt="캐릭터">
+          <img src="/Resource/character/${playerData?.Character ?? 'default'}.png" alt="캐릭터">
         </div>
         <div class="game-card-info">
           <p style="color: ${dateColor}; font-size: 24px; font-weight: 600; margin: 0;">
@@ -237,15 +237,15 @@ function renderNextGames(uuid) {
           <div class="game-card-info-sub">
             <p><strong>랭킹:</strong> ${ranking} / ${joins}</p>
             <p><strong>처치:</strong> ${kills}</p>
-            <p><strong>생존:</strong> ${playerData.TimeSurvived}</p>
+            <p><strong>생존:</strong> ${playerData?.TimeSurvived ?? 'N/A'}</p>
             <p><strong>D/D:</strong> ${damageDealt} / ${damageTaken}</p>
           </div>
         </div>
         <div class="game-card-augment">
-          <img src="/Resource/augment/icon/${playerData.Augment?.[1] ?? 0}.png" alt="Augment1">
-          <img src="/Resource/augment/icon/${playerData.Augment?.[2] ?? 0}.png" alt="Augment2">
-          <img src="/Resource/augment/icon/${playerData.Augment?.[3] ?? 0}.png" alt="Augment3">
-          <img src="/Resource/augment/icon/${playerData.Augment?.[4] ?? 0}.png" alt="Augment4">
+          <img src="/Resource/augment/icon/${playerData?.Augment?.[1] ?? 'default'}.png" alt="Augment1">
+          <img src="/Resource/augment/icon/${playerData?.Augment?.[2] ?? 'default'}.png" alt="Augment2">
+          <img src="/Resource/augment/icon/${playerData?.Augment?.[3] ?? 'default'}.png" alt="Augment3">
+          <img src="/Resource/augment/icon/${playerData?.Augment?.[4] ?? 'default'}.png" alt="Augment4">
         </div>
       </div>
     `;

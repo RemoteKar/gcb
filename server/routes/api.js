@@ -52,15 +52,18 @@ async function initializeLeaderboard() {
         });
     }));
 
-    const calculatedLeaderboard = await Promise.all(allPlayerStatistics.map(async stats => {
+    const calculatedLeaderboard = await Promise.all(allPlayerStatistics.map(async (stats, index) => {
       let nickname = stats.uuid; // 기본값은 UUID
-      try {
-        const profile = await getProfileByUUID(stats.uuid); // 이미 캐시되어 있을 가능성이 높음
-        if (profile && profile.name) {
-          nickname = profile.name;
+      // 상위 20명에 대해서만 닉네임 조회
+      if (index < 20) {
+        try {
+          const profile = await getProfileByUUID(stats.uuid); // 이미 캐시되어 있을 가능성이 높음
+          if (profile && profile.name) {
+            nickname = profile.name;
+          }
+        } catch (error) {
+          console.warn(`⚠️ [서버] UUID ${stats.uuid} 에 대한 닉네임 조회 실패: ${error.message}`);
         }
-      } catch (error) {
-        console.warn(`⚠️ [서버] UUID ${stats.uuid} 에 대한 닉네임 조회 실패: ${error.message}`);
       }
 
       return {
