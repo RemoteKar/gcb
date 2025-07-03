@@ -271,18 +271,29 @@ async function fetchAllGameRecords() {
     // 3. 가져온 기록을 Prisma 및 인메모리 캐시에 저장
     if (prisma) {
         try {
-            const recordsToUpsert = allParsedGameRecordsWithFileName.map(record => ({
-                fileName: record.fileName,
-                content: record.content,
-                cachedAt: new Date(),
-                expiresAt: new Date(Date.now() + (1000 * 60 * 60 * 24 * 7)) // 7일 캐시
-            }));
             // 기존 레코드를 삭제하고 새로 삽입 (간단한 동기화 전략)
             await prisma.gameRecord.deleteMany({});
-            await prisma.gameRecord.createMany({ data: recordsToUpsert });
-            console.log(`✅ [GitHub API] Prisma에 ${recordsToUpsert.length}개 게임 기록 저장.`);
+            console.log(`[DEBUG] Cleared old game records.`);
+
+            let successCount = 0;
+            for (const record of allParsedGameRecordsWithFileName) {
+                try {
+                    await prisma.gameRecord.create({
+                        data: {
+                            fileName: record.fileName,
+                            content: record.content,
+                            cachedAt: new Date(),
+                            expiresAt: new Date(Date.now() + (1000 * 60 * 60 * 24 * 7))
+                        }
+                    });
+                    successCount++;
+                } catch (innerError) {
+                    console.error(`❌ [GitHub API] Prisma에 파일 저장 실패: ${record.fileName}`, innerError);
+                }
+            }
+            console.log(`✅ [GitHub API] Prisma에 ${successCount}/${allParsedGameRecordsWithFileName.length}개 게임 기록 저장 완료.`);
         } catch (error) {
-            console.error(`❌ [GitHub API] Prisma 게임 기록 저장 오류: ${error}`);
+            console.error(`❌ [GitHub API] Prisma 게임 기록 저장 중 오류 발생: ${error}`);
         }
     }
     const allParsedGameRecords = allParsedGameRecordsWithFileName.map(record => record.content);
