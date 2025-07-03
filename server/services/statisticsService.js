@@ -56,9 +56,17 @@ async function getAugmentStats() {
         return []; // 빈 배열 반환
     }
 
-    // 모든 게임 기록을 사용하여 증강 통계 계산
-    const allGameRecordsContent = allGameRecordsWithFileName.map(record => record.content);
-    const stats = computeGlobalAugmentStatistics(allGameRecordsContent);
+    // 파일 이름으로 정렬 (최신순)
+    const sortedRecords = allGameRecordsWithFileName.sort((a, b) => {
+        // 파일 이름에서 날짜/시간 부분을 추출하여 비교
+        const dateA = a.fileName.match(/(\d{4}\.\d{2}\.\d{2}-\d{2}\.\d{2}\.\d{2})/)?.[0] || '';
+        const dateB = b.fileName.match(/(\d{4}\.\d{2}\.\d{2}-\d{2}\.\d{2}\.\d{2})/)?.[0] || '';
+        return dateB.localeCompare(dateA); // 내림차순 정렬
+    });
+
+    const latest60RecordsContent = sortedRecords.slice(0, 60).map(record => record.content);
+
+    const stats = computeGlobalAugmentStatistics(latest60RecordsContent);
     console.log("DEBUG: calculated augment stats (in getAugmentStats)", stats);
 
     // 3. 계산된 결과를 로컬 캐시에 저장
