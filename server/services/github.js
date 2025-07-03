@@ -284,8 +284,14 @@ async function fetchAllGameRecords() {
             let successCount = 0;
             for (const record of allParsedGameRecordsWithFileName) {
                 try {
-                    await prisma.gameRecord.create({
-                        data: {
+                    await prisma.gameRecord.upsert({
+                        where: { fileName: record.fileName },
+                        update: {
+                            content: record.content,
+                            cachedAt: new Date(),
+                            expiresAt: new Date(Date.now() + (1000 * 60 * 60 * 24 * 7))
+                        },
+                        create: {
                             fileName: record.fileName,
                             content: record.content,
                             cachedAt: new Date(),
