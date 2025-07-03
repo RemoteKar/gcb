@@ -32,6 +32,7 @@ async function initializeLeaderboard() {
     console.log(`🔍 [서버] 파싱된 게임 기록 수: ${allParsedGameRecords.length}`);
     if (allParsedGameRecords.length === 0) {
         console.warn("⚠️ [서버] 파싱된 게임 기록이 없습니다. 랭킹 초기화 실패.");
+        module.exports.precalculatedLeaderboard = []; // 빈 배열로 설정
         return; // 데이터가 없으면 더 이상 진행하지 않음
     }
 
@@ -41,6 +42,7 @@ async function initializeLeaderboard() {
     console.log(`🔍 [서버] 집계된 플레이어 통계 수: ${allPlayerStatistics.length}`);
     if (allPlayerStatistics.length === 0) {
         console.warn("⚠️ [서버] 집계된 플레이어 통계가 없습니다. 랭킹 초기화 실패.");
+        module.exports.precalculatedLeaderboard = []; // 빈 배열로 설정
         return; // 통계가 없으면 더 이상 진행하지 않음
     }
 
