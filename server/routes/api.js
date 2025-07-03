@@ -19,9 +19,9 @@ async function initializeLeaderboard() {
         return; // 데이터가 없으면 더 이상 진행하지 않음
     }
 
-    const allPlayerStatistics = aggregateAllPlayerStatistics(allParsedGameRecords.map(record => record.content));
-    console.log(`🔍 [서버] 집계된 플레이어 통계 수: ${Object.keys(allPlayerStatistics).length}`);
-    if (Object.keys(allPlayerStatistics).length === 0) {
+    const allPlayerStatistics = aggregateAllPlayerStatistics(allParsedGameRecords.map(record => record?.content || record));
+    console.log(`🔍 [서버] 집계된 플레이어 통계 수: ${allPlayerStatistics.length}`);
+    if (allPlayerStatistics.length === 0) {
         console.warn("⚠️ [서버] 집계된 플레이어 통계가 없습니다. 랭킹 초기화 실패.");
         return; // 통계가 없으면 더 이상 진행하지 않음
     }
@@ -180,9 +180,27 @@ router.get('/statistic', (req, res, next) => {
 //----------------------------------------
 // 📌 랭킹 데이터 조회 (모든 유저 통계 집계 및 정렬)
 //----------------------------------------
-router.get('/leaderboard', cacheMiddleware('leaderboard'), async (req, res) => {
+let isLeaderboardInitializing = false;
+
+router.get('/leaderboard', async (req, res) => {
   console.log(`🔍 [서버] 랭킹 데이터 요청`);
-  // 미리 계산된 랭킹 데이터를 반환
+
+  // 데이터가 없거나 비어있고, 현재 초기화 중이 아닐 때만 초기화 진행
+  if (!module.exports.precalculatedLeaderboard || module.exports.precalculatedLeaderboard.length === 0) {
+    if (!isLeaderboardInitializing) {
+      isLeaderboardInitializing = true; // 초기화 시작 플래그 설정
+      try {
+        await initializeLeaderboard();
+      } finally {
+        isLeaderboardInitializing = false; // 완료 또는 실패 시 플래그 해제
+      }
+    } else {
+      // 이미 초기화가 진행 중인 경우, 클라이언트에게 잠시 후 다시 시도하라는 응답을 보낼 수 있습니다.
+      // 또는, 완료될 때까지 기다리게 할 수도 있습니다. 여기서는 간단하게 503을 반환합니다.
+      return res.status(503).json({ error: "랭킹 데이터를 준비하고 있습니다. 잠시 후 다시 시도해주세요." });
+    }
+  }
+
   res.json(module.exports.precalculatedLeaderboard);
 });
 
