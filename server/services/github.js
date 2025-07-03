@@ -24,7 +24,7 @@ try {
         url: databaseUrl,
       },
     },
-  }).$extends(withAccelerate());
+  });
   console.log("✅ [Prisma] PrismaClient (github.js) 초기화 성공.");
 } catch (error) {
   console.error("❌ [Prisma] PrismaClient (github.js) 초기화 오류: 데이터베이스 연결 실패. 캐싱 기능 비활성화.", error);

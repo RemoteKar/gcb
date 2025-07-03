@@ -1,5 +1,4 @@
 const { PrismaClient } = require('@prisma/client/edge'); // PrismaClient 복원
-const { withAccelerate } = require('@prisma/extension-accelerate'); // withAccelerate 복원
 const NodeCache = require('node-cache');
 const profileCache = new NodeCache({ stdTTL: 82800 }); // 23 hours in seconds
 
@@ -16,7 +15,7 @@ try {
         url: databaseUrl,
       },
     },
-  }).$extends(withAccelerate()); // withAccelerate 적용
+  }); // withAccelerate 적용
   console.log("✅ [Prisma] PrismaClient 초기화 성공.");
 } catch (error) {
   console.error("❌ [Prisma] PrismaClient 초기화 오류: 데이터베이스 연결 실패. 캐싱 기능 비활성화.", error);
