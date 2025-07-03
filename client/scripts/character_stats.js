@@ -45,11 +45,11 @@ document.addEventListener("DOMContentLoaded", async () => {
         const characterStats = {}; // { characterId: { wins: 0, plays: 0, kills: 0 } }
 
         recentGames.forEach(game => {
-            if (game.Game && game.Game.joinedPlayers && game.Player) {
-                const joinedPlayers = game.Game.joinedPlayers.split(',').map(s => s.trim());
+            if (game.content && game.content.Game && game.content.Game.joinedPlayers && game.content.Player) {
+                const joinedPlayers = game.content.Game.joinedPlayers.split(',').map(s => s.trim());
                 
                 joinedPlayers.forEach(playerUUID => {
-                    const playerData = game.Player[playerUUID];
+                    const playerData = game.content.Player[playerUUID];
                     if (playerData && playerData.Character !== undefined) {
                         const characterId = playerData.Character;
                         if (characterId > 0 && characterId < 900) { // 특정 값 이상인 캐릭터는 계산 대상에서 제외
@@ -102,7 +102,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 
             charDiv.innerHTML = `
                 <span class="rank-number">#${index + 1}</span> <!-- 순위 번호 추가 -->
-                <img src="/Resource/character/${characterId}.png" alt="Character ${characterId}" class="character-stat-img">
+                <img src="/Resource/character/${characterId ?? 'default'}.png" alt="Character ${characterId}" class="character-stat-img">
                 <p><strong>${statValue}${currentSortBy === 'wins' ? '승' : currentSortBy === 'plays' ? '회' : '킬'}</strong></p>
             `;
             characterListDiv.appendChild(charDiv);
