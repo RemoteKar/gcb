@@ -49,7 +49,12 @@ async function getAugmentStats() {
     // 2. 캐시 없으면 새로 계산
     console.log('🔍 [Statistics Service] 증강 통계 캐시 미스. 새로운 통계 계산 시작...');
     const allGameRecordsWithFileName = await fetchAllGameRecords();
-    console.log("DEBUG: allGameRecordsWithFileName.length (in getAugmentStats)", allGameRecordsWithFileName.length);
+    console.log("DEBUG: allGameRecordsWithFileName.length (in getAugmentStats)", allGameRecordsWithFileName ? allGameRecordsWithFileName.length : 0);
+
+    if (!allGameRecordsWithFileName || allGameRecordsWithFileName.length === 0) {
+        console.warn("⚠️ [Statistics Service] 가져온 게임 기록이 없어 증강 통계를 계산할 수 없습니다.");
+        return []; // 빈 배열 반환
+    }
 
     // 모든 게임 기록을 사용하여 증강 통계 계산
     const allGameRecordsContent = allGameRecordsWithFileName.map(record => record.content);

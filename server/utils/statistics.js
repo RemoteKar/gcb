@@ -344,15 +344,13 @@ function computeGlobalAugmentStatistics(gameRecords) {
     const augmentStats = {}; // { augmentId: { picks: 0 } }
 
     gameRecords.forEach(record => {
-        if (!record.content || !record.content.Player) return;
+        if (!record || !record.Player) return; // record.content 대신 record 직접 사용
 
-        const players = Object.values(record.content.Player);
+        const players = Object.values(record.Player); // record.content.Player 대신 record.Player 사용
 
         players.forEach(playerData => {
             if (playerData.Augment) {
-                console.log("DEBUG: playerData.Augment (in computeGlobalAugmentStatistics)", playerData.Augment);
                 Object.values(playerData.Augment).forEach(augmentValue => {
-                    console.log("DEBUG: augmentValue (in computeGlobalAugmentStatistics)", augmentValue);
                     if (augmentValue !== undefined && augmentValue !== null) { // 유효한 증강 값만 처리
                         if (!augmentStats[augmentValue]) {
                             augmentStats[augmentValue] = { picks: 0 };
