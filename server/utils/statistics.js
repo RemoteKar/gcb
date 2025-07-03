@@ -339,3 +339,38 @@ function computeGlobalCharacterStatistics(gameRecords) {
 
     return finalStats.sort((a, b) => b.picks - a.picks); // 픽률 순으로 정렬
 }
+
+function computeGlobalAugmentStatistics(gameRecords) {
+    const augmentStats = {}; // { augmentId: { picks: 0 } }
+
+    gameRecords.forEach(record => {
+        if (!record.content || !record.content.Player) return;
+
+        const players = Object.values(record.content.Player);
+
+        players.forEach(playerData => {
+            if (playerData.Augment) {
+                Object.values(playerData.Augment).forEach(augmentValue => {
+                    if (augmentValue !== undefined && augmentValue !== null) { // 유효한 증강 값만 처리
+                        if (!augmentStats[augmentValue]) {
+                            augmentStats[augmentValue] = { picks: 0 };
+                        }
+                        augmentStats[augmentValue].picks++;
+                    }
+                });
+            }
+        });
+    });
+
+    // 최종 통계 계산 및 정렬
+    const finalStats = Object.entries(augmentStats).map(([augmentId, stats]) => {
+        return {
+            augmentId,
+            picks: stats.picks,
+        };
+    });
+
+    return finalStats.sort((a, b) => b.picks - a.picks); // 픽률 순으로 정렬
+}
+
+module.exports.computeGlobalAugmentStatistics = computeGlobalAugmentStatistics;

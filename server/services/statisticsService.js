@@ -1,13 +1,14 @@
 const NodeCache = require('node-cache');
 const { fetchAllGameRecords } = require('./github');
-const { computeGlobalCharacterStatistics } = require('../utils/statistics');
+const { computeGlobalCharacterStatistics, computeGlobalAugmentStatistics } = require('../utils/statistics');
 
 const localCache = new NodeCache({ stdTTL: 3600 }); // 1시간 로컬 캐시
-const CACHE_KEY = 'global_character_stats_latest_60';
+const CACHE_KEY_CHARACTER = 'global_character_stats_latest_60';
+const CACHE_KEY_AUGMENT = 'global_augment_stats'; // 증강 통계 캐시 키
 
 async function getCharacterStats() {
     // 1. 로컬 메모리 캐시 확인
-    const localCachedData = localCache.get(CACHE_KEY);
+    const localCachedData = localCache.get(CACHE_KEY_CHARACTER);
     if (localCachedData) {
         console.log('✅ [Statistics Service] 로컬 캐시 히트');
         return localCachedData;
@@ -30,11 +31,35 @@ async function getCharacterStats() {
     const stats = computeGlobalCharacterStatistics(latest60RecordsContent);
 
     // 3. 계산된 결과를 로컬 캐시에 저장
-    localCache.set(CACHE_KEY, stats);
+    localCache.set(CACHE_KEY_CHARACTER, stats);
 
     console.log('✅ [Statistics Service] 로컬 캐시에 새로운 통계 저장 완료');
 
     return stats;
 }
 
-module.exports = { getCharacterStats };
+async function getAugmentStats() {
+    // 1. 로컬 메모리 캐시 확인
+    const localCachedData = localCache.get(CACHE_KEY_AUGMENT);
+    if (localCachedData) {
+        console.log('✅ [Statistics Service] 증강 통계 로컬 캐시 히트');
+        return localCachedData;
+    }
+
+    // 2. 캐시 없으면 새로 계산
+    console.log('🔍 [Statistics Service] 증강 통계 캐시 미스. 새로운 통계 계산 시작...');
+    const allGameRecordsWithFileName = await fetchAllGameRecords();
+
+    // 모든 게임 기록을 사용하여 증강 통계 계산
+    const allGameRecordsContent = allGameRecordsWithFileName.map(record => record.content);
+    const stats = computeGlobalAugmentStatistics(allGameRecordsContent);
+
+    // 3. 계산된 결과를 로컬 캐시에 저장
+    localCache.set(CACHE_KEY_AUGMENT, stats);
+
+    console.log('✅ [Statistics Service] 로컬 캐시에 새로운 증강 통계 저장 완료');
+
+    return stats;
+}
+
+module.exports = { getCharacterStats, getAugmentStats };
