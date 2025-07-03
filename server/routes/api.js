@@ -23,7 +23,9 @@ async function initializeLeaderboard() {
         return; // 데이터가 없으면 더 이상 진행하지 않음
     }
 
-    const allPlayerStatistics = aggregateAllPlayerStatistics(allParsedGameRecords.map(record => record?.content || record));
+    let allPlayerStatistics = aggregateAllPlayerStatistics(allParsedGameRecords.map(record => record?.content || record));
+    // 플레이 수가 20 이상인 유저만 포함
+    allPlayerStatistics = allPlayerStatistics.filter(stats => stats.totalGames >= 20);
     console.log(`🔍 [서버] 집계된 플레이어 통계 수: ${allPlayerStatistics.length}`);
     if (allPlayerStatistics.length === 0) {
         console.warn("⚠️ [서버] 집계된 플레이어 통계가 없습니다. 랭킹 초기화 실패.");
