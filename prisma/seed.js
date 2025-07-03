@@ -1,9 +1,10 @@
-const { PrismaClient } = require('@prisma/client');
+const { PrismaClient } = require('@prisma/client/edge');
+const { withAccelerate } = require('@prisma/extension-accelerate');
 const fetch = require('node-fetch');
 const yaml = require('js-yaml');
 const { formatUUID, toNonHyphenatedUUID } = require('../server/util'); // util.js 경로 수정
 
-const prisma = new PrismaClient();
+const prisma = new PrismaClient().$extends(withAccelerate());
 
 const repoOwner = process.env.GITHUB_REPO_OWNER;
 const repoName = process.env.GITHUB_REPO_NAME;
