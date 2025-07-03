@@ -96,8 +96,8 @@ async function getGameHistory(formattedUUID) {
         if (record.content && record.content.Game && record.content.Game.joinedPlayers) {
             const players = record.content.Game.joinedPlayers.split(',').map(s => toNonHyphenatedUUID(s.trim()));
             if (players.includes(toNonHyphenatedUUID(formattedUUID))) {
-                gameHistory.push(record.content);
-            }
+                    gameHistory.push(record); // record.content 대신 전체 record 객체 푸시
+                }
         }
     });
 

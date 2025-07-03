@@ -58,10 +58,3 @@ model GlobalCharacterStatsCache {
   cachedAt  DateTime  @default(now())
   expiresAt DateTime?
 }
-
-model LeaderboardCache {
-  cacheKey    String    @id @unique
-  leaderboard Json
-  cachedAt    DateTime  @default(now())
-  expiresAt   DateTime?
-}

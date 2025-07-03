@@ -6,28 +6,16 @@ const { computeStatistics, aggregateAllPlayerStatistics } = require('../utils/st
 const cacheMiddleware = require('../middleware/cache');
 const { formatUUID } = require('../util');
 const { toNonHyphenatedUUID } = require('../util'); // toNonHyphenatedUUID 추가
-const { PrismaClient } = require('@prisma/client/edge'); // PrismaClient 임포트
 
-const prisma = new PrismaClient(); // PrismaClient 인스턴스 생성
+// const { PrismaClient } = require('@prisma/client/edge'); // PrismaClient 제거
+// const prisma = new PrismaClient(); // PrismaClient 인스턴스 제거
 
 module.exports.precalculatedLeaderboard = []; // 전역 변수로 랭킹 데이터 저장
 
 async function initializeLeaderboard() {
   console.log("🚀 [서버] 랭킹 데이터 초기화 시작...");
   try {
-    // 1. Prisma 캐시에서 랭킹 데이터 조회
-    const cachedLeaderboard = await prisma.leaderboardCache.findUnique({
-        where: { cacheKey: 'main_leaderboard' },
-    });
-
-    // 캐시 유효기간 1시간 (3600000 밀리초)
-    if (cachedLeaderboard && (!cachedLeaderboard.expiresAt || cachedLeaderboard.expiresAt > new Date())) {
-        console.log(`✅ [서버] Prisma 랭킹 캐시 히트.`);
-        module.exports.precalculatedLeaderboard = cachedLeaderboard.leaderboard;
-        return; // 캐시된 데이터 반환
-    }
-
-    // 2. GitHub API를 통해 모든 게임 기록을 가져옴 (캐시 미스 또는 만료 시)
+    // 1. GitHub API를 통해 모든 게임 기록을 가져옴
     const allParsedGameRecords = await refreshAllGameRecordsCache();
     console.log(`🔍 [서버] 파싱된 게임 기록 수: ${allParsedGameRecords.length}`);
     if (allParsedGameRecords.length === 0) {
@@ -99,21 +87,6 @@ async function initializeLeaderboard() {
 
     module.exports.precalculatedLeaderboard = calculatedLeaderboard;
 
-    // 3. 계산된 랭킹 데이터를 Prisma에 저장 (1시간 캐시)
-    await prisma.leaderboardCache.upsert({
-        where: { cacheKey: 'main_leaderboard' },
-        update: {
-            leaderboard: calculatedLeaderboard,
-            cachedAt: new Date(),
-            expiresAt: new Date(Date.now() + (1000 * 60 * 60)) // 1시간 캐시
-        },
-        create: {
-            cacheKey: 'main_leaderboard',
-            leaderboard: calculatedLeaderboard,
-            cachedAt: new Date(),
-            expiresAt: new Date(Date.now() + (1000 * 60 * 60)) // 1시간 캐시
-        }
-    });
     console.log("✅ [서버] 랭킹 데이터 초기화 완료.");
   } catch (error) {
     console.error("❌ [서버] 랭킹 데이터 초기화 오류:", error);
