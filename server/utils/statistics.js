@@ -1,4 +1,4 @@
-const { formatUUID } = require('../util');
+const { formatUUID, toNonHyphenatedUUID } = require('../util');
   function computeStatistics(gameRecords, formattedUUID) {
     let totalGames = 0;
     let winCount = 0;
