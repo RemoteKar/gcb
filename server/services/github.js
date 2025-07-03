@@ -263,11 +263,16 @@ async function fetchAllGameRecords() {
 
     // 2. GitHub API에서 모든 게임 기록 가져오기
     const filesMetadata = await getAllGameHistoryFileMetadata();
+    console.log(`[DEBUG] GitHub에서 가져온 파일 메타데이터 수: ${filesMetadata.length}`);
+
     const allGameRecordsPromises = filesMetadata.map(async (file) => {
         const parsedData = await fetchAndParseYamlFile(file.download_url);
         return { fileName: file.name, content: parsedData };
     });
+    console.log(`[DEBUG] 파싱 시도할 게임 기록 수: ${allGameRecordsPromises.length}`);
+
     const allParsedGameRecordsWithFileName = (await Promise.all(allGameRecordsPromises)).filter(record => record.content !== null);
+    console.log(`[DEBUG] 성공적으로 파싱된 게임 기록 수 (필터링 후): ${allParsedGameRecordsWithFileName.length}`);
     
     // 3. 가져온 기록을 Prisma 및 인메모리 캐시에 저장
     if (prisma) {
