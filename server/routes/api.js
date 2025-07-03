@@ -160,7 +160,7 @@ router.get('/statistic', (req, res, next) => {
   console.log(`🔍 [서버] 게임 기록 요청: UUID = ${req.query.uuid}`);
   try {
     const gameHistory = await getGameHistory(req.formattedUUID);
-    const statistics = computeStatistics(gameHistory, req.formattedUUID);
+    const statistics = computeStatistics(gameHistory.map(record => record.content), req.formattedUUID);
     const formattedStatistics = {
       winRate: statistics.winRate.toFixed(1),
       winCount: statistics.winCount.toString(),
