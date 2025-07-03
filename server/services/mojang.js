@@ -1,10 +1,29 @@
-const { PrismaClient } = require('@prisma/client/edge');
-const { withAccelerate } = require('@prisma/extension-accelerate');
+const { PrismaClient } = require('@prisma/client/edge'); // PrismaClient 복원
+const { withAccelerate } = require('@prisma/extension-accelerate'); // withAccelerate 복원
 const NodeCache = require('node-cache');
 const profileCache = new NodeCache({ stdTTL: 82800 }); // 23 hours in seconds
 
 const fetch = require('node-fetch');
 
+let prisma; // prisma 인스턴스를 전역으로 선언
+
+try {
+  const databaseUrl = process.env.DATABASE_URL;
+  console.log(`[DEBUG] DATABASE_URL (processed): ${databaseUrl ? '*****' : 'UNDEFINED'}`); // 민감 정보이므로 실제 값은 ***** 처리
+  prisma = new PrismaClient({
+    datasources: {
+      db: {
+        url: databaseUrl,
+      },
+    },
+  }).$extends(withAccelerate()); // withAccelerate 적용
+  console.log("✅ [Prisma] PrismaClient 초기화 성공.");
+} catch (error) {
+  console.error("❌ [Prisma] PrismaClient 초기화 오류: 데이터베이스 연결 실패. 캐싱 기능 비활성화.", error);
+  console.error(`[DEBUG] DATABASE_URL (raw): ${process.env.DATABASE_URL ? '*****' : 'UNDEFINED'}`); // 민감 정보이므로 실제 값은 ***** 처리
+  console.error(`[DEBUG] PrismaClientInitializationError details: ${error.message}`);
+  prisma = null; // 초기화 실패 시 prisma를 null로 설정
+}
 
 // 재시도 로직을 위한 헬퍼 함수
 async function retryOperation(operation, retries = 5, delay = 2000) {
@@ -20,27 +39,6 @@ async function retryOperation(operation, retries = 5, delay = 2000) {
             }
         }
     }
-}
-
-// DATABASE_URL에서 'prisma+' 접두사 제거 (Netlify Prisma Postgres 확장 호환성)
-let prisma; // prisma 인스턴스를 전역으로 선언
-
-try {
-  const databaseUrl = process.env.DATABASE_URL;
-  console.log(`[DEBUG] DATABASE_URL (processed): ${databaseUrl ? '*****' : 'UNDEFINED'}`); // 민감 정보이므로 실제 값은 ***** 처리
-  prisma = new PrismaClient({
-    datasources: {
-      db: {
-        url: databaseUrl,
-      },
-    },
-  });
-  console.log("✅ [Prisma] PrismaClient 초기화 성공.");
-} catch (error) {
-  console.error("❌ [Prisma] PrismaClient 초기화 오류: 데이터베이스 연결 실패. 캐싱 기능 비활성화.", error);
-  console.error(`[DEBUG] DATABASE_URL (raw): ${process.env.DATABASE_URL ? '*****' : 'UNDEFINED'}`); // 민감 정보이므로 실제 값은 ***** 처리
-  console.error(`[DEBUG] PrismaClientInitializationError details: ${error.message}`);
-  prisma = null; // 초기화 실패 시 prisma를 null로 설정
 }
 
 async function getUUID(nickname) {
@@ -94,6 +92,7 @@ async function getProfileByUUID(uuid) {
                 where: { uuid: uuid },
             });
 
+            // 캐시 유효기간 1시간 (3600000 밀리초)
             if (cachedProfile && (!cachedProfile.expiresAt || cachedProfile.expiresAt > new Date())) {
                 console.log(`✅ [Mojang API] Prisma 캐시 히트: ${uuid}`);
                 profileCache.set(uuid, cachedProfile.profileData); // 인메모리 캐시에도 저장
@@ -142,14 +141,14 @@ async function getProfileByUUID(uuid) {
                         name: data.name,
                         profileData: data,
                         cachedAt: new Date(),
-                        expiresAt: new Date(Date.now() + (1000 * 60 * 60 * 24)) // 24시간 캐시
+                        expiresAt: new Date(Date.now() + (1000 * 60 * 60)) // 1시간 캐시
                     },
                     create: {
                         uuid: uuid,
                         name: data.name,
                         profileData: data,
                         cachedAt: new Date(),
-                        expiresAt: new Date(Date.now() + (1000 * 60 * 60 * 24)) // 24시간 캐시
+                        expiresAt: new Date(Date.now() + (1000 * 60 * 60)) // 1시간 캐시
                     }
                 });
                 console.log(`✅ [Mojang API] Prisma에 프로필 저장: ${uuid}`);

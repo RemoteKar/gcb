@@ -2,7 +2,7 @@ const fetch = require('node-fetch');
 const yaml = require('js-yaml');
 const { formatUUID, toNonHyphenatedUUID } = require('../util');
 const NodeCache = require('node-cache');
-const { PrismaClient } = require('@prisma/client/edge');
+const { PrismaClient } = require('@prisma/client/edge'); // PrismaClient 복원
 
 const repoOwner = process.env.GITHUB_REPO_OWNER;
 const repoName = process.env.GITHUB_REPO_NAME;
@@ -11,6 +11,7 @@ const githubToken = process.env.GITHUB_TOKEN;
 const baseDataPath = 'Data';
 
 const badgeCache = new NodeCache({ stdTTL: 86400 }); // 24시간 캐시 (초 단위)
+const gameHistoryCache = new NodeCache({ stdTTL: 86400 }); // 24시간 캐시 (초 단위)
 
 let prisma; // prisma 인스턴스를 전역으로 선언
 
@@ -59,25 +60,7 @@ async function getBadgeData(formattedUUID) {
         return inMemoryCachedData;
     }
 
-    // 2. Prisma 캐시에서 조회 (Prisma가 유효할 경우)
-    if (prisma) {
-        try {
-            const cachedBadge = await prisma.badgeData.findUnique({
-                where: { uuid: formattedUUID },
-            });
-
-            if (cachedBadge && (!cachedBadge.expiresAt || cachedBadge.expiresAt > new Date())) {
-                console.log(`✅ [GitHub API] Prisma 배지 데이터 캐시 히트: ${formattedUUID}`);
-                badgeCache.set(formattedUUID, cachedBadge.badgeData); // 인메모리 캐시에도 저장
-                return cachedBadge.badgeData;
-            }
-        } catch (error) {
-            console.error(`❌ [GitHub API] Prisma 배지 데이터 캐시 조회 오류: ${error}`);
-            // 오류 발생 시 캐시 사용 안 하고 다음 로직으로 진행
-        }
-    }
-
-    // 3. GitHub API에서 조회
+    // 2. GitHub API에서 조회
     const filePath = `${baseDataPath}/player/badge/${formattedUUID}.yaml`;
     const githubApiUrl = `https://api.github.com/repos/${repoOwner}/${repoName}/contents/${filePath}?ref=${branch}`;
     console.log(`🔍 [GitHub API] 배지 데이터 요청 URL: ${githubApiUrl}`);
@@ -109,32 +92,9 @@ async function getBadgeData(formattedUUID) {
         return badgeData.badge || badgeData;
     });
 
-    // 4. 캐시에 저장
-    if (data !== null) { // 데이터가 유효할 때만 캐시
-        badgeCache.set(formattedUUID, data); // 인메모리 캐시에 저장
-
-        if (prisma) { // prisma가 유효할 때만 Prisma 캐시 저장 로직 실행
-            try {
-                await prisma.badgeData.upsert({
-                    where: { uuid: formattedUUID },
-                    update: {
-                        badgeData: data,
-                        cachedAt: new Date(),
-                        expiresAt: new Date(Date.now() + (1000 * 60 * 60 * 24)) // 24시간 캐시
-                    },
-                    create: {
-                        uuid: formattedUUID,
-                        badgeData: data,
-                        cachedAt: new Date(),
-                        expiresAt: new Date(Date.now() + (1000 * 60 * 60 * 24)) // 24시간 캐시
-                    }
-                });
-                console.log(`✅ [GitHub API] Prisma에 배지 데이터 저장: ${formattedUUID}`);
-            } catch (error) {
-                console.error(`❌ [GitHub API] Prisma 배지 데이터 저장 오류: ${error}`);
-                // 저장 실패해도 데이터는 반환
-            }
-        }
+    // 3. 인메모리 캐시에 저장 (데이터가 유효할 때만)
+    if (data !== null) {
+        badgeCache.set(formattedUUID, data);
     }
 
     return data;
@@ -152,16 +112,17 @@ async function getGameHistory(formattedUUID) {
             where: { uuid: formattedUUID },
         });
 
+        // 캐시 유효기간 1시간 (3600000 밀리초)
         if (cachedUserHistory && (!cachedUserHistory.expiresAt || cachedUserHistory.expiresAt > new Date())) {
             console.log(`✅ [GitHub API] Prisma 유저 게임 기록 캐시 히트: ${formattedUUID}`);
             return cachedUserHistory.gameRecords;
         }
 
-        // 2. Prisma의 GameRecord 테이블에서 모든 게임 기록을 가져와 필터링
-        const allGameRecordsFromDb = await prisma.gameRecord.findMany();
-        const gameHistory = [];
+        // 2. GitHub API에서 모든 게임 기록을 가져와 필터링
+        const allParsedGameRecordsWithFileName = await fetchAllGameRecords();
 
-        allGameRecordsFromDb.forEach(record => {
+        const gameHistory = [];
+        allParsedGameRecordsWithFileName.forEach(record => {
             if (record.content && record.content.Game && record.content.Game.joinedPlayers) {
                 const players = record.content.Game.joinedPlayers.split(',').map(s => toNonHyphenatedUUID(s.trim()));
                 if (players.includes(toNonHyphenatedUUID(formattedUUID))) {
@@ -177,13 +138,13 @@ async function getGameHistory(formattedUUID) {
                 update: {
                     gameRecords: gameHistory,
                     cachedAt: new Date(),
-                    expiresAt: new Date(Date.now() + (1000 * 60 * 60 * 24 * 7)) // 7일 캐시
+                    expiresAt: new Date(Date.now() + (1000 * 60 * 60)) // 1시간 캐시
                 },
                 create: {
                     uuid: formattedUUID,
                     gameRecords: gameHistory,
                     cachedAt: new Date(),
-                    expiresAt: new Date(Date.now() + (1000 * 60 * 60 * 24 * 7)) // 7일 캐시
+                    expiresAt: new Date(Date.now() + (1000 * 60 * 60)) // 1시간 캐시
                 }
             });
             console.log(`✅ [GitHub API] Prisma에 유저 게임 기록 저장: ${formattedUUID}`);
@@ -200,9 +161,99 @@ async function getGameHistory(formattedUUID) {
     }
 }
 
-// fetchAllGameRecords 함수는 이제 seed.js에서만 사용되므로 제거하거나 간소화합니다.
-// 여기서는 API에서 직접 사용되지 않으므로 제거합니다.
+async function getAllGameHistoryFileMetadata() {
+    const dirPath = `${baseDataPath}/gameHistory`;
+    const githubApiUrl = `https://api.github.com/repos/${repoOwner}/${repoName}/contents/${dirPath}?ref=${branch}`;
+    console.log(`🔍 [GitHub API] 모든 게임 기록 파일 메타데이터 요청 URL: ${githubApiUrl}`);
 
-// refreshAllGameRecordsCache 함수도 seed.js에서만 사용되므로 제거합니다.
+    return retryOperation(async () => {
+        const dirResponse = await fetch(githubApiUrl, {
+            headers: {
+                'Authorization': `token ${githubToken}`,
+                'User-Agent': 'Your App Name'
+            }
+        });
 
-module.exports = { getBadgeData, getGameHistory };
+        if (!dirResponse.ok) {
+            console.error(`❌ [GitHub API] 모든 게임 기록 파일 메타데이터 응답 코드: ${dirResponse.status}`);
+            throw new Error('게임 기록 폴더가 존재하지 않거나 접근할 수 없습니다.');
+        }
+
+        return dirResponse.json();
+    });
+}
+
+async function fetchAndParseYamlFile(downloadUrl) {
+    return retryOperation(async () => {
+        const response = await fetch(downloadUrl, {
+            headers: {
+                'Authorization': `token ${githubToken}`,
+                'User-Agent': 'Your App Name'
+            }
+        });
+
+        if (!response.ok) {
+            console.error(`❌ [GitHub API] 파일 다운로드 실패: ${response.status}`);
+            throw new Error(`파일 다운로드 실패: ${response.status}`);
+        }
+        const text = await response.text();
+        return yaml.load(text);
+    });
+}
+
+async function fetchAllGameRecords() {
+    // 1. 인메모리 캐시에서 조회
+    const inMemoryCachedData = gameHistoryCache.get('allGameRecords');
+    if (inMemoryCachedData) {
+        console.log(`✅ [GitHub API] 인메모리 게임 기록 캐시 히트: ${inMemoryCachedData.length}개`);
+        return inMemoryCachedData;
+    }
+
+    // 2. GitHub API에서 모든 게임 기록 가져오기
+    const filesMetadata = await getAllGameHistoryFileMetadata();
+    console.log(`[DEBUG] GitHub에서 가져온 파일 메타데이터 수: ${filesMetadata.length}`);
+
+    const allGameRecordsPromises = filesMetadata.map(async (file) => {
+        const parsedData = await fetchAndParseYamlFile(file.download_url);
+        return { fileName: file.name, content: parsedData };
+    });
+    console.log(`[DEBUG] 파싱 시도할 게임 기록 수: ${allGameRecordsPromises.length}`);
+
+    const allParsedGameRecordsWithFileName = (await Promise.all(allGameRecordsPromises)).filter(record => record.content !== null);
+    console.log(`[DEBUG] 성공적으로 파싱된 게임 기록 수 (필터링 후): ${allParsedGameRecordsWithFileName.length}`);
+    
+    // 3. 인메모리 캐시에 저장
+    gameHistoryCache.set('allGameRecords', allParsedGameRecordsWithFileName);
+
+    return allParsedGameRecordsWithFileName;
+}
+
+async function refreshAllGameRecordsCache() {
+    console.log("🚀 [GitHub API] 모든 게임 기록 캐시 강제 새로고침 시작...");
+    try {
+        // GitHub에서 모든 게임 기록 가져오기
+        const filesMetadata = await getAllGameHistoryFileMetadata();
+        console.log(`[DEBUG] GitHub에서 가져온 파일 메타데이터 수: ${filesMetadata.length}`);
+
+        const allGameRecordsPromises = filesMetadata.map(async (file) => {
+            const parsedData = await fetchAndParseYamlFile(file.download_url);
+            return { fileName: file.name, content: parsedData };
+        });
+        console.log(`[DEBUG] 파싱 시도할 게임 기록 수: ${allGameRecordsPromises.length}`);
+
+        const allParsedGameRecordsWithFileName = (await Promise.all(allGameRecordsPromises)).filter(record => record.content !== null);
+        console.log(`[DEBUG] 성공적으로 파싱된 게임 기록 수 (필터링 후): ${allParsedGameRecordsWithFileName.length}`);
+        
+        // 인메모리 캐시 업데이트
+        gameHistoryCache.set('allGameRecords', allParsedGameRecordsWithFileName);
+
+        console.log("✅ [GitHub API] 모든 게임 기록 캐시 강제 새로고침 완료.");
+        return allParsedGameRecordsWithFileName; // 새로고침된 전체 기록 반환
+
+    } catch (error) {
+        console.error("❌ [GitHub API] 모든 게임 기록 캐시 강제 새로고침 오류:", error);
+        throw error; // 오류 전파
+    }
+}
+
+module.exports = { getBadgeData, getGameHistory, getAllGameHistoryFileMetadata, fetchAndParseYamlFile, fetchAllGameRecords, refreshAllGameRecordsCache };

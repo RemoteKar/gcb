@@ -1,21 +1,22 @@
 const express = require('express');
 const router = express.Router();
 const { getUUID, getProfileByUUID } = require('../services/mojang');
-const { getBadgeData, getGameHistory } = require('../services/github');
+const { getBadgeData, getGameHistory, fetchAllGameRecords, refreshAllGameRecordsCache } = require('../services/github'); // fetchAllGameRecords, refreshAllGameRecordsCache 복원
 const { computeStatistics, aggregateAllPlayerStatistics } = require('../utils/statistics');
 const cacheMiddleware = require('../middleware/cache');
 const { formatUUID } = require('../util');
 const { toNonHyphenatedUUID } = require('../util'); // toNonHyphenatedUUID 추가
-const { PrismaClient } = require('@prisma/client/edge');
 
-const prisma = new PrismaClient();
+// const { PrismaClient } = require('@prisma/client/edge'); // PrismaClient 제거
+// const prisma = new PrismaClient(); // PrismaClient 인스턴스 제거
 
 module.exports.precalculatedLeaderboard = []; // 전역 변수로 랭킹 데이터 저장
 
 async function initializeLeaderboard() {
   console.log("🚀 [서버] 랭킹 데이터 초기화 시작...");
   try {
-    const allParsedGameRecords = await prisma.gameRecord.findMany();
+    // GitHub API를 통해 모든 게임 기록을 가져옴
+    const allParsedGameRecords = await refreshAllGameRecordsCache();
     console.log(`🔍 [서버] 파싱된 게임 기록 수: ${allParsedGameRecords.length}`);
     if (allParsedGameRecords.length === 0) {
         console.warn("⚠️ [서버] 파싱된 게임 기록이 없습니다. 랭킹 초기화 실패.");
@@ -72,11 +73,11 @@ async function initializeLeaderboard() {
         averageDamageDealt: stats.averageDamageDealt.toFixed(0),
         averageDamageTaken: stats.averageDamageTaken.toFixed(0),
         averageKillRate: stats.averageKillRate.toFixed(2),
-        averageAliveTime: stats.averageAliveTime.toFixed(1),
-        maxDamageDealt: stats.maxDamageDealt.toFixed(0),
-        maxDamageTaken: stats.maxDamageTaken.toFixed(0),
-        maxKill: stats.maxKill.toString(),
-        totalGames: stats.totalGames.toString()
+        averageAliveTime: statistics.averageAliveTime.toFixed(1),
+        maxDamageDealt: statistics.maxDamageDealt.toFixed(0),
+        maxDamageTaken: statistics.maxDamageTaken.toFixed(0),
+        maxKill: statistics.maxKill.toString(),
+        totalGames: statistics.totalGames.toString()
       };
     }));
 
@@ -229,7 +230,7 @@ router.get('/character-stats', async (req, res) => {
 router.get('/all_game_history', cacheMiddleware('all_game_history'), async (req, res) => {
   console.log(`🔍 [서버] 모든 게임 기록 요청`);
   try {
-    const allParsedGameRecords = await prisma.gameRecord.findMany(); // Prisma에서 직접 조회
+    const allParsedGameRecords = await fetchAllGameRecords(); // fetchAllGameRecords 복원
     res.json({ gameRecords: allParsedGameRecords });
   } catch (error) {
     console.error("❌ [서버] 모든 게임 기록 조회 오류:", error);

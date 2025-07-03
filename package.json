@@ -4,8 +4,7 @@
   "description": "Express API for Minecraft Project",
   "main": "server/server.js",
   "scripts": {
-    "start": "node server/server.js",
-    "prisma:seed": "node prisma/seed.js"
+    "start": "node server/server.js"
   },
   "dependencies": {
     "@prisma/client": "^6.11.0",
