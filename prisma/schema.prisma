@@ -51,3 +51,10 @@ model UserGameHistoryCache {
   cachedAt    DateTime  @default(now())
   expiresAt   DateTime?
 }
+
+model GlobalCharacterStatsCache {
+  cacheKey  String    @id
+  statsData Json
+  cachedAt  DateTime  @default(now())
+  expiresAt DateTime?
+}
