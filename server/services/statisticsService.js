@@ -32,19 +32,19 @@ async function getCharacterStats() {
 
     // 3. 캐시 없으면 새로 계산
     console.log('🔍 [Statistics Service] 캐시 미스. 새로운 통계 계산 시작...');
-    const allGameRecords = await fetchAllGameRecords();
+    const allGameRecordsWithFileName = await fetchAllGameRecords();
 
     // 파일 이름으로 정렬 (최신순)
-    const sortedRecords = allGameRecords.sort((a, b) => {
+    const sortedRecords = allGameRecordsWithFileName.sort((a, b) => {
         // 파일 이름에서 날짜/시간 부분을 추출하여 비교
         const dateA = a.fileName.match(/(\d{4}\.\d{2}\.\d{2}-\d{2}\.\d{2}\.\d{2})/)[0];
         const dateB = b.fileName.match(/(\d{4}\.\d{2}\.\d{2}-\d{2}\.\d{2}\.\d{2})/)[0];
         return dateB.localeCompare(dateA); // 내림차순 정렬
     });
 
-    const latest60Records = sortedRecords.slice(0, 60);
+    const latest60RecordsContent = sortedRecords.slice(0, 60).map(record => record.content);
 
-    const stats = computeGlobalCharacterStatistics(latest60Records.map(record => record.content));
+    const stats = computeGlobalCharacterStatistics(latest60RecordsContent);
 
     // 4. 계산된 결과를 캐시에 저장
     const expiresAt = new Date(Date.now() + 3600 * 1000); // 1시간 후 만료

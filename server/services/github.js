@@ -161,14 +161,14 @@ async function getGameHistory(formattedUUID) {
     }
 
     // 2. 전체 게임 기록을 가져와 필터링 (Prisma 또는 GitHub)
-    const allParsedGameRecordsWithFileName = await fetchAllGameRecords(); // 이 함수는 이제 Prisma 캐시를 먼저 확인
+    const allParsedGameRecordsContent = await fetchAllGameRecords(); // 이 함수는 이제 Prisma 캐시를 먼저 확인
 
     const gameHistory = [];
-    allParsedGameRecordsWithFileName.forEach(record => {
-        if (record.content && record.content.Game && record.content.Game.joinedPlayers) {
-            const players = record.content.Game.joinedPlayers.split(',').map(s => toNonHyphenatedUUID(s.trim()));
+    allParsedGameRecordsContent.forEach(recordContent => {
+        if (recordContent && recordContent.Game && recordContent.Game.joinedPlayers) {
+            const players = recordContent.Game.joinedPlayers.split(',').map(s => toNonHyphenatedUUID(s.trim()));
             if (players.includes(toNonHyphenatedUUID(formattedUUID))) {
-                gameHistory.push(record.content);
+                gameHistory.push(recordContent);
             }
         }
     });
@@ -250,9 +250,10 @@ async function fetchAllGameRecords() {
             const cachedRecords = await prisma.gameRecord.findMany();
             if (cachedRecords.length > 0) {
                 console.log(`✅ [GitHub API] Prisma 게임 기록 캐시 히트: ${cachedRecords.length}개`);
-                const parsedRecords = cachedRecords.map(record => record.content);
-                gameHistoryCache.set('allGameRecords', parsedRecords); // 인메모리 캐시에도 저장
-                return parsedRecords;
+                // Prisma 캐시에서 가져올 때도 { fileName, content } 형태로 반환
+                const parsedRecordsWithFileName = cachedRecords.map(record => ({ fileName: record.fileName, content: record.content }));
+                gameHistoryCache.set('allGameRecords', parsedRecordsWithFileName); // 인메모리 캐시에도 저장
+                return parsedRecordsWithFileName;
             }
         } catch (error) {
             console.error(`❌ [GitHub API] Prisma 게임 기록 캐시 조회 오류: ${error}`);
