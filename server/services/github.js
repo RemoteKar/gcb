@@ -262,15 +262,18 @@ async function fetchAllGameRecords() {
 
     // 2. GitHub API에서 모든 게임 기록 가져오기
     const filesMetadata = await getAllGameHistoryFileMetadata();
-    const allGameRecordsPromises = filesMetadata.map(file => fetchAndParseYamlFile(file.download_url));
-    const allParsedGameRecords = (await Promise.all(allGameRecordsPromises)).filter(record => record !== null);
+    const allGameRecordsPromises = filesMetadata.map(async (file) => {
+        const parsedData = await fetchAndParseYamlFile(file.download_url);
+        return { fileName: file.name, content: parsedData };
+    });
+    const allParsedGameRecordsWithFileName = (await Promise.all(allGameRecordsPromises)).filter(record => record.content !== null);
     
     // 3. 가져온 기록을 Prisma 및 인메모리 캐시에 저장
     if (prisma) {
         try {
-            const recordsToUpsert = allParsedGameRecords.map(record => ({
-                fileName: record.fileName, // Assuming parsedData has fileName property
-                content: record,
+            const recordsToUpsert = allParsedGameRecordsWithFileName.map(record => ({
+                fileName: record.fileName,
+                content: record.content,
                 cachedAt: new Date(),
                 expiresAt: new Date(Date.now() + (1000 * 60 * 60 * 24 * 7)) // 7일 캐시
             }));
@@ -282,20 +285,21 @@ async function fetchAllGameRecords() {
             console.error(`❌ [GitHub API] Prisma 게임 기록 저장 오류: ${error}`);
         }
     }
+    const allParsedGameRecords = allParsedGameRecordsWithFileName.map(record => record.content);
     gameHistoryCache.set('allGameRecords', allParsedGameRecords); // 인메모리 캐시에 저장
 
     // 4. 유저별 게임 기록 캐시 (UserGameHistoryCache) 업데이트
     if (prisma) {
         try {
             const userGameHistoryMap = new Map();
-            allParsedGameRecords.forEach(record => {
-                if (record && record.Game && record.Game.joinedPlayers) {
-                    const players = record.Game.joinedPlayers.split(',').map(s => toNonHyphenatedUUID(s.trim()));
+            allParsedGameRecordsWithFileName.forEach(record => {
+                if (record.content && record.content.Game && record.content.Game.joinedPlayers) {
+                    const players = record.content.Game.joinedPlayers.split(',').map(s => toNonHyphenatedUUID(s.trim()));
                     players.forEach(playerUUID => {
                         if (!userGameHistoryMap.has(playerUUID)) {
                             userGameHistoryMap.set(playerUUID, []);
                         }
-                        userGameHistoryMap.get(playerUUID).push(record);
+                        userGameHistoryMap.get(playerUUID).push(record.content);
                     });
                 }
             });
