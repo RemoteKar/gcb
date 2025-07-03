@@ -214,7 +214,7 @@ router.get('/leaderboard', async (req, res) => {
   res.json(module.exports.precalculatedLeaderboard);
 });
 
-const { getCharacterStats } = require('../services/statisticsService');
+const { getCharacterStats, getAugmentStats } = require('../services/statisticsService');
 
 //----------------------------------------
 // 📌 글로벌 캐릭터 통계 조회 (최신 60경기 기반)
@@ -242,6 +242,17 @@ router.get('/all_game_history', cacheMiddleware('all_game_history'), async (req,
     console.error("❌ [서버] 모든 게임 기록 조회 오류:", error);
     res.status(500).json({ error: error.message });
   }
+});
+
+router.get('/augment-stats', async (req, res) => {
+    console.log(`🔍 [서버] 증강 통계 요청`);
+    try {
+        const stats = await getAugmentStats();
+        res.json(stats);
+    } catch (error) {
+        console.error("❌ [서버] 증강 통계 조회 오류:", error);
+        res.status(500).json({ error: '서버 내부 오류가 발생했습니다.' });
+    }
 });
 
 module.exports = router;
