@@ -49,10 +49,12 @@ async function getAugmentStats() {
     // 2. 캐시 없으면 새로 계산
     console.log('🔍 [Statistics Service] 증강 통계 캐시 미스. 새로운 통계 계산 시작...');
     const allGameRecordsWithFileName = await fetchAllGameRecords();
+    console.log("DEBUG: allGameRecordsWithFileName.length (in getAugmentStats)", allGameRecordsWithFileName.length);
 
     // 모든 게임 기록을 사용하여 증강 통계 계산
     const allGameRecordsContent = allGameRecordsWithFileName.map(record => record.content);
     const stats = computeGlobalAugmentStatistics(allGameRecordsContent);
+    console.log("DEBUG: calculated augment stats (in getAugmentStats)", stats);
 
     // 3. 계산된 결과를 로컬 캐시에 저장
     localCache.set(CACHE_KEY_AUGMENT, stats);

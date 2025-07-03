@@ -350,7 +350,9 @@ function computeGlobalAugmentStatistics(gameRecords) {
 
         players.forEach(playerData => {
             if (playerData.Augment) {
+                console.log("DEBUG: playerData.Augment (in computeGlobalAugmentStatistics)", playerData.Augment);
                 Object.values(playerData.Augment).forEach(augmentValue => {
+                    console.log("DEBUG: augmentValue (in computeGlobalAugmentStatistics)", augmentValue);
                     if (augmentValue !== undefined && augmentValue !== null) { // 유효한 증강 값만 처리
                         if (!augmentStats[augmentValue]) {
                             augmentStats[augmentValue] = { picks: 0 };

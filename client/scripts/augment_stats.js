@@ -33,7 +33,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 
             augmentDiv.innerHTML = `
                 <span class="rank-number">#${index + 1}</span>
-                <img src="/Resource/augment/icon/${stat.augmentId}.png" alt="Augment ${stat.augmentId}" class="character-stat-img">
+                <img src="/Resource/augment/icon/${stat.augmentId ?? 'default'}.png" alt="Augment ${stat.augmentId}" class="character-stat-img">
                 <p><strong>${stat.picks}회</strong></p>
             `;
             augmentListDiv.appendChild(augmentDiv);
