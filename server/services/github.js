@@ -9,10 +9,8 @@ const repoName = process.env.GITHUB_REPO_NAME;
 const branch = process.env.GITHUB_BRANCH;
 const githubToken = process.env.GITHUB_TOKEN;
 const baseDataPath = 'Data';
-const MAX_RECORDS = 400;
 
 const badgeCache = new NodeCache({ stdTTL: 86400 }); // 24시간 캐시 (초 단위)
-const gameHistoryCache = new NodeCache({ stdTTL: 86400 }); // 24시간 캐시 (초 단위)
 
 let prisma; // prisma 인스턴스를 전역으로 선언
 
@@ -143,39 +141,37 @@ async function getBadgeData(formattedUUID) {
 }
 
 async function getGameHistory(formattedUUID) {
-    // 1. Prisma 캐시에서 유저별 게임 기록 조회
-    if (prisma) {
-        try {
-            const cachedUserHistory = await prisma.userGameHistoryCache.findUnique({
-                where: { uuid: formattedUUID },
-            });
-
-            if (cachedUserHistory && (!cachedUserHistory.expiresAt || cachedUserHistory.expiresAt > new Date())) {
-                console.log(`✅ [GitHub API] Prisma 유저 게임 기록 캐시 히트: ${formattedUUID}`);
-                return cachedUserHistory.gameRecords;
-            }
-        } catch (error) {
-            console.error(`❌ [GitHub API] Prisma 유저 게임 기록 캐시 조회 오류: ${error}`);
-            // 오류 발생 시 다음 로직으로 진행
-        }
+    if (!prisma) {
+        console.warn("⚠️ [GitHub API] Prisma 클라이언트가 초기화되지 않아 게임 기록을 가져올 수 없습니다.");
+        throw new Error("데이터베이스 연결 오류");
     }
 
-    // 2. 전체 게임 기록을 가져와 필터링 (Prisma 또는 GitHub)
-    const allParsedGameRecordsWithFileName = await fetchAllGameRecords(); // 이 함수는 이제 Prisma 캐시를 먼저 확인
+    try {
+        // 1. Prisma 캐시에서 유저별 게임 기록 조회
+        const cachedUserHistory = await prisma.userGameHistoryCache.findUnique({
+            where: { uuid: formattedUUID },
+        });
 
-    const gameHistory = [];
-    allParsedGameRecordsWithFileName.forEach(record => {
-        if (record.content && record.content.Game && record.content.Game.joinedPlayers) {
-            const players = record.content.Game.joinedPlayers.split(',').map(s => toNonHyphenatedUUID(s.trim()));
-            if (players.includes(toNonHyphenatedUUID(formattedUUID))) {
-                gameHistory.push(record.content);
-            }
+        if (cachedUserHistory && (!cachedUserHistory.expiresAt || cachedUserHistory.expiresAt > new Date())) {
+            console.log(`✅ [GitHub API] Prisma 유저 게임 기록 캐시 히트: ${formattedUUID}`);
+            return cachedUserHistory.gameRecords;
         }
-    });
 
-    // 3. 유저별 게임 기록을 Prisma에 저장
-    if (prisma && gameHistory.length > 0) {
-        try {
+        // 2. Prisma의 GameRecord 테이블에서 모든 게임 기록을 가져와 필터링
+        const allGameRecordsFromDb = await prisma.gameRecord.findMany();
+        const gameHistory = [];
+
+        allGameRecordsFromDb.forEach(record => {
+            if (record.content && record.content.Game && record.content.Game.joinedPlayers) {
+                const players = record.content.Game.joinedPlayers.split(',').map(s => toNonHyphenatedUUID(s.trim()));
+                if (players.includes(toNonHyphenatedUUID(formattedUUID))) {
+                    gameHistory.push(record.content);
+                }
+            }
+        });
+
+        // 3. 유저별 게임 기록을 Prisma에 저장 (새로 계산된 경우)
+        if (gameHistory.length > 0) {
             await prisma.userGameHistoryCache.upsert({
                 where: { uuid: formattedUUID },
                 update: {
@@ -191,262 +187,22 @@ async function getGameHistory(formattedUUID) {
                 }
             });
             console.log(`✅ [GitHub API] Prisma에 유저 게임 기록 저장: ${formattedUUID}`);
-        } catch (error) {
-            console.error(`❌ [GitHub API] Prisma 유저 게임 기록 저장 오류: ${error}`);
-        }
-    }
-
-    if (gameHistory.length === 0) {
-        throw new Error('게임 기록을 찾을 수 없습니다.');
-    }
-
-    return gameHistory;
-}
-
-async function getAllGameHistoryFileMetadata() {
-    const dirPath = `${baseDataPath}/gameHistory`;
-    const githubApiUrl = `https://api.github.com/repos/${repoOwner}/${repoName}/contents/${dirPath}?ref=${branch}`;
-    console.log(`🔍 [GitHub API] 모든 게임 기록 파일 메타데이터 요청 URL: ${githubApiUrl}`);
-
-    return retryOperation(async () => {
-        const dirResponse = await fetch(githubApiUrl, {
-            headers: {
-                'Authorization': `token ${githubToken}`,
-                'User-Agent': 'Your App Name'
-            }
-        });
-
-        if (!dirResponse.ok) {
-            console.error(`❌ [GitHub API] 모든 게임 기록 파일 메타데이터 응답 코드: ${dirResponse.status}`);
-            throw new Error('게임 기록 폴더가 존재하지 않거나 접근할 수 없습니다.');
         }
 
-        return dirResponse.json();
-    });
-}
-
-async function fetchAndParseYamlFile(downloadUrl) {
-    return retryOperation(async () => {
-        const response = await fetch(downloadUrl, {
-            headers: {
-                'Authorization': `token ${githubToken}`,
-                'User-Agent': 'Your App Name'
-            }
-        });
-
-        if (!response.ok) {
-            console.error(`❌ [GitHub API] 파일 다운로드 실패: ${response.status}`);
-            throw new Error(`파일 다운로드 실패: ${response.status}`);
-        }
-        const text = await response.text();
-        return yaml.load(text);
-    });
-}
-
-async function fetchAllGameRecords() {
-    // 1. Prisma 캐시에서 모든 게임 기록 조회
-    if (prisma) {
-        try {
-            const cachedRecords = await prisma.gameRecord.findMany();
-            if (cachedRecords.length > 0) {
-                console.log(`✅ [GitHub API] Prisma 게임 기록 캐시 히트: ${cachedRecords.length}개`);
-                // Prisma 캐시에서 가져올 때도 { fileName, content } 형태로 반환
-                const parsedRecordsWithFileName = cachedRecords.map(record => ({ fileName: record.fileName, content: record.content }));
-                gameHistoryCache.set('allGameRecords', parsedRecordsWithFileName); // 인메모리 캐시에도 저장
-                return parsedRecordsWithFileName;
-            }
-        } catch (error) {
-            console.error(`❌ [GitHub API] Prisma 게임 기록 캐시 조회 오류: ${error}`);
-            // 오류 발생 시 다음 로직으로 진행
-        }
-    }
-
-    // 2. GitHub API에서 모든 게임 기록 가져오기
-    const filesMetadata = await getAllGameHistoryFileMetadata();
-    console.log(`[DEBUG] GitHub에서 가져온 파일 메타데이터 수: ${filesMetadata.length}`);
-
-    const allGameRecordsPromises = filesMetadata.map(async (file) => {
-        const parsedData = await fetchAndParseYamlFile(file.download_url);
-        return { fileName: file.name, content: parsedData };
-    });
-    console.log(`[DEBUG] 파싱 시도할 게임 기록 수: ${allGameRecordsPromises.length}`);
-
-    const allParsedGameRecordsWithFileName = (await Promise.all(allGameRecordsPromises)).filter(record => record.content !== null);
-    console.log(`[DEBUG] 성공적으로 파싱된 게임 기록 수 (필터링 후): ${allParsedGameRecordsWithFileName.length}`);
-    
-    // 3. 가져온 기록을 Prisma 및 인메모리 캐시에 저장
-    if (prisma) {
-        try {
-            // 기존 레코드를 삭제하고 새로 삽입 (간단한 동기화 전략)
-            await prisma.gameRecord.deleteMany({});
-            console.log(`[DEBUG] Cleared old game records.`);
-
-            let successCount = 0;
-            for (const record of allParsedGameRecordsWithFileName) {
-                try {
-                    await prisma.gameRecord.upsert({
-                        where: { fileName: record.fileName },
-                        update: {
-                            content: record.content,
-                            cachedAt: new Date(),
-                            expiresAt: new Date(Date.now() + (1000 * 60 * 60 * 24 * 7))
-                        },
-                        create: {
-                            fileName: record.fileName,
-                            content: record.content,
-                            cachedAt: new Date(),
-                            expiresAt: new Date(Date.now() + (1000 * 60 * 60 * 24 * 7))
-                        }
-                    });
-                    successCount++;
-                } catch (innerError) {
-                    console.error(`❌ [GitHub API] Prisma에 파일 저장 실패: ${record.fileName}`, innerError);
-                }
-            }
-            console.log(`✅ [GitHub API] Prisma에 ${successCount}/${allParsedGameRecordsWithFileName.length}개 게임 기록 저장 완료.`);
-        } catch (error) {
-            console.error(`❌ [GitHub API] Prisma 게임 기록 저장 중 오류 발생: ${error}`);
-        }
-    }
-    const allParsedGameRecords = allParsedGameRecordsWithFileName.map(record => record.content);
-    gameHistoryCache.set('allGameRecords', allParsedGameRecords); // 인메모리 캐시에 저장
-
-    // 4. 유저별 게임 기록 캐시 (UserGameHistoryCache) 업데이트
-    if (prisma) {
-        try {
-            const userGameHistoryMap = new Map();
-            allParsedGameRecordsWithFileName.forEach(record => {
-                if (record.content && record.content.Game && record.content.Game.joinedPlayers) {
-                    const players = record.content.Game.joinedPlayers.split(',').map(s => toNonHyphenatedUUID(s.trim()));
-                    players.forEach(playerUUID => {
-                        if (!userGameHistoryMap.has(playerUUID)) {
-                            userGameHistoryMap.set(playerUUID, []);
-                        }
-                        userGameHistoryMap.get(playerUUID).push(record.content);
-                    });
-                }
-            });
-
-            const userHistoryUpsertPromises = Array.from(userGameHistoryMap.entries()).map(([uuid, records]) =>
-                prisma.userGameHistoryCache.upsert({
-                    where: { uuid: uuid },
-                    update: {
-                        gameRecords: records,
-                        cachedAt: new Date(),
-                        expiresAt: new Date(Date.now() + (1000 * 60 * 60 * 24 * 7)) // 7일 캐시
-                    },
-                    create: {
-                        uuid: uuid,
-                        gameRecords: records,
-                        cachedAt: new Date(),
-                        expiresAt: new Date(Date.now() + (1000 * 60 * 60 * 24 * 7)) // 7일 캐시
-                    }
-                })
-            );
-            await Promise.all(userHistoryUpsertPromises);
-            console.log(`✅ [GitHub API] Prisma에 ${userGameHistoryMap.size}개 유저 게임 기록 캐시 저장.`);
-        } catch (error) {
-            console.error(`❌ [GitHub API] Prisma 유저 게임 기록 캐시 저장 오류: ${error}`);
-        }
-    }
-
-    return allParsedGameRecords;
-}
-
-module.exports = { getBadgeData, getGameHistory, getAllGameHistoryFileMetadata, fetchAndParseYamlFile, fetchAllGameRecords, refreshAllGameRecordsCache };
-
-async function refreshAllGameRecordsCache() {
-    console.log("🚀 [GitHub API] 모든 게임 기록 캐시 강제 새로고침 시작...");
-    try {
-        // 기존 Prisma 게임 기록 삭제
-        if (prisma) {
-            await prisma.gameRecord.deleteMany({});
-            console.log(`[DEBUG] Cleared all existing game records from Prisma.`);
+        if (gameHistory.length === 0) {
+            throw new Error('게임 기록을 찾을 수 없습니다.');
         }
 
-        // GitHub에서 모든 게임 기록 가져오기
-        const filesMetadata = await getAllGameHistoryFileMetadata();
-        console.log(`[DEBUG] GitHub에서 가져온 파일 메타데이터 수: ${filesMetadata.length}`);
-
-        const allGameRecordsPromises = filesMetadata.map(async (file) => {
-            const parsedData = await fetchAndParseYamlFile(file.download_url);
-            return { fileName: file.name, content: parsedData };
-        });
-        console.log(`[DEBUG] 파싱 시도할 게임 기록 수: ${allGameRecordsPromises.length}`);
-
-        const allParsedGameRecordsWithFileName = (await Promise.all(allGameRecordsPromises)).filter(record => record.content !== null);
-        console.log(`[DEBUG] 성공적으로 파싱된 게임 기록 수 (필터링 후): ${allParsedGameRecordsWithFileName.length}`);
-        
-        // 가져온 기록을 Prisma 및 인메모리 캐시에 저장
-        if (prisma) {
-            let successCount = 0;
-            for (const record of allParsedGameRecordsWithFileName) {
-                try {
-                    await prisma.gameRecord.upsert({
-                        where: { fileName: record.fileName },
-                        update: {
-                            content: record.content,
-                            cachedAt: new Date(),
-                            expiresAt: new Date(Date.now() + (1000 * 60 * 60 * 24 * 7))
-                        },
-                        create: {
-                            fileName: record.fileName,
-                            content: record.content,
-                            cachedAt: new Date(),
-                            expiresAt: new Date(Date.now() + (1000 * 60 * 60 * 24 * 7))
-                        }
-                    });
-                    successCount++;
-                } catch (innerError) {
-                    console.error(`❌ [GitHub API] Prisma에 파일 저장 실패: ${record.fileName}`, innerError);
-                }
-            }
-            console.log(`✅ [GitHub API] Prisma에 ${successCount}/${allParsedGameRecordsWithFileName.length}개 게임 기록 저장 완료.`);
-        }
-
-        // 인메모리 캐시 업데이트
-        gameHistoryCache.set('allGameRecords', allParsedGameRecordsWithFileName);
-
-        // 유저별 게임 기록 캐시 (UserGameHistoryCache) 업데이트
-        if (prisma) {
-            const userGameHistoryMap = new Map();
-            allParsedGameRecordsWithFileName.forEach(record => {
-                if (record.content && record.content.Game && record.content.Game.joinedPlayers) {
-                    const players = record.content.Game.joinedPlayers.split(',').map(s => toNonHyphenatedUUID(s.trim()));
-                    players.forEach(playerUUID => {
-                        if (!userGameHistoryMap.has(playerUUID)) {
-                            userGameHistoryMap.set(playerUUID, []);
-                        }
-                        userGameHistoryMap.get(playerUUID).push(record.content);
-                    });
-                }
-            });
-
-            const userHistoryUpsertPromises = Array.from(userGameHistoryMap.entries()).map(([uuid, records]) =>
-                prisma.userGameHistoryCache.upsert({
-                    where: { uuid: uuid },
-                    update: {
-                        gameRecords: records,
-                        cachedAt: new Date(),
-                        expiresAt: new Date(Date.now() + (1000 * 60 * 60 * 24 * 7)) // 7일 캐시
-                    },
-                    create: {
-                        uuid: uuid,
-                        gameRecords: records,
-                        cachedAt: new Date(),
-                        expiresAt: new Date(Date.now() + (1000 * 60 * 60 * 24 * 7)) // 7일 캐시
-                    }
-                })
-            );
-            await Promise.all(userHistoryUpsertPromises);
-            console.log(`✅ [GitHub API] Prisma에 ${userGameHistoryMap.size}개 유저 게임 기록 캐시 저장.`);
-        }
-
-        console.log("✅ [GitHub API] 모든 게임 기록 캐시 강제 새로고침 완료.");
-        return allParsedGameRecordsWithFileName; // 새로고침된 전체 기록 반환
-
+        return gameHistory;
     } catch (error) {
-        console.error("❌ [GitHub API] 모든 게임 기록 캐시 강제 새로고침 오류:", error);
+        console.error(`❌ [GitHub API] getGameHistory 오류: ${error}`);
         throw error; // 오류 전파
     }
 }
+
+// fetchAllGameRecords 함수는 이제 seed.js에서만 사용되므로 제거하거나 간소화합니다.
+// 여기서는 API에서 직접 사용되지 않으므로 제거합니다.
+
+// refreshAllGameRecordsCache 함수도 seed.js에서만 사용되므로 제거합니다.
+
+module.exports = { getBadgeData, getGameHistory };

@@ -1,18 +1,21 @@
 const express = require('express');
 const router = express.Router();
 const { getUUID, getProfileByUUID } = require('../services/mojang');
-const { getBadgeData, getGameHistory, getAllGameHistoryFileMetadata, fetchAndParseYamlFile, fetchAllGameRecords, refreshAllGameRecordsCache } = require('../services/github');
+const { getBadgeData, getGameHistory } = require('../services/github');
 const { computeStatistics, aggregateAllPlayerStatistics } = require('../utils/statistics');
 const cacheMiddleware = require('../middleware/cache');
 const { formatUUID } = require('../util');
 const { toNonHyphenatedUUID } = require('../util'); // toNonHyphenatedUUID 추가
+const { PrismaClient } = require('@prisma/client/edge');
+
+const prisma = new PrismaClient();
 
 module.exports.precalculatedLeaderboard = []; // 전역 변수로 랭킹 데이터 저장
 
 async function initializeLeaderboard() {
   console.log("🚀 [서버] 랭킹 데이터 초기화 시작...");
   try {
-    const allParsedGameRecords = await refreshAllGameRecordsCache();
+    const allParsedGameRecords = await prisma.gameRecord.findMany();
     console.log(`🔍 [서버] 파싱된 게임 기록 수: ${allParsedGameRecords.length}`);
     if (allParsedGameRecords.length === 0) {
         console.warn("⚠️ [서버] 파싱된 게임 기록이 없습니다. 랭킹 초기화 실패.");
@@ -226,7 +229,7 @@ router.get('/character-stats', async (req, res) => {
 router.get('/all_game_history', cacheMiddleware('all_game_history'), async (req, res) => {
   console.log(`🔍 [서버] 모든 게임 기록 요청`);
   try {
-    const allParsedGameRecords = await fetchAllGameRecords();
+    const allParsedGameRecords = await prisma.gameRecord.findMany(); // Prisma에서 직접 조회
     res.json({ gameRecords: allParsedGameRecords });
   } catch (error) {
     console.error("❌ [서버] 모든 게임 기록 조회 오류:", error);
