@@ -139,9 +139,6 @@ async function getBadgeData(formattedUUID) {
         }
     }
 
-    }
-    }
-
     return data;
 }
 
