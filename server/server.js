@@ -27,5 +27,3 @@ module.exports.handler = async (event, context) => {
   return serverless(app)(event, context);
 };
 
-// 서버 시작 시 랭킹 데이터 초기화 (콜드 스타트 시)
-initializeRankings();
