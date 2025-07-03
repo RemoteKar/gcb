@@ -138,17 +138,8 @@ function aggregateAllPlayerStatistics(allGameRecordContents) {
         if (recordContent && typeof recordContent.Game === 'object' && recordContent.Game !== null && recordContent.Game.joinedPlayers && recordContent.Player) {
             const joinedPlayers = recordContent.Game.joinedPlayers.split(',').map(s => s.trim());
 
-            // Normalize Player object keys to non-hyphenated UUIDs
-            const normalizedPlayer = {};
-            for (const key in recordContent.Player) {
-                if (Object.prototype.hasOwnProperty.call(recordContent.Player, key)) {
-                    normalizedPlayer[toNonHyphenatedUUID(key)] = recordContent.Player[key];
-                }
-            }
-
             joinedPlayers.forEach(playerUUID => {
-                const nonHyphenatedPlayerUUID = toNonHyphenatedUUID(playerUUID); // Convert joined player UUID to non-hyphenated
-                const playerData = normalizedPlayer[nonHyphenatedPlayerUUID]; // Use non-hyphenated for lookup
+                const playerData = recordContent.Player[playerUUID]; // 하이픈 있는 UUID 직접 사용
 
                 const formattedPlayerUUID = formatUUID(playerUUID); // Keep original hyphenated UUID for playerStats key
                 if (!playerStats[formattedPlayerUUID]) {
