@@ -284,6 +284,7 @@ function aggregateAllPlayerStatistics(allGameRecordContents) {
 
     console.log(`[DEBUG] 필터링 전 집계된 플레이어 통계 수: ${finalStats.length}`);
     return finalStats; // 필터 제거
+}
 
 module.exports = { computeStatistics, aggregateAllPlayerStatistics, computeGlobalCharacterStatistics };
 

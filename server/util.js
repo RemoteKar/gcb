@@ -22,3 +22,26 @@ function toNonHyphenatedUUID(uuid) {
 }
 
 module.exports = { formatUUID, toNonHyphenatedUUID };
+
+// 추가된 부분
+const { PrismaClient } = require('@prisma/client');
+const prisma = new PrismaClient();
+
+async function getPlayerUuid(player) {
+    try {
+        const user = await prisma.user.findUnique({
+            where: {
+                nickname: player,
+            },
+            select: {
+                uuid: true,
+            },
+        });
+        return user ? user.uuid : null;
+    } catch (error) {
+        console.error(`Error fetching UUID for player ${player}:`, error);
+        return null;
+    }
+}
+
+module.exports.getPlayerUuid = getPlayerUuid;
