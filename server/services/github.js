@@ -244,13 +244,13 @@ async function fetchAndParseYamlFile(downloadUrl) {
 }
 
 async function fetchAllGameRecords() {
-    // 1. Prisma 캐시에서 모든 게임 기록 조회
+    // 1. Prisma 캐시에서 모든 게임 기록 조회 (일시적으로 비활성화)
+    /*
     if (prisma) {
         try {
             const cachedRecords = await prisma.gameRecord.findMany();
             if (cachedRecords.length > 0) {
                 console.log(`✅ [GitHub API] Prisma 게임 기록 캐시 히트: ${cachedRecords.length}개`);
-                // Prisma 캐시에서 가져올 때도 { fileName, content } 형태로 반환
                 const parsedRecordsWithFileName = cachedRecords.map(record => ({ fileName: record.fileName, content: record.content }));
                 gameHistoryCache.set('allGameRecords', parsedRecordsWithFileName); // 인메모리 캐시에도 저장
                 return parsedRecordsWithFileName;
@@ -260,6 +260,7 @@ async function fetchAllGameRecords() {
             // 오류 발생 시 다음 로직으로 진행
         }
     }
+    */
 
     // 2. GitHub API에서 모든 게임 기록 가져오기
     const filesMetadata = await getAllGameHistoryFileMetadata();
