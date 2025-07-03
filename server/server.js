@@ -26,4 +26,3 @@ module.exports.handler = async (event, context) => {
   }
   return serverless(app)(event, context);
 };
-
