@@ -342,16 +342,20 @@ function computeGlobalCharacterStatistics(gameRecords) {
 
 function computeGlobalAugmentStatistics(gameRecords) {
     const augmentStats = {}; // { augmentId: { picks: 0 } }
+    let maxAugmentId = 0; // 최대 증강 ID 추적
 
     gameRecords.forEach(record => {
-        if (!record || !record.Player) return; // record.content 대신 record 직접 사용
+        if (!record || !record.Player) return;
 
-        const players = Object.values(record.Player); // record.content.Player 대신 record.Player 사용
+        const players = Object.values(record.Player);
 
         players.forEach(playerData => {
             if (playerData.Augment) {
                 Object.values(playerData.Augment).forEach(augmentValue => {
-                    if (augmentValue !== undefined && augmentValue !== null) { // 유효한 증강 값만 처리
+                    // augmentValue가 유효한 숫자인지 확인
+                    if (typeof augmentValue === 'number' && augmentValue !== undefined && augmentValue !== null) {
+                        maxAugmentId = Math.max(maxAugmentId, augmentValue); // 최대 증강 ID 업데이트
+
                         if (!augmentStats[augmentValue]) {
                             augmentStats[augmentValue] = { picks: 0 };
                         }
@@ -362,10 +366,17 @@ function computeGlobalAugmentStatistics(gameRecords) {
         });
     });
 
+    // 1부터 maxAugmentId까지 모든 증강 ID를 포함
+    for (let i = 1; i <= maxAugmentId; i++) {
+        if (!augmentStats[i]) {
+            augmentStats[i] = { picks: 0 };
+        }
+    }
+
     // 최종 통계 계산 및 정렬
     const finalStats = Object.entries(augmentStats).map(([augmentId, stats]) => {
         return {
-            augmentId,
+            augmentId: parseInt(augmentId), // 문자열 키를 숫자로 변환
             picks: stats.picks,
         };
     });
