@@ -40,7 +40,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         }
 
         // 최근 60게임으로 제한
-        const recentGames = allGameRecords.slice(0, 60);
+        const recentGames = allGameRecords.slice(-60);
 
         const characterStats = {}; // { characterId: { wins: 0, plays: 0, kills: 0 } }
 
