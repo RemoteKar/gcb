@@ -1,0 +1,6 @@
+character63:
+    selected:
+        ==: org.bukkit.inventory.ItemStack
+        v: 4189
+        type: AIR
+        amount: 0
