@@ -4,6 +4,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     const sortByWinsButton = document.getElementById("sort-by-wins");
     const sortByPlaysButton = document.getElementById("sort-by-plays");
     const sortByKillsButton = document.getElementById("sort-by-kills");
+    const sortByDamageButton = document.getElementById("sort-by-damage");
 
     let allGameRecords = []; // 모든 게임 기록을 저장할 변수
     let currentSortBy = 'wins'; // 현재 정렬 기준
@@ -42,7 +43,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         // 최근 60게임으로 제한
         const recentGames = allGameRecords.slice(-60);
 
-        const characterStats = {}; // { characterId: { wins: 0, plays: 0, kills: 0 } }
+        const characterStats = {}; // { characterId: { wins: 0, plays: 0, kills: 0, damage: 0 } }
 
         recentGames.forEach(game => {
             if (game.content && game.content.Game && game.content.Game.joinedPlayers && game.content.Player) {
@@ -54,7 +55,7 @@ document.addEventListener("DOMContentLoaded", async () => {
                         const characterId = playerData.Character;
                         if (characterId > 0 && characterId < 900) { // 특정 값 이상인 캐릭터는 계산 대상에서 제외
                             if (!characterStats[characterId]) {
-                                characterStats[characterId] = { wins: 0, plays: 0, kills: 0 };
+                                characterStats[characterId] = { wins: 0, plays: 0, kills: 0, damage: 0 };
                             }
                             characterStats[characterId].plays++;
                             if (playerData.outCuase === "우승") {
@@ -62,6 +63,9 @@ document.addEventListener("DOMContentLoaded", async () => {
                             }
                             if (typeof playerData.kill === "number") {
                                 characterStats[characterId].kills += playerData.kill;
+                            }
+                            if (playerData.Damage && typeof playerData.Damage.Dealt === "number") {
+                                characterStats[characterId].damage += playerData.Damage.Dealt;
                             }
                         }
                     }
@@ -79,6 +83,9 @@ document.addEventListener("DOMContentLoaded", async () => {
         } else if (currentSortBy === 'kills') {
             sortedCharacters = Object.entries(characterStats).sort(([, statsA], [, statsB]) => statsB.kills - statsA.kills);
             pageTitle.textContent = "캐릭터 킬 수 통계 (최근 60게임)";
+        } else if (currentSortBy === 'damage') {
+            sortedCharacters = Object.entries(characterStats).sort(([, statsA], [, statsB]) => statsB.damage - statsA.damage);
+            pageTitle.textContent = "캐릭터 가한 피해 통계 (최근 60게임)";
         }
 
         characterListDiv.innerHTML = '';
@@ -92,18 +99,26 @@ document.addEventListener("DOMContentLoaded", async () => {
             const charDiv = document.createElement('div');
             charDiv.classList.add('character-stat-item');
             let statValue = 0;
+            let statUnit = '';
+
             if (currentSortBy === 'wins') {
                 statValue = stats.wins;
+                statUnit = '승';
             } else if (currentSortBy === 'plays') {
                 statValue = stats.plays;
+                statUnit = '회';
             } else if (currentSortBy === 'kills') {
                 statValue = stats.kills;
+                statUnit = '킬';
+            } else if (currentSortBy === 'damage') {
+                statValue = stats.damage;
+                statUnit = '딜';
             }
 
             charDiv.innerHTML = `
                 <span class="rank-number">#${index + 1}</span> <!-- 순위 번호 추가 -->
                 <img src="/Resource/character/${characterId ?? 'default'}.png" alt="Character ${characterId}" class="character-stat-img">
-                <p><strong>${statValue}${currentSortBy === 'wins' ? '승' : currentSortBy === 'plays' ? '회' : '킬'}</strong></p>
+                <p><strong>${statValue.toLocaleString()}${statUnit}</strong></p>
             `;
             characterListDiv.appendChild(charDiv);
         });
@@ -128,6 +143,13 @@ document.addEventListener("DOMContentLoaded", async () => {
         currentSortBy = 'kills';
         document.querySelectorAll('.stat-button').forEach(btn => btn.classList.remove('active'));
         sortByKillsButton.classList.add('active');
+        renderCharacterStats();
+    });
+
+    sortByDamageButton.addEventListener('click', () => {
+        currentSortBy = 'damage';
+        document.querySelectorAll('.stat-button').forEach(btn => btn.classList.remove('active'));
+        sortByDamageButton.classList.add('active');
         renderCharacterStats();
     });
 
