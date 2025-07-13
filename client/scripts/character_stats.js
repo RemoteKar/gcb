@@ -84,8 +84,12 @@ document.addEventListener("DOMContentLoaded", async () => {
             sortedCharacters = Object.entries(characterStats).sort(([, statsA], [, statsB]) => statsB.kills - statsA.kills);
             pageTitle.textContent = "캐릭터 킬 수 통계 (최근 60게임)";
         } else if (currentSortBy === 'damage') {
-            sortedCharacters = Object.entries(characterStats).sort(([, statsA], [, statsB]) => statsB.damage - statsA.damage);
-            pageTitle.textContent = "캐릭터 가한 피해 통계 (최근 60게임)";
+            sortedCharacters = Object.entries(characterStats).sort(([, statsA], [, statsB]) => {
+                const avgDamageA = statsA.plays > 0 ? statsA.damage / statsA.plays : 0;
+                const avgDamageB = statsB.plays > 0 ? statsB.damage / statsB.plays : 0;
+                return avgDamageB - avgDamageA;
+            });
+            pageTitle.textContent = "캐릭터 평균 피해량 통계 (최근 60게임)";
         }
 
         characterListDiv.innerHTML = '';
@@ -111,7 +115,8 @@ document.addEventListener("DOMContentLoaded", async () => {
                 statValue = stats.kills;
                 statUnit = '킬';
             } else if (currentSortBy === 'damage') {
-                statValue = stats.damage;
+                const avgDamage = stats.plays > 0 ? stats.damage / stats.plays : 0;
+                statValue = Math.round(avgDamage);
                 statUnit = '딜';
             }
 
