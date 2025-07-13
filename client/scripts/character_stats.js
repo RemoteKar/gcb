@@ -43,20 +43,25 @@ document.addEventListener("DOMContentLoaded", async () => {
         // 최근 60게임으로 제한
         const recentGames = allGameRecords.slice(-60);
 
-        const characterStats = {}; // { characterId: { wins: 0, plays: 0, kills: 0, damage: 0 } }
+        const characterStats = {}; // { characterId: { wins: 0, plays: 0, kills: 0, totalDamage: 0, gameCount: 0 } }
 
         recentGames.forEach(game => {
             if (game.content && game.content.Game && game.content.Game.joinedPlayers && game.content.Player) {
                 const joinedPlayers = game.content.Game.joinedPlayers.split(',').map(s => s.trim());
-                
+                const gameCharacterStats = {}; // 한 게임 내의 캐릭터별 통계
+
                 joinedPlayers.forEach(playerUUID => {
                     const playerData = game.content.Player[playerUUID];
                     if (playerData && playerData.Character !== undefined) {
                         const characterId = playerData.Character;
-                        if (characterId > 0 && characterId < 900) { // 특정 값 이상인 캐릭터는 계산 대상에서 제외
+                        if (characterId > 0 && characterId < 900) {
                             if (!characterStats[characterId]) {
-                                characterStats[characterId] = { wins: 0, plays: 0, kills: 0, damage: 0 };
+                                characterStats[characterId] = { wins: 0, plays: 0, kills: 0, totalDamage: 0, gameCount: 0 };
                             }
+                            if (!gameCharacterStats[characterId]) {
+                                gameCharacterStats[characterId] = { plays: 0, damage: 0 };
+                            }
+
                             characterStats[characterId].plays++;
                             if (playerData.outCuase === "우승") {
                                 characterStats[characterId].wins++;
@@ -65,11 +70,19 @@ document.addEventListener("DOMContentLoaded", async () => {
                                 characterStats[characterId].kills += playerData.kill;
                             }
                             if (playerData.Damage && typeof playerData.Damage.Dealt === "number") {
-                                characterStats[characterId].damage += playerData.Damage.Dealt;
+                                gameCharacterStats[characterId].damage += playerData.Damage.Dealt;
                             }
+                            gameCharacterStats[characterId].plays++;
                         }
                     }
                 });
+
+                // 게임별 평균 피해량을 전체 통계에 합산
+                for (const charId in gameCharacterStats) {
+                    characterStats[charId].gameCount++;
+                    const gameAvgDamage = gameCharacterStats[charId].damage / gameCharacterStats[charId].plays;
+                    characterStats[charId].totalDamage += gameAvgDamage;
+                }
             }
         });
 
@@ -85,8 +98,8 @@ document.addEventListener("DOMContentLoaded", async () => {
             pageTitle.textContent = "캐릭터 킬 수 통계 (최근 60게임)";
         } else if (currentSortBy === 'damage') {
             sortedCharacters = Object.entries(characterStats).sort(([, statsA], [, statsB]) => {
-                const avgDamageA = statsA.plays > 0 ? statsA.damage / statsA.plays : 0;
-                const avgDamageB = statsB.plays > 0 ? statsB.damage / statsB.plays : 0;
+                const avgDamageA = statsA.gameCount > 0 ? statsA.totalDamage / statsA.gameCount : 0;
+                const avgDamageB = statsB.gameCount > 0 ? statsB.totalDamage / statsB.gameCount : 0;
                 return avgDamageB - avgDamageA;
             });
             pageTitle.textContent = "캐릭터 평균 피해량 통계 (최근 60게임)";
@@ -115,7 +128,7 @@ document.addEventListener("DOMContentLoaded", async () => {
                 statValue = stats.kills;
                 statUnit = '킬';
             } else if (currentSortBy === 'damage') {
-                const avgDamage = stats.plays > 0 ? stats.damage / stats.plays : 0;
+                const avgDamage = stats.gameCount > 0 ? stats.totalDamage / stats.gameCount : 0;
                 statValue = Math.round(avgDamage);
                 statUnit = '딜';
             }
