@@ -1,7 +1,7 @@
 ---
 Game:
   mode: "일반"
-  joinedPlayers: "8a965acf-2c08-4688-84fc-73a178191745,8b0be46b-f642-4fb9-ac65-3e020bf94cba,33bf2b78-d9c1-48e2-b895-788cd888019c,a7876980-f0bc-4da8-a314-26a78e075517,7c3a99db-7662-4970-97b8-eaae54c2a001,bcb16c70-6973-4f79-9bbc-c278f6ceb75f,ba9b2773-356e-4672-825e-20b4d2b8192f,08dbf9ea-178a-4ebb-8af2-49b2f01bc103,4c4dc940-7d7a-4cc4-b45b-9e7b4d480fc7,91c5b3ea-45a9-46d9-b9dd-db4942a126c2,a3aabde4-22bd-4b08-8876-b3312c439d80,4ddf6d9c-e1c7-4128-874b-6dc63d6db3cd,71b2de5f-0b8b-44f7-b516-6e37f1dcbdde,de830b98-8961-4a87-b197-f11591031b1f,4f30090f-78a4-4a97-97de-1aa9331c35b9,9d9170ff-e69f-4a4a-8882-fa4d0316466d,744e9d27-6bb3-4bfc-bef0-e6221bbecb43,f9b5c22a-a9e0-46d2-9619-697fc883501c,1065137b-ead8-489a-85ca-3e44a8f568ee,adc7f87f-d8f2-4eb9-a6e1-bcb3b9185a84"
+  joinedPlayers: "8a965acf-2c08-4688-84fc-73a178191745,8b0be46b-f642-4fb9-ac65-3e020bf94cba,33bf2b78-d9c1-48e2-b895-788cd888019c,a7876980-f0bc-4da8-a314-26a78e075517,7c3a99db-7662-4970-97b8-eaae54c2a001,bcb16c70-6973-4f79-9bbc-c278f6ceb75f,ba9b2773-356e-4672-825e-20b4d2b8192f,08dbf9ea-178a-4ebb-8af2-49b2f01bc103,4c4dc940-7d7a-4cc4-b45b-9e7b4d480fc7,91c5b3ea-45a9-46d9-b9dd-db4942a126c2,a3aabde4-22bd-4b08-8876-b3312c439d80,4ddf6d9c-e1c7-4128-874b-6dc63d6db3cd,71b2de5f-0b8b-44f7-b516-6e37f1dcbdde,de830b98-8961-4a87-b197-f11591031b1f,4f30090f-78a4-4a97-97de-1aa9331c35b9,9d9170ff-e69f-4a4a-8882-fa4d0316466d,ae2c3ff1-4041-449f-97d6-4888509568a3,f9b5c22a-a9e0-46d2-9619-697fc883501c,1065137b-ead8-489a-85ca-3e44a8f568ee,adc7f87f-d8f2-4eb9-a6e1-bcb3b9185a84"
   amountOfPlayers: 20
   totalTime: "393"
 Player:
@@ -20,7 +20,7 @@ Player:
     kill: 4
     Ranking: 5
     TimeSurvived: 320
-    killedBy: "744e9d27-6bb3-4bfc-bef0-e6221bbecb43"
+    killedBy: "ae2c3ff1-4041-449f-97d6-4888509568a3"
     outCuase: "처치"
   "8b0be46b-f642-4fb9-ac65-3e020bf94cba":
     Character: 20
@@ -239,7 +239,7 @@ Player:
     TimeSurvived: 38
     killedBy: "91c5b3ea-45a9-46d9-b9dd-db4942a126c2"
     outCuase: "처치"
-  "744e9d27-6bb3-4bfc-bef0-e6221bbecb43":
+  "ae2c3ff1-4041-449f-97d6-4888509568a3":
     Character: 20
     Augment:
       "1": 34
@@ -298,6 +298,6 @@ Player:
       Taken: 71.29199867248535
     Ranking: 19
     TimeSurvived: 31
-    killedBy: "744e9d27-6bb3-4bfc-bef0-e6221bbecb43"
+    killedBy: "ae2c3ff1-4041-449f-97d6-4888509568a3"
     outCuase: "처치"
 title: "일반"

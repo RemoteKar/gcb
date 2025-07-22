@@ -1,7 +1,7 @@
 ---
 Game:
   mode: "일반"
-  joinedPlayers: "ebf692db-d0ec-483e-a4dc-d34487755d26,f69709e0-cfcb-4912-aba8-0d8aa3a48bba,839e3db7-eb5c-4935-9b32-81094431e3db,de830b98-8961-4a87-b197-f11591031b1f,c5651f7a-b562-42f8-b502-45cfe6c66bba,437ba723-f5f7-458a-90f5-c1a619731edd,b1b8585c-e109-4423-b91a-e76abd471a13,f9b5c22a-a9e0-46d2-9619-697fc883501c,c4967a2f-f9d4-4882-9ebc-92be79773de5,88ecde89-ec17-4dec-928a-c5bb3e84bf25,bcb16c70-6973-4f79-9bbc-c278f6ceb75f,c4f5f041-1617-43ce-8b9b-49bfd3b6a2d0,4f30090f-78a4-4a97-97de-1aa9331c35b9,935d882d-a807-41ef-ad4c-add0c89dc594,84f19f53-de74-4d10-86fb-8d54ed22b898,c1ba0018-2e5a-4d28-b713-99f7da937e48,33bf2b78-d9c1-48e2-b895-788cd888019c,273809c6-04c9-4fc8-a67c-a345f4cf9a6e,9879600f-ca01-419a-af5e-755631858256,ba9b2773-356e-4672-825e-20b4d2b8192f,a7876980-f0bc-4da8-a314-26a78e075517,ea3001f3-3430-4bf2-b275-9796baaa6baf,d081b624-57b0-4c8f-b6d3-ea1f5f79b59e,8b0be46b-f642-4fb9-ac65-3e020bf94cba,26a986c4-2c18-40d6-b147-1097d833fd15,ba5920e6-1c0f-4b3e-8dad-5fedc8bc14e8,b82021cc-02b3-4093-bc1f-97fc4168facd,ea6c163a-82f7-4284-9390-153e1a678b8a,4ddf6d9c-e1c7-4128-874b-6dc63d6db3cd,744e9d27-6bb3-4bfc-bef0-e6221bbecb43"
+  joinedPlayers: "ebf692db-d0ec-483e-a4dc-d34487755d26,f69709e0-cfcb-4912-aba8-0d8aa3a48bba,839e3db7-eb5c-4935-9b32-81094431e3db,de830b98-8961-4a87-b197-f11591031b1f,c5651f7a-b562-42f8-b502-45cfe6c66bba,437ba723-f5f7-458a-90f5-c1a619731edd,b1b8585c-e109-4423-b91a-e76abd471a13,f9b5c22a-a9e0-46d2-9619-697fc883501c,c4967a2f-f9d4-4882-9ebc-92be79773de5,88ecde89-ec17-4dec-928a-c5bb3e84bf25,bcb16c70-6973-4f79-9bbc-c278f6ceb75f,c4f5f041-1617-43ce-8b9b-49bfd3b6a2d0,4f30090f-78a4-4a97-97de-1aa9331c35b9,935d882d-a807-41ef-ad4c-add0c89dc594,84f19f53-de74-4d10-86fb-8d54ed22b898,c1ba0018-2e5a-4d28-b713-99f7da937e48,33bf2b78-d9c1-48e2-b895-788cd888019c,273809c6-04c9-4fc8-a67c-a345f4cf9a6e,9879600f-ca01-419a-af5e-755631858256,ba9b2773-356e-4672-825e-20b4d2b8192f,a7876980-f0bc-4da8-a314-26a78e075517,ea3001f3-3430-4bf2-b275-9796baaa6baf,d081b624-57b0-4c8f-b6d3-ea1f5f79b59e,8b0be46b-f642-4fb9-ac65-3e020bf94cba,26a986c4-2c18-40d6-b147-1097d833fd15,ba5920e6-1c0f-4b3e-8dad-5fedc8bc14e8,b82021cc-02b3-4093-bc1f-97fc4168facd,ea6c163a-82f7-4284-9390-153e1a678b8a,4ddf6d9c-e1c7-4128-874b-6dc63d6db3cd,ae2c3ff1-4041-449f-97d6-4888509568a3"
   amountOfPlayers: 30
   totalTime: "390"
 Player:
@@ -35,7 +35,7 @@ Player:
       Taken: 270.6
     Ranking: 24
     TimeSurvived: 46
-    killedBy: "744e9d27-6bb3-4bfc-bef0-e6221bbecb43"
+    killedBy: "ae2c3ff1-4041-449f-97d6-4888509568a3"
     outCuase: "처치"
   "839e3db7-eb5c-4935-9b32-81094431e3db":
     Character: 20
@@ -99,7 +99,7 @@ Player:
     kill: 1
     Ranking: 8
     TimeSurvived: 315
-    killedBy: "744e9d27-6bb3-4bfc-bef0-e6221bbecb43"
+    killedBy: "ae2c3ff1-4041-449f-97d6-4888509568a3"
     outCuase: "처치"
   b1b8585c-e109-4423-b91a-e76abd471a13:
     Character: 54
@@ -366,7 +366,7 @@ Player:
     kill: 2
     Ranking: 6
     TimeSurvived: 340
-    killedBy: "744e9d27-6bb3-4bfc-bef0-e6221bbecb43"
+    killedBy: "ae2c3ff1-4041-449f-97d6-4888509568a3"
     outCuase: "처치"
   "8b0be46b-f642-4fb9-ac65-3e020bf94cba":
     Character: 62
@@ -382,7 +382,7 @@ Player:
       Taken: 43.475999450683595
     Ranking: 12
     TimeSurvived: 233
-    killedBy: "744e9d27-6bb3-4bfc-bef0-e6221bbecb43"
+    killedBy: "ae2c3ff1-4041-449f-97d6-4888509568a3"
     outCuase: "처치"
   "26a986c4-2c18-40d6-b147-1097d833fd15":
     Character: 10
@@ -459,9 +459,9 @@ Player:
       Dealt: 211.70000076293945
     Ranking: 25
     TimeSurvived: 41
-    killedBy: "744e9d27-6bb3-4bfc-bef0-e6221bbecb43"
+    killedBy: "ae2c3ff1-4041-449f-97d6-4888509568a3"
     outCuase: "처치"
-  "744e9d27-6bb3-4bfc-bef0-e6221bbecb43":
+  "ae2c3ff1-4041-449f-97d6-4888509568a3":
     Character: 63
     Augment:
       "1": 38

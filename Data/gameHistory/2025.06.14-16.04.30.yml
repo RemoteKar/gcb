@@ -1,7 +1,7 @@
 ---
 Game:
   mode: "일반"
-  joinedPlayers: "4ddf6d9c-e1c7-4128-874b-6dc63d6db3cd,8a965acf-2c08-4688-84fc-73a178191745,4c4dc940-7d7a-4cc4-b45b-9e7b4d480fc7,33bf2b78-d9c1-48e2-b895-788cd888019c,1065137b-ead8-489a-85ca-3e44a8f568ee,08dbf9ea-178a-4ebb-8af2-49b2f01bc103,829af0d3-0f33-404d-aa26-5e56117ac210,e0b2496d-5b6b-45d6-95bb-de778d1d15a8,de830b98-8961-4a87-b197-f11591031b1f,adc7f87f-d8f2-4eb9-a6e1-bcb3b9185a84,91c5b3ea-45a9-46d9-b9dd-db4942a126c2,4f30090f-78a4-4a97-97de-1aa9331c35b9,7c3a99db-7662-4970-97b8-eaae54c2a001,c4967a2f-f9d4-4882-9ebc-92be79773de5,d081b624-57b0-4c8f-b6d3-ea1f5f79b59e,8b0be46b-f642-4fb9-ac65-3e020bf94cba,744e9d27-6bb3-4bfc-bef0-e6221bbecb43,f9b5c22a-a9e0-46d2-9619-697fc883501c,a3aabde4-22bd-4b08-8876-b3312c439d80,839e3db7-eb5c-4935-9b32-81094431e3db,ba9b2773-356e-4672-825e-20b4d2b8192f,a7876980-f0bc-4da8-a314-26a78e075517,bcb16c70-6973-4f79-9bbc-c278f6ceb75f"
+  joinedPlayers: "4ddf6d9c-e1c7-4128-874b-6dc63d6db3cd,8a965acf-2c08-4688-84fc-73a178191745,4c4dc940-7d7a-4cc4-b45b-9e7b4d480fc7,33bf2b78-d9c1-48e2-b895-788cd888019c,1065137b-ead8-489a-85ca-3e44a8f568ee,08dbf9ea-178a-4ebb-8af2-49b2f01bc103,829af0d3-0f33-404d-aa26-5e56117ac210,e0b2496d-5b6b-45d6-95bb-de778d1d15a8,de830b98-8961-4a87-b197-f11591031b1f,adc7f87f-d8f2-4eb9-a6e1-bcb3b9185a84,91c5b3ea-45a9-46d9-b9dd-db4942a126c2,4f30090f-78a4-4a97-97de-1aa9331c35b9,7c3a99db-7662-4970-97b8-eaae54c2a001,c4967a2f-f9d4-4882-9ebc-92be79773de5,d081b624-57b0-4c8f-b6d3-ea1f5f79b59e,8b0be46b-f642-4fb9-ac65-3e020bf94cba,ae2c3ff1-4041-449f-97d6-4888509568a3,f9b5c22a-a9e0-46d2-9619-697fc883501c,a3aabde4-22bd-4b08-8876-b3312c439d80,839e3db7-eb5c-4935-9b32-81094431e3db,ba9b2773-356e-4672-825e-20b4d2b8192f,a7876980-f0bc-4da8-a314-26a78e075517,bcb16c70-6973-4f79-9bbc-c278f6ceb75f"
   amountOfPlayers: 23
   totalTime: "393"
 Player:
@@ -79,7 +79,7 @@ Player:
       Taken: 666.5000076293945
     Ranking: 22
     TimeSurvived: 24
-    killedBy: "744e9d27-6bb3-4bfc-bef0-e6221bbecb43"
+    killedBy: "ae2c3ff1-4041-449f-97d6-4888509568a3"
     outCuase: "처치"
   "08dbf9ea-178a-4ebb-8af2-49b2f01bc103":
     Character: 14
@@ -238,7 +238,7 @@ Player:
       Taken: 37.470001220703125
     Ranking: 14
     TimeSurvived: 111
-    killedBy: "744e9d27-6bb3-4bfc-bef0-e6221bbecb43"
+    killedBy: "ae2c3ff1-4041-449f-97d6-4888509568a3"
     outCuase: "처치"
   "8b0be46b-f642-4fb9-ac65-3e020bf94cba":
     Character: 52
@@ -255,7 +255,7 @@ Player:
     Ranking: 4
     TimeSurvived: 383
     outCuase: "자연사"
-  "744e9d27-6bb3-4bfc-bef0-e6221bbecb43":
+  "ae2c3ff1-4041-449f-97d6-4888509568a3":
     Character: 29
     Augment:
       "1": 38
