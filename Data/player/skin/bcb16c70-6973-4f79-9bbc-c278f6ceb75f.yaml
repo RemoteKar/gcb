@@ -1,9 +1,9 @@
 character63:
     selected:
         ==: org.bukkit.inventory.ItemStack
-        v: 4189
-        type: AIR
-        amount: 0
+        schema_version: 1
+        DataVersion: 4440
+        id: minecraft:air
 
 character49:
     selected: 황금
