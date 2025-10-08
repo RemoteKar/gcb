@@ -1,34 +1,36 @@
 character63:
-    selected: 황금
-
-character1:
-    selected: 황금
+    selected: gold
 
 character3:
-    selected: 황금
+    selected: gold
 
 character42:
-    selected: 황금
+    selected: gold
 
 character47:
-    selected: 황금
+    selected: gold
 
 character29:
-    selected: 황금
+    selected: gold
     ownedSkins:
-    - 황금
+    - gold
 
 character49:
-    selected: 황금
+    selected: gold
 
 character20:
-    selected: 황금
+    selected: gold
 
 character18:
-    selected: 황금
+    selected: gold
 
 character31:
-    selected: 고귀
+    selected: novel
 
 character54:
-    selected: 황금
+    selected: gold
+
+character1:
+    ownedSkins:
+    - anniversary3year
+    selected: anniversary3year

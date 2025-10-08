@@ -1,6 +1,6 @@
 character20:
     ownedSkins:
-    - 황금
+    - gold
     selected:
         ==: org.bukkit.inventory.ItemStack
         id: minecraft:air
