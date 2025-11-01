@@ -4,5 +4,5 @@ character20:
     selected:
         ==: org.bukkit.inventory.ItemStack
         id: minecraft:air
-        DataVersion: 4440
         schema_version: 1
+        DataVersion: 4440
