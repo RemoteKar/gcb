@@ -7,3 +7,7 @@ character12:
     ownedSkins:
     - gold
     selected: gold
+
+character1:
+    ownedSkins:
+    - anniversary3year
