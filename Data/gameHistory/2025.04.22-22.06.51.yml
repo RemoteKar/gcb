@@ -1,0 +1,657 @@
+---
+Game:
+  mode: "일반"
+  joinedPlayers: "31c9b10f-aeaa-4cbe-ac3b-e48d55a431a4,f08eacb0-f8d2-4924-980c-40811346ec5e,c4967a2f-f9d4-4882-9ebc-92be79773de5,bcb16c70-6973-4f79-9bbc-c278f6ceb75f,367a6c0f-1e08-41b7-b152-0b58c2fddad3,496c8df3-d946-4878-8f50-89d45799abe9,06a2de2d-a772-400a-9fb0-c6b56ebb9f84,26a986c4-2c18-40d6-b147-1097d833fd15,6e641a91-6811-4125-9eeb-244dc1eb9278,b41b73a8-92c2-46b5-96f2-66acc910f248,a7876980-f0bc-4da8-a314-26a78e075517,baec924b-2350-42e7-84d1-e9d7a28e13cb,947f100b-c289-40e6-9425-4be0186c6824,4ddf6d9c-e1c7-4128-874b-6dc63d6db3cd,08dbf9ea-178a-4ebb-8af2-49b2f01bc103,829af0d3-0f33-404d-aa26-5e56117ac210,3d26157c-120c-490d-805a-ff7fe7e2e728,ea3001f3-3430-4bf2-b275-9796baaa6baf,1acfd11d-554e-4937-b041-2c09edef4213,58f5c168-dec6-43f5-b3b2-125ca01a7f10,d081b624-57b0-4c8f-b6d3-ea1f5f79b59e,d62f0a7a-288f-45c8-b3f8-81b10ad02799,a3aabde4-22bd-4b08-8876-b3312c439d80,8b0be46b-f642-4fb9-ac65-3e020bf94cba,f90c005c-47f5-4c34-b74a-802ffa21d728,9937b375-a6cb-497d-a3c0-1395207ce7ed,8a965acf-2c08-4688-84fc-73a178191745,c5651f7a-b562-42f8-b502-45cfe6c66bba,4f30090f-78a4-4a97-97de-1aa9331c35b9,77b01ec5-214e-454a-997f-b5e352680da0,42e30471-f805-47e1-b6ac-bde4bfc8085a,7ab4d452-a7e4-4b79-b26c-5c455eb9ecfb,b442e2c2-c96d-44c5-a62d-b1e720d2c729,b78c62fe-f16e-4b71-aad7-1f230b1b7cf5,4dfecb57-a3e3-43e7-b9fb-abfb266015e6,f9b5c22a-a9e0-46d2-9619-697fc883501c,8139904f-3407-4f68-a335-4c3a3c7835d2,81bf2b37-bc1f-4145-a38d-f0cc512058a8,273809c6-04c9-4fc8-a67c-a345f4cf9a6e,c4f5f041-1617-43ce-8b9b-49bfd3b6a2d0,ca2b6079-2de1-4c99-838b-dcd25888afb6"
+  amountOfPlayers: 41
+  totalTime: "390"
+Player:
+  "31c9b10f-aeaa-4cbe-ac3b-e48d55a431a4":
+    Character: 1039
+    Damage:
+      Taken: 598.0
+    Ranking: 36
+    TimeSurvived: 39
+    killedBy: "b41b73a8-92c2-46b5-96f2-66acc910f248"
+    outCuase: "처치"
+  f08eacb0-f8d2-4924-980c-40811346ec5e:
+    Character: 67
+    Augment:
+      "1": 10
+      "2": 1
+      "3": 38
+      "4": 7
+    Damage:
+      Taken: 729.7499237060547
+      Dealt: 209.60177993774414
+    Ranking: 38
+    TimeSurvived: 15
+    killedBy: "3d26157c-120c-490d-805a-ff7fe7e2e728"
+    outCuase: "처치"
+  c4967a2f-f9d4-4882-9ebc-92be79773de5:
+    Character: 20
+    Augment:
+      "1": 30
+      "2": 14
+      "3": 38
+      "4": 34
+    Damage:
+      Dealt: 1794.6040167808533
+      Taken: 1091.419991493225
+    kill: 2
+    Heal:
+      Taken: 557.8125
+    Ranking: 16
+    TimeSurvived: 198
+    killedBy: "6e641a91-6811-4125-9eeb-244dc1eb9278"
+    outCuase: "처치"
+  bcb16c70-6973-4f79-9bbc-c278f6ceb75f:
+    Character: 30
+    Augment:
+      "1": 11
+      "2": 38
+      "3": 17
+      "4": 3
+    Damage:
+      Dealt: 435.8699975013733
+      Taken: 312.29999923706055
+    Heal:
+      Taken: 28.800000000000004
+    Ranking: 21
+    TimeSurvived: 130
+    killedBy: "8139904f-3407-4f68-a335-4c3a3c7835d2"
+    outCuase: "처치"
+  "367a6c0f-1e08-41b7-b152-0b58c2fddad3":
+    Character: 20
+    Augment:
+      "1": 34
+      "2": 38
+      "3": 14
+      "4": 6
+    Damage:
+      Taken: 1301.7250151634216
+      Dealt: 926.9000005722046
+    Heal:
+      Taken: 682.1226002025609
+    Ranking: 19
+    TimeSurvived: 158
+    killedBy: "58f5c168-dec6-43f5-b3b2-125ca01a7f10"
+    outCuase: "처치"
+  "496c8df3-d946-4878-8f50-89d45799abe9":
+    Character: 4
+    Augment:
+      "1": 38
+      "2": 32
+      "3": 34
+      "4": 7
+    Damage:
+      Dealt: 1073.6419982910156
+      Taken: 1803.499882221222
+    Ranking: 16
+    TimeSurvived: 189
+    killedBy: "ca2b6079-2de1-4c99-838b-dcd25888afb6"
+    outCuase: "처치"
+  "06a2de2d-a772-400a-9fb0-c6b56ebb9f84":
+    Character: 13
+    Augment:
+      "1": 38
+      "2": 22
+      "3": 31
+      "4": 17
+    Damage:
+      Taken: 834.9999041557312
+      Dealt: 143.2899932861328
+    Ranking: 30
+    TimeSurvived: 61
+    killedBy: "273809c6-04c9-4fc8-a67c-a345f4cf9a6e"
+    outCuase: "처치"
+  "26a986c4-2c18-40d6-b147-1097d833fd15":
+    Character: 23
+    Augment:
+      "1": 7
+      "2": 13
+      "3": 34
+      "4": 25
+    Damage:
+      Taken: 2435.7628860473633
+      Dealt: 346.0
+    Heal:
+      Taken: 547.0142211914062
+    Ranking: 10
+    TimeSurvived: 279
+    killedBy: "7ab4d452-a7e4-4b79-b26c-5c455eb9ecfb"
+    outCuase: "처치"
+  "6e641a91-6811-4125-9eeb-244dc1eb9278":
+    Character: 9
+    Augment:
+      "1": 38
+      "2": 6
+      "3": 11
+      "4": 17
+    Damage:
+      Taken: 1363.6835250854492
+      Dealt: 585.7200002670288
+    Heal:
+      Taken: 801.0406409587843
+    Ranking: 39
+    TimeSurvived: 11
+    killedBy: "08dbf9ea-178a-4ebb-8af2-49b2f01bc103"
+    outCuase: "처치"
+    kill: 1
+  b41b73a8-92c2-46b5-96f2-66acc910f248:
+    Character: 31
+    Augment:
+      "1": 11
+      "2": 6
+      "3": 14
+      "4": 2
+    Damage:
+      Dealt: 1537.8409690856934
+      Taken: 915.18505859375
+    Heal:
+      Taken: 1007.4202785415663
+    kill: 3
+    Ranking: 12
+    TimeSurvived: 244
+    killedBy: "7ab4d452-a7e4-4b79-b26c-5c455eb9ecfb"
+    outCuase: "처치"
+  a7876980-f0bc-4da8-a314-26a78e075517:
+    Character: 39
+    Augment:
+      "1": 7
+      "2": 11
+      "3": 30
+      "4": 38
+    Damage:
+      Taken: 985.1000127792358
+      Dealt: 304.51999855041504
+    Heal:
+      Taken: 101.5
+    Ranking: 32
+    TimeSurvived: 53
+    killedBy: "273809c6-04c9-4fc8-a67c-a345f4cf9a6e"
+    outCuase: "처치"
+  baec924b-2350-42e7-84d1-e9d7a28e13cb:
+    Character: 906
+    Augment:
+      "1": 17
+      "2": 6
+      "3": 38
+      "4": 11
+    Damage:
+      Taken: 1008.5999145507812
+    Heal:
+      Taken: 259.60000000000025
+    Ranking: 14
+    TimeSurvived: 204
+    killedBy: "7ab4d452-a7e4-4b79-b26c-5c455eb9ecfb"
+    outCuase: "처치"
+  "947f100b-c289-40e6-9425-4be0186c6824":
+    Character: 32
+    Augment:
+      "1": 38
+      "2": 33
+      "3": 18
+      "4": 11
+    Damage:
+      Taken: 1766.1974959373474
+      Dealt: 1890.7066297531128
+    Heal:
+      Taken: 1005.675
+    kill: 2
+    Ranking: 6
+    TimeSurvived: 320
+    killedBy: "273809c6-04c9-4fc8-a67c-a345f4cf9a6e"
+    outCuase: "처치"
+  "4ddf6d9c-e1c7-4128-874b-6dc63d6db3cd":
+    Character: 22
+    Augment:
+      "1": 17
+      "2": 38
+      "3": 18
+      "4": 4
+    Damage:
+      Dealt: 1272.2465515136719
+      Taken: 600.8750686645508
+    kill: 3
+    Heal:
+      Taken: 116.875
+    Ranking: 2
+    TimeSurvived: 390
+    killedBy: "a3aabde4-22bd-4b08-8876-b3312c439d80"
+    outCuase: "처치"
+  "08dbf9ea-178a-4ebb-8af2-49b2f01bc103":
+    Character: 62
+    Augment:
+      "1": 1
+      "2": 17
+      "3": 38
+      "4": 11
+    Damage:
+      Dealt: 1822.5071487426758
+      Taken: 1680.1100025177002
+    Heal:
+      Taken: 964.9320007324212
+    kill: 3
+    Ranking: 22
+    TimeSurvived: 114
+    killedBy: "d081b624-57b0-4c8f-b6d3-ea1f5f79b59e"
+    outCuase: "처치"
+  "829af0d3-0f33-404d-aa26-5e56117ac210":
+    Character: 66
+    Augment:
+      "1": 17
+      "2": 14
+      "3": 38
+      "4": 27
+    Damage:
+      Dealt: 99.0
+      Taken: 520.0000295639038
+    Ranking: 37
+    TimeSurvived: 38
+    killedBy: "08dbf9ea-178a-4ebb-8af2-49b2f01bc103"
+    outCuase: "처치"
+  "3d26157c-120c-490d-805a-ff7fe7e2e728":
+    Character: 68
+    Augment:
+      "1": 7
+      "2": 17
+      "3": 2
+      "4": 6
+    Damage:
+      Taken: 994.8517951965332
+      Dealt: 729.7499237060547
+    Heal:
+      Taken: 267.96738313293446
+    kill: 1
+    Ranking: 31
+    TimeSurvived: 57
+    killedBy: "c4f5f041-1617-43ce-8b9b-49bfd3b6a2d0"
+    outCuase: "처치"
+  ea3001f3-3430-4bf2-b275-9796baaa6baf:
+    Character: 16
+    Augment:
+      "1": 24
+      "2": 37
+      "3": 1
+      "4": 5
+    Damage:
+      Dealt: 434.79999923706055
+      Taken: 624.9999780654907
+    kill: 1
+    Ranking: 11
+    TimeSurvived: 252
+    killedBy: "d081b624-57b0-4c8f-b6d3-ea1f5f79b59e"
+    outCuase: "처치"
+  "1acfd11d-554e-4937-b041-2c09edef4213":
+    Character: 65
+    Augment:
+      "1": 6
+      "2": 7
+      "3": 13
+      "4": 38
+    Damage:
+      Taken: 1557.1896438598633
+      Dealt: 1205.1399993896484
+    Heal:
+      Taken: 454.93955978393547
+    Ranking: 24
+    TimeSurvived: 99
+    killedBy: "f9b5c22a-a9e0-46d2-9619-697fc883501c"
+    outCuase: "처치"
+  "58f5c168-dec6-43f5-b3b2-125ca01a7f10":
+    Character: 68
+    Augment:
+      "1": 26
+      "2": 6
+      "3": 11
+      "4": 17
+    Damage:
+      Taken: 1197.7600021362305
+      Dealt: 1622.7849578857422
+    Heal:
+      Taken: 794.791353302002
+    kill: 2
+    Ranking: 18
+    TimeSurvived: 165
+    killedBy: "8139904f-3407-4f68-a335-4c3a3c7835d2"
+    outCuase: "처치"
+  d081b624-57b0-4c8f-b6d3-ea1f5f79b59e:
+    Character: 32
+    Augment:
+      "1": 38
+      "2": 33
+      "3": 11
+      "4": 8
+    Damage:
+      Dealt: 4914.129981994629
+      Taken: 2239.5163221359253
+    Heal:
+      Taken: 954.981249999997
+    kill: 3
+    Ranking: 4
+    TimeSurvived: 382
+    killedBy: "4ddf6d9c-e1c7-4128-874b-6dc63d6db3cd"
+    outCuase: "처치"
+  d62f0a7a-288f-45c8-b3f8-81b10ad02799:
+    Character: 67
+    Augment:
+      "1": 11
+      "2": 15
+      "3": 1
+      "4": 10
+    Damage:
+      Taken: 621.2500038146973
+      Dealt: 298.11999893188477
+    Heal:
+      Taken: 48.00000000000001
+    Ranking: 21
+    TimeSurvived: 124
+    killedBy: "c4967a2f-f9d4-4882-9ebc-92be79773de5"
+    outCuase: "처치"
+  a3aabde4-22bd-4b08-8876-b3312c439d80:
+    Character: 24
+    Augment:
+      "1": 33
+      "2": 19
+      "3": 17
+      "4": 18
+    Damage:
+      Dealt: 3060.8550539016724
+      Taken: 67.6500015258789
+    kill: 2
+    Ranking: 1
+    TimeSurvived: 390
+    outCuase: "우승"
+    Heal:
+      Taken: 1.5625
+  "8b0be46b-f642-4fb9-ac65-3e020bf94cba":
+    Character: 52
+    Augment:
+      "1": 38
+      "2": 7
+      "3": 6
+      "4": 2
+    Damage:
+      Taken: 1273.9131774902344
+      Dealt: 848.2999992370605
+    Heal:
+      Taken: 374.81519972991936
+    kill: 1
+    Ranking: 26
+    TimeSurvived: 89
+    killedBy: "4dfecb57-a3e3-43e7-b9fb-abfb266015e6"
+    outCuase: "처치"
+  f90c005c-47f5-4c34-b74a-802ffa21d728:
+    Character: 1039
+    Damage:
+      Taken: 736.0
+      Dealt: 610.7550048828125
+    kill: 1
+    Heal:
+      Taken: 300
+    Ranking: 28
+    TimeSurvived: 80
+    killedBy: "8b0be46b-f642-4fb9-ac65-3e020bf94cba"
+    outCuase: "처치"
+  "9937b375-a6cb-497d-a3c0-1395207ce7ed":
+    Character: 32
+    Augment:
+      "1": 38
+      "2": 30
+      "3": 3
+      "4": 12
+    Damage:
+      Dealt: 473.37000370025635
+      Taken: 393.0000047683716
+    Ranking: 33
+    TimeSurvived: 49
+    killedBy: "c4f5f041-1617-43ce-8b9b-49bfd3b6a2d0"
+    outCuase: "처치"
+  "8a965acf-2c08-4688-84fc-73a178191745":
+    Character: 14
+    Augment:
+      "1": 35
+      "2": 32
+      "3": 7
+      "4": 6
+    Damage:
+      Taken: 1204.1663193702698
+      Dealt: 189.0
+    Heal:
+      Taken: 66.90599999999999
+    Ranking: 20
+    TimeSurvived: 154
+    killedBy: "947f100b-c289-40e6-9425-4be0186c6824"
+    outCuase: "처치"
+  c5651f7a-b562-42f8-b502-45cfe6c66bba:
+    Character: 55
+    Augment:
+      "1": 38
+      "2": 6
+      "3": 14
+      "4": 35
+    Damage:
+      Taken: 953.1635847091675
+      Dealt: 358.1600036621094
+    Heal:
+      Taken: 326.64524237670895
+    Ranking: 27
+    TimeSurvived: 87
+    killedBy: "08dbf9ea-178a-4ebb-8af2-49b2f01bc103"
+    outCuase: "처치"
+  "4f30090f-78a4-4a97-97de-1aa9331c35b9":
+    Character: 25
+    Augment:
+      "1": 38
+      "2": 34
+      "3": 2
+      "4": 6
+    Damage:
+      Dealt: 1457.5999908447266
+      Taken: 1051.1670036315918
+    Heal:
+      Taken: 1042.883999999999
+    kill: 2
+    Ranking: 17
+    TimeSurvived: 184
+    killedBy: "4dfecb57-a3e3-43e7-b9fb-abfb266015e6"
+    outCuase: "처치"
+  "77b01ec5-214e-454a-997f-b5e352680da0":
+    Character: 908
+    Augment:
+      "1": 38
+      "2": 11
+      "3": 14
+      "4": 6
+    Damage:
+      Dealt: 344.40003967285156
+      Taken: 1124.1599941253662
+    Heal:
+      Taken: 1360.5400000000004
+    kill: 1
+    Ranking: 9
+    TimeSurvived: 285
+    killedBy: "4ddf6d9c-e1c7-4128-874b-6dc63d6db3cd"
+    outCuase: "처치"
+  "42e30471-f805-47e1-b6ac-bde4bfc8085a":
+    Character: 2
+    Augment:
+      "1": 10
+      "2": 14
+      "3": 31
+      "4": 17
+    Damage:
+      Dealt: 893.4100112915039
+      Taken: 411.31996726989746
+    Ranking: 8
+    TimeSurvived: 289
+    killedBy: "a3aabde4-22bd-4b08-8876-b3312c439d80"
+    outCuase: "처치"
+  "7ab4d452-a7e4-4b79-b26c-5c455eb9ecfb":
+    Character: 12
+    Augment:
+      "1": 17
+      "2": 38
+      "3": 11
+      "4": 24
+    Damage:
+      Dealt: 2860.7378120422363
+      Taken: 1938.4100079536438
+    kill: 4
+    Heal:
+      Taken: 2471.6800231933607
+    Ranking: 5
+    TimeSurvived: 354
+    killedBy: "d081b624-57b0-4c8f-b6d3-ea1f5f79b59e"
+    outCuase: "처치"
+  b442e2c2-c96d-44c5-a62d-b1e720d2c729:
+    Character: 1
+    Augment:
+      "1": 17
+      "2": 38
+      "3": 11
+      "4": 14
+    Damage:
+      Dealt: 747.9399929046631
+      Taken: 1180.6499485969543
+    Heal:
+      Taken: 219.59999999999977
+    Ranking: 20
+    TimeSurvived: 133
+    killedBy: "4f30090f-78a4-4a97-97de-1aa9331c35b9"
+    outCuase: "처치"
+  b78c62fe-f16e-4b71-aad7-1f230b1b7cf5:
+    Character: 17
+    Augment:
+      "1": 38
+      "2": 33
+      "3": 11
+      "4": 6
+    Heal:
+      Taken: 1277.314599864951
+    Damage:
+      Taken: 468.90404891967773
+      Dealt: 117.89999961853027
+    Ranking: 17
+    TimeSurvived: 184
+    killedBy: "77b01ec5-214e-454a-997f-b5e352680da0"
+    outCuase: "처치"
+  "4dfecb57-a3e3-43e7-b9fb-abfb266015e6":
+    Character: 28
+    Augment:
+      "1": 21
+      "2": 1
+      "3": 5
+      "4": 11
+    Damage:
+      Taken: 1092.799991607666
+      Dealt: 2039.6401824951172
+    Heal:
+      Taken: 995.5909912109373
+    kill: 2
+    Ranking: 23
+    TimeSurvived: 101
+    killedBy: "f9b5c22a-a9e0-46d2-9619-697fc883501c"
+    outCuase: "처치"
+  f9b5c22a-a9e0-46d2-9619-697fc883501c:
+    Character: 65
+    Augment:
+      "1": 37
+      "2": 7
+      "3": 6
+      "4": 2
+    Damage:
+      Dealt: 765.8751564025879
+      Taken: 860.6882696151733
+    Heal:
+      Taken: 770.1324934387194
+    kill: 2
+    Ranking: 15
+    TimeSurvived: 202
+    killedBy: "b41b73a8-92c2-46b5-96f2-66acc910f248"
+    outCuase: "처치"
+  "8139904f-3407-4f68-a335-4c3a3c7835d2":
+    Character: 12
+    Augment:
+      "1": 32
+      "2": 38
+      "3": 34
+      "4": 7
+    Damage:
+      Dealt: 1203.2099952697754
+      Taken: 1122.4303231239319
+    Heal:
+      Taken: 1131.9700012207031
+    kill: 2
+    Ranking: 7
+    TimeSurvived: 315
+    killedBy: "947f100b-c289-40e6-9425-4be0186c6824"
+    outCuase: "처치"
+  "81bf2b37-bc1f-4145-a38d-f0cc512058a8":
+    Character: 28
+    Augment:
+      "1": 32
+      "2": 6
+      "3": 7
+      "4": 11
+    Damage:
+      Dealt: 361.0
+      Taken: 1323.7850065231323
+    Heal:
+      Taken: 346.47749999999996
+    Ranking: 34
+    TimeSurvived: 43
+    killedBy: "f90c005c-47f5-4c34-b74a-802ffa21d728"
+    outCuase: "처치"
+  "273809c6-04c9-4fc8-a67c-a345f4cf9a6e":
+    Character: 55
+    Augment:
+      "1": 38
+      "2": 2
+      "3": 34
+      "4": 25
+    Damage:
+      Taken: 1255.1402382850647
+      Dealt: 1873.3174195289612
+    Heal:
+      Taken: 614.4549999999999
+    kill: 3
+    Ranking: 3
+    TimeSurvived: 383
+    killedBy: "4ddf6d9c-e1c7-4128-874b-6dc63d6db3cd"
+    outCuase: "처치"
+  c4f5f041-1617-43ce-8b9b-49bfd3b6a2d0:
+    Character: 67
+    Augment:
+      "1": 15
+      "2": 1
+      "3": 6
+      "4": 37
+    Damage:
+      Dealt: 1531.3300170898438
+      Taken: 402.0
+    Heal:
+      Taken: 654.4121750793458
+    kill: 2
+    Ranking: 29
+    TimeSurvived: 62
+    killedBy: "4f30090f-78a4-4a97-97de-1aa9331c35b9"
+    outCuase: "처치"
+  ca2b6079-2de1-4c99-838b-dcd25888afb6:
+    Character: 4
+    Augment:
+      "1": 38
+      "2": 33
+      "3": 34
+      "4": 6
+    Damage:
+      Dealt: 1714.364935874939
+      Taken: 1056.2152214050293
+    Heal:
+      Taken: 1067.4108869075774
+    kill: 1
+    Ranking: 13
+    TimeSurvived: 228
+    killedBy: "b41b73a8-92c2-46b5-96f2-66acc910f248"
+    outCuase: "처치"
+title: "일반"

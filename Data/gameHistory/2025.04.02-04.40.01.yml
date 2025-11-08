@@ -1,0 +1,10 @@
+---
+Game:
+  mode: "일반"
+  joinedPlayers: "9937b375-a6cb-497d-a3c0-1395207ce7ed"
+  amountOfPlayers: 1
+  totalTime: "-43"
+Player:
+  "9937b375-a6cb-497d-a3c0-1395207ce7ed":
+    Character: 63
+title: "일반"

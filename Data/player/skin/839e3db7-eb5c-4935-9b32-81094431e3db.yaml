@@ -1,0 +1,10 @@
+character20:
+    ownedSkins:
+    - gold
+    selected: gold
+
+character1:
+    ownedSkins:
+    - anniversary3year
+    - gold
+    selected: anniversary3year
