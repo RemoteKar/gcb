@@ -9,6 +9,25 @@ const { toNonHyphenatedUUID } = require('../util'); // toNonHyphenatedUUID 추�
 
 module.exports.precalculatedLeaderboard = []; // 전역 변수로 랭킹 데이터 저장
 
+// 통계 데이터를 클라이언트 응답 형식으로 포맷팅하는 헬퍼 함수
+function formatStatistics(stats) {
+  return {
+    winRate: stats.winRate.toFixed(1),
+    winCount: stats.winCount.toString(),
+    avarageRankLeast50: stats.avarageRankLeast50.toFixed(1),
+    mostUsedCharacter: stats.mostUsedCharacter,
+    mostUsedAugments: stats.mostUsedAugments,
+    averageDamageDealt: stats.averageDamageDealt.toFixed(0),
+    averageDamageTaken: stats.averageDamageTaken.toFixed(0),
+    averageKillRate: stats.averageKillRate.toFixed(2),
+    averageAliveTime: stats.averageAliveTime.toFixed(1),
+    maxDamageDealt: stats.maxDamageDealt.toFixed(0),
+    maxDamageTaken: stats.maxDamageTaken.toFixed(0),
+    maxKill: stats.maxKill.toString(),
+    totalGames: stats.totalGames.toString()
+  };
+}
+
 async function initializeLeaderboard() {
   console.log("🚀 [서버] 랭킹 데이터 초기화 시작...");
   try {
@@ -69,19 +88,7 @@ async function initializeLeaderboard() {
       return {
         uuid: stats.uuid,
         nickname: nickname,
-        winRate: stats.winRate.toFixed(1),
-        winCount: stats.winCount.toString(),
-        avarageRankLeast50: stats.avarageRankLeast50.toFixed(1),
-        mostUsedCharacter: stats.mostUsedCharacter,
-        mostUsedAugments: stats.mostUsedAugments,
-        averageDamageDealt: stats.averageDamageDealt.toFixed(0),
-        averageDamageTaken: stats.averageDamageTaken.toFixed(0),
-        averageKillRate: stats.averageKillRate.toFixed(2),
-        averageAliveTime: stats.averageAliveTime.toFixed(1),
-        maxDamageDealt: stats.maxDamageDealt.toFixed(0),
-        maxDamageTaken: stats.maxDamageTaken.toFixed(0),
-        maxKill: stats.maxKill.toString(),
-        totalGames: stats.totalGames.toString()
+        ...formatStatistics(stats)
       };
     }));
 
@@ -161,23 +168,8 @@ router.get('/statistic', (req, res, next) => {
   try {
     const gameHistory = await getGameHistory(req.formattedUUID);
     const statistics = computeStatistics(gameHistory.map(record => record.content), req.formattedUUID);
-    const formattedStatistics = {
-      winRate: statistics.winRate.toFixed(1),
-      winCount: statistics.winCount.toString(),
-      avarageRankLeast50: statistics.avarageRankLeast50.toFixed(1),
-      mostUsedCharacter: statistics.mostUsedCharacter,
-      mostUsedAugments: statistics.mostUsedAugments,
-      averageDamageDealt: statistics.averageDamageDealt.toFixed(0),
-      averageDamageTaken: statistics.averageDamageTaken.toFixed(0),
-      averageKillRate: statistics.averageKillRate.toFixed(2),
-      averageAliveTime: statistics.averageAliveTime.toFixed(1),
-      maxDamageDealt: statistics.maxDamageDealt.toFixed(0),
-      maxDamageTaken: statistics.maxDamageTaken.toFixed(0),
-      maxKill: statistics.maxKill.toString(),
-      totalGames: statistics.totalGames.toString()
-    };
     const responsePayload = {
-      statistics: formattedStatistics,
+      statistics: formatStatistics(statistics),
       gameRecords: gameHistory
     };
     res.json(responsePayload);

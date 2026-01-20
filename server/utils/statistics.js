@@ -283,10 +283,10 @@ function computeGlobalCharacterStatistics(gameRecords) {
     const characterStats = {}; // { characterId: { picks, wins, totalRank, ... } }
 
     gameRecords.forEach(record => {
-        if (!record.content || !record.content.Player) return;
+        if (!record || !record.Player) return;
 
-        const players = Object.values(record.content.Player);
-        const totalPlayers = record.content.Game.amountOfPlayers;
+        const players = Object.values(record.Player);
+        const totalPlayers = record.Game.amountOfPlayers;
 
         players.forEach(playerData => {
             const characterId = playerData.Character;

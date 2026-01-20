@@ -13,7 +13,7 @@ function formatUUID(uuid) {
     }
     return `${uuid.slice(0, 8)}-${uuid.slice(8, 12)}-${uuid.slice(12, 16)}-${uuid.slice(16, 20)}-${uuid.slice(20)}`;
   }
-  
+
 function toNonHyphenatedUUID(uuid) {
     if (typeof uuid !== "string") {
         return uuid;
@@ -22,26 +22,3 @@ function toNonHyphenatedUUID(uuid) {
 }
 
 module.exports = { formatUUID, toNonHyphenatedUUID };
-
-// 추가된 부분
-const { PrismaClient } = require('@prisma/client');
-const prisma = new PrismaClient();
-
-async function getPlayerUuid(player) {
-    try {
-        const user = await prisma.user.findUnique({
-            where: {
-                nickname: player,
-            },
-            select: {
-                uuid: true,
-            },
-        });
-        return user ? user.uuid : null;
-    } catch (error) {
-        console.error(`Error fetching UUID for player ${player}:`, error);
-        return null;
-    }
-}
-
-module.exports.getPlayerUuid = getPlayerUuid;

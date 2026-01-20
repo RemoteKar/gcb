@@ -154,12 +154,16 @@ async function fetchAndParseYamlFile(downloadUrl) {
     });
 }
 
-async function fetchAllGameRecords() {
-    // 1. 인메모리 캐시에서 조회
-    const inMemoryCachedData = gameHistoryCache.get('allGameRecords');
-    if (inMemoryCachedData) {
-        console.log(`✅ [GitHub API] 인메모리 게임 기록 캐시 히트: ${inMemoryCachedData.length}개`);
-        return inMemoryCachedData;
+async function fetchAllGameRecords(forceRefresh = false) {
+    // 1. 캐시 확인 (강제 새로고침이 아닌 경우)
+    if (!forceRefresh) {
+        const inMemoryCachedData = gameHistoryCache.get('allGameRecords');
+        if (inMemoryCachedData) {
+            console.log(`✅ [GitHub API] 인메모리 게임 기록 캐시 히트: ${inMemoryCachedData.length}개`);
+            return inMemoryCachedData;
+        }
+    } else {
+        console.log("🚀 [GitHub API] 모든 게임 기록 캐시 강제 새로고침 시작...");
     }
 
     // 2. GitHub API에서 모든 게임 기록 가져오기
@@ -174,39 +178,19 @@ async function fetchAllGameRecords() {
 
     const allParsedGameRecordsWithFileName = (await Promise.all(allGameRecordsPromises)).filter(record => record.content !== null);
     console.log(`[DEBUG] 성공적으로 파싱된 게임 기록 수 (필터링 후): ${allParsedGameRecordsWithFileName.length}`);
-    
+
     // 3. 인메모리 캐시에 저장
     gameHistoryCache.set('allGameRecords', allParsedGameRecordsWithFileName);
+
+    if (forceRefresh) {
+        console.log("✅ [GitHub API] 모든 게임 기록 캐시 강제 새로고침 완료.");
+    }
 
     return allParsedGameRecordsWithFileName;
 }
 
 async function refreshAllGameRecordsCache() {
-    console.log("🚀 [GitHub API] 모든 게임 기록 캐시 강제 새로고침 시작...");
-    try {
-        // GitHub에서 모든 게임 기록 가져오기
-        const filesMetadata = await getAllGameHistoryFileMetadata();
-        console.log(`[DEBUG] GitHub에서 가져온 파일 메타데이터 수: ${filesMetadata.length}`);
-
-        const allGameRecordsPromises = filesMetadata.map(async (file) => {
-            const parsedData = await fetchAndParseYamlFile(file.download_url);
-            return { fileName: file.name, content: parsedData };
-        });
-        console.log(`[DEBUG] 파싱 시도할 게임 기록 수: ${allGameRecordsPromises.length}`);
-
-        const allParsedGameRecordsWithFileName = (await Promise.all(allGameRecordsPromises)).filter(record => record.content !== null);
-        console.log(`[DEBUG] 성공적으로 파싱된 게임 기록 수 (필터링 후): ${allParsedGameRecordsWithFileName.length}`);
-        
-        // 인메모리 캐시 업데이트
-        gameHistoryCache.set('allGameRecords', allParsedGameRecordsWithFileName);
-
-        console.log("✅ [GitHub API] 모든 게임 기록 캐시 강제 새로고침 완료.");
-        return allParsedGameRecordsWithFileName; // 새로고침된 전체 기록 반환
-
-    } catch (error) {
-        console.error("❌ [GitHub API] 모든 게임 기록 캐시 강제 새로고침 오류:", error);
-        throw error; // 오류 전파
-    }
+    return fetchAllGameRecords(true);
 }
 
 module.exports = { getBadgeData, getGameHistory, getAllGameHistoryFileMetadata, fetchAndParseYamlFile, fetchAllGameRecords, refreshAllGameRecordsCache };

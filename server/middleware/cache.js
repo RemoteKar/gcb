@@ -1,5 +1,4 @@
 const NodeCache = require('node-cache');
-const { formatUUID } = require('../util');
 
 const cache = new NodeCache({ stdTTL: 0 }); // 0은 영구 캐시를 의미합니다.
 

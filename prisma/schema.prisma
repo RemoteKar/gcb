@@ -7,47 +7,10 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model User {
-  id      Int      @id @default(autoincrement())
-  email   String   @unique
-  name    String?
-  posts   Post[]
-}
-
-model Post {
-  id        Int     @id @default(autoincrement())
-  title     String
-  content   String?
-  published Boolean @default(false)
-  author    User?   @relation(fields: [authorId], references: [id])
-  authorId  Int?
-}
-
 model MojangProfileCache {
   uuid        String    @id @unique
   name        String
   profileData Json
-  cachedAt    DateTime  @default(now())
-  expiresAt   DateTime?
-}
-
-model BadgeData {
-  uuid        String    @id @unique
-  badgeData   Json
-  cachedAt    DateTime  @default(now())
-  expiresAt   DateTime?
-}
-
-model GameRecord {
-  fileName    String    @id @unique
-  content     Json
-  cachedAt    DateTime  @default(now())
-  expiresAt   DateTime?
-}
-
-model UserGameHistoryCache {
-  uuid        String    @id @unique
-  gameRecords Json
   cachedAt    DateTime  @default(now())
   expiresAt   DateTime?
 }
