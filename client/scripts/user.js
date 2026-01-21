@@ -1,4 +1,17 @@
 document.addEventListener("DOMContentLoaded", async () => {
+  // 검색 버튼 이벤트 리스너 등록
+  const searchButton = document.getElementById("search-button");
+  const nicknameInput = document.getElementById("nickname");
+  if (searchButton && nicknameInput) {
+    searchButton.addEventListener("click", () => {
+      const searchNickname = nicknameInput.value.trim();
+      if (!searchNickname) {
+        return;
+      }
+      window.location.href = `/user/${encodeURIComponent(searchNickname)}`;
+    });
+  }
+
   // URL 경로에서 닉네임 추출 (예: /user/Steve)
   const pathParts = window.location.pathname.split('/');
   // pathParts[0]는 빈 문자열, [1]은 "user", [2]는 닉네임
