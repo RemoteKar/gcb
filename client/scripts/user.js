@@ -79,9 +79,14 @@ document.addEventListener("DOMContentLoaded", async () => {
 
   // ──────────────────────────────
   // 2. 플레이어 머리 이미지 표시
+  console.log(`[DEBUG] UUID for avatar: ${uuid}`);
   const headImg = document.createElement("img");
-  headImg.src = `https://crafatar.com/avatars/${uuid}?size=100&overlay`;
+  headImg.src = `https://mc-heads.net/avatar/${uuid}/100`;
   headImg.alt = `${nickname}'s Head`;
+  headImg.onerror = () => {
+    console.error(`[ERROR] Failed to load avatar for UUID: ${uuid}`);
+    headImg.src = `https://crafatar.com/avatars/${uuid}?size=100&overlay`;
+  };
   playerHead.appendChild(headImg);
 
   // ──────────────────────────────
