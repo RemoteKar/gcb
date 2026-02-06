@@ -537,3 +537,169 @@ body {
     object-fit: cover;
     border-radius: 10px;
 }
+
+/* ========================================
+   캐릭터 목록 페이지 스타일
+   ======================================== */
+.character-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
+    gap: 15px;
+    margin-top: 20px;
+    max-width: 800px;
+    width: 100%;
+}
+
+.character-grid-item {
+    background-color: #2c2c2c;
+    border: 2px solid #3c3c3c;
+    border-radius: 10px;
+    padding: 10px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.character-grid-item:hover {
+    border-color: #f7a400;
+    transform: scale(1.1);
+    box-shadow: 0 0 15px rgba(247, 164, 0, 0.5);
+}
+
+.character-grid-img {
+    width: 60px;
+    height: 60px;
+    border-radius: 5px;
+}
+
+/* ========================================
+   캐릭터 상세 페이지 스타일
+   ======================================== */
+.character-detail-container {
+    max-width: 800px;
+}
+
+.character-header {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-bottom: 30px;
+}
+
+.character-portrait-lg {
+    width: 150px;
+    height: 150px;
+    border-radius: 15px;
+    border: 5px solid #f7a400;
+    margin-bottom: 15px;
+}
+
+.character-header h1 {
+    color: #f7a400;
+    font-size: 24px;
+    margin: 0;
+}
+
+.loading-text {
+    text-align: center;
+    color: #888;
+    font-size: 18px;
+}
+
+.skills-container {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.skill-card {
+    background-color: #2c2c2c;
+    border: 2px solid #3c3c3c;
+    border-radius: 10px;
+    padding: 15px;
+    transition: border-color 0.3s ease;
+}
+
+.skill-card:hover {
+    border-color: #5393ff;
+}
+
+.skill-header {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    margin-bottom: 10px;
+    border-bottom: 1px solid #3c3c3c;
+    padding-bottom: 10px;
+}
+
+.skill-type {
+    background-color: #f7a400;
+    color: #1c1c1c;
+    padding: 5px 12px;
+    border-radius: 5px;
+    font-weight: bold;
+    font-size: 14px;
+    min-width: 70px;
+    text-align: center;
+}
+
+.skill-name {
+    color: #ffffff;
+    font-size: 18px;
+    font-weight: bold;
+}
+
+.skill-description {
+    line-height: 1.8;
+    font-size: 15px;
+}
+
+/* 캐릭터 스탯 그리드 */
+.character-stats-container {
+    margin-bottom: 30px;
+}
+
+.stats-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 10px;
+    background-color: #2c2c2c;
+    border: 2px solid #f7a400;
+    border-radius: 10px;
+    padding: 15px;
+}
+
+.stat-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 10px;
+    background-color: #1c1c1c;
+    border-radius: 8px;
+}
+
+.stat-icon {
+    font-size: 24px;
+    margin-bottom: 5px;
+}
+
+.stat-label {
+    font-size: 12px;
+    color: #888;
+    margin-bottom: 3px;
+}
+
+.stat-value {
+    font-size: 18px;
+    font-weight: bold;
+}
+
+/* 반응형: 작은 화면에서 2열 */
+@media (max-width: 500px) {
+    .stats-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}

@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>캐릭터 정보 - GCB.gg</title>
+    <link rel="stylesheet" href="/styles/main.css">
+    <link rel="icon" href="/favicon.ico" type="image/x-icon">
+</head>
+<body>
+    <div class="header-bar">
+        <a href="/" class="header-logo">GCB.gg</a>
+        <a href="/ranking.html" class="nav-button">랭킹</a>
+        <a href="/character.html" class="nav-button">캐릭터정보</a>
+        <a href="/character_stats.html" class="nav-button">캐릭터 통계</a>
+        <a href="/augment_stats.html" class="nav-button">증강 통계</a>
+    </div>
+
+    <div class="container character-detail-container">
+        <div class="character-header">
+            <img id="character-portrait" class="character-portrait-lg" src="" alt="캐릭터 초상화">
+            <h1 id="character-name">캐릭터 정보</h1>
+        </div>
+
+        <div id="loading" class="loading-text">로딩 중...</div>
+
+        <!-- 스탯 정보 -->
+        <div id="stats-container" class="character-stats-container">
+            <!-- 스탯 정보가 여기에 동적으로 추가됨 -->
+        </div>
+
+        <div id="skills-container" class="skills-container">
+            <!-- 스킬 정보가 여기에 동적으로 추가됨 -->
+        </div>
+    </div>
+
+    <script src="/scripts/character_detail.js"></script>
+</body>
+</html>

@@ -193,4 +193,107 @@ async function refreshAllGameRecordsCache() {
     return fetchAllGameRecords(true);
 }
 
-module.exports = { getBadgeData, getGameHistory, getAllGameHistoryFileMetadata, fetchAndParseYamlFile, fetchAllGameRecords, refreshAllGameRecordsCache };
+// 캐릭터 설명 데이터 캐시
+const characterDescriptionCache = new NodeCache({ stdTTL: 86400 }); // 24시간 캐시
+
+// 캐릭터 목록 가져오기 (description 폴더 기반)
+async function getCharacterList() {
+    // 캐시 확인
+    const cachedList = characterDescriptionCache.get('characterList');
+    if (cachedList) {
+        console.log(`✅ [GitHub API] 인메모리 캐릭터 목록 캐시 히트`);
+        return cachedList;
+    }
+
+    const dirPath = `${baseDataPath}/description`;
+    const githubApiUrl = `https://api.github.com/repos/${repoOwner}/${repoName}/contents/${dirPath}?ref=${branch}`;
+    console.log(`🔍 [GitHub API] 캐릭터 목록 요청 URL: ${githubApiUrl}`);
+
+    const directories = await retryOperation(async () => {
+        const response = await fetch(githubApiUrl, {
+            headers: {
+                'Authorization': `token ${githubToken}`,
+                'User-Agent': 'Your App Name'
+            }
+        });
+
+        if (!response.ok) {
+            console.error(`❌ [GitHub API] 캐릭터 목록 응답 코드: ${response.status}`);
+            throw new Error('캐릭터 목록을 가져올 수 없습니다.');
+        }
+
+        return response.json();
+    });
+
+    // char_XX 형식의 폴더에서 캐릭터 ID 추출 (1~899 범위만)
+    const characterIds = directories
+        .filter(item => item.type === 'dir' && item.name.startsWith('char_'))
+        .map(item => parseInt(item.name.replace('char_', ''), 10))
+        .filter(id => id >= 1 && id < 900)
+        .sort((a, b) => a - b);
+
+    // 캐시에 저장
+    characterDescriptionCache.set('characterList', characterIds);
+
+    return characterIds;
+}
+
+// 특정 캐릭터의 스킬 정보 가져오기
+async function getCharacterInfo(characterId) {
+    // 캐시 확인
+    const cacheKey = `charInfo_${characterId}`;
+    const cachedInfo = characterDescriptionCache.get(cacheKey);
+    if (cachedInfo) {
+        console.log(`✅ [GitHub API] 인메모리 캐릭터 정보 캐시 히트: ${characterId}`);
+        return cachedInfo;
+    }
+
+    const dirPath = `${baseDataPath}/description/char_${characterId}`;
+    const githubApiUrl = `https://api.github.com/repos/${repoOwner}/${repoName}/contents/${dirPath}?ref=${branch}`;
+    console.log(`🔍 [GitHub API] 캐릭터 정보 요청 URL: ${githubApiUrl}`);
+
+    const files = await retryOperation(async () => {
+        const response = await fetch(githubApiUrl, {
+            headers: {
+                'Authorization': `token ${githubToken}`,
+                'User-Agent': 'Your App Name'
+            }
+        });
+
+        if (!response.ok) {
+            if (response.status === 404) {
+                return null;
+            }
+            throw new Error(`캐릭터 정보를 가져올 수 없습니다: ${response.status}`);
+        }
+
+        return response.json();
+    });
+
+    if (!files) {
+        return null;
+    }
+
+    // 모든 YAML 파일 파싱
+    const skills = {};
+    const parsePromises = files
+        .filter(file => file.name.endsWith('.yaml'))
+        .map(async (file) => {
+            const skillKey = file.name.replace('.yaml', '');
+            const parsedData = await fetchAndParseYamlFile(file.download_url);
+            if (parsedData) {
+                skills[skillKey] = parsedData;
+            }
+        });
+
+    await Promise.all(parsePromises);
+
+    const charInfo = { characterId, skills };
+
+    // 캐시에 저장
+    characterDescriptionCache.set(cacheKey, charInfo);
+
+    return charInfo;
+}
+
+module.exports = { getBadgeData, getGameHistory, getAllGameHistoryFileMetadata, fetchAndParseYamlFile, fetchAllGameRecords, refreshAllGameRecordsCache, getCharacterList, getCharacterInfo };

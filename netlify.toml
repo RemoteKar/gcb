@@ -12,3 +12,8 @@
   from = "/user/*"
   to = "/user.html"
   status = 200
+
+[[redirects]]
+  from = "/character/:id"
+  to = "/character_detail.html"
+  status = 200

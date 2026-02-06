@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const { getUUID, getProfileByUUID } = require('../services/mojang');
-const { getBadgeData, getGameHistory, fetchAllGameRecords, refreshAllGameRecordsCache } = require('../services/github'); // fetchAllGameRecords, refreshAllGameRecordsCache 복원
+const { getBadgeData, getGameHistory, fetchAllGameRecords, refreshAllGameRecordsCache, getCharacterList, getCharacterInfo } = require('../services/github');
 const { computeStatistics, aggregateAllPlayerStatistics } = require('../utils/statistics');
 const cacheMiddleware = require('../middleware/cache');
 const { formatUUID } = require('../util');
@@ -244,6 +244,48 @@ router.get('/augment-stats', async (req, res) => {
     } catch (error) {
         console.error("❌ [서버] 증강 통계 조회 오류:", error);
         res.status(500).json({ error: '서버 내부 오류가 발생했습니다.' });
+    }
+});
+
+//----------------------------------------
+// 📌 캐릭터 목록 조회 (1~899번)
+//----------------------------------------
+router.get('/character-list', async (req, res) => {
+    console.log(`🔍 [서버] 캐릭터 목록 요청`);
+    try {
+        const characters = await getCharacterList();
+        res.json({ characters });
+    } catch (error) {
+        console.error("❌ [서버] 캐릭터 목록 조회 오류:", error);
+        res.status(500).json({ error: '캐릭터 목록을 가져올 수 없습니다.' });
+    }
+});
+
+//----------------------------------------
+// 📌 캐릭터 상세 정보 조회
+//----------------------------------------
+router.get('/character-info', async (req, res) => {
+    const { id } = req.query;
+    console.log(`🔍 [서버] 캐릭터 정보 요청: ID = ${id}`);
+
+    if (!id) {
+        return res.status(400).json({ error: "캐릭터 ID를 입력하세요." });
+    }
+
+    const characterId = parseInt(id, 10);
+    if (isNaN(characterId) || characterId < 1 || characterId >= 900) {
+        return res.status(400).json({ error: "유효하지 않은 캐릭터 ID입니다." });
+    }
+
+    try {
+        const charInfo = await getCharacterInfo(characterId);
+        if (!charInfo) {
+            return res.status(404).json({ error: "캐릭터를 찾을 수 없습니다." });
+        }
+        res.json(charInfo);
+    } catch (error) {
+        console.error("❌ [서버] 캐릭터 정보 조회 오류:", error);
+        res.status(500).json({ error: '캐릭터 정보를 가져올 수 없습니다.' });
     }
 });
 
