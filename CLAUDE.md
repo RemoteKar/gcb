@@ -158,6 +158,55 @@ client/Resource/weapon/
 
 ---
 
+## 2026-02-10 작업 내용: 타이탄 페이지 추가
+
+### 개요
+캐릭터 24의 궁극기 "BT-7274" (skill id: `잭4`) 클릭 → 타이탄 7종 목록 → 개별 타이탄 상세.
+기존 weapon 로직과 완전 분리된 별도 API/페이지로 구현.
+
+### 생성된 파일
+| 파일 | 설명 |
+|------|------|
+| `client/titan_list.html` | 타이탄 목록 페이지 (7종 아이콘+설명) |
+| `client/titan_detail.html` | 타이탄 상세 페이지 (캐릭터 상세와 동일 디자인) |
+| `client/scripts/titan_list.js` | 목록 페이지 로직 |
+| `client/scripts/titan_detail.js` | 상세 페이지 로직 (패시브+스킬1-4+기본공격) |
+
+### 수정된 파일
+| 파일 | 변경 내용 |
+|------|---------|
+| `server/services/github.js` | `getTitanList()`, `getTitanInfo()`, `fetchGithubDir()` 함수 추가, `getSkillLinks()`에 잭4 매핑 |
+| `server/routes/api.js` | `GET /api/titan-list`, `GET /api/titan-info` 엔드포인트 추가 |
+| `client/styles/main.css` | 타이탄 목록 그리드 스타일 추가 |
+| `netlify.toml` | `/titan/:skillId`, `/titan/:skillId/:titanName` 리다이렉트 추가 |
+
+### 데이터 구조
+```
+Data/description/titan/
+├── 잭0-2.yaml           # 공용 패시브 (모든 타이탄 공통)
+├── smartpistol.yaml     # 스마트 피스톨
+├── vanguard/            # 각 타이탄 폴더 (7개)
+│   ├── 잭4vanguard.yaml # index 정렬 offset 0 → 타이탄 설명
+│   ├── (스킬 4개)       # offset 1-4 → 스킬 1-4
+│   └── xo16.yaml        # offset 5 → 무기 (기본공격)
+├── ion/ legion/ northstar/ ronin/ scorch/ tone/
+```
+**규칙**: 폴더 내 파일을 `index`로 정렬, offset 0=설명, 1-4=스킬, 5=무기
+
+### URL 구조
+- `/titan/잭4` → 타이탄 목록 (7종)
+- `/titan/잭4/ion` → 아이온 상세 (패시브+스킬+무기)
+
+### API 엔드포인트
+- `GET /api/titan-list` - 타이탄 7종 목록 (이름+설명)
+- `GET /api/titan-info?id=ion` - 개별 타이탄 상세 (패시브+스킬+무기)
+
+### 리소스
+- 타이탄 아이콘: `client/Resource/titan/{name}.png`
+- 무기 이미지: `client/Resource/titan/weapon/{weaponId}.webp`
+
+---
+
 ## 페이지 목록
 1. `index.html` - 메인 (닉네임 검색)
 2. `user.html` - 유저 프로필
@@ -167,6 +216,8 @@ client/Resource/weapon/
 6. `character_stats.html` - 캐릭터 통계
 7. `augment_stats.html` - 증강 통계
 8. `weapon_detail.html` - 무기 상세 (상단바 미노출, 스킬 클릭으로만 진입)
+9. `titan_list.html` - 타이탄 목록 (상단바 미노출, 스킬 클릭으로만 진입)
+10. `titan_detail.html` - 타이탄 상세 (상단바 미노출, 목록에서 클릭으로 진입)
 
 ---
 
