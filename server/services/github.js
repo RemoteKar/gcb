@@ -296,42 +296,43 @@ async function getCharacterInfo(characterId) {
     return charInfo;
 }
 
-// 무기 카테고리 목록 가져오기 (weapons 폴더의 하위 폴더명)
-async function getWeaponCategories() {
-    const cacheKey = 'weaponCategories';
+// 스킬 링크 매핑 가져오기 (skillId → 이동 경로)
+// 각 데이터 소스 폴더를 스캔하여 { skillId: path } 매핑을 생성
+async function getSkillLinks() {
+    const cacheKey = 'skillLinks';
     const cached = characterDescriptionCache.get(cacheKey);
     if (cached) {
-        console.log(`✅ [GitHub API] 인메모리 무기 카테고리 캐시 히트`);
+        console.log(`✅ [GitHub API] 인메모리 스킬 링크 캐시 히트`);
         return cached;
     }
 
-    const dirPath = `${baseDataPath}/description/weapons`;
-    const githubApiUrl = `https://api.github.com/repos/${repoOwner}/${repoName}/contents/${dirPath}?ref=${branch}`;
+    const skillLinks = {};
 
-    const directories = await retryOperation(async () => {
-        const response = await fetch(githubApiUrl, {
-            headers: {
-                'Authorization': `token ${githubToken}`,
-                'User-Agent': 'Your App Name'
-            }
-        });
-
+    // weapons 폴더 스캔 → /weapon/{id} 경로로 매핑
+    const weaponsDirPath = `${baseDataPath}/description/weapons`;
+    const weaponsDirs = await retryOperation(async () => {
+        const response = await fetch(
+            `https://api.github.com/repos/${repoOwner}/${repoName}/contents/${weaponsDirPath}?ref=${branch}`,
+            { headers: { 'Authorization': `token ${githubToken}`, 'User-Agent': 'Your App Name' } }
+        );
         if (!response.ok) {
             if (response.status === 404) return null;
-            throw new Error(`무기 카테고리를 가져올 수 없습니다: ${response.status}`);
+            throw new Error(`weapons 폴더를 가져올 수 없습니다: ${response.status}`);
         }
-
         return response.json();
     });
 
-    if (!directories) return [];
+    if (weaponsDirs) {
+        weaponsDirs
+            .filter(item => item.type === 'dir')
+            .forEach(item => { skillLinks[item.name] = `/weapon/${item.name}`; });
+    }
 
-    const categories = directories
-        .filter(item => item.type === 'dir')
-        .map(item => item.name);
+    // 추후 다른 폴더 스캔 추가 시 여기에 작성
+    // 예: skills 폴더 → /skill/{id}, titan 폴더 → /titan/{id} 등
 
-    characterDescriptionCache.set(cacheKey, categories);
-    return categories;
+    characterDescriptionCache.set(cacheKey, skillLinks);
+    return skillLinks;
 }
 
 // 무기 목록 가져오기 (weapons 폴더 기반)
@@ -386,4 +387,4 @@ async function getWeaponList(weaponId) {
     return weapons;
 }
 
-module.exports = { getBadgeData, getGameHistory, getAllGameHistoryFileMetadata, fetchAndParseYamlFile, fetchAllGameRecords, refreshAllGameRecordsCache, getCharacterList, getCharacterInfo, getWeaponCategories, getWeaponList };
+module.exports = { getBadgeData, getGameHistory, getAllGameHistoryFileMetadata, fetchAndParseYamlFile, fetchAllGameRecords, refreshAllGameRecordsCache, getCharacterList, getCharacterInfo, getSkillLinks, getWeaponList };

@@ -114,24 +114,24 @@ document.addEventListener("DOMContentLoaded", async () => {
         '체력재생': { icon: '💚', color: '#2ed573' }
     };
 
-    // 클릭 가능한 스킬 ID 목록 가져오기
-    async function fetchWeaponCategories() {
+    // 스킬 링크 매핑 가져오기 (skillId → 이동 경로)
+    async function fetchSkillLinks() {
         try {
-            const response = await fetch('/api/weapon-categories');
-            if (!response.ok) return [];
+            const response = await fetch('/api/skill-links');
+            if (!response.ok) return {};
             const data = await response.json();
-            return data.categories || [];
+            return data.skillLinks || {};
         } catch (error) {
-            console.error("fetchWeaponCategories error:", error);
-            return [];
+            console.error("fetchSkillLinks error:", error);
+            return {};
         }
     }
 
     // 캐릭터 정보 렌더링
     async function renderCharacterInfo() {
-        const [charInfo, weaponCategories] = await Promise.all([
+        const [charInfo, skillLinks] = await Promise.all([
             fetchCharacterInfo(),
-            fetchWeaponCategories()
+            fetchSkillLinks()
         ]);
 
         if (!charInfo || !charInfo.skills) {
@@ -191,23 +191,23 @@ document.addEventListener("DOMContentLoaded", async () => {
 
             const skillTypeName = skillTypeNames[skillKey] || `스킬 ${skillKey}`;
 
-            const isClickable = skill.id && weaponCategories.includes(skill.id);
+            const skillLinkPath = skill.id ? skillLinks[skill.id] : null;
 
             skillCard.innerHTML = `
                 <div class="skill-header">
                     <span class="skill-type">${skillTypeName}</span>
                     <span class="skill-name">${escapeHtml(skill.name || '이름 없음')}</span>
-                    ${isClickable ? '<span class="skill-link-icon">▶</span>' : ''}
+                    ${skillLinkPath ? '<span class="skill-link-icon">▶</span>' : ''}
                 </div>
                 <div class="skill-description">
                     ${parseMinecraftColors(skill.description || '')}
                 </div>
             `;
 
-            if (isClickable) {
+            if (skillLinkPath) {
                 skillCard.classList.add('skill-card-clickable');
                 skillCard.addEventListener('click', () => {
-                    window.location.href = `/weapon/${skill.id}`;
+                    window.location.href = skillLinkPath;
                 });
             }
 
