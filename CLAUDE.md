@@ -95,15 +95,16 @@ client/Resource/
 ### 수정된 파일
 | 파일 | 변경 내용 |
 |------|---------|
-| `server/services/github.js` | `getWeaponList(weaponId)` 함수 추가 |
-| `server/routes/api.js` | `GET /api/weapon-info?id=X` 엔드포인트 추가 (경로 조작 방지 포함) |
-| `client/scripts/character_detail.js` | `skill.id` 있는 스킬에 클릭 → `/weapon/{id}` 이동 로직 추가 |
-| `client/styles/main.css` | 클릭 가능 스킬 카드 스타일 + 무기 페이지 스타일 추가 |
+| `server/services/github.js` | `getSkillLinks()`, `getWeaponList(weaponId)` 함수 추가 |
+| `server/routes/api.js` | `GET /api/skill-links`, `GET /api/weapon-info?id=X` 엔드포인트 추가 |
+| `client/scripts/character_detail.js` | 스킬 링크 매핑 기반 클릭 이동 로직 추가 |
+| `client/styles/main.css` | 클릭 가능 스킬 카드 스타일 + 무기 페이지 3열 그리드 스타일 추가 |
 | `netlify.toml` | `/weapon/:id` → `/weapon_detail.html` 리다이렉트 추가 |
 
 ### 주요 기능
-1. **스킬 클릭 연동**: 스킬 YAML에 `id` 필드가 있으면 금색 테두리 + ▶ 아이콘 표시, 클릭 시 `/weapon/{id}`로 이동
-2. **무기 상세 페이지** (`/weapon/:id`)
+1. **범용 스킬 링크 시스템**: `GET /api/skill-links` → `{ skillId: path }` 매핑 반환. 클라이언트는 경로를 하드코딩하지 않음
+2. **스킬 클릭 연동**: 매핑에 존재하는 `skill.id`만 클릭 가능 (금색 테두리 + ▶ 아이콘)
+3. **무기 상세 페이지** (`/weapon/:id`)
    - 해당 `Data/description/weapons/{id}/` 폴더의 모든 YAML을 카드로 표시
    - 무기 이미지: `client/Resource/weapon/{id}/{weapon.id}.{ext}` (webp→png→jpg→jpeg→gif 순차 시도)
    - 이미지 비율 유동적 대응 (`object-fit: contain`, 고정 높이 컨테이너)
@@ -133,7 +134,20 @@ description: "&f대구경 권총 입니다\n&f적중시 &660&f의 피해를..."
 - char_58 (스킬 1, 2)
 
 ### API 엔드포인트
+- `GET /api/skill-links` - 스킬 ID → 이동 경로 매핑 반환 (예: `{ "APEXWeaponSelector": "/weapon/APEXWeaponSelector" }`)
 - `GET /api/weapon-info?id=X` - 무기 카테고리별 전체 무기 목록 반환
+
+### 스킬 링크 확장 방법
+`server/services/github.js`의 `getSkillLinks()` 함수에 새 폴더 스캔 블록 추가:
+```js
+// 예: titan 폴더 스캔 → /titan/{id} 경로로 매핑
+const titanDirs = await retryOperation(async () => { ... });
+if (titanDirs) {
+    titanDirs.filter(item => item.type === 'dir')
+        .forEach(item => { skillLinks[item.name] = `/titan/${item.name}`; });
+}
+```
+그 후 해당 HTML/JS 페이지 생성 + `netlify.toml`에 리다이렉트 추가
 
 ### 리소스 폴더 구조 (추가)
 ```
