@@ -163,11 +163,12 @@ client/Resource/weapon/
 ### 개요
 캐릭터 24의 궁극기 "BT-7274" (skill id: `잭4`) 클릭 → 타이탄 7종 목록 → 개별 타이탄 상세.
 기존 weapon 로직과 완전 분리된 별도 API/페이지로 구현.
+타이탄 목록은 세로 1열 배치 (왼쪽 아이콘 + 오른쪽 이름/설명), 하단에 스마트 피스톨 설명 포함.
 
 ### 생성된 파일
 | 파일 | 설명 |
 |------|------|
-| `client/titan_list.html` | 타이탄 목록 페이지 (7종 아이콘+설명) |
+| `client/titan_list.html` | 타이탄 목록 페이지 (7종 아이콘+설명 + 하단 스마트피스톨) |
 | `client/titan_detail.html` | 타이탄 상세 페이지 (캐릭터 상세와 동일 디자인) |
 | `client/scripts/titan_list.js` | 목록 페이지 로직 |
 | `client/scripts/titan_detail.js` | 상세 페이지 로직 (패시브+스킬1-4+기본공격) |
@@ -177,14 +178,14 @@ client/Resource/weapon/
 |------|---------|
 | `server/services/github.js` | `getTitanList()`, `getTitanInfo()`, `fetchGithubDir()` 함수 추가, `getSkillLinks()`에 잭4 매핑 |
 | `server/routes/api.js` | `GET /api/titan-list`, `GET /api/titan-info` 엔드포인트 추가 |
-| `client/styles/main.css` | 타이탄 목록 그리드 스타일 추가 |
+| `client/styles/main.css` | 타이탄 목록(세로 배치) + 스마트 피스톨 스타일 추가 |
 | `netlify.toml` | `/titan/:skillId`, `/titan/:skillId/:titanName` 리다이렉트 추가 |
 
 ### 데이터 구조
 ```
 Data/description/titan/
 ├── 잭0-2.yaml           # 공용 패시브 (모든 타이탄 공통)
-├── smartpistol.yaml     # 스마트 피스톨
+├── smartpistol.yaml     # 스마트 피스톨 (목록 하단에 별도 표시)
 ├── vanguard/            # 각 타이탄 폴더 (7개)
 │   ├── 잭4vanguard.yaml # index 정렬 offset 0 → 타이탄 설명
 │   ├── (스킬 4개)       # offset 1-4 → 스킬 1-4
@@ -194,16 +195,20 @@ Data/description/titan/
 **규칙**: 폴더 내 파일을 `index`로 정렬, offset 0=설명, 1-4=스킬, 5=무기
 
 ### URL 구조
-- `/titan/잭4` → 타이탄 목록 (7종)
+- `/titan/잭4` → 타이탄 목록 (7종 + 스마트 피스톨)
 - `/titan/잭4/ion` → 아이온 상세 (패시브+스킬+무기)
 
 ### API 엔드포인트
-- `GET /api/titan-list` - 타이탄 7종 목록 (이름+설명)
+- `GET /api/titan-list` - 타이탄 7종 목록 + 스마트 피스톨 데이터
 - `GET /api/titan-info?id=ion` - 개별 타이탄 상세 (패시브+스킬+무기)
 
 ### 리소스
 - 타이탄 아이콘: `client/Resource/titan/{name}.png`
 - 무기 이미지: `client/Resource/titan/weapon/{weaponId}.webp`
+
+### 스킬 링크 매핑
+- `getSkillLinks()`에서 titan 폴더 존재 시 `잭4` → `/titan/잭4` 자동 매핑
+- 추후 새 시스템 추가 시 동일 패턴으로 `getSkillLinks()`에 스캔 블록 추가
 
 ---
 
