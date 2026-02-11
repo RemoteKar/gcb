@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const { getUUID, getProfileByUUID } = require('../services/mojang');
-const { getBadgeData, getGameHistory, fetchAllGameRecords, refreshAllGameRecordsCache, getCharacterList, getCharacterInfo, getSkillLinks, getWeaponList } = require('../services/github');
+const { getBadgeData, getGameHistory, fetchAllGameRecords, refreshAllGameRecordsCache, getCharacterList, getCharacterInfo, getSkillLinks, getWeaponList, getTitanList, getTitanInfo } = require('../services/github');
 const { computeStatistics, aggregateAllPlayerStatistics } = require('../utils/statistics');
 const cacheMiddleware = require('../middleware/cache');
 const { formatUUID } = require('../util');
@@ -328,6 +328,50 @@ router.get('/weapon-info', async (req, res) => {
     } catch (error) {
         console.error("❌ [서버] 무기 정보 조회 오류:", error);
         res.status(500).json({ error: '무기 정보를 가져올 수 없습니다.' });
+    }
+});
+
+//----------------------------------------
+// 📌 타이탄 목록 조회
+//----------------------------------------
+router.get('/titan-list', async (req, res) => {
+    console.log(`🔍 [서버] 타이탄 목록 요청`);
+    try {
+        const titans = await getTitanList();
+        if (!titans) {
+            return res.status(404).json({ error: "타이탄 정보를 찾을 수 없습니다." });
+        }
+        res.json({ titans });
+    } catch (error) {
+        console.error("❌ [서버] 타이탄 목록 조회 오류:", error);
+        res.status(500).json({ error: '타이탄 목록을 가져올 수 없습니다.' });
+    }
+});
+
+//----------------------------------------
+// 📌 타이탄 상세 정보 조회
+//----------------------------------------
+router.get('/titan-info', async (req, res) => {
+    const { id } = req.query;
+    console.log(`🔍 [서버] 타이탄 정보 요청: ID = ${id}`);
+
+    if (!id) {
+        return res.status(400).json({ error: "타이탄 ID를 입력하세요." });
+    }
+
+    if (id.includes('/') || id.includes('\\') || id.includes('..')) {
+        return res.status(400).json({ error: "유효하지 않은 타이탄 ID입니다." });
+    }
+
+    try {
+        const titanInfo = await getTitanInfo(id);
+        if (!titanInfo) {
+            return res.status(404).json({ error: "타이탄을 찾을 수 없습니다." });
+        }
+        res.json(titanInfo);
+    } catch (error) {
+        console.error("❌ [서버] 타이탄 정보 조회 오류:", error);
+        res.status(500).json({ error: '타이탄 정보를 가져올 수 없습니다.' });
     }
 });
 

@@ -784,9 +784,75 @@ body {
     }
 }
 
+/* ========================================
+   타이탄 목록 페이지 스타일
+   ======================================== */
+.titan-list-container {
+    max-width: 800px;
+}
+
+.titan-page-title {
+    color: #f7a400;
+    font-size: 24px;
+    margin-bottom: 30px;
+}
+
+.titan-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.titan-card {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    background-color: #2c2c2c;
+    border: 2px solid #3c3c3c;
+    border-radius: 10px;
+    padding: 15px;
+    cursor: pointer;
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.titan-card:hover {
+    border-color: #f7a400;
+    box-shadow: 0 0 10px rgba(247, 164, 0, 0.3);
+}
+
+.titan-icon {
+    width: 80px;
+    height: 80px;
+    border-radius: 10px;
+    border: 3px solid #f7a400;
+    flex-shrink: 0;
+}
+
+.titan-card-info {
+    text-align: left;
+    flex: 1;
+    min-width: 0;
+}
+
+.titan-card-name {
+    color: #f7a400;
+    font-size: 18px;
+    margin: 0 0 8px 0;
+}
+
+.titan-card-desc {
+    line-height: 1.6;
+    font-size: 14px;
+}
+
 /* 반응형: 작은 화면에서 2열 */
 @media (max-width: 500px) {
     .stats-grid {
         grid-template-columns: repeat(2, 1fr);
+    }
+
+    .titan-icon {
+        width: 60px;
+        height: 60px;
     }
 }

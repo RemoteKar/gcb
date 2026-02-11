@@ -22,3 +22,13 @@
   from = "/weapon/:id"
   to = "/weapon_detail.html"
   status = 200
+
+[[redirects]]
+  from = "/titan/:skillId/:titanName"
+  to = "/titan_detail.html"
+  status = 200
+
+[[redirects]]
+  from = "/titan/:skillId"
+  to = "/titan_list.html"
+  status = 200

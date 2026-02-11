@@ -328,8 +328,26 @@ async function getSkillLinks() {
             .forEach(item => { skillLinks[item.name] = `/weapon/${item.name}`; });
     }
 
-    // 추후 다른 폴더 스캔 추가 시 여기에 작성
-    // 예: skills 폴더 → /skill/{id}, titan 폴더 → /titan/{id} 등
+    // titan 폴더 스캔 → /titan/잭4 경로로 매핑
+    const titanDirPath = `${baseDataPath}/description/titan`;
+    const titanContents = await retryOperation(async () => {
+        const response = await fetch(
+            `https://api.github.com/repos/${repoOwner}/${repoName}/contents/${titanDirPath}?ref=${branch}`,
+            { headers: { 'Authorization': `token ${githubToken}`, 'User-Agent': 'Your App Name' } }
+        );
+        if (!response.ok) {
+            if (response.status === 404) return null;
+            throw new Error(`titan 폴더를 가져올 수 없습니다: ${response.status}`);
+        }
+        return response.json();
+    });
+
+    if (titanContents) {
+        const titanSubfolders = titanContents.filter(item => item.type === 'dir');
+        if (titanSubfolders.length > 0) {
+            skillLinks['잭4'] = '/titan/잭4';
+        }
+    }
 
     characterDescriptionCache.set(cacheKey, skillLinks);
     return skillLinks;
@@ -387,4 +405,117 @@ async function getWeaponList(weaponId) {
     return weapons;
 }
 
-module.exports = { getBadgeData, getGameHistory, getAllGameHistoryFileMetadata, fetchAndParseYamlFile, fetchAllGameRecords, refreshAllGameRecordsCache, getCharacterList, getCharacterInfo, getSkillLinks, getWeaponList };
+// GitHub API 폴더 내용 가져오기 헬퍼
+async function fetchGithubDir(dirPath) {
+    const githubApiUrl = `https://api.github.com/repos/${repoOwner}/${repoName}/contents/${dirPath}?ref=${branch}`;
+    return retryOperation(async () => {
+        const response = await fetch(githubApiUrl, {
+            headers: { 'Authorization': `token ${githubToken}`, 'User-Agent': 'Your App Name' }
+        });
+        if (!response.ok) {
+            if (response.status === 404) return null;
+            throw new Error(`GitHub 폴더 조회 실패: ${response.status}`);
+        }
+        return response.json();
+    });
+}
+
+// 타이탄 목록 가져오기
+async function getTitanList() {
+    const cacheKey = 'titanList';
+    const cached = characterDescriptionCache.get(cacheKey);
+    if (cached) {
+        console.log(`✅ [GitHub API] 인메모리 타이탄 목록 캐시 히트`);
+        return cached;
+    }
+
+    const dirPath = `${baseDataPath}/description/titan`;
+    const contents = await fetchGithubDir(dirPath);
+    if (!contents) return null;
+
+    const subfolders = contents.filter(item => item.type === 'dir');
+    const titans = [];
+
+    // 각 서브폴더에서 설명 파일(index 정렬 offset 0) 가져오기
+    const promises = subfolders.map(async (folder) => {
+        const folderContents = await fetchGithubDir(`${dirPath}/${folder.name}`);
+        if (!folderContents) return;
+
+        const yamlFiles = folderContents.filter(f => f.name.endsWith('.yaml'));
+        const parsedFiles = await Promise.all(
+            yamlFiles.map(async (f) => {
+                const data = await fetchAndParseYamlFile(f.download_url);
+                return data;
+            })
+        );
+
+        const validFiles = parsedFiles.filter(f => f && f.index !== undefined);
+        validFiles.sort((a, b) => a.index - b.index);
+
+        if (validFiles.length > 0) {
+            const descFile = validFiles[0]; // offset 0 = 타이탄 설명
+            titans.push({
+                folderName: folder.name,
+                name: descFile.name || folder.name,
+                description: descFile.description || ''
+            });
+        }
+    });
+
+    await Promise.all(promises);
+    titans.sort((a, b) => a.folderName.localeCompare(b.folderName));
+
+    characterDescriptionCache.set(cacheKey, titans);
+    return titans;
+}
+
+// 특정 타이탄 상세 정보 가져오기
+async function getTitanInfo(titanName) {
+    const cacheKey = `titanInfo_${titanName}`;
+    const cached = characterDescriptionCache.get(cacheKey);
+    if (cached) {
+        console.log(`✅ [GitHub API] 인메모리 타이탄 정보 캐시 히트: ${titanName}`);
+        return cached;
+    }
+
+    const dirPath = `${baseDataPath}/description/titan`;
+
+    // 타이탄 폴더 파일 + 공용 패시브 동시 로드
+    const [folderContents, passiveData] = await Promise.all([
+        fetchGithubDir(`${dirPath}/${titanName}`),
+        (async () => {
+            const rootContents = await fetchGithubDir(dirPath);
+            if (!rootContents) return null;
+            const passiveFile = rootContents.find(f => f.name === '잭0-2.yaml');
+            if (!passiveFile) return null;
+            return fetchAndParseYamlFile(passiveFile.download_url);
+        })()
+    ]);
+
+    if (!folderContents) return null;
+
+    const yamlFiles = folderContents.filter(f => f.name.endsWith('.yaml'));
+    const parsedFiles = await Promise.all(
+        yamlFiles.map(async (f) => {
+            const data = await fetchAndParseYamlFile(f.download_url);
+            return data;
+        })
+    );
+
+    const validFiles = parsedFiles.filter(f => f && f.index !== undefined);
+    validFiles.sort((a, b) => a.index - b.index);
+
+    // offset 0=설명, 1-4=스킬, 5=무기
+    const result = {
+        titanName,
+        description: validFiles[0] || null,
+        skills: validFiles.slice(1, 5),
+        weapon: validFiles[5] || null,
+        passive: passiveData || null
+    };
+
+    characterDescriptionCache.set(cacheKey, result);
+    return result;
+}
+
+module.exports = { getBadgeData, getGameHistory, getAllGameHistoryFileMetadata, fetchAndParseYamlFile, fetchAllGameRecords, refreshAllGameRecordsCache, getCharacterList, getCharacterInfo, getSkillLinks, getWeaponList, getTitanList, getTitanInfo };
