@@ -717,7 +717,7 @@ body {
    무기 상세 페이지 스타일
    ======================================== */
 .weapon-detail-container {
-    max-width: 800px;
+    max-width: 900px;
 }
 
 .weapon-page-title {
@@ -727,16 +727,16 @@ body {
 }
 
 .weapons-list {
-    display: flex;
-    flex-direction: column;
-    gap: 20px;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 15px;
 }
 
 .weapon-card {
     background-color: #2c2c2c;
     border: 2px solid #3c3c3c;
     border-radius: 10px;
-    padding: 20px;
+    padding: 12px;
     transition: border-color 0.3s ease;
 }
 
@@ -746,20 +746,20 @@ body {
 
 .weapon-img-container {
     width: 100%;
-    max-height: 200px;
+    height: 100px;
     display: flex;
     justify-content: center;
     align-items: center;
-    margin-bottom: 15px;
+    margin-bottom: 10px;
     background-color: #1c1c1c;
     border-radius: 8px;
-    padding: 10px;
+    padding: 8px;
     box-sizing: border-box;
 }
 
 .weapon-img {
     max-width: 100%;
-    max-height: 180px;
+    max-height: 84px;
     object-fit: contain;
 }
 
@@ -769,13 +769,19 @@ body {
 
 .weapon-name {
     color: #f7a400;
-    font-size: 20px;
-    margin: 0 0 10px 0;
+    font-size: 15px;
+    margin: 0 0 6px 0;
 }
 
 .weapon-description {
-    line-height: 1.8;
-    font-size: 15px;
+    line-height: 1.6;
+    font-size: 12px;
+}
+
+@media (max-width: 700px) {
+    .weapons-list {
+        grid-template-columns: repeat(2, 1fr);
+    }
 }
 
 /* 반응형: 작은 화면에서 2열 */
