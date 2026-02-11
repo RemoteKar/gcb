@@ -78,6 +78,7 @@ document.addEventListener("DOMContentLoaded", async () => {
                 <img class="titan-grid-img" src="/Resource/titan/${titan.folderName}.png"
                      onerror="this.style.display='none'" alt="${titan.name}">
                 <span class="titan-grid-name">${escapeHtml(titan.name)}</span>
+                <div class="titan-grid-desc">${parseMinecraftColors(titan.description)}</div>
             `;
 
             card.addEventListener('click', () => {

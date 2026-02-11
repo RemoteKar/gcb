@@ -837,6 +837,13 @@ body {
     text-align: center;
 }
 
+.titan-grid-desc {
+    font-size: 12px;
+    line-height: 1.6;
+    text-align: left;
+    width: 100%;
+}
+
 /* 반응형: 작은 화면에서 2열 */
 @media (max-width: 500px) {
     .stats-grid {
