@@ -72,15 +72,12 @@ document.addEventListener("DOMContentLoaded", async () => {
 
         data.titans.forEach(titan => {
             const card = document.createElement('div');
-            card.classList.add('titan-card');
+            card.classList.add('titan-grid-item');
 
             card.innerHTML = `
-                <img class="titan-icon" src="/Resource/titan/${titan.folderName}.png"
+                <img class="titan-grid-img" src="/Resource/titan/${titan.folderName}.png"
                      onerror="this.style.display='none'" alt="${titan.name}">
-                <div class="titan-card-info">
-                    <h2 class="titan-card-name">${escapeHtml(titan.name)}</h2>
-                    <div class="titan-card-desc">${parseMinecraftColors(titan.description)}</div>
-                </div>
+                <span class="titan-grid-name">${escapeHtml(titan.name)}</span>
             `;
 
             card.addEventListener('click', () => {
