@@ -114,9 +114,25 @@ document.addEventListener("DOMContentLoaded", async () => {
         '체력재생': { icon: '💚', color: '#2ed573' }
     };
 
+    // 클릭 가능한 스킬 ID 목록 가져오기
+    async function fetchWeaponCategories() {
+        try {
+            const response = await fetch('/api/weapon-categories');
+            if (!response.ok) return [];
+            const data = await response.json();
+            return data.categories || [];
+        } catch (error) {
+            console.error("fetchWeaponCategories error:", error);
+            return [];
+        }
+    }
+
     // 캐릭터 정보 렌더링
     async function renderCharacterInfo() {
-        const charInfo = await fetchCharacterInfo();
+        const [charInfo, weaponCategories] = await Promise.all([
+            fetchCharacterInfo(),
+            fetchWeaponCategories()
+        ]);
 
         if (!charInfo || !charInfo.skills) {
             loadingDiv.textContent = "캐릭터 정보를 찾을 수 없습니다.";
@@ -175,18 +191,20 @@ document.addEventListener("DOMContentLoaded", async () => {
 
             const skillTypeName = skillTypeNames[skillKey] || `스킬 ${skillKey}`;
 
+            const isClickable = skill.id && weaponCategories.includes(skill.id);
+
             skillCard.innerHTML = `
                 <div class="skill-header">
                     <span class="skill-type">${skillTypeName}</span>
                     <span class="skill-name">${escapeHtml(skill.name || '이름 없음')}</span>
-                    ${skill.id ? '<span class="skill-link-icon">▶</span>' : ''}
+                    ${isClickable ? '<span class="skill-link-icon">▶</span>' : ''}
                 </div>
                 <div class="skill-description">
                     ${parseMinecraftColors(skill.description || '')}
                 </div>
             `;
 
-            if (skill.id) {
+            if (isClickable) {
                 skillCard.classList.add('skill-card-clickable');
                 skillCard.addEventListener('click', () => {
                     window.location.href = `/weapon/${skill.id}`;

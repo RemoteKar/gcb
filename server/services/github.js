@@ -296,6 +296,44 @@ async function getCharacterInfo(characterId) {
     return charInfo;
 }
 
+// 무기 카테고리 목록 가져오기 (weapons 폴더의 하위 폴더명)
+async function getWeaponCategories() {
+    const cacheKey = 'weaponCategories';
+    const cached = characterDescriptionCache.get(cacheKey);
+    if (cached) {
+        console.log(`✅ [GitHub API] 인메모리 무기 카테고리 캐시 히트`);
+        return cached;
+    }
+
+    const dirPath = `${baseDataPath}/description/weapons`;
+    const githubApiUrl = `https://api.github.com/repos/${repoOwner}/${repoName}/contents/${dirPath}?ref=${branch}`;
+
+    const directories = await retryOperation(async () => {
+        const response = await fetch(githubApiUrl, {
+            headers: {
+                'Authorization': `token ${githubToken}`,
+                'User-Agent': 'Your App Name'
+            }
+        });
+
+        if (!response.ok) {
+            if (response.status === 404) return null;
+            throw new Error(`무기 카테고리를 가져올 수 없습니다: ${response.status}`);
+        }
+
+        return response.json();
+    });
+
+    if (!directories) return [];
+
+    const categories = directories
+        .filter(item => item.type === 'dir')
+        .map(item => item.name);
+
+    characterDescriptionCache.set(cacheKey, categories);
+    return categories;
+}
+
 // 무기 목록 가져오기 (weapons 폴더 기반)
 async function getWeaponList(weaponId) {
     const cacheKey = `weaponList_${weaponId}`;
@@ -348,4 +386,4 @@ async function getWeaponList(weaponId) {
     return weapons;
 }
 
-module.exports = { getBadgeData, getGameHistory, getAllGameHistoryFileMetadata, fetchAndParseYamlFile, fetchAllGameRecords, refreshAllGameRecordsCache, getCharacterList, getCharacterInfo, getWeaponList };
+module.exports = { getBadgeData, getGameHistory, getAllGameHistoryFileMetadata, fetchAndParseYamlFile, fetchAllGameRecords, refreshAllGameRecordsCache, getCharacterList, getCharacterInfo, getWeaponCategories, getWeaponList };

@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const { getUUID, getProfileByUUID } = require('../services/mojang');
-const { getBadgeData, getGameHistory, fetchAllGameRecords, refreshAllGameRecordsCache, getCharacterList, getCharacterInfo, getWeaponList } = require('../services/github');
+const { getBadgeData, getGameHistory, fetchAllGameRecords, refreshAllGameRecordsCache, getCharacterList, getCharacterInfo, getWeaponCategories, getWeaponList } = require('../services/github');
 const { computeStatistics, aggregateAllPlayerStatistics } = require('../utils/statistics');
 const cacheMiddleware = require('../middleware/cache');
 const { formatUUID } = require('../util');
@@ -286,6 +286,20 @@ router.get('/character-info', async (req, res) => {
     } catch (error) {
         console.error("❌ [서버] 캐릭터 정보 조회 오류:", error);
         res.status(500).json({ error: '캐릭터 정보를 가져올 수 없습니다.' });
+    }
+});
+
+//----------------------------------------
+// 📌 무기 카테고리 목록 조회
+//----------------------------------------
+router.get('/weapon-categories', async (req, res) => {
+    console.log(`🔍 [서버] 무기 카테고리 목록 요청`);
+    try {
+        const categories = await getWeaponCategories();
+        res.json({ categories });
+    } catch (error) {
+        console.error("❌ [서버] 무기 카테고리 조회 오류:", error);
+        res.status(500).json({ error: '무기 카테고리를 가져올 수 없습니다.' });
     }
 });
 
