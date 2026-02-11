@@ -848,6 +848,29 @@ body {
     min-width: 0;
 }
 
+/* 스마트 피스톨 (타이탄 목록 하단) */
+.titan-smart-pistol {
+    background-color: #1c1c1c;
+    border: 2px solid #555555;
+    border-radius: 10px;
+    padding: 15px;
+    margin-top: 10px;
+}
+
+.titan-smart-pistol-header {
+    color: #AAAAAA;
+    font-size: 16px;
+    font-weight: bold;
+    margin-bottom: 8px;
+    padding-bottom: 8px;
+    border-bottom: 1px solid #3c3c3c;
+}
+
+.titan-smart-pistol-desc {
+    font-size: 14px;
+    line-height: 1.6;
+}
+
 /* 반응형: 작은 화면에서 2열 */
 @media (max-width: 500px) {
     .stats-grid {

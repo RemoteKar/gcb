@@ -337,11 +337,11 @@ router.get('/weapon-info', async (req, res) => {
 router.get('/titan-list', async (req, res) => {
     console.log(`🔍 [서버] 타이탄 목록 요청`);
     try {
-        const titans = await getTitanList();
-        if (!titans) {
+        const result = await getTitanList();
+        if (!result) {
             return res.status(404).json({ error: "타이탄 정보를 찾을 수 없습니다." });
         }
-        res.json({ titans });
+        res.json({ titans: result.titans, smartPistol: result.smartPistol });
     } catch (error) {
         console.error("❌ [서버] 타이탄 목록 조회 오류:", error);
         res.status(500).json({ error: '타이탄 목록을 가져올 수 없습니다.' });

@@ -92,6 +92,17 @@ document.addEventListener("DOMContentLoaded", async () => {
             titanGrid.appendChild(card);
         });
 
+        // 스마트 피스톨 (하단 구분 표시)
+        if (data.smartPistol) {
+            const divider = document.createElement('div');
+            divider.classList.add('titan-smart-pistol');
+            divider.innerHTML = `
+                <div class="titan-smart-pistol-header">${escapeHtml(data.smartPistol.name || '스마트 피스톨')}</div>
+                <div class="titan-smart-pistol-desc">${parseMinecraftColors(data.smartPistol.description || '')}</div>
+            `;
+            titanGrid.appendChild(divider);
+        }
+
     } catch (error) {
         console.error("타이탄 목록 로딩 오류:", error);
         loadingDiv.textContent = "타이탄 정보를 불러올 수 없습니다.";

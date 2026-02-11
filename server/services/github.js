@@ -465,8 +465,16 @@ async function getTitanList() {
     await Promise.all(promises);
     titans.sort((a, b) => a.folderName.localeCompare(b.folderName));
 
-    characterDescriptionCache.set(cacheKey, titans);
-    return titans;
+    // 루트 파일에서 스마트 피스톨 데이터 가져오기
+    let smartPistol = null;
+    const smartPistolFile = contents.find(f => f.name === 'smartpistol.yaml');
+    if (smartPistolFile) {
+        smartPistol = await fetchAndParseYamlFile(smartPistolFile.download_url);
+    }
+
+    const result = { titans, smartPistol };
+    characterDescriptionCache.set(cacheKey, result);
+    return result;
 }
 
 // 특정 타이탄 상세 정보 가져오기
