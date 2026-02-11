@@ -82,7 +82,8 @@ document.addEventListener("DOMContentLoaded", async () => {
 
         const data = await response.json();
         loadingDiv.style.display = 'none';
-        weaponTitle.textContent = weaponId;
+        const urlParams = new URLSearchParams(window.location.search);
+        weaponTitle.textContent = urlParams.get('name') || weaponId;
 
         if (!data.weapons || data.weapons.length === 0) {
             loadingDiv.style.display = '';

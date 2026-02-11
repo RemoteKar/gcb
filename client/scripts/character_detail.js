@@ -207,7 +207,8 @@ document.addEventListener("DOMContentLoaded", async () => {
             if (skillLinkPath) {
                 skillCard.classList.add('skill-card-clickable');
                 skillCard.addEventListener('click', () => {
-                    window.location.href = skillLinkPath;
+                    const name = encodeURIComponent(skill.name || '');
+                    window.location.href = `${skillLinkPath}?name=${name}`;
                 });
             }
 
