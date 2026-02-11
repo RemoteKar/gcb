@@ -80,6 +80,70 @@ client/Resource/
 
 ---
 
+## 2026-02-10 작업 내용: 무기 상세 페이지 추가 (스킬 클릭 연동)
+
+### 개요
+캐릭터 스킬 YAML에 `id` 필드가 있는 경우, 해당 스킬 카드를 클릭하면 무기 상세 페이지(`/weapon/:id`)로 이동.
+무기 페이지는 상단 네비게이션에 노출되지 않으며, 오직 캐릭터 상세 페이지에서만 진입 가능.
+
+### 생성된 파일
+| 파일 | 설명 |
+|------|------|
+| `client/weapon_detail.html` | 무기 상세 페이지 (한 페이지에 모든 무기 표시) |
+| `client/scripts/weapon_detail.js` | 무기 페이지 로직 (MC 색코드 파싱, 이미지 확장자 자동 탐색) |
+
+### 수정된 파일
+| 파일 | 변경 내용 |
+|------|---------|
+| `server/services/github.js` | `getWeaponList(weaponId)` 함수 추가 |
+| `server/routes/api.js` | `GET /api/weapon-info?id=X` 엔드포인트 추가 (경로 조작 방지 포함) |
+| `client/scripts/character_detail.js` | `skill.id` 있는 스킬에 클릭 → `/weapon/{id}` 이동 로직 추가 |
+| `client/styles/main.css` | 클릭 가능 스킬 카드 스타일 + 무기 페이지 스타일 추가 |
+| `netlify.toml` | `/weapon/:id` → `/weapon_detail.html` 리다이렉트 추가 |
+
+### 주요 기능
+1. **스킬 클릭 연동**: 스킬 YAML에 `id` 필드가 있으면 금색 테두리 + ▶ 아이콘 표시, 클릭 시 `/weapon/{id}`로 이동
+2. **무기 상세 페이지** (`/weapon/:id`)
+   - 해당 `Data/description/weapons/{id}/` 폴더의 모든 YAML을 카드로 표시
+   - 무기 이미지: `client/Resource/weapon/{id}/{weapon.id}.{ext}` (webp→png→jpg→jpeg→gif 순차 시도)
+   - 이미지 비율 유동적 대응 (`object-fit: contain`, 고정 높이 컨테이너)
+   - 마인크래프트 색코드 파싱 지원
+
+### 데이터 구조
+```
+Data/description/weapons/APEXWeaponSelector/
+├── wingman.yaml       # id, name, description
+├── r301.yaml
+├── peacekeeper.yaml
+├── ... (총 17개 무기)
+```
+
+### 무기 YAML 형식
+```yaml
+id: wingman
+name: 윙맨
+description: "&f대구경 권총 입니다\n&f적중시 &660&f의 피해를..."
+```
+
+### 스킬 id가 APEXWeaponSelector인 캐릭터
+- char_2 (스킬 1, 2)
+- char_7 (스킬 1, 2)
+- char_17 (스킬 1, 2)
+- char_24 (스킬 1)
+- char_58 (스킬 1, 2)
+
+### API 엔드포인트
+- `GET /api/weapon-info?id=X` - 무기 카테고리별 전체 무기 목록 반환
+
+### 리소스 폴더 구조 (추가)
+```
+client/Resource/weapon/
+├── APEXWeaponSelector/  # 무기 이미지 (webp/png, 비율 유동적)
+└── titan/               # 타이탄 무기 이미지
+```
+
+---
+
 ## 페이지 목록
 1. `index.html` - 메인 (닉네임 검색)
 2. `user.html` - 유저 프로필
@@ -88,6 +152,13 @@ client/Resource/
 5. `character_detail.html` - 캐릭터 상세
 6. `character_stats.html` - 캐릭터 통계
 7. `augment_stats.html` - 증강 통계
+8. `weapon_detail.html` - 무기 상세 (상단바 미노출, 스킬 클릭으로만 진입)
+
+---
+
+## 작업 규칙
+- 커밋 후 자동으로 push까지 수행
+- 작업 내용은 CLAUDE.md에 기록
 
 ---
 
