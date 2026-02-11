@@ -17,3 +17,8 @@
   from = "/character/:id"
   to = "/character_detail.html"
   status = 200
+
+[[redirects]]
+  from = "/weapon/:id"
+  to = "/weapon_detail.html"
+  status = 200

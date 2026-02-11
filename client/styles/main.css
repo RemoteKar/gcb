@@ -697,6 +697,87 @@ body {
     font-weight: bold;
 }
 
+/* 클릭 가능한 스킬 카드 */
+.skill-card-clickable {
+    cursor: pointer;
+}
+
+.skill-card-clickable:hover {
+    border-color: #f7a400;
+    box-shadow: 0 0 10px rgba(247, 164, 0, 0.3);
+}
+
+.skill-link-icon {
+    margin-left: auto;
+    color: #f7a400;
+    font-size: 14px;
+}
+
+/* ========================================
+   무기 상세 페이지 스타일
+   ======================================== */
+.weapon-detail-container {
+    max-width: 800px;
+}
+
+.weapon-page-title {
+    color: #f7a400;
+    font-size: 24px;
+    margin-bottom: 30px;
+}
+
+.weapons-list {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.weapon-card {
+    background-color: #2c2c2c;
+    border: 2px solid #3c3c3c;
+    border-radius: 10px;
+    padding: 20px;
+    transition: border-color 0.3s ease;
+}
+
+.weapon-card:hover {
+    border-color: #5393ff;
+}
+
+.weapon-img-container {
+    width: 100%;
+    max-height: 200px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-bottom: 15px;
+    background-color: #1c1c1c;
+    border-radius: 8px;
+    padding: 10px;
+    box-sizing: border-box;
+}
+
+.weapon-img {
+    max-width: 100%;
+    max-height: 180px;
+    object-fit: contain;
+}
+
+.weapon-info {
+    text-align: left;
+}
+
+.weapon-name {
+    color: #f7a400;
+    font-size: 20px;
+    margin: 0 0 10px 0;
+}
+
+.weapon-description {
+    line-height: 1.8;
+    font-size: 15px;
+}
+
 /* 반응형: 작은 화면에서 2열 */
 @media (max-width: 500px) {
     .stats-grid {

@@ -296,4 +296,56 @@ async function getCharacterInfo(characterId) {
     return charInfo;
 }
 
-module.exports = { getBadgeData, getGameHistory, getAllGameHistoryFileMetadata, fetchAndParseYamlFile, fetchAllGameRecords, refreshAllGameRecordsCache, getCharacterList, getCharacterInfo };
+// 무기 목록 가져오기 (weapons 폴더 기반)
+async function getWeaponList(weaponId) {
+    const cacheKey = `weaponList_${weaponId}`;
+    const cachedInfo = characterDescriptionCache.get(cacheKey);
+    if (cachedInfo) {
+        console.log(`✅ [GitHub API] 인메모리 무기 목록 캐시 히트: ${weaponId}`);
+        return cachedInfo;
+    }
+
+    const dirPath = `${baseDataPath}/description/weapons/${weaponId}`;
+    const githubApiUrl = `https://api.github.com/repos/${repoOwner}/${repoName}/contents/${dirPath}?ref=${branch}`;
+    console.log(`🔍 [GitHub API] 무기 목록 요청 URL: ${githubApiUrl}`);
+
+    const files = await retryOperation(async () => {
+        const response = await fetch(githubApiUrl, {
+            headers: {
+                'Authorization': `token ${githubToken}`,
+                'User-Agent': 'Your App Name'
+            }
+        });
+
+        if (!response.ok) {
+            if (response.status === 404) {
+                return null;
+            }
+            throw new Error(`무기 목록을 가져올 수 없습니다: ${response.status}`);
+        }
+
+        return response.json();
+    });
+
+    if (!files) {
+        return null;
+    }
+
+    const weapons = [];
+    const parsePromises = files
+        .filter(file => file.name.endsWith('.yaml'))
+        .map(async (file) => {
+            const parsedData = await fetchAndParseYamlFile(file.download_url);
+            if (parsedData) {
+                weapons.push(parsedData);
+            }
+        });
+
+    await Promise.all(parsePromises);
+
+    characterDescriptionCache.set(cacheKey, weapons);
+
+    return weapons;
+}
+
+module.exports = { getBadgeData, getGameHistory, getAllGameHistoryFileMetadata, fetchAndParseYamlFile, fetchAllGameRecords, refreshAllGameRecordsCache, getCharacterList, getCharacterInfo, getWeaponList };

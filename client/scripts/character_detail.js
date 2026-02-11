@@ -179,11 +179,19 @@ document.addEventListener("DOMContentLoaded", async () => {
                 <div class="skill-header">
                     <span class="skill-type">${skillTypeName}</span>
                     <span class="skill-name">${escapeHtml(skill.name || '이름 없음')}</span>
+                    ${skill.id ? '<span class="skill-link-icon">▶</span>' : ''}
                 </div>
                 <div class="skill-description">
                     ${parseMinecraftColors(skill.description || '')}
                 </div>
             `;
+
+            if (skill.id) {
+                skillCard.classList.add('skill-card-clickable');
+                skillCard.addEventListener('click', () => {
+                    window.location.href = `/weapon/${skill.id}`;
+                });
+            }
 
             skillsContainer.appendChild(skillCard);
         });
