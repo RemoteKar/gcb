@@ -246,10 +246,11 @@ function renderNextGames(uuid) {
           </div>
         </div>
         <div class="game-card-augment">
-          <img src="/Resource/augment/icon/${playerData?.Augment?.[1] ?? 'default'}.png" alt="Augment1">
-          <img src="/Resource/augment/icon/${playerData?.Augment?.[2] ?? 'default'}.png" alt="Augment2">
-          <img src="/Resource/augment/icon/${playerData?.Augment?.[3] ?? 'default'}.png" alt="Augment3">
-          <img src="/Resource/augment/icon/${playerData?.Augment?.[4] ?? 'default'}.png" alt="Augment4">
+          ${[1,2,3,4].map(i => {
+            const aug = playerData?.Augment?.[i];
+            const src = aug != null ? `/Resource/augment/icon/${aug}.png` : `/Resource/augment/icon/level.png`;
+            return `<img src="${src}" alt="Augment${i}">`;
+          }).join('\n          ')}
         </div>
       </div>
     `;
