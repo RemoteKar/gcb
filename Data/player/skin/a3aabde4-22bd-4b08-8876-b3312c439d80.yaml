@@ -1,4 +1,5 @@
 character1:
     ownedSkins:
+    - anniversary3year
     - gold
-    selected: gold
+    selected: anniversary3year

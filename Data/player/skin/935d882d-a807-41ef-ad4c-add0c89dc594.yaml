@@ -2,3 +2,18 @@ character42:
     ownedSkins:
     - gold
     selected: gold
+
+character1:
+    ownedSkins:
+    - anniversary3year
+    selected: anniversary3year
+
+character63:
+    ownedSkins:
+    - gold
+    selected: gold
+
+character49:
+    ownedSkins:
+    - gold
+    selected: gold

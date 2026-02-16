@@ -1,0 +1,8 @@
+character3:
+    ownedSkins:
+    - gold
+    selected:
+        ==: org.bukkit.inventory.ItemStack
+        schema_version: 1
+        DataVersion: 4440
+        id: minecraft:air

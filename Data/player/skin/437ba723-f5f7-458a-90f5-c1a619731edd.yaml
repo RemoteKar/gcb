@@ -1,4 +1,10 @@
 character31:
     ownedSkins:
+    - gold
     - novel
-    selected: novel
+    selected: gold
+
+character1:
+    ownedSkins:
+    - anniversary3year
+    selected: anniversary3year
