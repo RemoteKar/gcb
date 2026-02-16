@@ -53,7 +53,7 @@ async function buildLeaderboard() {
     let allPlayerStatistics = aggregateAllPlayerStatistics(
       allParsedGameRecords.map(record => record?.content || record)
     );
-    allPlayerStatistics = allPlayerStatistics.filter(stats => stats.totalGames >= 20);
+    allPlayerStatistics = allPlayerStatistics.filter(stats => stats.totalGames >= 10);
     console.log(`🔍 [빌드] 집계된 플레이어 통계 수: ${allPlayerStatistics.length}`);
 
     if (allPlayerStatistics.length === 0) {
