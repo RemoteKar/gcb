@@ -134,10 +134,14 @@ document.addEventListener("DOMContentLoaded", async () => {
             }
 
             charDiv.innerHTML = `
-                <span class="rank-number">#${index + 1}</span> <!-- 순위 번호 추가 -->
-                <img src="/Resource/character/${characterId ?? 'default'}.png" alt="Character ${characterId}" class="character-stat-img">
+                <span class="rank-number">#${index + 1}</span>
+                <img src="/Resource/character/${characterId ?? 'default'}.png" alt="Character ${characterId}" class="character-stat-img" style="cursor:pointer;">
                 <p><strong>${statValue.toLocaleString()}${statUnit}</strong></p>
             `;
+            const charImg = charDiv.querySelector('.character-stat-img');
+            charImg.addEventListener('click', () => {
+                window.location.href = `/character/${characterId}`;
+            });
             characterListDiv.appendChild(charDiv);
         });
     }
