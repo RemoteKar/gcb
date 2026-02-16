@@ -71,7 +71,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 
             li.innerHTML = `
                 <span>#${index + 4}</span>
-                <img src="https://crafatar.com/avatars/${player.uuid}?size=32&overlay" alt="${player.nickname}'s Head" class="player-head-sm">
+                <img src="https://mc-heads.net/avatar/${player.uuid}/32" alt="${player.nickname}'s Head" class="player-head-sm">
                 <span>${player.nickname}</span>
                 <span>총 게임: ${player.totalGames}</span>
                 <span>승률: ${player.winRate}%</span>
@@ -101,7 +101,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         rankDiv.innerHTML = `
             <h3>#${rank}</h3>
             <div class="player-info-row">
-                <img src="https://crafatar.com/avatars/${player.uuid}?size=100&overlay" alt="${player.nickname}'s Head" class="player-head-lg">
+                <img src="https://mc-heads.net/avatar/${player.uuid}/100" alt="${player.nickname}'s Head" class="player-head-lg">
                 ${badgeHtml}
             </div>
             <p><strong>${player.nickname}</strong></p>
