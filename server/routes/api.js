@@ -375,5 +375,31 @@ router.get('/titan-info', async (req, res) => {
     }
 });
 
+//----------------------------------------
+// 📌 배치 UUID → 닉네임 조회
+//----------------------------------------
+router.get('/profiles', async (req, res) => {
+  const { uuids } = req.query;
+  if (!uuids) {
+    return res.status(400).json({ error: "UUID 목록을 입력하세요." });
+  }
+
+  const uuidList = uuids.split(',').slice(0, 50); // 최대 50개 제한
+  const result = {};
+
+  await Promise.all(uuidList.map(async (uuid) => {
+    try {
+      const profile = await getProfileByUUID(uuid.trim());
+      if (profile && profile.name) {
+        result[uuid.trim()] = profile.name;
+      }
+    } catch (error) {
+      // 실패 시 무시 (닉네임 없이 UUID로 표시)
+    }
+  }));
+
+  res.json(result);
+});
+
 module.exports = router;
 module.exports.initializeLeaderboard = initializeLeaderboard;

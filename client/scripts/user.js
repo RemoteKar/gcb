@@ -255,6 +255,13 @@ function renderNextGames(uuid) {
       </div>
     `;
 
+    // 게임 카드 클릭 → 모달 열기
+    const gameCard = gameItem.querySelector('.game-card');
+    gameCard.style.cursor = 'pointer';
+    gameCard.addEventListener('click', () => {
+      openGameDetailModal(game);
+    });
+
     gameListContainer.appendChild(gameItem);
   });
 
@@ -271,4 +278,103 @@ function formatUUID(uuid) {
   }
   return `${uuid.slice(0, 8)}-${uuid.slice(8, 12)}-${uuid.slice(12, 16)}-${uuid.slice(16, 20)}-${uuid.slice(20)}`;
 }
+
+function stripHyphens(uuid) {
+  return uuid.replace(/-/g, '');
+}
+
+// ──────────────────────────────
+// 게임 상세 모달
+async function openGameDetailModal(game) {
+  const modal = document.getElementById('gameDetailModal');
+  const playerListEl = document.getElementById('modalPlayerList');
+  playerListEl.innerHTML = '<p style="text-align:center;color:#888;">로딩 중...</p>';
+  modal.style.display = 'flex';
+
+  const players = game.content.Player;
+  if (!players) {
+    playerListEl.innerHTML = '<p style="text-align:center;color:#888;">플레이어 데이터 없음</p>';
+    return;
+  }
+
+  // 플레이어 목록 추출 및 순위 정렬
+  const playerEntries = Object.entries(players).map(([uuid, data]) => {
+    const ranking = data?.Ranking ?? data?.ranking ?? 999;
+    return { uuid, data, ranking };
+  });
+  playerEntries.sort((a, b) => a.ranking - b.ranking);
+
+  const joins = game.content.Game?.amountOfPlayers ?? playerEntries.length;
+
+  // UUID → 닉네임 배치 조회
+  const uuids = playerEntries.map(p => stripHyphens(p.uuid));
+  let nicknameMap = {};
+  try {
+    const res = await fetch(`/api/profiles?uuids=${uuids.join(',')}`);
+    if (res.ok) nicknameMap = await res.json();
+  } catch (e) {
+    console.error('닉네임 조회 실패:', e);
+  }
+
+  // 모달 내용 렌더링
+  playerListEl.innerHTML = '';
+  playerEntries.forEach(({ uuid, data, ranking }) => {
+    const cleanUUID = stripHyphens(uuid);
+    const nickname = nicknameMap[cleanUUID] || cleanUUID.slice(0, 8);
+    const character = data?.Character ?? 'default';
+
+    let rowBg = '#2c2c2c';
+    let rowBorder = '#3c3c3c';
+    const rankp = ranking / joins;
+    if (ranking === 1) {
+      rowBg = '#4066B2'; rowBorder = '#5383E8';
+    } else if (rankp < 0.25) {
+      rowBg = '#267F00'; rowBorder = '#32A800';
+    } else if (rankp >= 0.75) {
+      rowBg = '#59343B'; rowBorder = '#E84057';
+    }
+
+    const augmentHtml = [1,2,3,4].map(i => {
+      const aug = data?.Augment?.[i];
+      const src = aug != null ? `/Resource/augment/icon/${aug}.png` : `/Resource/augment/icon/level.png`;
+      return `<img src="${src}" alt="Augment${i}">`;
+    }).join('');
+
+    const row = document.createElement('div');
+    row.className = 'modal-player-row';
+    row.style.backgroundColor = rowBg;
+    row.style.borderColor = rowBorder;
+    row.innerHTML = `
+      <span class="modal-player-rank">#${ranking}</span>
+      <img class="modal-player-char" src="/Resource/character/${character}.png" alt="캐릭터">
+      <span class="modal-player-name">${nickname}</span>
+      <div class="modal-player-augments">${augmentHtml}</div>
+    `;
+
+    // 플레이어 클릭 → 해당 유저 전적 페이지 이동
+    if (nicknameMap[cleanUUID]) {
+      row.addEventListener('click', () => {
+        window.location.href = `/user/${encodeURIComponent(nicknameMap[cleanUUID])}`;
+      });
+    }
+
+    playerListEl.appendChild(row);
+  });
+}
+
+// 모달 닫기 이벤트
+document.addEventListener('DOMContentLoaded', () => {
+  const modal = document.getElementById('gameDetailModal');
+  const closeBtn = modal.querySelector('.modal-close');
+
+  closeBtn.addEventListener('click', () => {
+    modal.style.display = 'none';
+  });
+
+  modal.addEventListener('click', (e) => {
+    if (e.target === modal) {
+      modal.style.display = 'none';
+    }
+  });
+});
 
