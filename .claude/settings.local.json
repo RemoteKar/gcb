@@ -9,7 +9,9 @@
       "Bash(git commit -m \"$\\(cat <<''EOF''\nAdd weapon detail page for skill-linked weapon data \\(APEXWeaponSelector\\)\n\n캐릭터 스킬에 id가 있을 때 클릭하면 무기 상세 페이지로 이동하는 기능 추가.\n무기 페이지는 해당 폴더의 모든 무기를 카드 형태로 표시하며,\n유동적인 이미지 확장자/비율을 지원.\n\nCo-Authored-By: Claude Opus 4.6 <noreply@anthropic.com>\nEOF\n\\)\")",
       "Bash(git push:*)",
       "Bash(git commit:*)",
-      "Bash(npm install:*)"
+      "Bash(npm install:*)",
+      "WebFetch(domain:gcbgg.netlify.app)",
+      "Bash(npx prisma migrate dev:*)"
     ]
   }
 }
