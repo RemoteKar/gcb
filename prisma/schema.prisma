@@ -14,3 +14,9 @@ model MojangProfileCache {
   cachedAt    DateTime  @default(now())
   expiresAt   DateTime?
 }
+
+model LeaderboardCache {
+  id        String   @id @default("leaderboard")
+  data      Json
+  updatedAt DateTime @default(now()) @updatedAt
+}

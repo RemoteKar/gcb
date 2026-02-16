@@ -1,13 +1,13 @@
 const express = require('express');
 const router = express.Router();
+const { PrismaClient } = require('@prisma/client/edge');
+const { withAccelerate } = require('@prisma/extension-accelerate');
 const { getUUID, getProfileByUUID } = require('../services/mojang');
-const { getBadgeData, getGameHistory, fetchAllGameRecords, refreshAllGameRecordsCache, getCharacterList, getCharacterInfo, getSkillLinks, getWeaponList, getTitanList, getTitanInfo } = require('../services/github');
-const { computeStatistics, aggregateAllPlayerStatistics } = require('../utils/statistics');
+const { getBadgeData, getGameHistory, fetchAllGameRecords, getCharacterList, getCharacterInfo, getSkillLinks, getWeaponList, getTitanList, getTitanInfo } = require('../services/github');
+const { computeStatistics } = require('../utils/statistics');
 const cacheMiddleware = require('../middleware/cache');
 const { formatUUID } = require('../util');
-const { toNonHyphenatedUUID } = require('../util'); // toNonHyphenatedUUID 추가
-
-module.exports.precalculatedLeaderboard = []; // 전역 변수로 랭킹 데이터 저장
+const { toNonHyphenatedUUID } = require('../util');
 
 // 통계 데이터를 클라이언트 응답 형식으로 포맷팅하는 헬퍼 함수
 function formatStatistics(stats) {
@@ -26,80 +26,6 @@ function formatStatistics(stats) {
     maxKill: stats.maxKill.toString(),
     totalGames: stats.totalGames.toString()
   };
-}
-
-async function initializeLeaderboard() {
-  console.log("🚀 [서버] 랭킹 데이터 초기화 시작...");
-  try {
-    // GitHub API를 통해 모든 게임 기록을 가져옴
-    const allParsedGameRecords = await refreshAllGameRecordsCache();
-    console.log(`🔍 [서버] 파싱된 게임 기록 수: ${allParsedGameRecords.length}`);
-    if (allParsedGameRecords.length === 0) {
-        console.warn("⚠️ [서버] 파싱된 게임 기록이 없습니다. 랭킹 초기화 실패.");
-        module.exports.precalculatedLeaderboard = []; // 빈 배열로 설정
-        return; // 데이터가 없으면 더 이상 진행하지 않음
-    }
-
-    let allPlayerStatistics = aggregateAllPlayerStatistics(allParsedGameRecords.map(record => record?.content || record));
-    // 플레이 수가 20 이상인 유저만 포함
-    allPlayerStatistics = allPlayerStatistics.filter(stats => stats.totalGames >= 20);
-    console.log(`🔍 [서버] 집계된 플레이어 통계 수: ${allPlayerStatistics.length}`);
-    if (allPlayerStatistics.length === 0) {
-        console.warn("⚠️ [서버] 집계된 플레이어 통계가 없습니다. 랭킹 초기화 실패.");
-        module.exports.precalculatedLeaderboard = []; // 빈 배열로 설정
-        return; // 통계가 없으면 더 이상 진행하지 않음
-    }
-
-    // 랭킹 기준: 승률 * 순방률
-    allPlayerStatistics.forEach(stats => {
-      stats.rankingScore = (stats.winRate / 100) * (stats.avarageRankLeast50 / 100);
-    });
-
-    allPlayerStatistics.sort((a, b) => b.rankingScore - a.rankingScore);
-    console.log(`🔍 [서버] 정렬된 플레이어 통계 수: ${allPlayerStatistics.length}`);
-
-    // 모든 고유 UUID에 대해 Mojang API 프로필 및 배지 데이터를 미리 캐싱
-    const uniqueUUIDs = [...new Set(allPlayerStatistics.map(stats => stats.uuid))];
-    await Promise.all(uniqueUUIDs.map(async uuid => {
-        await getProfileByUUID(uuid).catch(error => {
-            console.warn(`⚠️ [서버] 사전 캐싱 중 UUID ${uuid} 에 대한 닉네임 조회 실패: ${error.message}`);
-            return null; // 실패해도 진행
-        });
-        await getBadgeData(uuid).catch(error => {
-            console.warn(`⚠️ [서버] 사전 캐싱 중 UUID ${uuid} 에 대한 배지 데이터 조회 실패: ${error.message}`);
-            return null; // 실패해도 진행
-        });
-    }));
-
-    const calculatedLeaderboard = await Promise.all(allPlayerStatistics.map(async (stats, index) => {
-      let nickname = stats.uuid; // 기본값은 UUID
-      // 상위 20명에 대해서만 닉네임 조회
-      if (index < 20) {
-        try {
-          const profile = await getProfileByUUID(stats.uuid); // 이미 캐시되어 있을 가능성이 높음
-          if (profile && profile.name) {
-            nickname = profile.name;
-          }
-        } catch (error) {
-          console.warn(`⚠️ [서버] UUID ${stats.uuid} 에 대한 닉네임 조회 실패: ${error.message}`);
-        }
-      }
-
-      return {
-        uuid: stats.uuid,
-        nickname: nickname,
-        ...formatStatistics(stats)
-      };
-    }));
-
-    module.exports.precalculatedLeaderboard = calculatedLeaderboard;
-
-    console.log("✅ [서버] 랭킹 데이터 초기화 완료.");
-  } catch (error) {
-    console.error("❌ [서버] 랭킹 데이터 초기화 오류:", error);
-  } finally {
-    isLeaderboardInitializing = false; // 초기화 완료 또는 오류 발생 시 플래그 해제
-  }
 }
 
 //----------------------------------------
@@ -180,30 +106,28 @@ router.get('/statistic', (req, res, next) => {
 });
 
 //----------------------------------------
-// 📌 랭킹 데이터 조회 (모든 유저 통계 집계 및 정렬)
+// 📌 랭킹 데이터 조회 (DB에서 읽기)
 //----------------------------------------
-let isLeaderboardInitializing = false;
-
 router.get('/leaderboard', async (req, res) => {
   console.log(`🔍 [서버] 랭킹 데이터 요청`);
+  try {
+    const prisma = new PrismaClient({
+      datasources: { db: { url: process.env.DATABASE_URL } },
+    }).$extends(withAccelerate());
 
-  // 데이터가 없거나 비어있고, 현재 초기화 중이 아닐 때만 초기화 진행
-  if (!module.exports.precalculatedLeaderboard || module.exports.precalculatedLeaderboard.length === 0) {
-    if (!isLeaderboardInitializing) {
-      isLeaderboardInitializing = true; // 초기화 시작 플래그 설정
-      try {
-        await initializeLeaderboard();
-      } finally {
-        isLeaderboardInitializing = false; // 완료 또는 실패 시 플래그 해제
-      }
-    } else {
-      // 이미 초기화가 진행 중인 경우, 클라이언트에게 잠시 후 다시 시도하라는 응답을 보낼 수 있습니다.
-      // 또는, 완료될 때까지 기다리게 할 수도 있습니다. 여기서는 간단하게 503을 반환합니다.
-      return res.status(503).json({ error: "랭킹 데이터를 준비하고 있습니다. 잠시 후 다시 시도해주세요." });
+    const cached = await prisma.leaderboardCache.findUnique({
+      where: { id: 'leaderboard' }
+    });
+
+    if (!cached || !cached.data) {
+      return res.json([]);
     }
-  }
 
-  res.json(module.exports.precalculatedLeaderboard);
+    res.json(cached.data);
+  } catch (error) {
+    console.error("❌ [서버] 랭킹 데이터 조회 오류:", error);
+    res.status(500).json({ error: '랭킹 데이터를 가져올 수 없습니다.' });
+  }
 });
 
 const { getCharacterStats, getAugmentStats } = require('../services/statisticsService');
@@ -402,4 +326,3 @@ router.get('/profiles', async (req, res) => {
 });
 
 module.exports = router;
-module.exports.initializeLeaderboard = initializeLeaderboard;

@@ -3,6 +3,9 @@
   publish = "client"
   command = "npm install && node node_modules/prisma/build/index.js generate --schema=./prisma/schema.prisma && node node_modules/prisma/build/index.js migrate deploy --schema=./prisma/schema.prisma"
 
+[functions."scheduled-leaderboard"]
+  schedule = "@hourly"
+
 [[redirects]]
   from = "/api/*"
   to = "/.netlify/functions/server/api/:splat"
