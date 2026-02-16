@@ -1,9 +1,8 @@
-const { schedule } = require('@netlify/functions');
 const { PrismaClient } = require('@prisma/client/edge');
 const { withAccelerate } = require('@prisma/extension-accelerate');
-const { getProfileByUUID } = require('./services/mojang');
-const { getBadgeData, refreshAllGameRecordsCache } = require('./services/github');
-const { aggregateAllPlayerStatistics } = require('./utils/statistics');
+const { getProfileByUUID } = require('../server/services/mojang');
+const { refreshAllGameRecordsCache } = require('../server/services/github');
+const { aggregateAllPlayerStatistics } = require('../server/utils/statistics');
 
 function formatStatistics(stats) {
   return {
@@ -23,8 +22,8 @@ function formatStatistics(stats) {
   };
 }
 
-const handler = async () => {
-  console.log("🚀 [Scheduled] 랭킹 데이터 계산 시작...");
+async function buildLeaderboard() {
+  console.log("🚀 [빌드] 랭킹 데이터 계산 시작...");
 
   let prisma;
   try {
@@ -32,17 +31,22 @@ const handler = async () => {
       datasources: { db: { url: process.env.DATABASE_URL } },
     }).$extends(withAccelerate());
   } catch (error) {
-    console.error("❌ [Scheduled] Prisma 초기화 실패:", error);
-    return { statusCode: 500 };
+    console.error("❌ [빌드] Prisma 초기화 실패:", error);
+    process.exit(1);
   }
 
   try {
     // 1. 모든 게임 기록 가져오기
     const allParsedGameRecords = await refreshAllGameRecordsCache();
-    console.log(`🔍 [Scheduled] 파싱된 게임 기록 수: ${allParsedGameRecords.length}`);
+    console.log(`🔍 [빌드] 파싱된 게임 기록 수: ${allParsedGameRecords.length}`);
     if (allParsedGameRecords.length === 0) {
-      console.warn("⚠️ [Scheduled] 게임 기록 없음. 종료.");
-      return { statusCode: 200 };
+      console.warn("⚠️ [빌드] 게임 기록 없음. 빈 데이터로 저장.");
+      await prisma.leaderboardCache.upsert({
+        where: { id: 'leaderboard' },
+        update: { data: [], updatedAt: new Date() },
+        create: { id: 'leaderboard', data: [] }
+      });
+      return;
     }
 
     // 2. 플레이어 통계 집계
@@ -50,10 +54,16 @@ const handler = async () => {
       allParsedGameRecords.map(record => record?.content || record)
     );
     allPlayerStatistics = allPlayerStatistics.filter(stats => stats.totalGames >= 20);
-    console.log(`🔍 [Scheduled] 집계된 플레이어 통계 수: ${allPlayerStatistics.length}`);
+    console.log(`🔍 [빌드] 집계된 플레이어 통계 수: ${allPlayerStatistics.length}`);
+
     if (allPlayerStatistics.length === 0) {
-      console.warn("⚠️ [Scheduled] 자격 플레이어 없음. 종료.");
-      return { statusCode: 200 };
+      console.warn("⚠️ [빌드] 자격 플레이어 없음. 빈 데이터로 저장.");
+      await prisma.leaderboardCache.upsert({
+        where: { id: 'leaderboard' },
+        update: { data: [], updatedAt: new Date() },
+        create: { id: 'leaderboard', data: [] }
+      });
+      return;
     }
 
     // 3. 랭킹 점수 계산 및 정렬
@@ -73,7 +83,7 @@ const handler = async () => {
               nickname = profile.name;
             }
           } catch (error) {
-            console.warn(`⚠️ [Scheduled] UUID ${stats.uuid} 닉네임 조회 실패: ${error.message}`);
+            console.warn(`⚠️ [빌드] UUID ${stats.uuid} 닉네임 조회 실패: ${error.message}`);
           }
         }
         return {
@@ -91,12 +101,18 @@ const handler = async () => {
       create: { id: 'leaderboard', data: calculatedLeaderboard }
     });
 
-    console.log(`✅ [Scheduled] 랭킹 데이터 DB 저장 완료. (${calculatedLeaderboard.length}명)`);
-    return { statusCode: 200 };
+    console.log(`✅ [빌드] 랭킹 데이터 DB 저장 완료. (${calculatedLeaderboard.length}명)`);
   } catch (error) {
-    console.error("❌ [Scheduled] 랭킹 계산 오류:", error);
-    return { statusCode: 500 };
+    console.error("❌ [빌드] 랭킹 계산 오류:", error);
+    // 빌드 실패로 인해 배포가 중단되지 않도록 exit(0)
+    console.warn("⚠️ [빌드] 랭킹 계산 실패했지만 배포는 계속 진행합니다.");
   }
-};
+}
 
-module.exports.handler = schedule("@hourly", handler);
+buildLeaderboard().then(() => {
+  console.log("✅ [빌드] 랭킹 빌드 스크립트 완료.");
+  process.exit(0);
+}).catch(error => {
+  console.error("❌ [빌드] 예기치 않은 오류:", error);
+  process.exit(0); // 배포 중단 방지
+});
