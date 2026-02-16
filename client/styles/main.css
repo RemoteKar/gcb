@@ -981,3 +981,167 @@ body {
     height: 50px;
     border-radius: 6px;
 }
+
+.modal-player-head {
+    width: 40px;
+    height: 40px;
+    border-radius: 6px;
+    margin-right: 10px;
+}
+
+/* ========================================
+   모바일 반응형 (768px 이하)
+   ======================================== */
+@media (max-width: 768px) {
+    /* 헤더 네비게이션 */
+    .header-bar {
+        height: auto;
+        flex-wrap: wrap;
+        padding: 8px 10px;
+        gap: 6px;
+    }
+
+    .header-logo {
+        font-size: 22px;
+    }
+
+    .nav-button {
+        margin-left: 0;
+        padding: 6px 10px;
+        font-size: 13px;
+    }
+
+    /* 유저 페이지: 2분할 → 1열 */
+    .wrapper {
+        flex-direction: column;
+        height: auto;
+    }
+
+    .left-panel {
+        width: 100%;
+        border-right: none;
+        border-bottom: 2px solid #2c2c2c;
+        padding: 15px;
+    }
+
+    .right-panel {
+        padding: 15px;
+    }
+
+    /* 게임 카드 */
+    .game-card {
+        height: auto;
+        flex-wrap: wrap;
+        padding: 8px;
+    }
+
+    .game-card-left {
+        flex: 0 0 60px;
+    }
+
+    .game-card-left img {
+        width: 60px;
+        height: 60px;
+    }
+
+    .game-card-info > p:first-of-type {
+        font-size: 14px;
+    }
+
+    .game-card-info-sub > p {
+        font-size: 12px;
+    }
+
+    .game-card-augment {
+        width: 100%;
+        justify-content: flex-start;
+        margin-left: 0;
+        margin-top: 8px;
+        gap: 6px;
+    }
+
+    .game-card-augment img {
+        width: 50px;
+        height: 50px;
+    }
+
+    /* 랭킹 상위 3명 */
+    .top-3-ranking {
+        flex-direction: column;
+        align-items: center;
+        gap: 20px;
+    }
+
+    .top-player-card.rank-1 {
+        transform: scale(1.0);
+    }
+
+    .top-player-card.rank-2 {
+        transform: scale(1.0);
+    }
+
+    .top-player-card .player-head-lg {
+        width: 100px;
+        height: 100px;
+    }
+
+    /* 통계 필터 버튼 */
+    .filter-buttons {
+        flex-wrap: wrap;
+    }
+
+    .stat-button {
+        padding: 8px 14px;
+        font-size: 14px;
+    }
+
+    /* 무기 그리드 1열 */
+    .weapons-list {
+        grid-template-columns: 1fr;
+    }
+
+    /* 모달 */
+    .modal-content {
+        width: 95%;
+        padding: 15px;
+        max-height: 90vh;
+    }
+
+    .modal-player-rank {
+        font-size: 16px;
+        min-width: 30px;
+    }
+
+    .modal-player-char {
+        width: 40px;
+        height: 40px;
+        margin: 0 6px;
+    }
+
+    .modal-player-head {
+        width: 30px;
+        height: 30px;
+        margin-right: 6px;
+    }
+
+    .modal-player-name {
+        font-size: 13px;
+    }
+
+    .modal-player-augments img {
+        width: 30px;
+        height: 30px;
+    }
+
+    /* 컨테이너 */
+    .container {
+        width: 95%;
+        margin-top: 20px;
+    }
+
+    /* 캐릭터 상세 */
+    .character-portrait-lg {
+        width: 100px;
+        height: 100px;
+    }
+}

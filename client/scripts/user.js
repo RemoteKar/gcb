@@ -347,6 +347,7 @@ async function openGameDetailModal(game) {
     row.innerHTML = `
       <span class="modal-player-rank">#${ranking}</span>
       <img class="modal-player-char" src="/Resource/character/${character}.png" alt="캐릭터">
+      <img class="modal-player-head" src="https://mc-heads.net/avatar/${cleanUUID}/40" alt="${nickname}">
       <span class="modal-player-name">${nickname}</span>
       <div class="modal-player-augments">${augmentHtml}</div>
     `;
