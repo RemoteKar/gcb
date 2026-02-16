@@ -352,7 +352,16 @@ async function openGameDetailModal(game) {
       <div class="modal-player-augments">${augmentHtml}</div>
     `;
 
-    // 플레이어 클릭 → 해당 유저 전적 페이지 이동
+    // 캐릭터 초상화 클릭 → 캐릭터 정보 페이지 이동
+    const charImg = row.querySelector('.modal-player-char');
+    if (character !== 'default' && Number(character) < 900) {
+      charImg.addEventListener('click', (e) => {
+        e.stopPropagation();
+        window.location.href = `/character/${character}`;
+      });
+    }
+
+    // 행 클릭 → 해당 유저 전적 페이지 이동
     if (nicknameMap[cleanUUID]) {
       row.addEventListener('click', () => {
         window.location.href = `/user/${encodeURIComponent(nicknameMap[cleanUUID])}`;

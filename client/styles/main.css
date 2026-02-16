@@ -961,6 +961,14 @@ body {
     height: 60px;
     border-radius: 8px;
     margin: 0 10px;
+    cursor: pointer;
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;
+    border: 2px solid transparent;
+}
+
+.modal-player-char:hover {
+    border-color: #f7a400;
+    box-shadow: 0 0 8px rgba(247, 164, 0, 0.5);
 }
 
 .modal-player-name {
@@ -968,6 +976,10 @@ body {
     font-size: 16px;
     font-weight: 600;
     color: #dcdcdc;
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
 }
 
 .modal-player-augments {
