@@ -526,4 +526,59 @@ async function getTitanInfo(titanName) {
     return result;
 }
 
-module.exports = { getBadgeData, getGameHistory, getAllGameHistoryFileMetadata, fetchAndParseYamlFile, fetchAllGameRecords, refreshAllGameRecordsCache, getCharacterList, getCharacterInfo, getSkillLinks, getWeaponList, getTitanList, getTitanInfo };
+// 증강 목록 가져오기
+async function getAugmentList() {
+    const cacheKey = 'augmentList';
+    const cachedList = characterDescriptionCache.get(cacheKey);
+    if (cachedList) {
+        console.log(`✅ [GitHub API] 인메모리 증강 목록 캐시 히트`);
+        return cachedList;
+    }
+
+    const dirPath = `${baseDataPath}/description/augments`;
+    const githubApiUrl = `https://api.github.com/repos/${repoOwner}/${repoName}/contents/${dirPath}?ref=${branch}`;
+    console.log(`🔍 [GitHub API] 증강 목록 요청 URL: ${githubApiUrl}`);
+
+    const files = await retryOperation(async () => {
+        const response = await fetch(githubApiUrl, {
+            headers: {
+                'Authorization': `token ${githubToken}`,
+                'User-Agent': 'Your App Name'
+            }
+        });
+
+        if (!response.ok) {
+            throw new Error(`증강 목록을 가져올 수 없습니다: ${response.status}`);
+        }
+
+        return response.json();
+    });
+
+    if (!files) {
+        return [];
+    }
+
+    const augments = [];
+    const parsePromises = files
+        .filter(file => file.name.endsWith('.yaml'))
+        .map(async (file) => {
+            const parsedData = await fetchAndParseYamlFile(file.download_url);
+            if (parsedData) {
+                augments.push({
+                    id: parsedData.id,
+                    name: parsedData.name,
+                    description: parsedData.description || ''
+                });
+            }
+        });
+
+    await Promise.all(parsePromises);
+
+    // id 기준 정렬
+    augments.sort((a, b) => a.id - b.id);
+
+    characterDescriptionCache.set(cacheKey, augments);
+    return augments;
+}
+
+module.exports = { getBadgeData, getGameHistory, getAllGameHistoryFileMetadata, fetchAndParseYamlFile, fetchAllGameRecords, refreshAllGameRecordsCache, getCharacterList, getCharacterInfo, getSkillLinks, getWeaponList, getTitanList, getTitanInfo, getAugmentList };

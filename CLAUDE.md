@@ -212,6 +212,59 @@ Data/description/titan/
 
 ---
 
+## 2026-02-16 작업 내용: 증강 정보 페이지 + 팝업 시스템 추가
+
+### 개요
+증강 아이콘 그리드 페이지(`/augment.html`)를 추가하고, 클릭 시 팝업으로 이름+설명을 표시.
+공용 팝업 모듈을 통해 증강 통계 페이지, 유저 전적 페이지에서도 증강 아이콘 클릭 시 동일 팝업 표시.
+
+### 생성된 파일
+| 파일 | 설명 |
+|------|------|
+| `client/augment.html` | 증강 목록 페이지 (그리드 형태로 아이콘 표시) |
+| `client/scripts/augment.js` | 증강 목록 페이지 로직 |
+| `client/scripts/augment_popup.js` | 공용 증강 팝업 모듈 (모든 페이지에서 재사용) |
+
+### 수정된 파일
+| 파일 | 변경 내용 |
+|------|---------|
+| `server/services/github.js` | `getAugmentList()` 함수 추가 (증강 YAML 전체 로드) |
+| `server/routes/api.js` | `GET /api/augment-list` 엔드포인트 추가 |
+| `client/scripts/augment_stats.js` | 증강 아이콘 클릭 → 팝업 연동 |
+| `client/scripts/user.js` | 게임 카드/모달 증강 아이콘 클릭 → 팝업 연동 |
+| `client/augment_stats.html` | `augment_popup.js` 스크립트 추가 |
+| `client/user.html` | `augment_popup.js` 스크립트 추가 |
+| `client/styles/main.css` | 증강 팝업 오버레이/카드 스타일 추가 |
+| 모든 HTML 페이지 (11개) | 헤더에 "증강정보" 네비게이션 버튼 추가 |
+
+### 주요 기능
+1. **증강 목록** (`/augment.html`)
+   - 1~42번 증강 아이콘을 그리드로 표시 (캐릭터 그리드 스타일 재활용)
+   - 클릭 시 팝업으로 이름+설명 표시
+
+2. **공용 팝업 모듈** (`augment_popup.js`)
+   - `showAugmentPopup(augmentId)` 전역 함수
+   - `/api/augment-list` 데이터를 한 번만 fetch 후 내부 캐싱
+   - 마인크래프트 색코드 파싱 지원
+   - 화면 중앙 오버레이 + X 버튼/배경 클릭으로 닫기
+
+3. **기존 페이지 연동**
+   - 증강 통계 페이지: 아이콘 클릭 → 팝업
+   - 유저 전적 페이지: 게임 카드 + 모달 내 증강 아이콘 클릭 → 팝업
+
+### API 엔드포인트
+- `GET /api/augment-list` - 전체 증강 목록 반환 `{ augments: [{id, name, description}, ...] }`
+
+### 데이터 구조
+```
+Data/description/augments/
+├── 1.yaml   # {id: 1, name: "다이아몬드 검", description: "&f공격력이 ..."}
+├── 2.yaml
+└── ... (총 42개)
+```
+
+---
+
 ## 페이지 목록
 1. `index.html` - 메인 (닉네임 검색)
 2. `user.html` - 유저 프로필
@@ -219,10 +272,11 @@ Data/description/titan/
 4. `character.html` - 캐릭터 목록 (캐릭터정보)
 5. `character_detail.html` - 캐릭터 상세
 6. `character_stats.html` - 캐릭터 통계
-7. `augment_stats.html` - 증강 통계
-8. `weapon_detail.html` - 무기 상세 (상단바 미노출, 스킬 클릭으로만 진입)
-9. `titan_list.html` - 타이탄 목록 (상단바 미노출, 스킬 클릭으로만 진입)
-10. `titan_detail.html` - 타이탄 상세 (상단바 미노출, 목록에서 클릭으로 진입)
+7. `augment.html` - 증강 목록 (증강정보)
+8. `augment_stats.html` - 증강 통계
+9. `weapon_detail.html` - 무기 상세 (상단바 미노출, 스킬 클릭으로만 진입)
+10. `titan_list.html` - 타이탄 목록 (상단바 미노출, 스킬 클릭으로만 진입)
+11. `titan_detail.html` - 타이탄 상세 (상단바 미노출, 목록에서 클릭으로 진입)
 
 ---
 

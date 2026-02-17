@@ -3,7 +3,7 @@ const router = express.Router();
 const { PrismaClient } = require('@prisma/client/edge');
 const { withAccelerate } = require('@prisma/extension-accelerate');
 const { getUUID, getProfileByUUID } = require('../services/mojang');
-const { getBadgeData, getGameHistory, fetchAllGameRecords, getCharacterList, getCharacterInfo, getSkillLinks, getWeaponList, getTitanList, getTitanInfo } = require('../services/github');
+const { getBadgeData, getGameHistory, fetchAllGameRecords, getCharacterList, getCharacterInfo, getSkillLinks, getWeaponList, getTitanList, getTitanInfo, getAugmentList } = require('../services/github');
 const { computeStatistics } = require('../utils/statistics');
 const cacheMiddleware = require('../middleware/cache');
 const { formatUUID } = require('../util');
@@ -158,6 +158,20 @@ router.get('/all_game_history', cacheMiddleware('all_game_history'), async (req,
     console.error("❌ [서버] 모든 게임 기록 조회 오류:", error);
     res.status(500).json({ error: error.message });
   }
+});
+
+//----------------------------------------
+// 📌 증강 목록 조회 (이름 + 설명)
+//----------------------------------------
+router.get('/augment-list', async (req, res) => {
+    console.log(`🔍 [서버] 증강 목록 요청`);
+    try {
+        const augments = await getAugmentList();
+        res.json({ augments });
+    } catch (error) {
+        console.error("❌ [서버] 증강 목록 조회 오류:", error);
+        res.status(500).json({ error: '증강 목록을 가져올 수 없습니다.' });
+    }
 });
 
 router.get('/augment-stats', async (req, res) => {

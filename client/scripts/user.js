@@ -249,11 +249,22 @@ function renderNextGames(uuid) {
           ${[1,2,3,4].map(i => {
             const aug = playerData?.Augment?.[i];
             const src = aug != null ? `/Resource/augment/icon/${aug}.png` : `/Resource/augment/icon/level.png`;
-            return `<img src="${src}" alt="Augment${i}">`;
+            return `<img src="${src}" alt="Augment${i}" data-augment-id="${aug != null ? aug : ''}" style="${aug != null ? 'cursor:pointer;' : ''}">`;
           }).join('\n          ')}
         </div>
       </div>
     `;
+
+    // 게임 카드 증강 아이콘 클릭 → 팝업
+    gameItem.querySelectorAll('.game-card-augment img[data-augment-id]').forEach(img => {
+      const augId = img.getAttribute('data-augment-id');
+      if (augId !== '') {
+        img.addEventListener('click', (e) => {
+          e.stopPropagation();
+          showAugmentPopup(Number(augId));
+        });
+      }
+    });
 
     // 게임 카드 클릭 → 모달 열기
     const gameCard = gameItem.querySelector('.game-card');
@@ -337,7 +348,7 @@ async function openGameDetailModal(game) {
     const augmentHtml = [1,2,3,4].map(i => {
       const aug = data?.Augment?.[i];
       const src = aug != null ? `/Resource/augment/icon/${aug}.png` : `/Resource/augment/icon/level.png`;
-      return `<img src="${src}" alt="Augment${i}">`;
+      return `<img src="${src}" alt="Augment${i}" data-augment-id="${aug != null ? aug : ''}" style="${aug != null ? 'cursor:pointer;' : ''}">`;
     }).join('');
 
     const row = document.createElement('div');
@@ -360,6 +371,17 @@ async function openGameDetailModal(game) {
         window.location.href = `/character/${character}`;
       });
     }
+
+    // 모달 증강 아이콘 클릭 → 팝업
+    row.querySelectorAll('.modal-player-augments img[data-augment-id]').forEach(img => {
+      const augId = img.getAttribute('data-augment-id');
+      if (augId !== '') {
+        img.addEventListener('click', (e) => {
+          e.stopPropagation();
+          showAugmentPopup(Number(augId));
+        });
+      }
+    });
 
     // 행 클릭 → 해당 유저 전적 페이지 이동
     if (nicknameMap[cleanUUID]) {

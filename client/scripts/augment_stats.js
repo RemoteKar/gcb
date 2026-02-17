@@ -33,9 +33,16 @@ document.addEventListener("DOMContentLoaded", async () => {
 
             augmentDiv.innerHTML = `
                 <span class="rank-number">#${index + 1}</span>
-                <img src="/Resource/augment/icon/${stat.augmentId ?? 'default'}.png" alt="Augment ${stat.augmentId}" class="character-stat-img">
+                <img src="/Resource/augment/icon/${stat.augmentId ?? 'default'}.png" alt="Augment ${stat.augmentId}" class="character-stat-img" style="cursor:pointer;">
                 <p><strong>${stat.picks}회</strong></p>
             `;
+            const augImg = augmentDiv.querySelector('.character-stat-img');
+            if (stat.augmentId != null) {
+                augImg.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    showAugmentPopup(stat.augmentId);
+                });
+            }
             augmentListDiv.appendChild(augmentDiv);
         });
     }
