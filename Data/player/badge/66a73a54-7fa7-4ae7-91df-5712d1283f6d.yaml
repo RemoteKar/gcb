@@ -2,3 +2,5 @@ badge:
     List:
     - donner
     - doner
+    - coin
+    current: ''

@@ -2,3 +2,5 @@ badge:
     List:
     - doner
     - anniversary_year_2
+    - coin
+    current: anniversary_year_2

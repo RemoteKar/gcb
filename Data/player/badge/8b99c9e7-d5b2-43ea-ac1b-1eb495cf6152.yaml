@@ -2,4 +2,7 @@ badge:
     List:
     - ellen
     - doner
-    current: ellen
+    - wake
+    - wrath_1
+    - wrath_2
+    current: wake

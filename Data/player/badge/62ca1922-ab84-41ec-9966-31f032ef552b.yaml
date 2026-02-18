@@ -1,2 +1,4 @@
 badge:
-    current: ''
+    current: coin
+    List:
+    - coin
