@@ -27,7 +27,6 @@ document.addEventListener("DOMContentLoaded", () => {
         google.accounts.id.initialize({
             client_id: config.googleClientId,
             callback: handleGoogleResponse,
-            auto_select: true,
         });
 
         google.accounts.id.renderButton(
@@ -47,6 +46,9 @@ document.addEventListener("DOMContentLoaded", () => {
             };
             localStorage.setItem('gcb_session', JSON.stringify(session));
             setLoggedIn(session);
+            // 로그인 팝업 닫고 작성 팝업 열기
+            closePopup('login-popup');
+            openPopup('write-popup');
         }
     }
 
@@ -80,7 +82,6 @@ document.addEventListener("DOMContentLoaded", () => {
         const code = urlParams.get('code');
         if (code) {
             handleGithubCallback(code);
-            // URL에서 code 파라미터 제거
             window.history.replaceState({}, document.title, window.location.pathname);
         }
     }
@@ -105,25 +106,57 @@ document.addEventListener("DOMContentLoaded", () => {
                 name: data.name,
                 login: data.login,
                 provider: 'github',
-                // GitHub 토큰은 만료 없음 (revoke 전까지 유효)
                 exp: null,
             };
             localStorage.setItem('gcb_session', JSON.stringify(session));
             setLoggedIn(session);
+            // GitHub 콜백 후 바로 작성 팝업 열기
+            openPopup('write-popup');
         } catch (e) {
             console.error('GitHub 인증 처리 오류:', e);
         }
     }
 
     // =============================================
+    // 팝업 관리
+    // =============================================
+    function openPopup(id) {
+        document.getElementById(id).style.display = 'flex';
+    }
+
+    function closePopup(id) {
+        document.getElementById(id).style.display = 'none';
+    }
+
+    // 작성하기 버튼 클릭
+    document.getElementById('write-btn').addEventListener('click', () => {
+        if (currentUser) {
+            openPopup('write-popup');
+        } else {
+            openPopup('login-popup');
+        }
+    });
+
+    // 팝업 닫기 버튼
+    document.getElementById('login-popup-close').addEventListener('click', () => closePopup('login-popup'));
+    document.getElementById('write-popup-close').addEventListener('click', () => closePopup('write-popup'));
+
+    // 오버레이 클릭으로 닫기
+    document.getElementById('login-popup').addEventListener('click', (e) => {
+        if (e.target === e.currentTarget) closePopup('login-popup');
+    });
+    document.getElementById('write-popup').addEventListener('click', (e) => {
+        if (e.target === e.currentTarget) closePopup('write-popup');
+    });
+
+    // =============================================
     // 공통 로그인/로그아웃
     // =============================================
     function setLoggedIn(session) {
         currentUser = session;
-        document.getElementById('login-buttons').style.display = 'none';
-        document.getElementById('user-info').style.display = 'flex';
         document.getElementById('user-name').textContent = session.name;
-        document.getElementById('feedback-form-section').style.display = 'block';
+        // 작성하기 버튼 텍스트 변경
+        document.getElementById('write-btn').textContent = '작성하기';
     }
 
     function logout() {
@@ -132,9 +165,7 @@ document.addEventListener("DOMContentLoaded", () => {
         if (typeof google !== 'undefined' && google.accounts) {
             google.accounts.id.disableAutoSelect();
         }
-        document.getElementById('login-buttons').style.display = 'flex';
-        document.getElementById('user-info').style.display = 'none';
-        document.getElementById('feedback-form-section').style.display = 'none';
+        closePopup('write-popup');
     }
 
     function restoreSession() {
@@ -143,7 +174,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
         try {
             const session = JSON.parse(saved);
-            // 만료 체크 (Google만 해당)
             if (session.exp && session.exp < Date.now()) {
                 localStorage.removeItem('gcb_session');
                 return;
@@ -195,9 +225,8 @@ document.addEventListener("DOMContentLoaded", () => {
                 const err = await res.json();
                 if (res.status === 401) {
                     logout();
-                    statusEl.textContent = '로그인이 만료되었습니다. 다시 로그인해주세요.';
-                    statusEl.style.color = '#FF5555';
-                    submitBtn.disabled = false;
+                    closePopup('write-popup');
+                    openPopup('login-popup');
                     return;
                 }
                 throw new Error(err.error || '제출에 실패했습니다.');
@@ -207,6 +236,12 @@ document.addEventListener("DOMContentLoaded", () => {
             statusEl.style.color = '#55FF55';
             document.getElementById('feedback-form').reset();
             loadFeedbackList();
+
+            // 1.5초 후 팝업 닫기
+            setTimeout(() => {
+                closePopup('write-popup');
+                statusEl.textContent = '';
+            }, 1500);
         } catch (err) {
             statusEl.textContent = err.message;
             statusEl.style.color = '#FF5555';
@@ -290,11 +325,8 @@ document.addEventListener("DOMContentLoaded", () => {
 
     async function init() {
         config = await loadConfig();
-
-        // 기존 세션 복원 시도
         restoreSession();
 
-        // Google GIS 로드 대기 후 초기화
         function waitForGIS() {
             if (typeof google !== 'undefined' && google.accounts) {
                 initGoogleAuth();
@@ -304,10 +336,7 @@ document.addEventListener("DOMContentLoaded", () => {
         }
         waitForGIS();
 
-        // GitHub 버튼 초기화
         initGithubAuth();
-
-        // 목록 로드
         loadFeedbackList();
     }
 

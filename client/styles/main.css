@@ -1158,9 +1158,20 @@ body {
     }
 
     /* 피드백 페이지 */
-    .feedback-auth {
+    .feedback-top-bar {
         flex-direction: column;
-        align-items: stretch;
+        gap: 10px;
+        text-align: center;
+    }
+
+    .feedback-write-card {
+        padding: 20px;
+    }
+
+    .feedback-write-header {
+        flex-direction: column;
+        gap: 10px;
+        text-align: center;
     }
 
     .feedback-item-header {
@@ -1249,17 +1260,70 @@ body {
     background-color: #c0392b;
 }
 
-/* 로그인 버튼 영역 */
-#login-buttons {
+/* 피드백 상단 바 (타이틀 + 작성하기 버튼) */
+.feedback-top-bar {
     display: flex;
     align-items: center;
-    gap: 10px;
+    justify-content: space-between;
+    margin-bottom: 10px;
+}
+
+.feedback-top-bar h1 {
+    margin: 0;
+}
+
+.feedback-write-btn {
+    padding: 10px 24px;
+    background-color: #e74c3c;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    font-size: 16px;
+    font-weight: bold;
+    font-family: 'Nunito', sans-serif;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.feedback-write-btn:hover {
+    background-color: #c0392b;
+}
+
+/* 로그인 팝업 카드 */
+.feedback-login-card {
+    background-color: #1c1c1c;
+    border: 2px solid #f7a400;
+    border-radius: 12px;
+    padding: 40px 30px;
+    max-width: 400px;
+    width: 90%;
+    text-align: center;
+    position: relative;
+}
+
+.feedback-login-card h2 {
+    color: #f7a400;
+    margin: 0 0 10px 0;
+}
+
+.feedback-login-desc {
+    color: #AAAAAA;
+    margin-bottom: 25px;
+    font-size: 14px;
+}
+
+.feedback-login-buttons {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
 }
 
 /* GitHub 로그인 버튼 */
 .feedback-github-btn {
     display: flex;
     align-items: center;
+    justify-content: center;
     gap: 8px;
     padding: 10px 20px;
     background-color: #24292e;
@@ -1271,29 +1335,41 @@ body {
     font-weight: bold;
     cursor: pointer;
     transition: background-color 0.3s ease;
+    min-width: 200px;
 }
 
 .feedback-github-btn:hover {
     background-color: #444d56;
 }
 
-/* 피드백 컨테이너 */
-.feedback-container {
-    max-width: 800px;
+/* 작성 팝업 카드 */
+.feedback-write-card {
+    background-color: #1c1c1c;
+    border: 2px solid #3c3c3c;
+    border-radius: 12px;
+    padding: 30px;
+    max-width: 600px;
+    width: 90%;
+    max-height: 85vh;
+    overflow-y: auto;
+    position: relative;
 }
 
-/* 인증 영역 */
-.feedback-auth {
+.feedback-write-header {
     display: flex;
     align-items: center;
-    justify-content: flex-end;
-    gap: 15px;
+    justify-content: space-between;
     margin-bottom: 20px;
-    padding: 10px 0;
+    padding-bottom: 15px;
     border-bottom: 1px solid #3c3c3c;
 }
 
-#user-info {
+.feedback-write-header h2 {
+    margin: 0;
+    color: #f7a400;
+}
+
+.feedback-user-info {
     display: flex;
     align-items: center;
     gap: 10px;
@@ -1312,6 +1388,7 @@ body {
     border-radius: 5px;
     cursor: pointer;
     font-family: 'Nunito', sans-serif;
+    font-size: 12px;
     transition: background-color 0.3s ease;
 }
 
@@ -1319,13 +1396,15 @@ body {
     background-color: #555555;
 }
 
+/* 피드백 컨테이너 */
+.feedback-container {
+    max-width: 800px;
+}
+
 /* 피드백 폼 */
 .feedback-form {
-    background-color: #2c2c2c;
-    border: 2px solid #3c3c3c;
-    border-radius: 10px;
-    padding: 20px;
-    margin-bottom: 30px;
+    padding: 0;
+    margin-bottom: 0;
 }
 
 .feedback-field {

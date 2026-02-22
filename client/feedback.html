@@ -20,9 +20,33 @@
     </div>
 
     <div class="container feedback-container">
-        <!-- 인증 영역 -->
-        <div class="feedback-auth">
-            <div id="login-buttons">
+        <!-- 상단: 타이틀 + 작성하기 버튼 -->
+        <div class="feedback-top-bar">
+            <h1>건의/버그</h1>
+            <button id="write-btn" class="feedback-write-btn">작성하기</button>
+        </div>
+
+        <!-- 필터 -->
+        <div class="filter-buttons">
+            <button class="stat-button active" data-filter="all">전체</button>
+            <button class="stat-button" data-filter="bug">버그</button>
+            <button class="stat-button" data-filter="enhancement">건의</button>
+            <button class="stat-button" data-filter="other">기타</button>
+        </div>
+
+        <!-- 목록 -->
+        <div id="feedback-list" class="feedback-list">
+            <p class="loading-text">로딩 중...</p>
+        </div>
+    </div>
+
+    <!-- 로그인 팝업 (비로그인 상태에서 작성하기 클릭 시) -->
+    <div id="login-popup" class="modal-overlay" style="display:none;">
+        <div class="feedback-login-card">
+            <button class="modal-close" id="login-popup-close">&times;</button>
+            <h2>로그인이 필요합니다</h2>
+            <p class="feedback-login-desc">건의/버그를 작성하려면 먼저 로그인해주세요.</p>
+            <div class="feedback-login-buttons">
                 <div id="google-signin-btn"></div>
                 <button id="github-signin-btn" class="feedback-github-btn">
                     <svg width="20" height="20" viewBox="0 0 16 16" fill="white">
@@ -31,15 +55,20 @@
                     GitHub으로 로그인
                 </button>
             </div>
-            <div id="user-info" style="display:none;">
-                <span id="user-name"></span>
-                <button id="logout-btn" class="feedback-logout-btn">로그아웃</button>
-            </div>
         </div>
+    </div>
 
-        <!-- 작성 폼 (로그인 시만 표시) -->
-        <div id="feedback-form-section" style="display:none;">
-            <h2>건의/버그 제출</h2>
+    <!-- 작성 팝업 (로그인 상태에서 작성하기 클릭 시) -->
+    <div id="write-popup" class="modal-overlay" style="display:none;">
+        <div class="feedback-write-card">
+            <button class="modal-close" id="write-popup-close">&times;</button>
+            <div class="feedback-write-header">
+                <h2>건의/버그 작성</h2>
+                <div id="user-info" class="feedback-user-info">
+                    <span id="user-name"></span>
+                    <button id="logout-btn" class="feedback-logout-btn">로그아웃</button>
+                </div>
+            </div>
             <form id="feedback-form" class="feedback-form">
                 <div class="feedback-field">
                     <label for="feedback-category">카테고리</label>
@@ -62,18 +91,6 @@
                 <button type="submit" class="feedback-submit-btn">제출</button>
             </form>
             <p id="feedback-status"></p>
-        </div>
-
-        <!-- 목록 -->
-        <h2>건의/버그 목록</h2>
-        <div class="filter-buttons">
-            <button class="stat-button active" data-filter="all">전체</button>
-            <button class="stat-button" data-filter="bug">버그</button>
-            <button class="stat-button" data-filter="enhancement">건의</button>
-            <button class="stat-button" data-filter="other">기타</button>
-        </div>
-        <div id="feedback-list" class="feedback-list">
-            <p class="loading-text">로딩 중...</p>
         </div>
     </div>
 
