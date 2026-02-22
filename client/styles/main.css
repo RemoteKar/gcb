@@ -1160,8 +1160,40 @@ body {
     /* 피드백 페이지 */
     .feedback-top-bar {
         flex-direction: column;
-        gap: 10px;
+        gap: 8px;
         text-align: center;
+    }
+
+    .feedback-top-bar .filter-buttons {
+        justify-content: center;
+    }
+
+    .feedback-top-bar .stat-button {
+        padding: 5px 10px;
+        font-size: 12px;
+    }
+
+    .feedback-item {
+        flex-wrap: wrap;
+        gap: 6px;
+        padding: 8px 10px;
+    }
+
+    .feedback-item-title {
+        font-size: 13px;
+    }
+
+    .feedback-item-date {
+        display: none;
+    }
+
+    .feedback-item-author {
+        font-size: 11px;
+    }
+
+    .feedback-write-btn {
+        display: block;
+        width: 100%;
     }
 
     .feedback-write-card {
@@ -1174,17 +1206,12 @@ body {
         text-align: center;
     }
 
-    .feedback-item {
-        flex-wrap: wrap;
-        gap: 6px;
-    }
-
-    .feedback-item-date {
-        display: none;
-    }
-
     .feedback-detail-card {
         padding: 20px;
+    }
+
+    .feedback-login-card {
+        padding: 25px 20px;
     }
 }
 
@@ -1284,15 +1311,14 @@ body {
 
 /* 작성하기 버튼 (하단) */
 .feedback-write-btn {
-    display: block;
-    width: 100%;
-    padding: 12px;
+    display: inline-block;
+    padding: 8px 20px;
     margin-top: 15px;
     background-color: #e74c3c;
     color: white;
     border: none;
     border-radius: 5px;
-    font-size: 16px;
+    font-size: 14px;
     font-weight: bold;
     font-family: 'Nunito', sans-serif;
     cursor: pointer;
