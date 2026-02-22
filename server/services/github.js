@@ -581,8 +581,36 @@ async function getAugmentList() {
     return augments;
 }
 
+// GitHub 라벨 자동 생성 (없으면 생성, 있으면 무시)
+let labelsEnsured = false;
+async function ensureFeedbackLabels() {
+    if (labelsEnsured) return;
+    const labelsToCreate = [
+        { name: 'user-feedback', color: '0e8a16' },
+        { name: 'bug', color: 'e74c3c' },
+        { name: 'enhancement', color: '3498db' },
+        { name: 'other', color: '555555' },
+    ];
+    const apiUrl = `https://api.github.com/repos/${repoOwner}/${repoName}/labels`;
+    for (const label of labelsToCreate) {
+        try {
+            await fetch(apiUrl, {
+                method: 'POST',
+                headers: {
+                    'Authorization': `token ${githubToken}`,
+                    'User-Agent': 'Your App Name',
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(label)
+            });
+        } catch (e) { /* 이미 존재하면 무시 */ }
+    }
+    labelsEnsured = true;
+}
+
 // GitHub Issue 생성 (건의/버그 제출)
 async function createFeedbackIssue(title, body, labels) {
+    await ensureFeedbackLabels();
     const githubApiUrl = `https://api.github.com/repos/${repoOwner}/${repoName}/issues`;
 
     return retryOperation(async () => {
