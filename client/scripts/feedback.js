@@ -140,13 +140,13 @@ document.addEventListener("DOMContentLoaded", () => {
     // 팝업 닫기 버튼
     document.getElementById('login-popup-close').addEventListener('click', () => closePopup('login-popup'));
     document.getElementById('write-popup-close').addEventListener('click', () => closePopup('write-popup'));
+    document.getElementById('detail-popup-close').addEventListener('click', () => closePopup('detail-popup'));
 
     // 오버레이 클릭으로 닫기
-    document.getElementById('login-popup').addEventListener('click', (e) => {
-        if (e.target === e.currentTarget) closePopup('login-popup');
-    });
-    document.getElementById('write-popup').addEventListener('click', (e) => {
-        if (e.target === e.currentTarget) closePopup('write-popup');
+    ['login-popup', 'write-popup', 'detail-popup'].forEach(id => {
+        document.getElementById(id).addEventListener('click', (e) => {
+            if (e.target === e.currentTarget) closePopup(id);
+        });
     });
 
     // =============================================
@@ -281,17 +281,33 @@ document.addEventListener("DOMContentLoaded", () => {
             return;
         }
 
-        listEl.innerHTML = filtered.map(issue => `
-            <div class="feedback-item">
-                <div class="feedback-item-header">
-                    <span class="feedback-label feedback-label-${issue.category}">${categoryName(issue.category)}</span>
-                    <span class="feedback-item-title">${escapeHtml(issue.title)}</span>
-                    <span class="feedback-item-date">${formatDate(issue.created_at)}</span>
-                </div>
-                <div class="feedback-item-body">${escapeHtml(issue.body)}</div>
-                <div class="feedback-item-author">${escapeHtml(issue.author)}</div>
+        listEl.innerHTML = filtered.map((issue, idx) => `
+            <div class="feedback-item" data-idx="${idx}">
+                <span class="feedback-label feedback-label-${issue.category}">${categoryName(issue.category)}</span>
+                <span class="feedback-item-title">${escapeHtml(issue.title)}</span>
+                <span class="feedback-item-author">${escapeHtml(issue.author)}</span>
+                <span class="feedback-item-date">${formatDate(issue.created_at)}</span>
             </div>
         `).join('');
+
+        // 클릭 이벤트
+        listEl.querySelectorAll('.feedback-item').forEach(el => {
+            el.addEventListener('click', () => {
+                const idx = parseInt(el.dataset.idx);
+                const issue = filtered[idx];
+                showDetailPopup(issue);
+            });
+        });
+    }
+
+    function showDetailPopup(issue) {
+        document.getElementById('detail-label').className = `feedback-label feedback-label-${issue.category}`;
+        document.getElementById('detail-label').textContent = categoryName(issue.category);
+        document.getElementById('detail-date').textContent = formatDate(issue.created_at);
+        document.getElementById('detail-title').textContent = issue.title;
+        document.getElementById('detail-body').textContent = issue.body;
+        document.getElementById('detail-author').textContent = issue.author;
+        openPopup('detail-popup');
     }
 
     // 필터 버튼 이벤트

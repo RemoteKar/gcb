@@ -58,6 +58,20 @@
         </div>
     </div>
 
+    <!-- 상세 팝업 (글 클릭 시) -->
+    <div id="detail-popup" class="modal-overlay" style="display:none;">
+        <div class="feedback-detail-card">
+            <button class="modal-close" id="detail-popup-close">&times;</button>
+            <div class="feedback-detail-header">
+                <span id="detail-label" class="feedback-label"></span>
+                <span id="detail-date" class="feedback-detail-date"></span>
+            </div>
+            <h2 id="detail-title" class="feedback-detail-title"></h2>
+            <div id="detail-body" class="feedback-detail-body"></div>
+            <div id="detail-author" class="feedback-detail-author"></div>
+        </div>
+    </div>
+
     <!-- 작성 팝업 (로그인 상태에서 작성하기 클릭 시) -->
     <div id="write-popup" class="modal-overlay" style="display:none;">
         <div class="feedback-write-card">

@@ -1174,12 +1174,17 @@ body {
         text-align: center;
     }
 
-    .feedback-item-header {
+    .feedback-item {
         flex-wrap: wrap;
+        gap: 6px;
     }
 
-    .feedback-item-title {
-        white-space: normal;
+    .feedback-item-date {
+        display: none;
+    }
+
+    .feedback-detail-card {
+        padding: 20px;
     }
 }
 
@@ -1473,32 +1478,27 @@ body {
 .feedback-list {
     display: flex;
     flex-direction: column;
-    gap: 10px;
+    gap: 2px;
 }
 
 .feedback-item {
-    background-color: #2c2c2c;
-    border: 2px solid #3c3c3c;
-    border-radius: 10px;
-    padding: 15px;
-    transition: border-color 0.3s ease;
-}
-
-.feedback-item:hover {
-    border-color: #555555;
-}
-
-.feedback-item-header {
     display: flex;
     align-items: center;
     gap: 10px;
-    margin-bottom: 8px;
+    padding: 10px 12px;
+    border-bottom: 1px solid #2c2c2c;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+}
+
+.feedback-item:hover {
+    background-color: #2c2c2c;
 }
 
 .feedback-label {
-    padding: 3px 10px;
-    border-radius: 5px;
-    font-size: 12px;
+    padding: 2px 8px;
+    border-radius: 4px;
+    font-size: 11px;
     font-weight: bold;
     color: white;
     flex-shrink: 0;
@@ -1517,8 +1517,7 @@ body {
 }
 
 .feedback-item-title {
-    font-size: 16px;
-    font-weight: bold;
+    font-size: 14px;
     color: #dcdcdc;
     flex: 1;
     overflow: hidden;
@@ -1526,25 +1525,63 @@ body {
     white-space: nowrap;
 }
 
-.feedback-item-date {
-    color: #888;
-    font-size: 13px;
-    flex-shrink: 0;
-}
-
-.feedback-item-body {
-    font-size: 14px;
-    line-height: 1.6;
-    color: #AAAAAA;
-    margin-bottom: 8px;
-    display: -webkit-box;
-    -webkit-line-clamp: 3;
-    -webkit-box-orient: vertical;
-    overflow: hidden;
-}
-
 .feedback-item-author {
     font-size: 12px;
     color: #888;
+    flex-shrink: 0;
+}
+
+.feedback-item-date {
+    color: #666;
+    font-size: 12px;
+    flex-shrink: 0;
+}
+
+/* 상세 팝업 */
+.feedback-detail-card {
+    background-color: #1c1c1c;
+    border: 2px solid #3c3c3c;
+    border-radius: 12px;
+    padding: 30px;
+    max-width: 600px;
+    width: 90%;
+    max-height: 80vh;
+    overflow-y: auto;
+    position: relative;
+}
+
+.feedback-detail-header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 12px;
+}
+
+.feedback-detail-date {
+    color: #888;
+    font-size: 13px;
+}
+
+.feedback-detail-title {
+    color: #f7a400;
+    font-size: 18px;
+    margin: 0 0 20px 0;
+    word-break: break-word;
+}
+
+.feedback-detail-body {
+    color: #dcdcdc;
+    font-size: 14px;
+    line-height: 1.8;
+    white-space: pre-wrap;
+    word-break: break-word;
+    padding-bottom: 15px;
+    border-bottom: 1px solid #3c3c3c;
+    margin-bottom: 12px;
+}
+
+.feedback-detail-author {
+    color: #888;
+    font-size: 13px;
     text-align: right;
 }
