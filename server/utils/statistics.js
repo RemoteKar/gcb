@@ -11,6 +11,7 @@ const { formatUUID, toNonHyphenatedUUID } = require('../util');
     let maxKill = 0;
     let rankAtLeast50 = 0;
     const characterCounts = {};
+    const characterDetailStats = {};
     const augmentCounts = {};
 
     const filteredGameRecords = gameRecords.filter(record => {
@@ -65,8 +66,15 @@ const { formatUUID, toNonHyphenatedUUID } = require('../util');
   
         if (character !== undefined) {
           characterCounts[character] = (characterCounts[character] || 0) + 1;
+          if (!characterDetailStats[character]) {
+            characterDetailStats[character] = { games: 0, wins: 0, kills: 0, damage: 0 };
+          }
+          characterDetailStats[character].games++;
+          if (playerData.outCuase === "우승") characterDetailStats[character].wins++;
+          if (typeof playerData.kill === "number") characterDetailStats[character].kills += playerData.kill;
+          if (playerData.Damage && typeof playerData.Damage.Dealt === "number") characterDetailStats[character].damage += playerData.Damage.Dealt;
         }
-  
+
         if (playerData.Augment) {
           Object.values(playerData.Augment).forEach(augmentValue => {
             augmentCounts[augmentValue] = (augmentCounts[augmentValue] || 0) + 1;
@@ -113,13 +121,27 @@ const { formatUUID, toNonHyphenatedUUID } = require('../util');
       .sort((a, b) => b[1] - a[1])
       .slice(0, 3)
       .map(entry => entry[0]);
-  
+
+    // 캐릭터별 통계 (플레이 횟수 내림차순, 상위 10개)
+    const characterStats = Object.entries(characterDetailStats)
+      .map(([charId, s]) => ({
+        characterId: charId,
+        games: s.games,
+        wins: s.wins,
+        winRate: s.games > 0 ? ((s.wins / s.games) * 100).toFixed(1) : '0.0',
+        avgKills: s.games > 0 ? (s.kills / s.games).toFixed(1) : '0.0',
+        avgDamage: s.games > 0 ? (s.damage / s.games).toFixed(0) : '0',
+      }))
+      .sort((a, b) => b.games - a.games)
+      .slice(0, 10);
+
     return {
       winRate,
       winCount,
       avarageRankLeast50,
       mostUsedCharacter,
       mostUsedAugments,
+      characterStats,
       averageDamageDealt,
       averageDamageTaken,
       averageKillRate,

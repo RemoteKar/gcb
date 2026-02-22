@@ -1213,6 +1213,40 @@ body {
     .feedback-login-card {
         padding: 25px 20px;
     }
+
+    /* 캐릭터별 통계 */
+    .user-char-stat-portrait {
+        width: 32px;
+        height: 32px;
+    }
+
+    .user-char-stat-main {
+        font-size: 13px;
+    }
+
+    .user-char-stat-sub {
+        font-size: 11px;
+    }
+
+    /* 데미지 차트 */
+    .dmg-bar-name {
+        min-width: 60px;
+        font-size: 11px;
+    }
+
+    .dmg-bar {
+        height: 12px;
+    }
+
+    .dmg-bar span {
+        font-size: 9px;
+    }
+
+    /* 모달 킬 수 */
+    .modal-player-kills {
+        font-size: 11px;
+        min-width: 28px;
+    }
 }
 
 /* ========================================
@@ -1655,4 +1689,131 @@ body {
     color: #888;
     font-size: 13px;
     text-align: right;
+}
+
+/* ========================================
+   유저 캐릭터별 통계 스타일
+   ======================================== */
+.user-char-stats {
+    width: 100%;
+    margin-top: 20px;
+    border-top: 1px solid #3c3c3c;
+    padding-top: 15px;
+}
+
+.user-char-stats-title {
+    color: #f7a400;
+    font-size: 16px;
+    margin: 0 0 12px 0;
+    text-align: center;
+}
+
+.user-char-stat-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 6px 8px;
+    border-radius: 8px;
+    transition: background-color 0.2s ease;
+}
+
+.user-char-stat-row:hover {
+    background-color: #2c2c2c;
+}
+
+.user-char-stat-portrait {
+    width: 40px;
+    height: 40px;
+    border-radius: 6px;
+    flex-shrink: 0;
+}
+
+.user-char-stat-info {
+    text-align: left;
+}
+
+.user-char-stat-main {
+    font-size: 14px;
+    font-weight: 600;
+    color: #dcdcdc;
+}
+
+.user-char-stat-sub {
+    font-size: 12px;
+    color: #888;
+    margin-top: 2px;
+}
+
+/* ========================================
+   모달 데미지 차트 스타일
+   ======================================== */
+.modal-section-title {
+    color: #f7a400;
+    font-size: 16px;
+    font-weight: bold;
+    margin-bottom: 10px;
+}
+
+.modal-damage-chart {
+    margin-bottom: 15px;
+    padding-bottom: 15px;
+    border-bottom: 1px solid #3c3c3c;
+}
+
+.dmg-bar-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 4px;
+}
+
+.dmg-bar-name {
+    min-width: 80px;
+    font-size: 12px;
+    color: #dcdcdc;
+    text-align: right;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.dmg-bar-container {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.dmg-bar {
+    height: 14px;
+    border-radius: 3px;
+    min-width: 2px;
+    display: flex;
+    align-items: center;
+    transition: width 0.3s ease;
+}
+
+.dmg-bar span {
+    font-size: 10px;
+    color: white;
+    padding-left: 4px;
+    white-space: nowrap;
+}
+
+.dmg-bar-dealt {
+    background-color: #E84057;
+}
+
+.dmg-bar-taken {
+    background-color: #5383E8;
+}
+
+/* 모달 킬 수 표시 */
+.modal-player-kills {
+    font-size: 13px;
+    color: #E84057;
+    font-weight: bold;
+    min-width: 35px;
+    text-align: center;
+    flex-shrink: 0;
 }

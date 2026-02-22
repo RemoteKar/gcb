@@ -27,7 +27,8 @@ function formatStatistics(stats) {
     maxDamageDealt: stats.maxDamageDealt.toFixed(0),
     maxDamageTaken: stats.maxDamageTaken.toFixed(0),
     maxKill: stats.maxKill.toString(),
-    totalGames: stats.totalGames.toString()
+    totalGames: stats.totalGames.toString(),
+    characterStats: stats.characterStats || []
   };
 }
 

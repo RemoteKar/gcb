@@ -142,6 +142,32 @@ document.addEventListener("DOMContentLoaded", async () => {
     charContainer.appendChild(borderImg);
   
     statsDisplay.prepend(charContainer);
+
+    // 캐릭터별 통계 렌더링
+    if (statistics.characterStats && statistics.characterStats.length > 0) {
+      const charStatsSection = document.createElement('div');
+      charStatsSection.className = 'user-char-stats';
+      charStatsSection.innerHTML = '<h3 class="user-char-stats-title">캐릭터별 통계</h3>';
+
+      statistics.characterStats.forEach(cs => {
+        const row = document.createElement('div');
+        row.className = 'user-char-stat-row';
+        row.innerHTML = `
+          <img class="user-char-stat-portrait" src="/Resource/character/${cs.characterId}.png" alt="캐릭터">
+          <div class="user-char-stat-info">
+            <div class="user-char-stat-main">${cs.games}게임 | ${cs.winRate}% 승률</div>
+            <div class="user-char-stat-sub">평균 ${cs.avgKills}킬 | 평균 ${cs.avgDamage} 피해</div>
+          </div>
+        `;
+        row.style.cursor = 'pointer';
+        row.addEventListener('click', () => {
+          window.location.href = `/character/${cs.characterId}`;
+        });
+        charStatsSection.appendChild(row);
+      });
+
+      statsDisplay.appendChild(charStatsSection);
+    }
   }
 
   // ──────────────────────────────
@@ -327,8 +353,60 @@ async function openGameDetailModal(game) {
     console.error('닉네임 조회 실패:', e);
   }
 
-  // 모달 내용 렌더링
+  // 킬 관계 맵 생성 (killerUUID → [victimUUID, ...])
+  const killMap = {};
+  for (const [puuid, pdata] of Object.entries(players)) {
+    if (pdata.killedBy) {
+      const killerUUID = pdata.killedBy;
+      if (!killMap[killerUUID]) killMap[killerUUID] = [];
+      killMap[killerUUID].push(puuid);
+    }
+  }
+
+  // 데미지 차트 렌더링
+  const dmgSorted = playerEntries
+    .filter(p => p.data?.Damage?.Dealt > 0)
+    .sort((a, b) => (b.data.Damage.Dealt || 0) - (a.data.Damage.Dealt || 0))
+    .slice(0, 10);
+
+  const maxDealt = dmgSorted.length > 0 ? dmgSorted[0].data.Damage.Dealt : 1;
+  const maxTaken = Math.max(...dmgSorted.map(p => p.data?.Damage?.Taken || 0), 1);
+  const maxDmg = Math.max(maxDealt, maxTaken);
+
   playerListEl.innerHTML = '';
+
+  if (dmgSorted.length > 0) {
+    const chartSection = document.createElement('div');
+    chartSection.className = 'modal-damage-chart';
+    chartSection.innerHTML = '<div class="modal-section-title">피해량</div>';
+
+    dmgSorted.forEach(({ uuid: pUuid, data: pData }) => {
+      const cleanUUID = stripHyphens(pUuid);
+      const pNick = nicknameMap[cleanUUID] || cleanUUID.slice(0, 8);
+      const dealt = pData?.Damage?.Dealt || 0;
+      const taken = pData?.Damage?.Taken || 0;
+      const dealtPct = (dealt / maxDmg * 100).toFixed(1);
+      const takenPct = (taken / maxDmg * 100).toFixed(1);
+
+      const barRow = document.createElement('div');
+      barRow.className = 'dmg-bar-row';
+      barRow.innerHTML = `
+        <span class="dmg-bar-name">${pNick}</span>
+        <div class="dmg-bar-container">
+          <div class="dmg-bar dmg-bar-dealt" style="width: ${dealtPct}%"><span>${dealt.toFixed(0)}</span></div>
+          <div class="dmg-bar dmg-bar-taken" style="width: ${takenPct}%"><span>${taken.toFixed(0)}</span></div>
+        </div>
+      `;
+      chartSection.appendChild(barRow);
+    });
+
+    playerListEl.appendChild(chartSection);
+  }
+
+  // 플레이어 목록 렌더링
+  const playerSection = document.createElement('div');
+  playerSection.className = 'modal-player-section';
+
   playerEntries.forEach(({ uuid, data, ranking }) => {
     const cleanUUID = stripHyphens(uuid);
     const nickname = nicknameMap[cleanUUID] || cleanUUID.slice(0, 8);
@@ -360,6 +438,7 @@ async function openGameDetailModal(game) {
       <img class="modal-player-char" src="/Resource/character/${character}.png" alt="캐릭터">
       <img class="modal-player-head" src="https://mc-heads.net/avatar/${cleanUUID}/40" alt="${nickname}">
       <span class="modal-player-name">${nickname}</span>
+      <span class="modal-player-kills">${(data?.kill || 0)}킬</span>
       <div class="modal-player-augments">${augmentHtml}</div>
     `;
 
@@ -390,8 +469,10 @@ async function openGameDetailModal(game) {
       });
     }
 
-    playerListEl.appendChild(row);
+    playerSection.appendChild(row);
   });
+
+  playerListEl.appendChild(playerSection);
 }
 
 // 모달 닫기 이벤트
