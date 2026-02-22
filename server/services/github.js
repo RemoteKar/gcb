@@ -632,7 +632,7 @@ async function createFeedbackIssue(title, body, labels) {
     });
 }
 
-// GitHub Issues 목록 조회 (user-feedback 라벨)
+// GitHub Issues 목록 조회 (제목 패턴으로 필터링)
 async function getFeedbackIssues() {
     const cacheKey = 'feedbackIssues';
     const cached = characterDescriptionCache.get(cacheKey);
@@ -641,7 +641,7 @@ async function getFeedbackIssues() {
         return cached;
     }
 
-    const githubApiUrl = `https://api.github.com/repos/${repoOwner}/${repoName}/issues?labels=user-feedback&state=open&per_page=50&sort=created&direction=desc`;
+    const githubApiUrl = `https://api.github.com/repos/${repoOwner}/${repoName}/issues?state=open&per_page=50&sort=created&direction=desc`;
 
     const issues = await retryOperation(async () => {
         const response = await fetch(githubApiUrl, {
@@ -658,11 +658,18 @@ async function getFeedbackIssues() {
         return response.json();
     });
 
-    const formatted = issues.map(issue => {
-        const labels = issue.labels.map(l => l.name);
+    // 제목이 [버그], [건의], [기타]로 시작하는 Issue만 필터
+    const feedbackIssues = issues.filter(issue =>
+        /^\[(버그|건의|기타)\]/.test(issue.title)
+    );
+
+    const formatted = feedbackIssues.map(issue => {
+        const titleMatch = issue.title.match(/^\[(버그|건의|기타)\]/);
         let category = 'other';
-        if (labels.includes('bug')) category = 'bug';
-        else if (labels.includes('enhancement')) category = 'enhancement';
+        if (titleMatch) {
+            if (titleMatch[1] === '버그') category = 'bug';
+            else if (titleMatch[1] === '건의') category = 'enhancement';
+        }
 
         // Issue body에서 작성자 추출
         const authorMatch = issue.body ? issue.body.match(/\*\*작성자\*\*: (.+?)(?:\n|$)/) : null;
