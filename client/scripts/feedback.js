@@ -251,10 +251,12 @@ document.addEventListener("DOMContentLoaded", () => {
     });
 
     // =============================================
-    // 목록 로드 + 필터
+    // 목록 로드 + 필터 + 페이지네이션
     // =============================================
     let allIssues = [];
     let currentFilter = 'all';
+    let currentPage = 1;
+    const PAGE_SIZE = 15;
 
     async function loadFeedbackList() {
         const listEl = document.getElementById('feedback-list');
@@ -278,11 +280,17 @@ document.addEventListener("DOMContentLoaded", () => {
         if (filtered.length === 0) {
             const filterName = { all: '', bug: '버그', enhancement: '건의', other: '기타' }[currentFilter] || '';
             listEl.innerHTML = `<p class="loading-text">등록된 ${filterName} 건의/버그가 없습니다.</p>`;
+            document.getElementById('pagination').innerHTML = '';
             return;
         }
 
-        listEl.innerHTML = filtered.map((issue, idx) => `
-            <div class="feedback-item" data-idx="${idx}">
+        const totalPages = Math.ceil(filtered.length / PAGE_SIZE);
+        if (currentPage > totalPages) currentPage = totalPages;
+        const start = (currentPage - 1) * PAGE_SIZE;
+        const pageItems = filtered.slice(start, start + PAGE_SIZE);
+
+        listEl.innerHTML = pageItems.map((issue, idx) => `
+            <div class="feedback-item" data-idx="${start + idx}">
                 <span class="feedback-label feedback-label-${issue.category}">${categoryName(issue.category)}</span>
                 <span class="feedback-item-title">${escapeHtml(issue.title)}</span>
                 <span class="feedback-item-author">${escapeHtml(issue.author)}</span>
@@ -296,6 +304,29 @@ document.addEventListener("DOMContentLoaded", () => {
                 const idx = parseInt(el.dataset.idx);
                 const issue = filtered[idx];
                 showDetailPopup(issue);
+            });
+        });
+
+        renderPagination(totalPages);
+    }
+
+    function renderPagination(totalPages) {
+        const pagEl = document.getElementById('pagination');
+        if (totalPages <= 1) { pagEl.innerHTML = ''; return; }
+
+        let html = '';
+        if (currentPage > 1) html += `<button class="page-btn" data-page="${currentPage - 1}">&lt;</button>`;
+        for (let i = 1; i <= totalPages; i++) {
+            html += `<button class="page-btn${i === currentPage ? ' active' : ''}" data-page="${i}">${i}</button>`;
+        }
+        if (currentPage < totalPages) html += `<button class="page-btn" data-page="${currentPage + 1}">&gt;</button>`;
+        pagEl.innerHTML = html;
+
+        pagEl.querySelectorAll('.page-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                currentPage = parseInt(btn.dataset.page);
+                renderFeedbackList();
+                window.scrollTo({ top: 0, behavior: 'smooth' });
             });
         });
     }
@@ -316,6 +347,7 @@ document.addEventListener("DOMContentLoaded", () => {
             document.querySelectorAll('.filter-buttons .stat-button').forEach(b => b.classList.remove('active'));
             btn.classList.add('active');
             currentFilter = btn.dataset.filter;
+            currentPage = 1;
             renderFeedbackList();
         });
     });

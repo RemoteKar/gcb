@@ -20,24 +20,27 @@
     </div>
 
     <div class="container feedback-container">
-        <!-- 상단: 타이틀 + 작성하기 버튼 -->
+        <!-- 상단: 타이틀 + 필터 -->
         <div class="feedback-top-bar">
             <h1>건의/버그</h1>
-            <button id="write-btn" class="feedback-write-btn">작성하기</button>
-        </div>
-
-        <!-- 필터 -->
-        <div class="filter-buttons">
-            <button class="stat-button active" data-filter="all">전체</button>
-            <button class="stat-button" data-filter="bug">버그</button>
-            <button class="stat-button" data-filter="enhancement">건의</button>
-            <button class="stat-button" data-filter="other">기타</button>
+            <div class="filter-buttons">
+                <button class="stat-button active" data-filter="all">전체</button>
+                <button class="stat-button" data-filter="bug">버그</button>
+                <button class="stat-button" data-filter="enhancement">건의</button>
+                <button class="stat-button" data-filter="other">기타</button>
+            </div>
         </div>
 
         <!-- 목록 -->
         <div id="feedback-list" class="feedback-list">
             <p class="loading-text">로딩 중...</p>
         </div>
+
+        <!-- 페이지네이션 -->
+        <div id="pagination" class="feedback-pagination"></div>
+
+        <!-- 작성하기 버튼 (하단) -->
+        <button id="write-btn" class="feedback-write-btn">작성하기</button>
     </div>
 
     <!-- 로그인 팝업 (비로그인 상태에서 작성하기 클릭 시) -->
