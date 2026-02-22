@@ -1744,6 +1744,27 @@ body {
     margin-top: 2px;
 }
 
+.user-char-stat-hidden {
+    display: none;
+}
+
+.user-char-stats-expand {
+    width: 100%;
+    padding: 6px 0;
+    margin-top: 4px;
+    background: none;
+    border: none;
+    color: #555;
+    font-size: 12px;
+    font-family: 'Nunito', sans-serif;
+    cursor: pointer;
+    transition: color 0.2s ease;
+}
+
+.user-char-stats-expand:hover {
+    color: #888;
+}
+
 /* ========================================
    모달 데미지 차트 스타일
    ======================================== */

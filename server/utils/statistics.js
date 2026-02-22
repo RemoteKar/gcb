@@ -132,8 +132,7 @@ const { formatUUID, toNonHyphenatedUUID } = require('../util');
         avgKills: s.games > 0 ? (s.kills / s.games).toFixed(1) : '0.0',
         avgDamage: s.games > 0 ? (s.damage / s.games).toFixed(0) : '0',
       }))
-      .sort((a, b) => b.games - a.games)
-      .slice(0, 10);
+      .sort((a, b) => b.games - a.games);
 
     return {
       winRate,

@@ -149,9 +149,13 @@ document.addEventListener("DOMContentLoaded", async () => {
       charStatsSection.className = 'user-char-stats';
       charStatsSection.innerHTML = '<h3 class="user-char-stats-title">캐릭터별 통계</h3>';
 
-      statistics.characterStats.forEach(cs => {
+      const INITIAL_COUNT = 10;
+      const allStats = statistics.characterStats;
+
+      allStats.forEach((cs, idx) => {
         const row = document.createElement('div');
         row.className = 'user-char-stat-row';
+        if (idx >= INITIAL_COUNT) row.classList.add('user-char-stat-hidden');
         row.innerHTML = `
           <img class="user-char-stat-portrait" src="/Resource/character/${cs.characterId}.png" alt="캐릭터">
           <div class="user-char-stat-info">
@@ -165,6 +169,21 @@ document.addEventListener("DOMContentLoaded", async () => {
         });
         charStatsSection.appendChild(row);
       });
+
+      if (allStats.length > INITIAL_COUNT) {
+        const expandBtn = document.createElement('button');
+        expandBtn.className = 'user-char-stats-expand';
+        expandBtn.textContent = `더보기 (${allStats.length - INITIAL_COUNT}개)`;
+        let expanded = false;
+        expandBtn.addEventListener('click', () => {
+          expanded = !expanded;
+          charStatsSection.querySelectorAll('.user-char-stat-hidden').forEach(el => {
+            el.style.display = expanded ? 'flex' : 'none';
+          });
+          expandBtn.textContent = expanded ? '접기' : `더보기 (${allStats.length - INITIAL_COUNT}개)`;
+        });
+        charStatsSection.appendChild(expandBtn);
+      }
 
       statsDisplay.appendChild(charStatsSection);
     }
