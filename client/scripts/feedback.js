@@ -235,7 +235,7 @@ document.addEventListener("DOMContentLoaded", () => {
             statusEl.textContent = '제출되었습니다!';
             statusEl.style.color = '#55FF55';
             document.getElementById('feedback-form').reset();
-            loadFeedbackList();
+            loadFeedbackList(true);
 
             // 1.5초 후 팝업 닫기
             setTimeout(() => {
@@ -258,10 +258,11 @@ document.addEventListener("DOMContentLoaded", () => {
     let currentPage = 1;
     const PAGE_SIZE = 15;
 
-    async function loadFeedbackList() {
+    async function loadFeedbackList(skipCache) {
         const listEl = document.getElementById('feedback-list');
         try {
-            const res = await fetch('/api/feedback-list');
+            const url = skipCache ? `/api/feedback-list?t=${Date.now()}` : '/api/feedback-list';
+            const res = await fetch(url);
             if (!res.ok) throw new Error('목록 로드 실패');
             const data = await res.json();
             allIssues = data.issues || [];

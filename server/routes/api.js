@@ -461,8 +461,10 @@ router.post('/feedback', authMiddleware, async (req, res) => {
 // 📌 건의/버그 목록 조회
 //----------------------------------------
 router.get('/feedback-list', async (req, res) => {
-    console.log(`🔍 [서버] 피드백 목록 요청`);
+    const skipCache = !!req.query.t;
+    console.log(`🔍 [서버] 피드백 목록 요청${skipCache ? ' (캐시 무시)' : ''}`);
     try {
+        if (skipCache) clearFeedbackCache();
         const issues = await getFeedbackIssues();
         res.json({ issues });
     } catch (error) {
