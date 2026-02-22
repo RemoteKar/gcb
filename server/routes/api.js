@@ -430,7 +430,7 @@ router.post('/feedback', authMiddleware, async (req, res) => {
     if (!category || !title || !content) {
         return res.status(400).json({ error: '카테고리, 제목, 내용을 모두 입력하세요.' });
     }
-    if (!['bug', 'enhancement', 'other'].includes(category)) {
+    if (!['bug', 'enhancement', 'other', 'gcbc'].includes(category)) {
         return res.status(400).json({ error: '유효하지 않은 카테고리입니다.' });
     }
     if (title.trim().length === 0 || title.length > 100) {
@@ -440,7 +440,7 @@ router.post('/feedback', authMiddleware, async (req, res) => {
         return res.status(400).json({ error: '내용은 1~2000자로 입력하세요.' });
     }
 
-    const categoryNames = { bug: '버그', enhancement: '건의', other: '기타' };
+    const categoryNames = { bug: '버그', enhancement: '건의', other: '기타', gcbc: 'GCBC' };
     const issueTitle = `[${categoryNames[category]}] ${title.trim()}`;
     const issueBody = `**카테고리**: ${categoryNames[category]}\n**작성자**: ${req.user.name}\n\n---\n\n${content.trim()}`;
     const labels = [category, 'user-feedback'];

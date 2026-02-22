@@ -590,6 +590,7 @@ async function ensureFeedbackLabels() {
         { name: 'bug', color: 'e74c3c' },
         { name: 'enhancement', color: '3498db' },
         { name: 'other', color: '555555' },
+        { name: 'gcbc', color: '9b59b6' },
     ];
     const apiUrl = `https://api.github.com/repos/${repoOwner}/${repoName}/labels`;
     for (const label of labelsToCreate) {
@@ -660,15 +661,16 @@ async function getFeedbackIssues() {
 
     // 제목이 [버그], [건의], [기타]로 시작하는 Issue만 필터
     const feedbackIssues = issues.filter(issue =>
-        /^\[(버그|건의|기타)\]/.test(issue.title)
+        /^\[(버그|건의|기타|GCBC)\]/.test(issue.title)
     );
 
     const formatted = feedbackIssues.map(issue => {
-        const titleMatch = issue.title.match(/^\[(버그|건의|기타)\]/);
+        const titleMatch = issue.title.match(/^\[(버그|건의|기타|GCBC)\]/);
         let category = 'other';
         if (titleMatch) {
             if (titleMatch[1] === '버그') category = 'bug';
             else if (titleMatch[1] === '건의') category = 'enhancement';
+            else if (titleMatch[1] === 'GCBC') category = 'gcbc';
         }
 
         // Issue body에서 작성자 추출

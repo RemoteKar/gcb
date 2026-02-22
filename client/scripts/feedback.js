@@ -279,7 +279,7 @@ document.addEventListener("DOMContentLoaded", () => {
             : allIssues.filter(issue => issue.category === currentFilter);
 
         if (filtered.length === 0) {
-            const filterName = { all: '', bug: '버그', enhancement: '건의', other: '기타' }[currentFilter] || '';
+            const filterName = { all: '', bug: '버그', enhancement: '건의', other: '기타', gcbc: 'GCBC' }[currentFilter] || '';
             listEl.innerHTML = `<p class="loading-text">등록된 ${filterName} 건의/버그가 없습니다.</p>`;
             document.getElementById('pagination').innerHTML = '';
             return;
@@ -354,7 +354,7 @@ document.addEventListener("DOMContentLoaded", () => {
     });
 
     function categoryName(cat) {
-        return { bug: '버그', enhancement: '건의', other: '기타' }[cat] || cat;
+        return { bug: '버그', enhancement: '건의', other: '기타', gcbc: 'GCBC' }[cat] || cat;
     }
 
     function formatDate(dateStr) {

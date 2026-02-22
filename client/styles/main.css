@@ -1312,6 +1312,7 @@ body {
 /* 작성하기 버튼 (하단) */
 .feedback-write-btn {
     display: inline-block;
+    float: right;
     padding: 8px 20px;
     margin-top: 15px;
     background-color: #e74c3c;
@@ -1580,6 +1581,10 @@ body {
 
 .feedback-label-other {
     background-color: #555555;
+}
+
+.feedback-label-gcbc {
+    background-color: #9b59b6;
 }
 
 .feedback-item-title {
