@@ -1,65 +1,14 @@
 document.addEventListener("DOMContentLoaded", () => {
-    let currentUser = null; // { name, token, provider: 'google' | 'github' }
+    let currentUser = null; // { name, token, login }
     let config = null;
 
     // --- 설정 로드 ---
     async function loadConfig() {
         try {
             const res = await fetch('/api/config');
-            if (res.ok) {
-                return await res.json();
-            }
-        } catch (e) {
-            // 설정 로드 실패 시 무시
-        }
-        return { googleClientId: '', githubClientId: '' };
-    }
-
-    // =============================================
-    // Google 인증
-    // =============================================
-    async function initGoogleAuth() {
-        if (!config.googleClientId) {
-            document.getElementById('google-signin-btn').style.display = 'none';
-            return;
-        }
-
-        google.accounts.id.initialize({
-            client_id: config.googleClientId,
-            callback: handleGoogleResponse,
-        });
-
-        google.accounts.id.renderButton(
-            document.getElementById('google-signin-btn'),
-            { theme: 'filled_black', size: 'large', text: 'signin_with', locale: 'ko' }
-        );
-    }
-
-    function handleGoogleResponse(response) {
-        const payload = parseJwt(response.credential);
-        if (payload) {
-            const session = {
-                token: response.credential,
-                name: payload.name || payload.email,
-                provider: 'google',
-                exp: payload.exp * 1000,
-            };
-            localStorage.setItem('gcb_session', JSON.stringify(session));
-            setLoggedIn(session);
-            // 로그인 팝업 닫고 작성 팝업 열기
-            closePopup('login-popup');
-            openPopup('write-popup');
-        }
-    }
-
-    function parseJwt(token) {
-        try {
-            const base64Url = token.split('.')[1];
-            const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
-            return JSON.parse(atob(base64));
-        } catch (e) {
-            return null;
-        }
+            if (res.ok) return await res.json();
+        } catch (e) { }
+        return { githubClientId: '' };
     }
 
     // =============================================
@@ -77,7 +26,7 @@ document.addEventListener("DOMContentLoaded", () => {
             window.location.href = githubAuthUrl;
         });
 
-        // GitHub OAuth 콜백 처리 (URL에 code 파라미터가 있을 때)
+        // GitHub OAuth 콜백 처리
         const urlParams = new URLSearchParams(window.location.search);
         const code = urlParams.get('code');
         if (code) {
@@ -110,7 +59,6 @@ document.addEventListener("DOMContentLoaded", () => {
             };
             localStorage.setItem('gcb_session', JSON.stringify(session));
             setLoggedIn(session);
-            // GitHub 콜백 후 바로 작성 팝업 열기
             openPopup('write-popup');
         } catch (e) {
             console.error('GitHub 인증 처리 오류:', e);
@@ -150,21 +98,16 @@ document.addEventListener("DOMContentLoaded", () => {
     });
 
     // =============================================
-    // 공통 로그인/로그아웃
+    // 로그인/로그아웃
     // =============================================
     function setLoggedIn(session) {
         currentUser = session;
         document.getElementById('user-name').textContent = session.name;
-        // 작성하기 버튼 텍스트 변경
-        document.getElementById('write-btn').textContent = '작성하기';
     }
 
     function logout() {
         currentUser = null;
         localStorage.removeItem('gcb_session');
-        if (typeof google !== 'undefined' && google.accounts) {
-            google.accounts.id.disableAutoSelect();
-        }
         closePopup('write-popup');
     }
 
@@ -174,10 +117,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
         try {
             const session = JSON.parse(saved);
-            if (session.exp && session.exp < Date.now()) {
-                localStorage.removeItem('gcb_session');
-                return;
-            }
             setLoggedIn(session);
         } catch (e) {
             localStorage.removeItem('gcb_session');
@@ -186,10 +125,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     function getAuthHeader() {
         if (!currentUser) return {};
-        if (currentUser.provider === 'github') {
-            return { 'Authorization': `GitHub ${currentUser.token}` };
-        }
-        return { 'Authorization': `Bearer ${currentUser.token}` };
+        return { 'Authorization': `GitHub ${currentUser.token}` };
     }
 
     // =============================================
@@ -229,6 +165,9 @@ document.addEventListener("DOMContentLoaded", () => {
                     openPopup('login-popup');
                     return;
                 }
+                if (res.status === 403) {
+                    throw new Error('차단된 사용자입니다.');
+                }
                 throw new Error(err.error || '제출에 실패했습니다.');
             }
 
@@ -237,7 +176,6 @@ document.addEventListener("DOMContentLoaded", () => {
             document.getElementById('feedback-form').reset();
             loadFeedbackList(true);
 
-            // 1.5초 후 팝업 닫기
             setTimeout(() => {
                 closePopup('write-popup');
                 statusEl.textContent = '';
@@ -299,7 +237,6 @@ document.addEventListener("DOMContentLoaded", () => {
             </div>
         `).join('');
 
-        // 클릭 이벤트
         listEl.querySelectorAll('.feedback-item').forEach(el => {
             el.addEventListener('click', () => {
                 const idx = parseInt(el.dataset.idx);
@@ -375,16 +312,6 @@ document.addEventListener("DOMContentLoaded", () => {
     async function init() {
         config = await loadConfig();
         restoreSession();
-
-        function waitForGIS() {
-            if (typeof google !== 'undefined' && google.accounts) {
-                initGoogleAuth();
-            } else {
-                setTimeout(waitForGIS, 100);
-            }
-        }
-        waitForGIS();
-
         initGithubAuth();
         loadFeedbackList();
     }

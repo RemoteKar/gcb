@@ -347,7 +347,6 @@ router.get('/profiles', async (req, res) => {
 //----------------------------------------
 router.get('/config', (req, res) => {
     res.json({
-        googleClientId: process.env.GOOGLE_CLIENT_ID || '',
         githubClientId: process.env.GITHUB_OAUTH_CLIENT_ID || '',
     });
 });
