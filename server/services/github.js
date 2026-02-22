@@ -689,8 +689,8 @@ async function getFeedbackIssues() {
         };
     });
 
-    // 5분 캐시
-    characterDescriptionCache.set(cacheKey, formatted, 300);
+    // 20초 캐시
+    characterDescriptionCache.set(cacheKey, formatted, 20);
     return formatted;
 }
 
