@@ -4,7 +4,7 @@ const fetch = require('node-fetch');
 const { PrismaClient } = require('@prisma/client/edge');
 const { withAccelerate } = require('@prisma/extension-accelerate');
 const { getUUID, getProfileByUUID } = require('../services/mojang');
-const { getBadgeData, getGameHistory, fetchAllGameRecords, getCharacterList, getCharacterInfo, getSkillLinks, getWeaponList, getTitanList, getTitanInfo, getAugmentList, createFeedbackIssue, getFeedbackIssues } = require('../services/github');
+const { getBadgeData, getGameHistory, fetchAllGameRecords, getCharacterList, getCharacterInfo, getSkillLinks, getWeaponList, getTitanList, getTitanInfo, getAugmentList, createFeedbackIssue, getFeedbackIssues, clearFeedbackCache } = require('../services/github');
 const authMiddleware = require('../middleware/auth');
 const NodeCache = require('node-cache');
 const { computeStatistics } = require('../utils/statistics');
@@ -447,6 +447,7 @@ router.post('/feedback', authMiddleware, async (req, res) => {
 
     try {
         const issue = await createFeedbackIssue(issueTitle, issueBody, labels);
+        clearFeedbackCache();
         feedbackRateLimit.set(rateKey, currentCount + 1);
         console.log(`✅ [서버] 피드백 제출 완료: Issue #${issue.number}`);
         res.json({ success: true, issueNumber: issue.number });
