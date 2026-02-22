@@ -9,8 +9,8 @@ const branch = process.env.GITHUB_BRANCH;
 const githubToken = process.env.GITHUB_TOKEN;
 const baseDataPath = 'Data';
 
-const badgeCache = new NodeCache({ stdTTL: 86400 }); // 24시간 캐시 (초 단위)
-const gameHistoryCache = new NodeCache({ stdTTL: 86400 }); // 24시간 캐시 (초 단위)
+const badgeCache = new NodeCache({ stdTTL: 3600 }); // 1시간 캐시
+const gameHistoryCache = new NodeCache({ stdTTL: 3600 }); // 1시간 캐시
 
 // 재시도 로직을 위한 헬퍼 함수
 async function retryOperation(operation, retries = 5, delay = 2000) {
@@ -194,7 +194,7 @@ async function refreshAllGameRecordsCache() {
 }
 
 // 캐릭터 설명 데이터 캐시
-const characterDescriptionCache = new NodeCache({ stdTTL: 86400 }); // 24시간 캐시
+const characterDescriptionCache = new NodeCache({ stdTTL: 3600 }); // 1시간 캐시
 
 // 캐릭터 목록 가져오기 (description 폴더 기반)
 async function getCharacterList() {
