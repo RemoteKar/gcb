@@ -265,6 +265,82 @@ Data/description/augments/
 
 ---
 
+## 2026-02-21 작업 내용: 건의/버그 페이지 + Google/GitHub 로그인 추가
+
+### 개요
+헤더에 붉은색 "건의/버그" 탭을 추가하고, Google 또는 GitHub으로 로그인한 유저만 건의/버그 글을 작성할 수 있도록 구현.
+작성된 글은 GitHub Issues로 자동 등록되며, 목록은 누구나 열람 가능.
+
+### 생성된 파일
+| 파일 | 설명 |
+|------|------|
+| `client/feedback.html` | 건의/버그 페이지 (Google/GitHub 로그인 + 폼 + 목록) |
+| `client/scripts/feedback.js` | 피드백 페이지 로직 (Google GIS + GitHub OAuth 연동) |
+| `server/middleware/auth.js` | Google JWT + GitHub 액세스 토큰 검증 미들웨어 |
+
+### 수정된 파일
+| 파일 | 변경 내용 |
+|------|---------|
+| `server/server.js` | `express.json()` 미들웨어 추가 (POST body 파싱) |
+| `server/services/github.js` | `createFeedbackIssue()`, `getFeedbackIssues()` 함수 추가 |
+| `server/routes/api.js` | `GET /api/config`, `POST /api/auth/github`, `POST /api/feedback`, `GET /api/feedback-list` 엔드포인트 추가 |
+| `client/styles/main.css` | 붉은 버튼, GitHub 버튼, 피드백 폼/목록/라벨 스타일 추가 |
+| 모든 HTML 페이지 (12개) | 헤더에 붉은색 "건의/버그" 네비게이션 버튼 추가 |
+| `package.json` | `google-auth-library` 의존성 추가 |
+
+### 주요 기능
+1. **Google 로그인** (Google Identity Services)
+   - 클라이언트: GIS SDK로 로그인 → ID Token을 localStorage에 저장
+   - 서버: `google-auth-library`로 토큰 서명 검증
+   - 환경변수 `GOOGLE_CLIENT_ID` 필요
+
+2. **GitHub 로그인** (GitHub OAuth)
+   - 클라이언트: GitHub 인증 페이지로 리다이렉트 → code 반환 → 서버에서 액세스 토큰 교환
+   - 서버: `POST /api/auth/github`에서 code → access_token 교환, GitHub API로 유저 정보 조회
+   - 인증 미들웨어: `Authorization: GitHub <token>` 형식으로 검증
+   - 환경변수 `GITHUB_OAUTH_CLIENT_ID`, `GITHUB_OAUTH_CLIENT_SECRET` 필요
+
+3. **건의/버그 작성** (Google 또는 GitHub 로그인 필수)
+   - 카테고리 선택 (버그/건의/기타)
+   - 제목 (100자 제한) + 내용 (2000자 제한)
+   - GitHub Issues에 자동 등록 (라벨: `user-feedback` + 카테고리)
+   - Rate limit: 유저당 10분에 3회
+
+4. **건의/버그 목록** (비로그인도 열람 가능)
+   - GitHub Issues API로 `user-feedback` 라벨 Issues 조회
+   - 카테고리별 색상 라벨 (버그=빨강, 건의=파랑, 기타=회색)
+   - 5분 캐시
+
+### API 엔드포인트
+- `GET /api/config` - 클라이언트 설정 (Google Client ID) 반환
+- `POST /api/feedback` - 건의/버그 제출 (Google 인증 필수)
+- `GET /api/feedback-list` - 건의/버그 목록 조회
+
+### 인증 흐름
+```
+[Google 로그인]
+버튼 클릭 → GIS 팝업 → JWT 토큰 → localStorage 저장
+→ API 요청 시 "Authorization: Bearer <jwt>"
+→ 서버: google-auth-library로 검증
+
+[GitHub 로그인]
+버튼 클릭 → GitHub 페이지 리다이렉트 → code 반환
+→ POST /api/auth/github (code → access_token 교환)
+→ localStorage 저장
+→ API 요청 시 "Authorization: GitHub <token>"
+→ 서버: GitHub API /user 호출로 검증
+```
+
+### 필요한 환경변수
+- `GOOGLE_CLIENT_ID` - Google Cloud Console에서 생성한 OAuth 2.0 클라이언트 ID
+- `GITHUB_OAUTH_CLIENT_ID` - GitHub Settings > Developer Settings > OAuth App의 Client ID
+- `GITHUB_OAUTH_CLIENT_SECRET` - 같은 OAuth App의 Client Secret
+
+### 필요한 GitHub 라벨
+- `user-feedback`, `bug`, `enhancement`, `other` (레포에 미리 생성 필요)
+
+---
+
 ## 페이지 목록
 1. `index.html` - 메인 (닉네임 검색)
 2. `user.html` - 유저 프로필
@@ -277,6 +353,7 @@ Data/description/augments/
 9. `weapon_detail.html` - 무기 상세 (상단바 미노출, 스킬 클릭으로만 진입)
 10. `titan_list.html` - 타이탄 목록 (상단바 미노출, 스킬 클릭으로만 진입)
 11. `titan_detail.html` - 타이탄 상세 (상단바 미노출, 목록에서 클릭으로 진입)
+12. `feedback.html` - 건의/버그 (Google 로그인 필요, 붉은 탭)
 
 ---
 

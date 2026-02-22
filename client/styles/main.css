@@ -1156,6 +1156,20 @@ body {
         width: 100px;
         height: 100px;
     }
+
+    /* 피드백 페이지 */
+    .feedback-auth {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .feedback-item-header {
+        flex-wrap: wrap;
+    }
+
+    .feedback-item-title {
+        white-space: normal;
+    }
 }
 
 /* ========================================
@@ -1220,4 +1234,238 @@ body {
     line-height: 1.6;
     color: #dcdcdc;
     text-align: left;
+}
+
+/* ========================================
+   건의/버그 페이지 스타일
+   ======================================== */
+
+/* 붉은 네비게이션 버튼 */
+.nav-button-red {
+    background-color: #e74c3c;
+}
+
+.nav-button-red:hover {
+    background-color: #c0392b;
+}
+
+/* 로그인 버튼 영역 */
+#login-buttons {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+/* GitHub 로그인 버튼 */
+.feedback-github-btn {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 20px;
+    background-color: #24292e;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    font-size: 14px;
+    font-family: 'Nunito', sans-serif;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.feedback-github-btn:hover {
+    background-color: #444d56;
+}
+
+/* 피드백 컨테이너 */
+.feedback-container {
+    max-width: 800px;
+}
+
+/* 인증 영역 */
+.feedback-auth {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 15px;
+    margin-bottom: 20px;
+    padding: 10px 0;
+    border-bottom: 1px solid #3c3c3c;
+}
+
+#user-info {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+#user-name {
+    color: #f7a400;
+    font-weight: bold;
+}
+
+.feedback-logout-btn {
+    padding: 6px 12px;
+    background-color: #3c3c3c;
+    color: #dcdcdc;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-family: 'Nunito', sans-serif;
+    transition: background-color 0.3s ease;
+}
+
+.feedback-logout-btn:hover {
+    background-color: #555555;
+}
+
+/* 피드백 폼 */
+.feedback-form {
+    background-color: #2c2c2c;
+    border: 2px solid #3c3c3c;
+    border-radius: 10px;
+    padding: 20px;
+    margin-bottom: 30px;
+}
+
+.feedback-field {
+    margin-bottom: 15px;
+    text-align: left;
+}
+
+.feedback-field label {
+    display: block;
+    margin-bottom: 5px;
+    color: #f7a400;
+    font-weight: bold;
+    font-size: 14px;
+}
+
+.feedback-select,
+.feedback-input,
+.feedback-textarea {
+    width: 100%;
+    padding: 10px;
+    background-color: #1c1c1c;
+    border: 1px solid #3c3c3c;
+    border-radius: 5px;
+    color: #dcdcdc;
+    font-family: 'Nunito', sans-serif;
+    font-size: 14px;
+    box-sizing: border-box;
+}
+
+.feedback-select:focus,
+.feedback-input:focus,
+.feedback-textarea:focus {
+    border-color: #f7a400;
+    outline: none;
+}
+
+.feedback-textarea {
+    min-height: 150px;
+    resize: vertical;
+}
+
+.feedback-submit-btn {
+    width: 100%;
+    padding: 12px;
+    background-color: #e74c3c;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    font-size: 16px;
+    font-weight: bold;
+    font-family: 'Nunito', sans-serif;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.feedback-submit-btn:hover {
+    background-color: #c0392b;
+}
+
+.feedback-submit-btn:disabled {
+    background-color: #666;
+    cursor: not-allowed;
+}
+
+/* 피드백 목록 */
+.feedback-list {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.feedback-item {
+    background-color: #2c2c2c;
+    border: 2px solid #3c3c3c;
+    border-radius: 10px;
+    padding: 15px;
+    transition: border-color 0.3s ease;
+}
+
+.feedback-item:hover {
+    border-color: #555555;
+}
+
+.feedback-item-header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 8px;
+}
+
+.feedback-label {
+    padding: 3px 10px;
+    border-radius: 5px;
+    font-size: 12px;
+    font-weight: bold;
+    color: white;
+    flex-shrink: 0;
+}
+
+.feedback-label-bug {
+    background-color: #e74c3c;
+}
+
+.feedback-label-enhancement {
+    background-color: #3498db;
+}
+
+.feedback-label-other {
+    background-color: #555555;
+}
+
+.feedback-item-title {
+    font-size: 16px;
+    font-weight: bold;
+    color: #dcdcdc;
+    flex: 1;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.feedback-item-date {
+    color: #888;
+    font-size: 13px;
+    flex-shrink: 0;
+}
+
+.feedback-item-body {
+    font-size: 14px;
+    line-height: 1.6;
+    color: #AAAAAA;
+    margin-bottom: 8px;
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+.feedback-item-author {
+    font-size: 12px;
+    color: #888;
+    text-align: right;
 }

@@ -581,4 +581,80 @@ async function getAugmentList() {
     return augments;
 }
 
-module.exports = { getBadgeData, getGameHistory, getAllGameHistoryFileMetadata, fetchAndParseYamlFile, fetchAllGameRecords, refreshAllGameRecordsCache, getCharacterList, getCharacterInfo, getSkillLinks, getWeaponList, getTitanList, getTitanInfo, getAugmentList };
+// GitHub Issue 생성 (건의/버그 제출)
+async function createFeedbackIssue(title, body, labels) {
+    const githubApiUrl = `https://api.github.com/repos/${repoOwner}/${repoName}/issues`;
+
+    return retryOperation(async () => {
+        const response = await fetch(githubApiUrl, {
+            method: 'POST',
+            headers: {
+                'Authorization': `token ${githubToken}`,
+                'User-Agent': 'Your App Name',
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ title, body, labels })
+        });
+
+        if (!response.ok) {
+            throw new Error(`GitHub Issue 생성 실패: ${response.status}`);
+        }
+
+        return response.json();
+    });
+}
+
+// GitHub Issues 목록 조회 (user-feedback 라벨)
+async function getFeedbackIssues() {
+    const cacheKey = 'feedbackIssues';
+    const cached = characterDescriptionCache.get(cacheKey);
+    if (cached) {
+        console.log(`✅ [GitHub API] 인메모리 피드백 목록 캐시 히트`);
+        return cached;
+    }
+
+    const githubApiUrl = `https://api.github.com/repos/${repoOwner}/${repoName}/issues?labels=user-feedback&state=open&per_page=50&sort=created&direction=desc`;
+
+    const issues = await retryOperation(async () => {
+        const response = await fetch(githubApiUrl, {
+            headers: {
+                'Authorization': `token ${githubToken}`,
+                'User-Agent': 'Your App Name'
+            }
+        });
+
+        if (!response.ok) {
+            throw new Error(`GitHub Issues 조회 실패: ${response.status}`);
+        }
+
+        return response.json();
+    });
+
+    const formatted = issues.map(issue => {
+        const labels = issue.labels.map(l => l.name);
+        let category = 'other';
+        if (labels.includes('bug')) category = 'bug';
+        else if (labels.includes('enhancement')) category = 'enhancement';
+
+        // Issue body에서 작성자 추출
+        const authorMatch = issue.body ? issue.body.match(/\*\*작성자\*\*: (.+?)(?:\n|$)/) : null;
+        // 본문에서 실제 내용만 추출 (--- 구분선 이후)
+        const contentMatch = issue.body ? issue.body.split('---\n\n') : [];
+        const content = contentMatch.length > 1 ? contentMatch.slice(1).join('---\n\n').trim() : (issue.body || '');
+
+        return {
+            id: issue.number,
+            title: issue.title.replace(/^\[(버그|건의|기타)\]\s*/, ''),
+            body: content,
+            category,
+            author: authorMatch ? authorMatch[1].trim() : '익명',
+            created_at: issue.created_at
+        };
+    });
+
+    // 5분 캐시
+    characterDescriptionCache.set(cacheKey, formatted, 300);
+    return formatted;
+}
+
+module.exports = { getBadgeData, getGameHistory, getAllGameHistoryFileMetadata, fetchAndParseYamlFile, fetchAllGameRecords, refreshAllGameRecordsCache, getCharacterList, getCharacterInfo, getSkillLinks, getWeaponList, getTitanList, getTitanInfo, getAugmentList, createFeedbackIssue, getFeedbackIssues };

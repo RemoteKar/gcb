@@ -1,9 +1,12 @@
 const express = require('express');
 const router = express.Router();
+const fetch = require('node-fetch');
 const { PrismaClient } = require('@prisma/client/edge');
 const { withAccelerate } = require('@prisma/extension-accelerate');
 const { getUUID, getProfileByUUID } = require('../services/mojang');
-const { getBadgeData, getGameHistory, fetchAllGameRecords, getCharacterList, getCharacterInfo, getSkillLinks, getWeaponList, getTitanList, getTitanInfo, getAugmentList } = require('../services/github');
+const { getBadgeData, getGameHistory, fetchAllGameRecords, getCharacterList, getCharacterInfo, getSkillLinks, getWeaponList, getTitanList, getTitanInfo, getAugmentList, createFeedbackIssue, getFeedbackIssues } = require('../services/github');
+const authMiddleware = require('../middleware/auth');
+const NodeCache = require('node-cache');
 const { computeStatistics } = require('../utils/statistics');
 const cacheMiddleware = require('../middleware/cache');
 const { formatUUID } = require('../util');
@@ -337,6 +340,134 @@ router.get('/profiles', async (req, res) => {
   }));
 
   res.json(result);
+});
+
+//----------------------------------------
+// 📌 클라이언트 설정 (Google Client ID 등)
+//----------------------------------------
+router.get('/config', (req, res) => {
+    res.json({
+        googleClientId: process.env.GOOGLE_CLIENT_ID || '',
+        githubClientId: process.env.GITHUB_OAUTH_CLIENT_ID || '',
+    });
+});
+
+//----------------------------------------
+// 📌 GitHub OAuth 코드 → 액세스 토큰 교환
+//----------------------------------------
+router.post('/auth/github', async (req, res) => {
+    const { code } = req.body;
+    if (!code) {
+        return res.status(400).json({ error: '인증 코드가 필요합니다.' });
+    }
+
+    try {
+        // GitHub에 코드 → 액세스 토큰 교환 요청
+        const tokenResponse = await fetch('https://github.com/login/oauth/access_token', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Accept': 'application/json',
+            },
+            body: JSON.stringify({
+                client_id: process.env.GITHUB_OAUTH_CLIENT_ID,
+                client_secret: process.env.GITHUB_OAUTH_CLIENT_SECRET,
+                code,
+            }),
+        });
+
+        const tokenData = await tokenResponse.json();
+
+        if (tokenData.error) {
+            console.error('❌ [Auth] GitHub 토큰 교환 실패:', tokenData.error_description);
+            return res.status(401).json({ error: 'GitHub 인증에 실패했습니다.' });
+        }
+
+        // 액세스 토큰으로 유저 정보 조회
+        const userResponse = await fetch('https://api.github.com/user', {
+            headers: {
+                'Authorization': `token ${tokenData.access_token}`,
+                'User-Agent': 'GCB-App',
+            },
+        });
+
+        if (!userResponse.ok) {
+            return res.status(401).json({ error: 'GitHub 유저 정보 조회 실패' });
+        }
+
+        const user = await userResponse.json();
+
+        res.json({
+            accessToken: tokenData.access_token,
+            name: user.name || user.login,
+            login: user.login,
+            avatarUrl: user.avatar_url,
+        });
+    } catch (error) {
+        console.error('❌ [Auth] GitHub OAuth 오류:', error);
+        res.status(500).json({ error: 'GitHub 인증 처리 중 오류가 발생했습니다.' });
+    }
+});
+
+// 피드백 제출 제한 (10분에 3회)
+const feedbackRateLimit = new NodeCache({ stdTTL: 600 });
+
+//----------------------------------------
+// 📌 건의/버그 제출 (Google 로그인 필수)
+//----------------------------------------
+router.post('/feedback', authMiddleware, async (req, res) => {
+    console.log(`🔍 [서버] 피드백 제출 요청`);
+
+    // Rate limit 체크
+    const rateKey = `feedback_${req.user.sub}`;
+    const currentCount = feedbackRateLimit.get(rateKey) || 0;
+    if (currentCount >= 3) {
+        return res.status(429).json({ error: '너무 많은 요청입니다. 10분 후 다시 시도해주세요.' });
+    }
+
+    const { category, title, content } = req.body;
+
+    if (!category || !title || !content) {
+        return res.status(400).json({ error: '카테고리, 제목, 내용을 모두 입력하세요.' });
+    }
+    if (!['bug', 'enhancement', 'other'].includes(category)) {
+        return res.status(400).json({ error: '유효하지 않은 카테고리입니다.' });
+    }
+    if (title.trim().length === 0 || title.length > 100) {
+        return res.status(400).json({ error: '제목은 1~100자로 입력하세요.' });
+    }
+    if (content.trim().length === 0 || content.length > 2000) {
+        return res.status(400).json({ error: '내용은 1~2000자로 입력하세요.' });
+    }
+
+    const categoryNames = { bug: '버그', enhancement: '건의', other: '기타' };
+    const issueTitle = `[${categoryNames[category]}] ${title.trim()}`;
+    const issueBody = `**카테고리**: ${categoryNames[category]}\n**작성자**: ${req.user.name}\n\n---\n\n${content.trim()}`;
+    const labels = [category, 'user-feedback'];
+
+    try {
+        const issue = await createFeedbackIssue(issueTitle, issueBody, labels);
+        feedbackRateLimit.set(rateKey, currentCount + 1);
+        console.log(`✅ [서버] 피드백 제출 완료: Issue #${issue.number}`);
+        res.json({ success: true, issueNumber: issue.number });
+    } catch (error) {
+        console.error("❌ [서버] 피드백 제출 오류:", error);
+        res.status(500).json({ error: '제출에 실패했습니다.' });
+    }
+});
+
+//----------------------------------------
+// 📌 건의/버그 목록 조회
+//----------------------------------------
+router.get('/feedback-list', async (req, res) => {
+    console.log(`🔍 [서버] 피드백 목록 요청`);
+    try {
+        const issues = await getFeedbackIssues();
+        res.json({ issues });
+    } catch (error) {
+        console.error("❌ [서버] 피드백 목록 조회 오류:", error);
+        res.status(500).json({ error: '목록을 가져올 수 없습니다.' });
+    }
 });
 
 module.exports = router;

@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>건의/버그 - GCB.gg</title>
+    <link rel="stylesheet" href="/styles/main.css">
+    <link rel="icon" href="/favicon.ico" type="image/x-icon">
+    <script src="https://accounts.google.com/gsi/client" async defer></script>
+</head>
+<body>
+    <div class="header-bar">
+        <a href="/" class="header-logo">GCB.GG</a>
+        <a href="/ranking.html" class="nav-button">랭킹</a>
+        <a href="/character.html" class="nav-button">캐릭터정보</a>
+        <a href="/augment.html" class="nav-button">증강정보</a>
+        <a href="/character_stats.html" class="nav-button">캐릭터 통계</a>
+        <a href="/augment_stats.html" class="nav-button">증강 통계</a>
+        <a href="/feedback.html" class="nav-button nav-button-red">건의/버그</a>
+    </div>
+
+    <div class="container feedback-container">
+        <!-- 인증 영역 -->
+        <div class="feedback-auth">
+            <div id="login-buttons">
+                <div id="google-signin-btn"></div>
+                <button id="github-signin-btn" class="feedback-github-btn">
+                    <svg width="20" height="20" viewBox="0 0 16 16" fill="white">
+                        <path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/>
+                    </svg>
+                    GitHub으로 로그인
+                </button>
+            </div>
+            <div id="user-info" style="display:none;">
+                <span id="user-name"></span>
+                <button id="logout-btn" class="feedback-logout-btn">로그아웃</button>
+            </div>
+        </div>
+
+        <!-- 작성 폼 (로그인 시만 표시) -->
+        <div id="feedback-form-section" style="display:none;">
+            <h2>건의/버그 제출</h2>
+            <form id="feedback-form" class="feedback-form">
+                <div class="feedback-field">
+                    <label for="feedback-category">카테고리</label>
+                    <select id="feedback-category" class="feedback-select">
+                        <option value="bug">버그</option>
+                        <option value="enhancement">건의</option>
+                        <option value="other">기타</option>
+                    </select>
+                </div>
+                <div class="feedback-field">
+                    <label for="feedback-title">제목</label>
+                    <input type="text" id="feedback-title" class="feedback-input"
+                           placeholder="제목을 입력하세요" maxlength="100" required>
+                </div>
+                <div class="feedback-field">
+                    <label for="feedback-content">내용</label>
+                    <textarea id="feedback-content" class="feedback-textarea"
+                              placeholder="내용을 입력하세요" maxlength="2000" required></textarea>
+                </div>
+                <button type="submit" class="feedback-submit-btn">제출</button>
+            </form>
+            <p id="feedback-status"></p>
+        </div>
+
+        <!-- 목록 -->
+        <h2>건의/버그 목록</h2>
+        <div class="filter-buttons">
+            <button class="stat-button active" data-filter="all">전체</button>
+            <button class="stat-button" data-filter="bug">버그</button>
+            <button class="stat-button" data-filter="enhancement">건의</button>
+            <button class="stat-button" data-filter="other">기타</button>
+        </div>
+        <div id="feedback-list" class="feedback-list">
+            <p class="loading-text">로딩 중...</p>
+        </div>
+    </div>
+
+    <script src="/scripts/feedback.js"></script>
+</body>
+</html>
