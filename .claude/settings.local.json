@@ -12,7 +12,9 @@
       "Bash(npm install:*)",
       "WebFetch(domain:gcbgg.netlify.app)",
       "Bash(npx prisma migrate dev:*)",
-      "Bash(npm uninstall:*)"
+      "Bash(npm uninstall:*)",
+      "Bash(cd:*)",
+      "WebFetch(domain:api.github.com)"
     ]
   }
 }
