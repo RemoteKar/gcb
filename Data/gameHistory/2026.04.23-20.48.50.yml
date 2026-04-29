@@ -1,0 +1,10 @@
+---
+Game:
+  mode: "일반"
+  joinedPlayers: "bcb16c70-6973-4f79-9bbc-c278f6ceb75f"
+  amountOfPlayers: 1
+  totalTime: "14"
+Player:
+  bcb16c70-6973-4f79-9bbc-c278f6ceb75f:
+    Character: 1347
+title: "일반"

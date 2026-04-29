@@ -1,0 +1,108 @@
+---
+Game:
+  mode: "일반"
+  joinedPlayers: "8ffaa638-94bd-4bd5-b352-675f4f39e80f,f9b5c22a-a9e0-46d2-9619-697fc883501c,bcb16c70-6973-4f79-9bbc-c278f6ceb75f,4080672b-c6b6-4a57-a73e-6da3dbefc536,c5651f7a-b562-42f8-b502-45cfe6c66bba,935d882d-a807-41ef-ad4c-add0c89dc594,8b99c9e7-d5b2-43ea-ac1b-1eb495cf6152"
+  amountOfPlayers: 7
+  totalTime: "0"
+Player:
+  "8ffaa638-94bd-4bd5-b352-675f4f39e80f":
+    Character: 31
+    Damage:
+      Dealt: 4670.449999094009
+      Taken: 4661.580143451691
+    Augment:
+      "1": 40
+      "2": 43
+      "3": null
+      "4": null
+    Heal:
+      Taken: 1631.2994997739743
+    Ranking: 4
+    TimeSurvived: 201
+    killedBy: "8b99c9e7-d5b2-43ea-ac1b-1eb495cf6152"
+    outCuase: "처치"
+  f9b5c22a-a9e0-46d2-9619-697fc883501c:
+    Character: 314
+    Augment:
+      "1": 17
+      "2": 39
+      "3": null
+      "4": null
+    Damage:
+      Taken: 1328.5501561760902
+      Dealt: 599.1300048828125
+    Heal:
+      Taken: 79.65
+    Ranking: 3
+    TimeSurvived: 254
+    killedBy: "4080672b-c6b6-4a57-a73e-6da3dbefc536"
+    outCuase: "처치"
+  bcb16c70-6973-4f79-9bbc-c278f6ceb75f:
+    Character: 2000
+    Damage:
+      Taken: 5131.685060381889
+      Dealt: 3590.2400283813477
+    Augment:
+      "1": 17
+      "2": null
+      "3": null
+      "4": null
+    Ranking: 6
+    TimeSurvived: 158
+    killedBy: "935d882d-a807-41ef-ad4c-add0c89dc594"
+    outCuase: "처치"
+  "4080672b-c6b6-4a57-a73e-6da3dbefc536":
+    Character: 337
+    Augment:
+      "1": 38
+      "2": 4
+      "3": 16
+      "4": null
+    Heal:
+      Taken: 1671.0
+    Damage:
+      Dealt: 1107.4761551618576
+      Taken: 1025.0001649856567
+    kill: 1
+    Ranking: 2
+    TimeSurvived: 271
+    killedBy: "8b99c9e7-d5b2-43ea-ac1b-1eb495cf6152"
+    outCuase: "처치"
+  c5651f7a-b562-42f8-b502-45cfe6c66bba:
+    Character: 342
+    Ranking: 7
+    TimeSurvived: -26
+    outCuase: "탈주"
+  "935d882d-a807-41ef-ad4c-add0c89dc594":
+    Character: 309
+    Damage:
+      Dealt: 3112.4150599241257
+      Taken: 1389.8000004291534
+    Augment:
+      "1": 39
+      "2": 29
+      "3": null
+      "4": null
+    Heal:
+      Taken: 389.70907555046404
+    kill: 1
+    Ranking: 5
+    TimeSurvived: 199
+    outCuase: "자연사"
+  "8b99c9e7-d5b2-43ea-ac1b-1eb495cf6152":
+    Character: 323
+    Damage:
+      Taken: 1120.5700073242188
+      Dealt: 1577.4742853045464
+    Augment:
+      "1": 38
+      "2": 16
+      "3": 31
+      "4": null
+    Heal:
+      Taken: 334.125
+    kill: 2
+    Ranking: 1
+    TimeSurvived: 271
+    outCuase: "우승"
+title: "일반"

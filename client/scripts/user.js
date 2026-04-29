@@ -127,10 +127,16 @@ document.addEventListener("DOMContentLoaded", async () => {
     // 캐릭터 이미지 + 테두리 오버레이 (모스트 캐릭터)
     const charContainer = document.createElement("div");
     charContainer.classList.add("char-container");
-  
+
+    const mostUsedId = statistics.mostUsedCharacter;
+    const mostUsedIsCreative = CharacterConfig.isCreativeCharacter(mostUsedId);
     const charImg = document.createElement("img");
-    charImg.src = `/Resource/character/${statistics.mostUsedCharacter}.png`;
-    charImg.alt = statistics.mostUsedCharacter;
+    charImg.src = mostUsedIsCreative
+      ? `/Resource/character/0.png`
+      : `/Resource/character/${mostUsedId}.png`;
+    charImg.alt = mostUsedIsCreative
+      ? CharacterConfig.getCreativeCharacterName(mostUsedId)
+      : String(mostUsedId);
     charImg.classList.add("char-img");
   
     const borderImg = document.createElement("img");
@@ -156,17 +162,28 @@ document.addEventListener("DOMContentLoaded", async () => {
         const row = document.createElement('div');
         row.className = 'user-char-stat-row';
         if (idx >= INITIAL_COUNT) row.classList.add('user-char-stat-hidden');
+
+        const isCreative = CharacterConfig.isCreativeCharacter(cs.characterId);
+        const portraitSrc = isCreative
+          ? `/Resource/character/0.png`
+          : `/Resource/character/${cs.characterId}.png`;
+        const mainLabel = isCreative
+          ? `${CharacterConfig.getCreativeCharacterName(cs.characterId)} · ${cs.games}게임 | ${cs.winRate}% 승률`
+          : `${cs.games}게임 | ${cs.winRate}% 승률`;
+
         row.innerHTML = `
-          <img class="user-char-stat-portrait" src="/Resource/character/${cs.characterId}.png" alt="캐릭터">
+          <img class="user-char-stat-portrait" src="${portraitSrc}" alt="캐릭터">
           <div class="user-char-stat-info">
-            <div class="user-char-stat-main">${cs.games}게임 | ${cs.winRate}% 승률</div>
+            <div class="user-char-stat-main">${mainLabel}</div>
             <div class="user-char-stat-sub">평균 ${cs.avgKills}킬 | 평균 ${cs.avgDamage} 피해</div>
           </div>
         `;
-        row.style.cursor = 'pointer';
-        row.addEventListener('click', () => {
-          window.location.href = `/character/${cs.characterId}`;
-        });
+        if (!isCreative) {
+          row.style.cursor = 'pointer';
+          row.addEventListener('click', () => {
+            window.location.href = `/character/${cs.characterId}`;
+          });
+        }
         charStatsSection.appendChild(row);
       });
 
@@ -274,10 +291,19 @@ function renderNextGames(uuid) {
 
     const dateColor = (playerData?.Character >= 900) ? 'red' : 'white';
 
+    const gameCardCharId = playerData?.Character;
+    const gameCardIsCreative = CharacterConfig.isCreativeCharacter(gameCardCharId);
+    const gameCardPortrait = gameCardIsCreative
+      ? `/Resource/character/0.png`
+      : `/Resource/character/${gameCardCharId ?? 'default'}.png`;
+    const gameCardAlt = gameCardIsCreative
+      ? CharacterConfig.getCreativeCharacterName(gameCardCharId)
+      : '캐릭터';
+
     gameItem.innerHTML = `
     <div class="game-card" style="background-color: ${cardBg}; border-color: ${cardBorder};">
         <div class="game-card-left">
-          <img src="/Resource/character/${playerData?.Character ?? 'default'}.png" alt="캐릭터">
+          <img src="${gameCardPortrait}" alt="${gameCardAlt}">
         </div>
         <div class="game-card-info">
           <p style="color: ${dateColor}; font-size: 24px; font-weight: 600; margin: 0;">
@@ -430,6 +456,13 @@ async function openGameDetailModal(game) {
     const cleanUUID = stripHyphens(uuid);
     const nickname = nicknameMap[cleanUUID] || cleanUUID.slice(0, 8);
     const character = data?.Character ?? 'default';
+    const modalIsCreative = CharacterConfig.isCreativeCharacter(character);
+    const modalPortrait = modalIsCreative
+      ? `/Resource/character/0.png`
+      : `/Resource/character/${character}.png`;
+    const modalAlt = modalIsCreative
+      ? CharacterConfig.getCreativeCharacterName(character)
+      : '캐릭터';
 
     let rowBg = '#2c2c2c';
     let rowBorder = '#3c3c3c';
@@ -454,16 +487,16 @@ async function openGameDetailModal(game) {
     row.style.borderColor = rowBorder;
     row.innerHTML = `
       <span class="modal-player-rank">#${ranking}</span>
-      <img class="modal-player-char" src="/Resource/character/${character}.png" alt="캐릭터">
+      <img class="modal-player-char" src="${modalPortrait}" alt="${modalAlt}">
       <img class="modal-player-head" src="https://mc-heads.net/avatar/${cleanUUID}/40" alt="${nickname}">
       <span class="modal-player-name">${nickname}</span>
       <span class="modal-player-kills">${(data?.kill || 0)}킬</span>
       <div class="modal-player-augments">${augmentHtml}</div>
     `;
 
-    // 캐릭터 초상화 클릭 → 캐릭터 정보 페이지 이동
+    // 캐릭터 초상화 클릭 → 캐릭터 정보 페이지 이동 (정식 캐릭터만)
     const charImg = row.querySelector('.modal-player-char');
-    if (character !== 'default' && Number(character) < 900) {
+    if (character !== 'default' && !modalIsCreative && Number(character) < CharacterConfig.CREATIVE_ID_MAX_EXCLUSIVE) {
       charImg.addEventListener('click', (e) => {
         e.stopPropagation();
         window.location.href = `/character/${character}`;

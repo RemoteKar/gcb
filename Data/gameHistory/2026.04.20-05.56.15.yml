@@ -1,0 +1,92 @@
+---
+Game:
+  mode: "일반"
+  joinedPlayers: "8ffaa638-94bd-4bd5-b352-675f4f39e80f,935d882d-a807-41ef-ad4c-add0c89dc594,4080672b-c6b6-4a57-a73e-6da3dbefc536,bcb16c70-6973-4f79-9bbc-c278f6ceb75f,8b99c9e7-d5b2-43ea-ac1b-1eb495cf6152,f9b5c22a-a9e0-46d2-9619-697fc883501c"
+  amountOfPlayers: 6
+  totalTime: "0"
+Player:
+  "8ffaa638-94bd-4bd5-b352-675f4f39e80f":
+    Character: 31
+    Damage:
+      Dealt: 2489.939995288849
+      Taken: 936.9999465942383
+    Heal:
+      Taken: 489.7355002403262
+    Augment:
+      "1": 40
+      "2": null
+      "3": null
+      "4": null
+    kill: 1
+    Ranking: 3
+    TimeSurvived: 175
+    killedBy: "bcb16c70-6973-4f79-9bbc-c278f6ceb75f"
+    outCuase: "처치"
+  "935d882d-a807-41ef-ad4c-add0c89dc594":
+    Character: 308
+    Augment:
+      "1": 17
+      "2": 32
+      "3": 43
+      "4": null
+    Damage:
+      Taken: 863.9999694824219
+      Dealt: 589.4500045776367
+    Ranking: 2
+    TimeSurvived: 338
+    killedBy: "bcb16c70-6973-4f79-9bbc-c278f6ceb75f"
+    outCuase: "처치"
+  "4080672b-c6b6-4a57-a73e-6da3dbefc536":
+    Character: 337
+    Damage:
+      Taken: 804.6599960327148
+      Dealt: 143.5
+    Ranking: 5
+    TimeSurvived: 39
+    killedBy: "8ffaa638-94bd-4bd5-b352-675f4f39e80f"
+    outCuase: "처치"
+  bcb16c70-6973-4f79-9bbc-c278f6ceb75f:
+    Character: 603
+    Augment:
+      "1": 17
+      "2": 9
+      "3": 6
+      "4": null
+    Damage:
+      Dealt: 1867.6298904418945
+      Taken: 1690.8600027561188
+    Heal:
+      Taken: 1028.83271669804
+    kill: 3
+    Ranking: 1
+    TimeSurvived: 338
+    outCuase: "우승"
+  "8b99c9e7-d5b2-43ea-ac1b-1eb495cf6152":
+    Character: 335
+    Damage:
+      Taken: 766.75
+      Dealt: 239.0999994277954
+    Heal:
+      Taken: 13.75
+    Ranking: 6
+    TimeSurvived: 21
+    killedBy: "f9b5c22a-a9e0-46d2-9619-697fc883501c"
+    outCuase: "처치"
+  f9b5c22a-a9e0-46d2-9619-697fc883501c:
+    Character: 66
+    Damage:
+      Dealt: 819.25
+      Taken: 1085.5999748706818
+    Heal:
+      Taken: 150.0
+    kill: 1
+    Augment:
+      "1": 17
+      "2": null
+      "3": null
+      "4": null
+    Ranking: 4
+    TimeSurvived: 137
+    killedBy: "bcb16c70-6973-4f79-9bbc-c278f6ceb75f"
+    outCuase: "처치"
+title: "일반"

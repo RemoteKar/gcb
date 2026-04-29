@@ -1,0 +1,18 @@
+---
+Game:
+  mode: "일반"
+  joinedPlayers: "bcb16c70-6973-4f79-9bbc-c278f6ceb75f"
+  amountOfPlayers: 1
+  totalTime: "0"
+Player:
+  bcb16c70-6973-4f79-9bbc-c278f6ceb75f:
+    Character: 1347
+    Augment:
+      "1": null
+      "2": null
+      "3": null
+      "4": null
+    Ranking: 1
+    TimeSurvived: 78
+    outCuase: "자연사"
+title: "일반"

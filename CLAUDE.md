@@ -341,6 +341,46 @@ Data/description/augments/
 
 ---
 
+## 2026-04-29 작업 내용: 창작 캐릭터 분리 처리
+
+### 개요
+4월부터 정식 캐릭터 외에 유저 창작 캐릭터(밸런스 미보장)의 게임 기록도 수집되기 시작.
+창작 캐릭터는 캐릭터 정보/통계 페이지에서 제외하고, 유저 전적 페이지에서만 `0.png` + "창작캐릭터{id}" 형태로 표기.
+
+### 캐릭터 분류 규칙
+- **정식 캐릭터**: `id ≤ 100` 또는 `id ≥ 900`
+- **창작 캐릭터**: `100 < id < 900` (4월부터 추가됨, 4월 데이터 기준 전체 플레이어 기록의 약 63%)
+
+경계값 `100`, `900`은 `client/scripts/character-config.js`에 상수로 정의 (정식 캐릭터 번호 확장 시 이 파일만 수정).
+
+### 생성된 파일
+| 파일 | 설명 |
+|------|------|
+| `client/scripts/character-config.js` | UMD 모듈. `CREATIVE_ID_MIN_EXCLUSIVE`, `CREATIVE_ID_MAX_EXCLUSIVE`, `isCreativeCharacter()`, `isOfficialCharacter()`, `getCreativeCharacterName()` 제공. 서버는 `require()`, 클라이언트는 `<script>` + `window.CharacterConfig` |
+
+### 수정된 파일
+| 파일 | 변경 내용 |
+|------|---------|
+| `server/services/github.js` | `getCharacterList()`에 `isOfficialCharacter` 필터 적용 |
+| `server/utils/statistics.js` | `< 900` 리터럴을 `< CREATIVE_ID_MAX_EXCLUSIVE`로 교체. `computeGlobalCharacterStatistics`는 `!isOfficialCharacter` 조건으로 창작 캐릭터 제외 |
+| `client/scripts/character_stats.js` | 클라이언트 필터를 `CharacterConfig.isOfficialCharacter`로 교체 |
+| `client/scripts/user.js` | 모스트 캐릭터·캐릭터별 통계 리스트·게임 카드·모달 플레이어 카드에서 창작 캐릭터는 `0.png` + "창작캐릭터{id}" alt/라벨로 표시. 창작 캐릭터는 `/character/{id}` 클릭 비활성화 |
+| `client/character_stats.html`, `client/user.html` | `<script src="scripts/character-config.js">` 추가 (페이지 스크립트보다 먼저 로드) |
+
+### 페이지/통계별 집계 정책
+| 페이지/통계 | 1~100 (정식) | 100~899 (창작) | 900+ (관리자) |
+|---|---|---|---|
+| 캐릭터 정보 (`character.html`) | 표시 | **제외** | (description 폴더 없어 미노출) |
+| 캐릭터 통계 (`character_stats.html`) | 집계 | **제외** | 제외 (기존 `< 900` 유지) |
+| 증강 통계 (`augment_stats.html`) | 집계 | 집계 | 집계 (캐릭터 제한 없음) |
+| 랭킹 (`scripts/build-leaderboard.js`) | 집계 | **제외** | 제외 (기존 `< 900` 유지) |
+| 유저 전적 (`user.html`) — 통계 수치 | 집계 | 집계 | 제외 (기존 `< 900` 유지) |
+| 유저 전적 (`user.html`) — 게임 카드/모스트/캐릭터별 | 정상 표시 | `0.png` + "창작캐릭터{id}" 라벨, 비클릭 | 정상 표시 (날짜 빨강) |
+
+요약: **창작 캐릭터는 유저 전적 페이지(전적 수치 + 게임별 카드)에서만 표시·집계됨.** 캐릭터 통계와 랭킹은 1~100만 집계, 증강 통계는 캐릭터 무관 집계.
+
+---
+
 ## 페이지 목록
 1. `index.html` - 메인 (닉네임 검색)
 2. `user.html` - 유저 프로필

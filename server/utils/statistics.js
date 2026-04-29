@@ -1,4 +1,5 @@
 const { formatUUID, toNonHyphenatedUUID } = require('../util');
+const { CREATIVE_ID_MAX_EXCLUSIVE, isCreativeCharacter } = require('../../client/scripts/character-config');
   function computeStatistics(gameRecords, formattedUUID) {
     let totalGames = 0;
     let winCount = 0;
@@ -18,7 +19,7 @@ const { formatUUID, toNonHyphenatedUUID } = require('../util');
         if (record.Player && record.Player[formattedUUID]) {
             const playerData = record.Player[formattedUUID];
             const character = playerData.Character ?? 99999;
-            return character < 900;
+            return character < CREATIVE_ID_MAX_EXCLUSIVE;
         }
         return false;
     });
@@ -29,7 +30,7 @@ const { formatUUID, toNonHyphenatedUUID } = require('../util');
         const character = playerData.Character ?? 99999;
   
         //특정 값 이상인 캐릭터는 계산 대상에서 제외
-        if (character >= 900) {
+        if (character >= CREATIVE_ID_MAX_EXCLUSIVE) {
             return;
         }
   
@@ -186,7 +187,7 @@ function aggregateAllPlayerStatistics(allGameRecordContents) {
                 if (playerData) {
                     const character = playerData.Character ?? 99999;
 
-                    if (character < 900) { // Apply character filter here as well
+                    if (character < CREATIVE_ID_MAX_EXCLUSIVE && !isCreativeCharacter(character)) { // 랭킹: 1~100 정식 캐릭터 게임만 집계 (창작·관리자 제외)
                         stats.totalGames++;
                         if (playerData.Ranking / recordContent.Game.amountOfPlayers <= 0.5) {
                             stats.rankAtLeast50++;
@@ -312,7 +313,8 @@ function computeGlobalCharacterStatistics(gameRecords) {
         players.forEach(playerData => {
             const characterId = playerData.Character;
 
-            if (characterId === undefined || characterId >= 900) return;
+            // 캐릭터 통계: 1~100 정식 캐릭터만 집계 (창작·관리자 제외)
+            if (characterId === undefined || characterId >= CREATIVE_ID_MAX_EXCLUSIVE || isCreativeCharacter(characterId)) return;
 
             if (!characterStats[characterId]) {
                 characterStats[characterId] = {
@@ -371,6 +373,7 @@ function computeGlobalAugmentStatistics(gameRecords) {
         const players = Object.values(record.Player);
 
         players.forEach(playerData => {
+            // 증강 통계: 캐릭터 번호 제한 없음 (창작/관리자 캐릭터 게임도 모두 집계)
             if (playerData.Augment) {
                 Object.values(playerData.Augment).forEach(augmentValue => {
                     // augmentValue가 유효한 숫자인지 확인

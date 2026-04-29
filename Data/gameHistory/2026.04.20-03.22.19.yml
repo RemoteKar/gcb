@@ -1,0 +1,169 @@
+---
+Game:
+  mode: "일반"
+  joinedPlayers: "8b99c9e7-d5b2-43ea-ac1b-1eb495cf6152,1577fc7c-4b3a-4058-ac04-0d9dff1c5ed5,8ffaa638-94bd-4bd5-b352-675f4f39e80f,b1b8585c-e109-4423-b91a-e76abd471a13,bcb16c70-6973-4f79-9bbc-c278f6ceb75f,f9b5c22a-a9e0-46d2-9619-697fc883501c,14d29942-39ad-4772-b94f-0b9e35a94af9,ea3001f3-3430-4bf2-b275-9796baaa6baf,aefb1d24-252c-416c-bdd2-f69cada79841,4080672b-c6b6-4a57-a73e-6da3dbefc536"
+  amountOfPlayers: 10
+  totalTime: "0"
+Player:
+  "8b99c9e7-d5b2-43ea-ac1b-1eb495cf6152":
+    Character: 343
+    Augment:
+      "1": 39
+      "2": 42
+      "3": 29
+      "4": null
+    Damage:
+      Taken: 1090.8707220256329
+      Dealt: 1730.969988822937
+    Heal:
+      Taken: 212.625
+    kill: 1
+    Ranking: 5
+    TimeSurvived: 329
+    killedBy: "14d29942-39ad-4772-b94f-0b9e35a94af9"
+    outCuase: "처치"
+  "1577fc7c-4b3a-4058-ac04-0d9dff1c5ed5":
+    Character: 342
+    Augment:
+      "1": 27
+      "2": 17
+      "3": 39
+      "4": null
+    Damage:
+      Dealt: 7781.716437578201
+      Taken: 6496.833707809448
+    Heal:
+      Taken: 5338.801142002006
+    kill: 2
+    Ranking: 4
+    TimeSurvived: 341
+    killedBy: "14d29942-39ad-4772-b94f-0b9e35a94af9"
+    outCuase: "처치"
+  "8ffaa638-94bd-4bd5-b352-675f4f39e80f":
+    Character: 314
+    Augment:
+      "1": null
+      "2": null
+      "3": null
+      "4": null
+    Damage:
+      Taken: 1491.5003116130829
+      Dealt: 310.20000076293945
+    Heal:
+      Taken: 34.5
+    Ranking: 10
+    TimeSurvived: 63
+    killedBy: "1577fc7c-4b3a-4058-ac04-0d9dff1c5ed5"
+    outCuase: "처치"
+  b1b8585c-e109-4423-b91a-e76abd471a13:
+    Character: 329
+    Augment:
+      "1": 24
+      "2": 30
+      "3": 36
+      "4": null
+    Damage:
+      Taken: 1695.1000032424927
+      Dealt: 226.0
+    Heal:
+      Taken: 600
+    Ranking: 2
+    TimeSurvived: 410
+    killedBy: "bcb16c70-6973-4f79-9bbc-c278f6ceb75f"
+    outCuase: "처치"
+  bcb16c70-6973-4f79-9bbc-c278f6ceb75f:
+    Character: 23
+    Augment:
+      "1": 13
+      "2": 8
+      "3": 29
+      "4": null
+    Damage:
+      Taken: 5463.640011787415
+      Dealt: 5191.749925613403
+    Heal:
+      Taken: 4407.709478759767
+    kill: 2
+    Ranking: 1
+    TimeSurvived: 410
+    outCuase: "우승"
+  f9b5c22a-a9e0-46d2-9619-697fc883501c:
+    Character: 603
+    Augment:
+      "1": 17
+      "2": 43
+      "3": 29
+      "4": null
+    Damage:
+      Dealt: 2537.3099975585938
+      Taken: 2521.5561108589172
+    Heal:
+      Taken: 1042.8359985351562
+    Ranking: 6
+    TimeSurvived: 325
+    killedBy: "1577fc7c-4b3a-4058-ac04-0d9dff1c5ed5"
+    outCuase: "처치"
+  "14d29942-39ad-4772-b94f-0b9e35a94af9":
+    Character: 19
+    Damage:
+      Dealt: 8483.592594236135
+      Taken: 2517.249867916107
+    Augment:
+      "1": 32
+      "2": 33
+      "3": 31
+      "4": null
+    Heal:
+      Taken: 1242.0
+    kill: 4
+    Ranking: 3
+    TimeSurvived: 356
+    killedBy: "bcb16c70-6973-4f79-9bbc-c278f6ceb75f"
+    outCuase: "처치"
+  ea3001f3-3430-4bf2-b275-9796baaa6baf:
+    Character: 305
+    Damage:
+      Taken: 4889.931120157242
+      Dealt: 478.0099868774414
+    Heal:
+      Taken: 900
+    Augment:
+      "1": 37
+      "2": 29
+      "3": null
+      "4": null
+    Ranking: 8
+    TimeSurvived: 213
+    killedBy: "14d29942-39ad-4772-b94f-0b9e35a94af9"
+    outCuase: "처치"
+  aefb1d24-252c-416c-bdd2-f69cada79841:
+    Character: 10
+    Augment:
+      "1": 40
+      "2": 16
+      "3": 38
+      "4": null
+    Damage:
+      Dealt: 945.3800067901611
+      Taken: 1031.0671072006226
+    Heal:
+      Taken: 334.91850006580347
+    Ranking: 7
+    TimeSurvived: 292
+    killedBy: "14d29942-39ad-4772-b94f-0b9e35a94af9"
+    outCuase: "처치"
+  "4080672b-c6b6-4a57-a73e-6da3dbefc536":
+    Character: 318
+    Augment:
+      "1": 16
+      "2": null
+      "3": null
+      "4": null
+    Damage:
+      Dealt: 212.82000148296356
+      Taken: 699.9999771118164
+    Ranking: 9
+    TimeSurvived: 124
+    killedBy: "8b99c9e7-d5b2-43ea-ac1b-1eb495cf6152"
+    outCuase: "처치"
+title: "일반"

@@ -1,6 +1,7 @@
 const fetch = require('node-fetch');
 const yaml = require('js-yaml');
 const { formatUUID, toNonHyphenatedUUID } = require('../util');
+const { isOfficialCharacter } = require('../../client/scripts/character-config');
 const NodeCache = require('node-cache');
 
 const repoOwner = process.env.GITHUB_REPO_OWNER;
@@ -225,11 +226,11 @@ async function getCharacterList() {
         return response.json();
     });
 
-    // char_XX 형식의 폴더에서 캐릭터 ID 추출 (1~899 범위만)
+    // char_XX 형식의 폴더에서 캐릭터 ID 추출 (정식 캐릭터만, 창작 캐릭터 제외)
     const characterIds = directories
         .filter(item => item.type === 'dir' && item.name.startsWith('char_'))
         .map(item => parseInt(item.name.replace('char_', ''), 10))
-        .filter(id => id >= 1 && id < 900)
+        .filter(id => id >= 1 && isOfficialCharacter(id))
         .sort((a, b) => a - b);
 
     // 캐시에 저장

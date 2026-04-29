@@ -1,0 +1,26 @@
+---
+Game:
+  mode: "일반"
+  joinedPlayers: "437ba723-f5f7-458a-90f5-c1a619731edd,bcb16c70-6973-4f79-9bbc-c278f6ceb75f"
+  amountOfPlayers: 2
+  totalTime: "0"
+Player:
+  "437ba723-f5f7-458a-90f5-c1a619731edd":
+    Character: 500
+    Damage:
+      Taken: 482.9999179840088
+    Ranking: 2
+    TimeSurvived: 0
+    killedBy: "bcb16c70-6973-4f79-9bbc-c278f6ceb75f"
+    outCuase: "처치"
+  bcb16c70-6973-4f79-9bbc-c278f6ceb75f:
+    Character: 350
+    Damage:
+      Dealt: 482.9999179840088
+    Heal:
+      Taken: 133.2
+    kill: 1
+    Ranking: 1
+    TimeSurvived: 0
+    outCuase: "우승"
+title: "일반"

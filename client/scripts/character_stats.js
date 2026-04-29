@@ -54,7 +54,7 @@ document.addEventListener("DOMContentLoaded", async () => {
                     const playerData = game.content.Player[playerUUID];
                     if (playerData && playerData.Character !== undefined) {
                         const characterId = playerData.Character;
-                        if (characterId > 0 && characterId < 900) {
+                        if (characterId > 0 && characterId < CharacterConfig.CREATIVE_ID_MAX_EXCLUSIVE && !CharacterConfig.isCreativeCharacter(characterId)) {
                             if (!characterStats[characterId]) {
                                 characterStats[characterId] = { wins: 0, plays: 0, kills: 0, totalDamage: 0, gameCount: 0 };
                             }
