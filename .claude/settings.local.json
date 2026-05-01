@@ -20,7 +20,9 @@
       "Bash(node -e ' *)",
       "Bash(rm C:/Users/a4san/Desktop/JS/gcb/.claude/projects/C--Users-a4san-Desktop-JS-gcb/memory/project_character_id_ranges.md)",
       "Bash(rmdir -p C:/Users/a4san/Desktop/JS/gcb/.claude/projects/C--Users-a4san-Desktop-JS-gcb/memory C:/Users/a4san/Desktop/JS/gcb/.claude/projects/C--Users-a4san-Desktop-JS-gcb C:/Users/a4san/Desktop/JS/gcb/.claude/projects C:/Users/a4san/Desktop/JS/gcb/.claude)",
-      "Bash(node -e \"require\\('./server/services/github'\\); console.log\\('OK'\\)\")"
+      "Bash(node -e \"require\\('./server/services/github'\\); console.log\\('OK'\\)\")",
+      "Bash(git -C C:/Users/a4san/Desktop/JS/gcb log --oneline --all -- client/scripts/user.js)",
+      "Bash(git *)"
     ]
   }
 }

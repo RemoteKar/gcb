@@ -1,0 +1,22 @@
+---
+Game:
+  mode: "일반"
+  joinedPlayers: "eef314d5-5641-43ad-b8d5-ec08c355a4bc,8ffaa638-94bd-4bd5-b352-675f4f39e80f,437ba723-f5f7-458a-90f5-c1a619731edd,bcb16c70-6973-4f79-9bbc-c278f6ceb75f,8b0be46b-f642-4fb9-ac65-3e020bf94cba,f4552182-ed79-4b56-a738-445596e35d7b,22946b11-04c5-4b7d-8c0b-72049906243b"
+  amountOfPlayers: 7
+  totalTime: "-25"
+Player:
+  eef314d5-5641-43ad-b8d5-ec08c355a4bc:
+    Character: 345
+  "8ffaa638-94bd-4bd5-b352-675f4f39e80f":
+    Character: 71
+  "437ba723-f5f7-458a-90f5-c1a619731edd":
+    Character: 603
+  bcb16c70-6973-4f79-9bbc-c278f6ceb75f:
+    Character: 48
+  "8b0be46b-f642-4fb9-ac65-3e020bf94cba":
+    Character: 69
+  f4552182-ed79-4b56-a738-445596e35d7b:
+    Character: 5
+  "22946b11-04c5-4b7d-8c0b-72049906243b":
+    Character: 35
+title: "일반"
