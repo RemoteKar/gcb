@@ -542,15 +542,18 @@ router.post('/character-comments', async (req, res) => {
         return res.status(400).json({ error: '유효하지 않은 캐릭터 ID입니다.' });
     }
 
-    if (typeof nickname !== 'string') {
-        return res.status(400).json({ error: '닉네임이 필요합니다.' });
-    }
-    const trimmedNick = nickname.trim();
-    if (trimmedNick.length === 0 || trimmedNick.length > 15) {
-        return res.status(400).json({ error: '닉네임은 1~15자로 입력하세요.' });
-    }
-    if (/\s/.test(trimmedNick)) {
-        return res.status(400).json({ error: '닉네임에 공백을 포함할 수 없습니다.' });
+    const rawNick = typeof nickname === 'string' ? nickname.trim() : '';
+    let finalNick;
+    if (rawNick.length === 0) {
+        finalNick = config.defaultCommentNickname || 'ㅇㅇ';
+    } else {
+        if (rawNick.length > 15) {
+            return res.status(400).json({ error: '닉네임은 15자 이하로 입력하세요.' });
+        }
+        if (/\s/.test(rawNick)) {
+            return res.status(400).json({ error: '닉네임에 공백을 포함할 수 없습니다.' });
+        }
+        finalNick = rawNick;
     }
 
     if (typeof password !== 'string' || !/^[a-zA-Z0-9]{4}$/.test(password)) {
@@ -587,7 +590,7 @@ router.post('/character-comments', async (req, res) => {
         const comment = await prisma.characterComment.create({
             data: {
                 characterId: charId,
-                nickname: trimmedNick,
+                nickname: finalNick,
                 passwordHash,
                 ipPrefix,
                 content: trimmedContent,

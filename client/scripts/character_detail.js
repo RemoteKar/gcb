@@ -364,11 +364,11 @@ document.addEventListener("DOMContentLoaded", async () => {
         const password = passwordInput.value;
         const content = contentInput.value.trim();
 
-        if (nickname.length === 0 || nickname.length > 15) {
-            showError('닉네임은 1~15자로 입력하세요.');
+        if (nickname.length > 15) {
+            showError('닉네임은 15자 이하로 입력하세요.');
             return;
         }
-        if (/\s/.test(nickname)) {
+        if (nickname.length > 0 && /\s/.test(nickname)) {
             showError('닉네임에 공백을 포함할 수 없습니다.');
             return;
         }
