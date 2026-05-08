@@ -34,6 +34,28 @@
         <div id="skills-container" class="skills-container">
             <!-- 스킬 정보가 여기에 동적으로 추가됨 -->
         </div>
+
+        <!-- 댓글 섹션 -->
+        <div class="comments-section">
+            <h2 class="comments-title">댓글</h2>
+
+            <form id="comment-form" class="comment-form">
+                <div class="comment-form-row">
+                    <input type="text" id="comment-nickname" placeholder="닉네임 (1~15자, 공백 불가)" maxlength="15" required>
+                    <input type="password" id="comment-password" placeholder="비밀번호 (영문/숫자 4자)" maxlength="4" pattern="[a-zA-Z0-9]{4}" required>
+                </div>
+                <textarea id="comment-content" placeholder="내용 (300자 이내)" maxlength="300" required></textarea>
+                <div class="comment-form-footer">
+                    <span id="comment-char-count">0 / 300</span>
+                    <button type="submit" id="comment-submit">작성</button>
+                </div>
+                <div id="comment-form-error" class="comment-error"></div>
+            </form>
+
+            <div id="comments-loading" class="comments-loading">댓글을 불러오는 중...</div>
+            <div id="comments-list" class="comments-list"></div>
+            <div id="comments-pagination" class="comments-pagination"></div>
+        </div>
     </div>
 
     <script src="/scripts/character_detail.js"></script>

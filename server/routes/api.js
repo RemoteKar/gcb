@@ -1,6 +1,8 @@
 const express = require('express');
 const router = express.Router();
 const fetch = require('node-fetch');
+const crypto = require('crypto');
+const bcrypt = require('bcryptjs');
 const { PrismaClient } = require('@prisma/client/edge');
 const { withAccelerate } = require('@prisma/extension-accelerate');
 const { getUUID, getProfileByUUID } = require('../services/mojang');
@@ -11,6 +13,8 @@ const { computeStatistics } = require('../utils/statistics');
 const cacheMiddleware = require('../middleware/cache');
 const { formatUUID } = require('../util');
 const { toNonHyphenatedUUID } = require('../util');
+const { getClientIp, extractIpv4, getIpv4Prefix } = require('../utils/ip');
+const config = require('../../config');
 
 // 통계 데이터를 클라이언트 응답 형식으로 포맷팅하는 헬퍼 함수
 function formatStatistics(stats) {
@@ -470,6 +474,173 @@ router.get('/feedback-list', async (req, res) => {
     } catch (error) {
         console.error("❌ [서버] 피드백 목록 조회 오류:", error);
         res.status(500).json({ error: '목록을 가져올 수 없습니다.' });
+    }
+});
+
+//----------------------------------------
+// 📌 캐릭터 댓글 (디시 스타일: 비로그인, 닉네임/비밀번호 매번 입력)
+//----------------------------------------
+const COMMENTS_PER_PAGE = 20;
+const commentRateLimit = new NodeCache({ stdTTL: 30 });
+
+function timingSafeStringEqual(a, b) {
+    if (typeof a !== 'string' || typeof b !== 'string') return false;
+    const aBuf = Buffer.from(a);
+    const bBuf = Buffer.from(b);
+    if (aBuf.length !== bBuf.length) return false;
+    return crypto.timingSafeEqual(aBuf, bBuf);
+}
+
+router.get('/character-comments', async (req, res) => {
+    const characterId = parseInt(req.query.id, 10);
+    const page = Math.max(1, parseInt(req.query.page, 10) || 1);
+
+    if (isNaN(characterId)) {
+        return res.status(400).json({ error: '캐릭터 ID가 필요합니다.' });
+    }
+
+    try {
+        const prisma = new PrismaClient({
+            datasources: { db: { url: process.env.DATABASE_URL } },
+        }).$extends(withAccelerate());
+
+        const [comments, totalCount] = await Promise.all([
+            prisma.characterComment.findMany({
+                where: { characterId },
+                orderBy: { createdAt: 'desc' },
+                skip: (page - 1) * COMMENTS_PER_PAGE,
+                take: COMMENTS_PER_PAGE,
+                select: {
+                    id: true,
+                    nickname: true,
+                    ipPrefix: true,
+                    content: true,
+                    createdAt: true,
+                },
+            }),
+            prisma.characterComment.count({ where: { characterId } }),
+        ]);
+
+        res.json({
+            comments,
+            totalCount,
+            totalPages: Math.max(1, Math.ceil(totalCount / COMMENTS_PER_PAGE)),
+            page,
+        });
+    } catch (error) {
+        console.error('❌ [서버] 댓글 조회 오류:', error);
+        res.status(500).json({ error: '댓글을 가져올 수 없습니다.' });
+    }
+});
+
+router.post('/character-comments', async (req, res) => {
+    const { characterId, nickname, password, content } = req.body || {};
+
+    const charId = parseInt(characterId, 10);
+    if (isNaN(charId)) {
+        return res.status(400).json({ error: '유효하지 않은 캐릭터 ID입니다.' });
+    }
+
+    if (typeof nickname !== 'string') {
+        return res.status(400).json({ error: '닉네임이 필요합니다.' });
+    }
+    const trimmedNick = nickname.trim();
+    if (trimmedNick.length === 0 || trimmedNick.length > 15) {
+        return res.status(400).json({ error: '닉네임은 1~15자로 입력하세요.' });
+    }
+    if (/\s/.test(trimmedNick)) {
+        return res.status(400).json({ error: '닉네임에 공백을 포함할 수 없습니다.' });
+    }
+
+    if (typeof password !== 'string' || !/^[a-zA-Z0-9]{4}$/.test(password)) {
+        return res.status(400).json({ error: '비밀번호는 영문/숫자 4자입니다.' });
+    }
+
+    if (typeof content !== 'string') {
+        return res.status(400).json({ error: '내용이 필요합니다.' });
+    }
+    const trimmedContent = content.trim();
+    if (trimmedContent.length === 0 || trimmedContent.length > 300) {
+        return res.status(400).json({ error: '내용은 1~300자로 입력하세요.' });
+    }
+
+    const rawIp = getClientIp(req);
+    const ipv4 = extractIpv4(rawIp);
+    if (!ipv4) {
+        return res.status(400).json({ error: 'IPv4 환경에서만 댓글을 작성할 수 있습니다.' });
+    }
+    const ipPrefix = getIpv4Prefix(ipv4);
+
+    const rateKey = `comment_${ipv4}`;
+    if (commentRateLimit.get(rateKey)) {
+        return res.status(429).json({ error: '30초에 한 번만 작성할 수 있습니다.' });
+    }
+
+    try {
+        const passwordHash = await bcrypt.hash(password, 10);
+
+        const prisma = new PrismaClient({
+            datasources: { db: { url: process.env.DATABASE_URL } },
+        }).$extends(withAccelerate());
+
+        const comment = await prisma.characterComment.create({
+            data: {
+                characterId: charId,
+                nickname: trimmedNick,
+                passwordHash,
+                ipPrefix,
+                content: trimmedContent,
+            },
+            select: {
+                id: true,
+                nickname: true,
+                ipPrefix: true,
+                content: true,
+                createdAt: true,
+            },
+        });
+
+        commentRateLimit.set(rateKey, true);
+        res.json({ success: true, comment });
+    } catch (error) {
+        console.error('❌ [서버] 댓글 작성 오류:', error);
+        res.status(500).json({ error: '댓글 작성에 실패했습니다.' });
+    }
+});
+
+router.delete('/character-comments/:id', async (req, res) => {
+    const commentId = parseInt(req.params.id, 10);
+    const { password } = req.body || {};
+
+    if (isNaN(commentId)) {
+        return res.status(400).json({ error: '유효하지 않은 댓글 ID입니다.' });
+    }
+    if (typeof password !== 'string' || password.length === 0) {
+        return res.status(400).json({ error: '비밀번호가 필요합니다.' });
+    }
+
+    try {
+        const prisma = new PrismaClient({
+            datasources: { db: { url: process.env.DATABASE_URL } },
+        }).$extends(withAccelerate());
+
+        const comment = await prisma.characterComment.findUnique({ where: { id: commentId } });
+        if (!comment) {
+            return res.status(404).json({ error: '댓글을 찾을 수 없습니다.' });
+        }
+
+        const isMaster = !!config.masterPassword && timingSafeStringEqual(password, config.masterPassword);
+        const isOwner = !isMaster && (await bcrypt.compare(password, comment.passwordHash));
+
+        if (!isMaster && !isOwner) {
+            return res.status(403).json({ error: '비밀번호가 일치하지 않습니다.' });
+        }
+
+        await prisma.characterComment.delete({ where: { id: commentId } });
+        res.json({ success: true });
+    } catch (error) {
+        console.error('❌ [서버] 댓글 삭제 오류:', error);
+        res.status(500).json({ error: '댓글 삭제에 실패했습니다.' });
     }
 });
 

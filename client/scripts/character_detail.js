@@ -217,4 +217,200 @@ document.addEventListener("DOMContentLoaded", async () => {
     }
 
     renderCharacterInfo();
+
+    // ========================================
+    // 댓글 시스템 (디시 스타일)
+    // ========================================
+    const commentForm = document.getElementById('comment-form');
+    const nicknameInput = document.getElementById('comment-nickname');
+    const passwordInput = document.getElementById('comment-password');
+    const contentInput = document.getElementById('comment-content');
+    const charCountSpan = document.getElementById('comment-char-count');
+    const submitBtn = document.getElementById('comment-submit');
+    const errorDiv = document.getElementById('comment-form-error');
+    const commentsLoading = document.getElementById('comments-loading');
+    const commentsList = document.getElementById('comments-list');
+    const commentsPagination = document.getElementById('comments-pagination');
+
+    let currentPage = 1;
+
+    contentInput.addEventListener('input', () => {
+        charCountSpan.textContent = `${contentInput.value.length} / 300`;
+    });
+
+    function showError(message) {
+        errorDiv.textContent = message;
+        errorDiv.style.display = 'block';
+    }
+
+    function clearError() {
+        errorDiv.textContent = '';
+        errorDiv.style.display = 'none';
+    }
+
+    function formatDate(isoString) {
+        const d = new Date(isoString);
+        const yyyy = d.getFullYear();
+        const mm = String(d.getMonth() + 1).padStart(2, '0');
+        const dd = String(d.getDate()).padStart(2, '0');
+        const hh = String(d.getHours()).padStart(2, '0');
+        const mi = String(d.getMinutes()).padStart(2, '0');
+        return `${yyyy}-${mm}-${dd} ${hh}:${mi}`;
+    }
+
+    async function loadComments(page = 1) {
+        currentPage = page;
+        commentsLoading.style.display = 'block';
+        commentsList.innerHTML = '';
+        commentsPagination.innerHTML = '';
+
+        try {
+            const response = await fetch(`/api/character-comments?id=${characterId}&page=${page}`);
+            const data = await response.json();
+            commentsLoading.style.display = 'none';
+
+            if (!response.ok) {
+                commentsList.innerHTML = `<div class="comments-empty">${escapeHtml(data.error || '댓글을 불러올 수 없습니다.')}</div>`;
+                return;
+            }
+
+            renderComments(data.comments);
+            renderPagination(data.totalPages, data.page);
+        } catch (error) {
+            commentsLoading.style.display = 'none';
+            commentsList.innerHTML = '<div class="comments-empty">댓글을 불러올 수 없습니다.</div>';
+        }
+    }
+
+    function renderComments(comments) {
+        if (!comments || comments.length === 0) {
+            commentsList.innerHTML = '<div class="comments-empty">아직 댓글이 없습니다.</div>';
+            return;
+        }
+
+        commentsList.innerHTML = '';
+        comments.forEach(c => {
+            const item = document.createElement('div');
+            item.classList.add('comment-item');
+            item.innerHTML = `
+                <div class="comment-header">
+                    <span class="comment-nickname">${escapeHtml(c.nickname)}</span>
+                    <span class="comment-ip">(${escapeHtml(c.ipPrefix)})</span>
+                    <span class="comment-date">${formatDate(c.createdAt)}</span>
+                    <button class="comment-delete-btn" data-id="${c.id}">삭제</button>
+                </div>
+                <div class="comment-content">${escapeHtml(c.content).replace(/\n/g, '<br>')}</div>
+            `;
+            commentsList.appendChild(item);
+        });
+
+        commentsList.querySelectorAll('.comment-delete-btn').forEach(btn => {
+            btn.addEventListener('click', () => handleDelete(parseInt(btn.dataset.id, 10)));
+        });
+    }
+
+    function renderPagination(totalPages, page) {
+        commentsPagination.innerHTML = '';
+        if (totalPages <= 1) return;
+
+        const makeBtn = (label, targetPage, disabled = false, active = false) => {
+            const btn = document.createElement('button');
+            btn.textContent = label;
+            btn.classList.add('pagination-btn');
+            if (active) btn.classList.add('pagination-active');
+            if (disabled) btn.disabled = true;
+            else btn.addEventListener('click', () => loadComments(targetPage));
+            return btn;
+        };
+
+        commentsPagination.appendChild(makeBtn('‹', page - 1, page === 1));
+
+        // 페이지 번호: 현재 기준 앞뒤 2개씩
+        const start = Math.max(1, page - 2);
+        const end = Math.min(totalPages, page + 2);
+        for (let i = start; i <= end; i++) {
+            commentsPagination.appendChild(makeBtn(String(i), i, false, i === page));
+        }
+
+        commentsPagination.appendChild(makeBtn('›', page + 1, page === totalPages));
+    }
+
+    async function handleDelete(commentId) {
+        const password = prompt('비밀번호를 입력하세요.');
+        if (!password) return;
+
+        try {
+            const response = await fetch(`/api/character-comments/${commentId}`, {
+                method: 'DELETE',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ password }),
+            });
+            const data = await response.json();
+            if (!response.ok) {
+                alert(data.error || '삭제에 실패했습니다.');
+                return;
+            }
+            loadComments(currentPage);
+        } catch (error) {
+            alert('삭제 처리 중 오류가 발생했습니다.');
+        }
+    }
+
+    commentForm.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        clearError();
+
+        const nickname = nicknameInput.value.trim();
+        const password = passwordInput.value;
+        const content = contentInput.value.trim();
+
+        if (nickname.length === 0 || nickname.length > 15) {
+            showError('닉네임은 1~15자로 입력하세요.');
+            return;
+        }
+        if (/\s/.test(nickname)) {
+            showError('닉네임에 공백을 포함할 수 없습니다.');
+            return;
+        }
+        if (!/^[a-zA-Z0-9]{4}$/.test(password)) {
+            showError('비밀번호는 영문/숫자 4자입니다.');
+            return;
+        }
+        if (content.length === 0 || content.length > 300) {
+            showError('내용은 1~300자로 입력하세요.');
+            return;
+        }
+
+        submitBtn.disabled = true;
+        submitBtn.textContent = '작성 중...';
+
+        try {
+            const response = await fetch('/api/character-comments', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    characterId: parseInt(characterId, 10),
+                    nickname,
+                    password,
+                    content,
+                }),
+            });
+            const data = await response.json();
+            if (!response.ok) {
+                showError(data.error || '작성에 실패했습니다.');
+                return;
+            }
+            // 폼 초기화 (닉네임/비밀번호는 유지)
+            contentInput.value = '';
+            charCountSpan.textContent = '0 / 300';
+            loadComments(1);
+        } catch (error) {
+            showError('작성 처리 중 오류가 발생했습니다.');
+        } finally {
+            submitBtn.disabled = false;
+            submitBtn.textContent = '작성';
+        }
+    });
+
+    loadComments(1);
 });

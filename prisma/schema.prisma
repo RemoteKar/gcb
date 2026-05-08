@@ -20,3 +20,15 @@ model LeaderboardCache {
   data      Json
   updatedAt DateTime @default(now()) @updatedAt
 }
+
+model CharacterComment {
+  id           Int      @id @default(autoincrement())
+  characterId  Int
+  nickname     String
+  passwordHash String
+  ipPrefix     String
+  content      String
+  createdAt    DateTime @default(now())
+
+  @@index([characterId, createdAt])
+}

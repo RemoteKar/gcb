@@ -381,6 +381,68 @@ Data/description/augments/
 
 ---
 
+## 2026-05-08 작업 내용: 캐릭터 정보 페이지 댓글 시스템 추가
+
+### 개요
+각 캐릭터 상세 페이지(`/character/:id`) 하단에 디시인사이드 스타일 댓글창 추가.
+로그인 없이 매번 닉네임/비밀번호를 입력해서 작성하며, IP 앞 2옥텟이 닉네임 옆에 표시됨.
+댓글은 PostgreSQL에 저장되며, 본인 비밀번호 또는 마스터 비밀번호로 삭제 가능.
+
+### 생성된 파일
+| 파일 | 설명 |
+|------|------|
+| `config.js` | 환경변수 → 설정 매핑 (`masterPassword: process.env.MASTER_PASSWORD`) |
+| `server/utils/ip.js` | IP 추출 헬퍼 (`getClientIp`, `extractIpv4`, `getIpv4Prefix`) |
+| `prisma/migrations/20260508120000_add_character_comments/migration.sql` | `CharacterComment` 테이블 마이그레이션 |
+
+### 수정된 파일
+| 파일 | 변경 내용 |
+|------|---------|
+| `package.json` | `bcryptjs` 의존성 추가 |
+| `prisma/schema.prisma` | `CharacterComment` 모델 추가 |
+| `server/routes/api.js` | `GET/POST/DELETE /api/character-comments` 엔드포인트 추가 |
+| `client/character_detail.html` | 페이지 하단에 댓글 섹션 + 폼 추가 |
+| `client/scripts/character_detail.js` | 댓글 작성/삭제/페이지네이션 로직 추가 |
+| `client/styles/main.css` | 댓글 섹션 스타일 추가 |
+
+### 댓글 사양
+- **로그인 없음** — 매번 닉네임 + 비밀번호 입력
+- **닉네임**: 1~15자, 공백 불가
+- **비밀번호**: 영문/숫자 4자 (bcrypt 해시 저장)
+- **내용**: 1~300자
+- **IP 표시**: IPv4 앞 2옥텟 (예: `123.45`). IPv6 환경 거부
+- **정렬**: 최신순 (DESC)
+- **페이지네이션**: 페이지당 20개
+- **Rate limit**: 동일 IPv4 30초당 1회 (인메모리 NodeCache)
+- **삭제**: 작성 시 비밀번호 또는 마스터 비밀번호(env `MASTER_PASSWORD`)로 가능. 마스터 비교는 `crypto.timingSafeEqual` 사용. Hard delete (흔적 없음)
+
+### Prisma 모델
+```prisma
+model CharacterComment {
+  id           Int      @id @default(autoincrement())
+  characterId  Int
+  nickname     String
+  passwordHash String
+  ipPrefix     String
+  content      String
+  createdAt    DateTime @default(now())
+
+  @@index([characterId, createdAt])
+}
+```
+
+### API 엔드포인트
+- `GET /api/character-comments?id=X&page=N` — 댓글 목록 + 페이지네이션 정보
+- `POST /api/character-comments` (body: `{characterId, nickname, password, content}`) — 작성
+- `DELETE /api/character-comments/:id` (body: `{password}`) — 삭제 (본인 비밀번호 또는 마스터)
+
+### 배포 시 필요한 작업
+- Netlify 빌드 시 `prisma migrate deploy`가 자동 실행되어 테이블 생성됨 (`netlify.toml`에 이미 포함)
+- 로컬 개발 환경에서는 `npm install` + `npx prisma migrate dev` 실행 필요
+- **환경변수 `MASTER_PASSWORD`** 등록 필수 (Netlify Site settings > Environment variables, 로컬은 `.env`). 미설정 시 마스터 삭제 기능 비활성화 (본인 비밀번호 삭제는 정상 동작)
+
+---
+
 ## 페이지 목록
 1. `index.html` - 메인 (닉네임 검색)
 2. `user.html` - 유저 프로필
