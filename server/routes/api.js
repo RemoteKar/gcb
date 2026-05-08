@@ -481,6 +481,7 @@ router.get('/feedback-list', async (req, res) => {
 // 📌 캐릭터 댓글 (디시 스타일: 비로그인, 닉네임/비밀번호 매번 입력)
 //----------------------------------------
 const COMMENTS_PER_PAGE = 20;
+const MAX_COMMENTS_PER_CHARACTER = 100;
 const commentRateLimit = new NodeCache({ stdTTL: 30 });
 
 function timingSafeStringEqual(a, b) {
@@ -599,6 +600,23 @@ router.post('/character-comments', async (req, res) => {
                 createdAt: true,
             },
         });
+
+        // 캐릭터당 최대 100개 유지: 초과 시 오래된 것부터 삭제
+        const totalCount = await prisma.characterComment.count({ where: { characterId: charId } });
+        if (totalCount > MAX_COMMENTS_PER_CHARACTER) {
+            const excess = totalCount - MAX_COMMENTS_PER_CHARACTER;
+            const oldest = await prisma.characterComment.findMany({
+                where: { characterId: charId },
+                orderBy: { createdAt: 'asc' },
+                take: excess,
+                select: { id: true },
+            });
+            if (oldest.length > 0) {
+                await prisma.characterComment.deleteMany({
+                    where: { id: { in: oldest.map(c => c.id) } },
+                });
+            }
+        }
 
         commentRateLimit.set(rateKey, true);
         res.json({ success: true, comment });

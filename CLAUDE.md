@@ -414,6 +414,7 @@ Data/description/augments/
 - **정렬**: 최신순 (DESC)
 - **페이지네이션**: 페이지당 20개
 - **Rate limit**: 동일 IPv4 30초당 1회 (인메모리 NodeCache)
+- **캐릭터당 최대 100개**: 초과 시 작성 직후 가장 오래된 것부터 자동 삭제
 - **삭제**: 작성 시 비밀번호 또는 마스터 비밀번호(env `MASTER_PASSWORD`)로 가능. 마스터 비교는 `crypto.timingSafeEqual` 사용. Hard delete (흔적 없음)
 
 ### Prisma 모델
