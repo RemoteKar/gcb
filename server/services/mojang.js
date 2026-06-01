@@ -37,7 +37,7 @@ async function getUUID(nickname) {
 
         if (!response.ok) {
             if (response.status === 404) {
-                return null; // 유저를 찾을 수 없을 경우 null 반환
+                return getUUIDFromCachedData(nickname); // Mojang에서 못 찾으면 기존 캐시 데이터로 보완
             }
             const errorText = await response.text();
             console.error(`❌ [Mojang API] 응답 오류: ${response.status} ${response.statusText} - ${errorText}`);
@@ -49,6 +49,35 @@ async function getUUID(nickname) {
     } catch (error) {
         console.error("❌ [Mojang API] UUID 조회 중 오류 발생:", error);
         throw new Error("UUID 조회 중 오류가 발생했습니다.");
+    }
+}
+
+async function getUUIDFromCachedData(nickname) {
+    const prisma = getPrismaClientOrNull();
+    if (!prisma) {
+        return null;
+    }
+
+    const normalizedNickname = nickname.toLowerCase();
+
+    try {
+        const cachedProfiles = await prisma.mojangProfileCache.findMany({
+            select: { uuid: true, name: true },
+        });
+        const cachedProfile = cachedProfiles.find(profile => profile.name?.toLowerCase() === normalizedNickname);
+        if (cachedProfile) {
+            return cachedProfile.uuid;
+        }
+
+        const leaderboard = await prisma.leaderboardCache.findUnique({
+            where: { id: 'leaderboard' },
+        });
+        const leaderboardData = Array.isArray(leaderboard?.data) ? leaderboard.data : [];
+        const cachedPlayer = leaderboardData.find(player => player.nickname?.toLowerCase() === normalizedNickname);
+        return cachedPlayer?.uuid || null;
+    } catch (error) {
+        console.error(`❌ [Mojang API] 캐시 UUID 조회 오류: ${error.message}`);
+        return null;
     }
 }
 

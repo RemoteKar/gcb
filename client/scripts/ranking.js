@@ -78,7 +78,7 @@ document.addEventListener("DOMContentLoaded", async () => {
                 ${badgeHtml}
             `;
             li.addEventListener('click', () => {
-                window.location.href = `/user/${encodeURIComponent(player.nickname)}`;
+                window.location.href = `/user/${encodeURIComponent(player.uuid)}`;
             });
             ul.appendChild(li);
         }
@@ -109,7 +109,7 @@ document.addEventListener("DOMContentLoaded", async () => {
             <p><strong>승률:</strong> ${player.winRate}%</p>
         `;
         rankDiv.addEventListener('click', () => {
-            window.location.href = `/user/${encodeURIComponent(player.nickname)}`;
+            window.location.href = `/user/${encodeURIComponent(player.uuid)}`;
         });
         return rankDiv;
     }
