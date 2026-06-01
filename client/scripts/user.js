@@ -125,18 +125,48 @@ document.addEventListener("DOMContentLoaded", async () => {
   // 4-1. 통계 데이터 표시 (왼쪽 영역)
   if (statistics) {
     statsDisplay.innerHTML = `
-      <p><strong>총 게임 수:</strong> ${statistics.totalGames}게임</p>
-      <p><strong>승률:</strong> ${statistics.winRate}% (${statistics.winCount}승)</p>
-      <p><strong>순방률:</strong> ${statistics.avarageRankLeast50}%</p>
-      <p><strong>가한 피해:</strong> ${statistics.averageDamageDealt} (${statistics.maxDamageDealt})</p>
-      <p><strong>받은 피해:</strong> ${statistics.averageDamageTaken} (${statistics.maxDamageTaken})</p>        
-      <p><strong>처치:</strong> ${statistics.averageKillRate} (${statistics.maxKill})</p>
-      <p><strong>평균 생존시간:</strong> ${statistics.averageAliveTime}</p>
+      <div class="user-stat-grid">
+        <div class="user-stat-card user-stat-card-primary">
+          <span class="user-stat-label">승률</span>
+          <strong class="user-stat-value">${statistics.winRate}%</strong>
+          <span class="user-stat-meta">${statistics.winCount}승</span>
+        </div>
+        <div class="user-stat-card">
+          <span class="user-stat-label">게임</span>
+          <strong class="user-stat-value">${statistics.totalGames}</strong>
+          <span class="user-stat-meta">판</span>
+        </div>
+        <div class="user-stat-card">
+          <span class="user-stat-label">순방률</span>
+          <strong class="user-stat-value">${statistics.avarageRankLeast50}%</strong>
+          <span class="user-stat-meta">상위권</span>
+        </div>
+        <div class="user-stat-card">
+          <span class="user-stat-label">처치</span>
+          <strong class="user-stat-value">${statistics.averageKillRate}</strong>
+          <span class="user-stat-meta">최대 ${statistics.maxKill}</span>
+        </div>
+        <div class="user-stat-card">
+          <span class="user-stat-label">가한 피해</span>
+          <strong class="user-stat-value">${statistics.averageDamageDealt}</strong>
+          <span class="user-stat-meta">최대 ${statistics.maxDamageDealt}</span>
+        </div>
+        <div class="user-stat-card">
+          <span class="user-stat-label">받은 피해</span>
+          <strong class="user-stat-value">${statistics.averageDamageTaken}</strong>
+          <span class="user-stat-meta">최대 ${statistics.maxDamageTaken}</span>
+        </div>
+      </div>
+      <div class="user-survival-stat">
+        <span>평균 생존시간</span>
+        <strong>${statistics.averageAliveTime}</strong>
+      </div>
     `;
     
     // 캐릭터 이미지 + 테두리 오버레이 (모스트 캐릭터)
     const charContainer = document.createElement("div");
     charContainer.classList.add("char-container");
+    charContainer.classList.add("profile-favorite-character");
 
     const mostUsedId = statistics.mostUsedCharacter;
     const mostUsedIsCreative = CharacterConfig.isCreativeCharacter(mostUsedId);
@@ -285,21 +315,23 @@ function renderNextGames(uuid) {
     const damageDealt = ((playerData?.Damage?.Dealt ?? 0)).toFixed(0);
     const damageTaken = ((playerData?.Damage?.Taken) ?? 0).toFixed(0);
 
-    let cardBg = "#2c2c2c";
-    let cardBorder = "#3c3c3c";
-    const rankp = (ranking/joins);
-    if(ranking === 1){
-      cardBg = "#4066B2"
-      cardBorder = "#5383E8";
-    }else if(rankp < 0.25){
-      cardBg = "#267F00"
-      cardBorder = "#32A800";
-    }else if(rankp >= 0.75){
-      cardBg = "#59343B"
-      cardBorder = "#E84057";
+    let resultTone = "neutral";
+    let cardAccent = "#585858";
+    const rankingNumber = Number(ranking);
+    const joinsNumber = Number(joins);
+    const rankp = rankingNumber / joinsNumber;
+    if (rankingNumber === 1) {
+      resultTone = "win";
+      cardAccent = "#5383E8";
+    } else if (rankp < 0.25) {
+      resultTone = "top";
+      cardAccent = "#32A800";
+    } else if (rankp >= 0.75) {
+      resultTone = "bottom";
+      cardAccent = "#E84057";
     }
 
-    const dateColor = (playerData?.Character >= 900) ? 'red' : 'white';
+    const dateClass = (playerData?.Character >= 900) ? 'game-card-date creative-date' : 'game-card-date';
 
     const gameCardCharId = playerData?.Character;
     const gameCardIsCreative = CharacterConfig.isCreativeCharacter(gameCardCharId);
@@ -311,19 +343,22 @@ function renderNextGames(uuid) {
       : '캐릭터';
 
     gameItem.innerHTML = `
-    <div class="game-card" style="background-color: ${cardBg}; border-color: ${cardBorder};">
+    <div class="game-card game-card-${resultTone}" style="--result-accent: ${cardAccent};">
+        <div class="game-card-rank">
+          <span>#${ranking}</span>
+          <small>${joins}명</small>
+        </div>
         <div class="game-card-left">
           <img src="${gameCardPortrait}" alt="${gameCardAlt}">
         </div>
         <div class="game-card-info">
-          <p style="color: ${dateColor}; font-size: 24px; font-weight: 600; margin: 0;">
+          <p class="${dateClass}">
             <strong>${displayDate}</strong>
           </p>
           <div class="game-card-info-sub">
-            <p><strong>랭킹:</strong> ${ranking} / ${joins}</p>
-            <p><strong>처치:</strong> ${kills}</p>
-            <p><strong>생존:</strong> ${playerData?.TimeSurvived ?? 'N/A'}</p>
-            <p><strong>D/D:</strong> ${damageDealt} / ${damageTaken}</p>
+            <span><strong>처치</strong> ${kills}</span>
+            <span><strong>생존</strong> ${playerData?.TimeSurvived ?? 'N/A'}</span>
+            <span><strong>피해</strong> ${damageDealt} / ${damageTaken}</span>
           </div>
         </div>
         <div class="game-card-augment">

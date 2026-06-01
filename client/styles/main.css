@@ -1,12 +1,28 @@
 /* 구글 폰트 Nunito 불러오기 */
 @import url('https://fonts.googleapis.com/css2?family=Nunito:wght@300;400;700&display=swap');
 
+:root {
+    --bg: #181818;
+    --surface: #242424;
+    --surface-raised: #2b2b2b;
+    --surface-soft: #202020;
+    --line: #383838;
+    --line-soft: #2e2e2e;
+    --text: #e8e8e8;
+    --text-muted: #a5a5a5;
+    --brand: #f7a400;
+    --brand-soft: rgba(247, 164, 0, 0.14);
+    --action: #4f8cff;
+    --action-hover: #76a6ff;
+    --danger: #e84057;
+}
+
 /* 기본 스타일 */
 body {
     margin: 0;
     font-family: 'Nunito', sans-serif;
-    background-color: #1c1c1c;
-    color: #dcdcdc;
+    background-color: var(--bg);
+    color: var(--text);
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -15,21 +31,27 @@ body {
 
 .header-bar {
     width: 100%;
-    height: 50px; /* 높이 증가 */
-    background-color: #1c1c1c; /* 배경색 변경 */
+    min-height: 56px;
+    background-color: rgba(24, 24, 24, 0.96);
     display: flex;
     align-items: center;
-    padding: 0 20px;
+    padding: 0 24px;
     box-sizing: border-box;
-    border-bottom: 2px solid #f7a400; /* 하단에 노란색 선 */
+    border-bottom: 1px solid rgba(247, 164, 0, 0.45);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.22);
+    gap: 8px;
+    position: sticky;
+    top: 0;
+    z-index: 100;
 }
 
 .header-logo {
     font-size: 28px; /* 텍스트 크기 강조 */
     font-weight: 700; /* 볼드체 */
-    color: #f7a400; /* 노란색으로 강조 */
+    color: var(--brand); /* 노란색으로 강조 */
     text-decoration: none; /* 밑줄 제거 */
     transition: color 0.3s ease; /* 호버 효과 */
+    margin-right: 8px;
 }
 
 .header-logo:hover {
@@ -37,17 +59,22 @@ body {
 }
 
 .nav-button {
-    margin-left: 20px; /* 로고와의 간격 */
-    padding: 8px 15px;
-    background-color: #5393ff; /* 버튼 배경색 */
-    color: white;
+    margin-left: 0;
+    padding: 8px 13px;
+    background-color: transparent;
+    color: var(--text-muted);
     text-decoration: none;
-    border-radius: 5px;
-    transition: background-color 0.3s ease;
+    border: 1px solid transparent;
+    border-radius: 6px;
+    transition: background-color 0.2s ease, color 0.2s ease, border-color 0.2s ease;
+    font-size: 14px;
+    font-weight: 700;
 }
 
 .nav-button:hover {
-    background-color: #3a7be0;
+    background-color: var(--surface-raised);
+    border-color: var(--line);
+    color: var(--text);
 }
 
 /* 랭킹 페이지 스타일 */
@@ -288,9 +315,10 @@ body {
     display: flex;
     justify-content: center;
     align-items: center;
-    background-color: #2c2c2c;
-    padding: 10px;
-    border-radius: 30px;
+    background-color: var(--surface);
+    border: 1px solid var(--line);
+    padding: 8px;
+    border-radius: 8px;
     width: 100%;
     max-width: 450px;
     margin: 20px auto;
@@ -309,16 +337,16 @@ body {
 #search-button {
     padding: 10px 20px;
     font-size: 16px;
-    background-color: #5393ff;
+    background-color: var(--action);
     color: white;
     border: none;
-    border-radius: 20px;
+    border-radius: 6px;
     cursor: pointer;
     transition: 0.3s;
 }
 
 #search-button:hover {
-    background-color: #3a7be0;
+    background-color: var(--action-hover);
 }
 
 #result {
@@ -329,14 +357,14 @@ body {
 
 /* 플레이어 머리 이미지 스타일 */
 .player-head {
-    margin-top: 20px;
+    margin-top: 8px;
 }
 
 .player-head img {
     width: 100px;
     height: 100px;
     border-radius: 10px;
-    border: 5px solid #3c3c3c;
+    border: 3px solid var(--line);
 }
 
 /* 배지 스타일 */
@@ -360,6 +388,7 @@ body {
 #stats-display {
     margin-top: 10px;
     font-size: 16px;
+    width: 100%;
 }
 
 #stats-display p {
@@ -368,6 +397,70 @@ body {
 
 #stats-display strong {
     margin-right: 10px;
+}
+
+.user-stat-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 8px;
+    width: 100%;
+    margin-top: 12px;
+}
+
+.user-stat-card {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    min-height: 68px;
+    padding: 10px 12px;
+    box-sizing: border-box;
+    background-color: var(--surface);
+    border: 1px solid var(--line-soft);
+    border-radius: 8px;
+    text-align: left;
+}
+
+.user-stat-card-primary {
+    background-color: var(--brand-soft);
+    border-color: rgba(247, 164, 0, 0.45);
+}
+
+.user-stat-label {
+    color: var(--text-muted);
+    font-size: 12px;
+    font-weight: 700;
+}
+
+.user-stat-value {
+    margin-top: 3px;
+    margin-right: 0;
+    color: var(--text);
+    font-size: 22px;
+    line-height: 1;
+}
+
+.user-stat-meta {
+    margin-top: auto;
+    color: var(--text-muted);
+    font-size: 12px;
+}
+
+.user-survival-stat {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 8px;
+    padding: 9px 12px;
+    background-color: var(--surface-soft);
+    border: 1px solid var(--line-soft);
+    border-radius: 8px;
+    color: var(--text-muted);
+    font-size: 13px;
+}
+
+.user-survival-stat strong {
+    color: var(--text);
+    margin-right: 0;
 }
 
 /* 배지 이미지 */
@@ -395,6 +488,10 @@ body {
     margin-bottom: 10px;
 }
 
+.profile-favorite-character {
+    margin-top: 14px;
+}
+
 .char-img {
     width: 100%;
     height: 100%;
@@ -415,31 +512,51 @@ body {
     display: flex;
     flex-direction: row;
     width: 100%;
-    height: calc(100vh - 8px); /* header-bar 높이 제외 */
+    height: calc(100vh - 56px);
+    max-width: 1440px;
+    margin: 0 auto;
 }
 
 .left-panel {
-    width: 500px;
-    padding: 20px;
+    width: 380px;
+    padding: 24px;
     box-sizing: border-box;
-    background-color: #1c1c1c;
-    border-right: 2px solid #2c2c2c;
+    background-color: var(--bg);
+    border-right: 1px solid var(--line-soft);
     overflow-y: auto;
   
     /* 중앙 정렬을 위한 flexbox 설정 */
     display: flex;
     flex-direction: column;  /* 세로 방향 정렬 */
-    justify-content: center; /* 수직 중앙 정렬 */
+    justify-content: flex-start;
     align-items: center;     /* 수평 중앙 정렬 */
     text-align: center;      /* 텍스트가 있을 경우 중앙 정렬 */
   }
+
+.left-panel #user-search {
+    width: 100%;
+}
+
+.left-panel #user-search h1 {
+    margin: 0;
+    color: var(--brand);
+    font-size: 26px;
+}
+
+.left-panel #user-title {
+    margin: 6px 0 0;
+    color: var(--text);
+    font-size: 24px;
+    line-height: 1.2;
+    word-break: break-word;
+}
   
 
 .right-panel {
     flex: 1;
-    padding: 20px;
+    padding: 24px;
     box-sizing: border-box;
-    background-color: #1c1c1c;
+    background-color: var(--bg);
     overflow-y: auto;
 }
 
@@ -448,6 +565,8 @@ body {
     display: flex;
     flex-direction: column;
     gap: 10px; /* 카드 간 간격 */
+    max-width: 980px;
+    margin: 0 auto;
 }
 
 /* 더보기 버튼 */
@@ -455,70 +574,117 @@ body {
     display: block;
     margin: 20px auto 0;
     padding: 10px 20px;
-    background-color: #5393ff;
+    background-color: var(--action);
     color: white;
     border: none;
-    border-radius: 20px;
+    border-radius: 6px;
     cursor: pointer;
     transition: 0.3s;
 }
 .load-more-btn:hover {
-    background-color: #3a7be0;
+    background-color: var(--action-hover);
 }
 
 /* 각 게임 카드 내부 스타일 */
 .game-card {
     display: flex;
     align-items: center;
-    padding: 10px;
-    background-color: #2c2c2c;
-    border-color: #3c3c3c;
-    border-width: 5px;
-    border-radius: 10px;
-    border-style: solid;
-    height: 150px; /* 고정 높이 지정 (예: 120px) */
+    gap: 14px;
+    padding: 12px 14px;
+    background-color: var(--surface);
+    border: 1px solid var(--line);
+    border-left: 5px solid var(--result-accent, var(--line));
+    border-radius: 8px;
+    min-height: 126px;
     box-sizing: border-box; /* 패딩과 테두리를 포함하여 크기 계산 */
+    transition: transform 0.16s ease, border-color 0.16s ease, background-color 0.16s ease;
+}
+
+.game-card:hover {
+    transform: translateY(-1px);
+    background-color: var(--surface-raised);
+    border-color: var(--result-accent, var(--line));
+}
+
+.game-card-rank {
+    flex: 0 0 72px;
+    min-height: 78px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    background-color: rgba(255, 255, 255, 0.035);
+    border: 1px solid var(--line-soft);
+    border-radius: 8px;
+    color: var(--result-accent, var(--text));
+}
+
+.game-card-rank span {
+    font-size: 25px;
+    font-weight: 700;
+    line-height: 1;
+}
+
+.game-card-rank small {
+    margin-top: 5px;
+    color: var(--text-muted);
+    font-size: 12px;
 }
 
 .game-card-left {
-    flex: 0 0 120px; /* 왼쪽 이미지 고정 영역 */
-    margin-right: 10px;
+    flex: 0 0 86px; /* 왼쪽 이미지 고정 영역 */
 }
 
 .game-card-left img{
-    width: 120px;
-    height: 120px;
+    width: 86px;
+    height: 86px;
     object-fit: cover;
-    border-radius: 10px;
+    border-radius: 8px;
+    display: block;
 }
 
 /* .game-card-info: 날짜 + 서브 정보를 세로로 쌓기 */
 .game-card-info {
     display: flex;
     flex-direction: column;
-    gap: 6px;             /* 날짜와 서브영역 간격 */
+    gap: 10px;             /* 날짜와 서브영역 간격 */
+    min-width: 180px;
 }
   
 /* 녹색 영역: 날짜 (첫 번째 <p>) */
 .game-card-info > p:first-of-type {
-    font-size: 18px;      /* 크게 */
+    font-size: 20px;      /* 크게 */
     font-weight: 600;
-    color: white;
+    color: var(--text);
     margin: 0;            /* 불필요한 기본 margin 제거 */
+}
+
+.game-card-date.creative-date {
+    color: var(--danger);
 }
 
 /* 노란 영역: 서브 정보 */
 .game-card-info-sub {
     display: flex;
-    flex-direction: column;
-    gap: 3px;             /* 항목 간 간격 */
+    flex-direction: row;
+    flex-wrap: wrap;
+    gap: 7px;
 }
 
-.game-card-info-sub > p {
-    font-size: 15px;      /* 작게 */
-    color: white;
+.game-card-info-sub > span {
+    font-size: 13px;
+    color: var(--text);
     margin: 0;            /* 기본 margin 제거 */
     line-height: 1;
+    padding: 6px 8px;
+    background-color: var(--surface-soft);
+    border: 1px solid var(--line-soft);
+    border-radius: 6px;
+}
+
+.game-card-info-sub strong {
+    color: var(--text-muted);
+    margin-right: 4px;
 }
 
 
@@ -527,15 +693,17 @@ body {
     margin-left: auto;
     display: flex;
     flex-direction: row;
-    gap: 10px; /* 이미지 간 간격 */
+    gap: 8px; /* 이미지 간 간격 */
     align-items: flex-end;
 }
 
 .game-card-augment img {
-    width: 100px;
-    height: 100px;
+    width: 64px;
+    height: 64px;
     object-fit: cover;
-    border-radius: 10px;
+    border-radius: 8px;
+    border: 1px solid var(--line);
+    background-color: var(--surface-soft);
 }
 
 /* ========================================
@@ -1032,7 +1200,7 @@ body {
     .left-panel {
         width: 100%;
         border-right: none;
-        border-bottom: 2px solid #2c2c2c;
+        border-bottom: 1px solid var(--line-soft);
         padding: 15px;
     }
 
@@ -1042,26 +1210,51 @@ body {
 
     /* 게임 카드 */
     .game-card {
-        height: auto;
+        min-height: 0;
         flex-wrap: wrap;
-        padding: 8px;
+        gap: 10px;
+        padding: 10px;
+        align-items: flex-start;
+    }
+
+    .game-card-rank {
+        flex: 0 0 54px;
+        min-height: 58px;
+    }
+
+    .game-card-rank span {
+        font-size: 18px;
+    }
+
+    .game-card-rank small {
+        font-size: 10px;
     }
 
     .game-card-left {
-        flex: 0 0 60px;
+        flex: 0 0 58px;
     }
 
     .game-card-left img {
-        width: 60px;
-        height: 60px;
+        width: 58px;
+        height: 58px;
     }
 
     .game-card-info > p:first-of-type {
         font-size: 14px;
     }
 
-    .game-card-info-sub > p {
-        font-size: 12px;
+    .game-card-info {
+        min-width: 0;
+        flex: 1;
+    }
+
+    .game-card-info-sub {
+        gap: 5px;
+    }
+
+    .game-card-info-sub > span {
+        font-size: 11px;
+        padding: 5px 6px;
     }
 
     .game-card-augment {
@@ -1073,8 +1266,8 @@ body {
     }
 
     .game-card-augment img {
-        width: 50px;
-        height: 50px;
+        width: 44px;
+        height: 44px;
     }
 
     /* 랭킹 상위 3명 */
@@ -1319,11 +1512,15 @@ body {
 
 /* 붉은 네비게이션 버튼 */
 .nav-button-red {
-    background-color: #e74c3c;
+    background-color: rgba(232, 64, 87, 0.12);
+    border-color: rgba(232, 64, 87, 0.35);
+    color: #ff9aa8;
 }
 
 .nav-button-red:hover {
-    background-color: #c0392b;
+    background-color: rgba(232, 64, 87, 0.2);
+    border-color: rgba(232, 64, 87, 0.55);
+    color: white;
 }
 
 /* 피드백 상단 바 (타이틀 + 필터) */
