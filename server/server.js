@@ -10,4 +10,12 @@ app.use(express.json());
 const apiRoutes = require('./routes/api');
 app.use('/api', apiRoutes);
 
+if (require.main === module) {
+  const port = process.env.PORT || 3000;
+  app.listen(port, () => {
+    console.log(`GCB API server listening on http://localhost:${port}`);
+  });
+}
+
+module.exports.app = app;
 module.exports.handler = serverless(app);

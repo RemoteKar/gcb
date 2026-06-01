@@ -3,10 +3,9 @@ const router = express.Router();
 const fetch = require('node-fetch');
 const crypto = require('crypto');
 const bcrypt = require('bcryptjs');
-const { PrismaClient } = require('@prisma/client/edge');
-const { withAccelerate } = require('@prisma/extension-accelerate');
 const { getUUID, getProfileByUUID } = require('../services/mojang');
 const { getBadgeData, getGameHistory, fetchAllGameRecords, getCharacterList, getCharacterInfo, getSkillLinks, getWeaponList, getTitanList, getTitanInfo, getAugmentList, createFeedbackIssue, getFeedbackIssues, clearFeedbackCache } = require('../services/github');
+const { getPrismaClient } = require('../services/prisma');
 const authMiddleware = require('../middleware/auth');
 const NodeCache = require('node-cache');
 const { computeStatistics } = require('../utils/statistics');
@@ -119,9 +118,7 @@ router.get('/statistic', (req, res, next) => {
 router.get('/leaderboard', async (req, res) => {
   console.log(`🔍 [서버] 랭킹 데이터 요청`);
   try {
-    const prisma = new PrismaClient({
-      datasources: { db: { url: process.env.DATABASE_URL } },
-    }).$extends(withAccelerate());
+    const prisma = getPrismaClient();
 
     const cached = await prisma.leaderboardCache.findUnique({
       where: { id: 'leaderboard' }
@@ -501,9 +498,7 @@ router.get('/character-comments', async (req, res) => {
     }
 
     try {
-        const prisma = new PrismaClient({
-            datasources: { db: { url: process.env.DATABASE_URL } },
-        }).$extends(withAccelerate());
+        const prisma = getPrismaClient();
 
         const [comments, totalCount] = await Promise.all([
             prisma.characterComment.findMany({
@@ -583,9 +578,7 @@ router.post('/character-comments', async (req, res) => {
     try {
         const passwordHash = await bcrypt.hash(password, 10);
 
-        const prisma = new PrismaClient({
-            datasources: { db: { url: process.env.DATABASE_URL } },
-        }).$extends(withAccelerate());
+        const prisma = getPrismaClient();
 
         const comment = await prisma.characterComment.create({
             data: {
@@ -641,9 +634,7 @@ router.delete('/character-comments/:id', async (req, res) => {
     }
 
     try {
-        const prisma = new PrismaClient({
-            datasources: { db: { url: process.env.DATABASE_URL } },
-        }).$extends(withAccelerate());
+        const prisma = getPrismaClient();
 
         const comment = await prisma.characterComment.findUnique({ where: { id: commentId } });
         if (!comment) {

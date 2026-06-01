@@ -1,29 +1,8 @@
-const { PrismaClient } = require('@prisma/client/edge'); // PrismaClient 복원
-const { withAccelerate } = require('@prisma/extension-accelerate'); // withAccelerate 복원
 const NodeCache = require('node-cache');
+const { getPrismaClientOrNull } = require('./prisma');
 const profileCache = new NodeCache({ stdTTL: 82800 }); // 23 hours in seconds
 
 const fetch = require('node-fetch');
-
-let prisma; // prisma 인스턴스를 전역으로 선언
-
-try {
-  const databaseUrl = process.env.DATABASE_URL;
-  console.log(`[DEBUG] DATABASE_URL (processed): ${databaseUrl ? '*****' : 'UNDEFINED'}`); // 민감 정보이므로 실제 값은 ***** 처리
-  prisma = new PrismaClient({
-    datasources: {
-      db: {
-        url: databaseUrl,
-      },
-    },
-  }).$extends(withAccelerate()); // withAccelerate 적용
-  console.log("✅ [Prisma] PrismaClient 초기화 성공.");
-} catch (error) {
-  console.error("❌ [Prisma] PrismaClient 초기화 오류: 데이터베이스 연결 실패. 캐싱 기능 비활성화.", error);
-  console.error(`[DEBUG] DATABASE_URL (raw): ${process.env.DATABASE_URL ? '*****' : 'UNDEFINED'}`); // 민감 정보이므로 실제 값은 ***** 처리
-  console.error(`[DEBUG] PrismaClientInitializationError details: ${error.message}`);
-  prisma = null; // 초기화 실패 시 prisma를 null로 설정
-}
 
 // 재시도 로직을 위한 헬퍼 함수
 async function retryOperation(operation, retries = 5, delay = 2000) {
@@ -86,6 +65,7 @@ async function getProfileByUUID(uuid) {
     }
 
     // 2. Prisma 캐시에서 프로필 조회 (Prisma가 유효할 경우)
+    const prisma = getPrismaClientOrNull();
     if (prisma) {
         try {
             const cachedProfile = await prisma.mojangProfileCache.findUnique({

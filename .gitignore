@@ -3,3 +3,6 @@
 
 # Environment variables
 .env
+
+# Generated at build time
+client/data/

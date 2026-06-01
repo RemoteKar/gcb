@@ -12,6 +12,25 @@ const baseDataPath = 'Data';
 
 const badgeCache = new NodeCache({ stdTTL: 3600 }); // 1시간 캐시
 const gameHistoryCache = new NodeCache({ stdTTL: 3600 }); // 1시간 캐시
+const DOWNLOAD_CONCURRENCY = 16;
+
+let allGameRecordsLoadPromise = null;
+
+async function mapWithConcurrency(items, limit, mapper) {
+    const results = new Array(items.length);
+    let nextIndex = 0;
+
+    async function worker() {
+        while (nextIndex < items.length) {
+            const currentIndex = nextIndex++;
+            results[currentIndex] = await mapper(items[currentIndex], currentIndex);
+        }
+    }
+
+    const workerCount = Math.min(limit, items.length);
+    await Promise.all(Array.from({ length: workerCount }, worker));
+    return results;
+}
 
 // 재시도 로직을 위한 헬퍼 함수
 async function retryOperation(operation, retries = 5, delay = 2000) {
@@ -163,31 +182,47 @@ async function fetchAllGameRecords(forceRefresh = false) {
             console.log(`✅ [GitHub API] 인메모리 게임 기록 캐시 히트: ${inMemoryCachedData.length}개`);
             return inMemoryCachedData;
         }
+        if (allGameRecordsLoadPromise) {
+            console.log(`⏳ [GitHub API] 진행 중인 게임 기록 로딩 재사용`);
+            return allGameRecordsLoadPromise;
+        }
     } else {
         console.log("🚀 [GitHub API] 모든 게임 기록 캐시 강제 새로고침 시작...");
     }
 
-    // 2. GitHub API에서 모든 게임 기록 가져오기
-    const filesMetadata = await getAllGameHistoryFileMetadata();
-    console.log(`[DEBUG] GitHub에서 가져온 파일 메타데이터 수: ${filesMetadata.length}`);
+    allGameRecordsLoadPromise = (async () => {
+        // 2. GitHub API에서 모든 게임 기록 가져오기
+        const filesMetadata = await getAllGameHistoryFileMetadata();
+        console.log(`[DEBUG] GitHub에서 가져온 파일 메타데이터 수: ${filesMetadata.length}`);
 
-    const allGameRecordsPromises = filesMetadata.map(async (file) => {
-        const parsedData = await fetchAndParseYamlFile(file.download_url);
-        return { fileName: file.name, content: parsedData };
-    });
-    console.log(`[DEBUG] 파싱 시도할 게임 기록 수: ${allGameRecordsPromises.length}`);
+        console.log(`[DEBUG] 파싱 시도할 게임 기록 수: ${filesMetadata.length}`);
+        const allGameRecords = await mapWithConcurrency(
+            filesMetadata,
+            DOWNLOAD_CONCURRENCY,
+            async (file) => {
+                const parsedData = await fetchAndParseYamlFile(file.download_url);
+                return { fileName: file.name, content: parsedData };
+            }
+        );
 
-    const allParsedGameRecordsWithFileName = (await Promise.all(allGameRecordsPromises)).filter(record => record.content !== null);
-    console.log(`[DEBUG] 성공적으로 파싱된 게임 기록 수 (필터링 후): ${allParsedGameRecordsWithFileName.length}`);
+        const allParsedGameRecordsWithFileName = allGameRecords.filter(record => record.content !== null);
+        console.log(`[DEBUG] 성공적으로 파싱된 게임 기록 수 (필터링 후): ${allParsedGameRecordsWithFileName.length}`);
 
-    // 3. 인메모리 캐시에 저장
-    gameHistoryCache.set('allGameRecords', allParsedGameRecordsWithFileName);
+        // 3. 인메모리 캐시에 저장
+        gameHistoryCache.set('allGameRecords', allParsedGameRecordsWithFileName);
 
-    if (forceRefresh) {
-        console.log("✅ [GitHub API] 모든 게임 기록 캐시 강제 새로고침 완료.");
+        if (forceRefresh) {
+            console.log("✅ [GitHub API] 모든 게임 기록 캐시 강제 새로고침 완료.");
+        }
+
+        return allParsedGameRecordsWithFileName;
+    })();
+
+    try {
+        return await allGameRecordsLoadPromise;
+    } finally {
+        allGameRecordsLoadPromise = null;
     }
-
-    return allParsedGameRecordsWithFileName;
 }
 
 async function refreshAllGameRecordsCache() {

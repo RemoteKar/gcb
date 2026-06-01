@@ -56,6 +56,16 @@ document.addEventListener("DOMContentLoaded", async () => {
   }
 
   async function fetchStatistic(uuid) {
+    const staticUrl = `/data/user-statistics/${formatUUID(uuid)}.json`;
+    try {
+      const staticResponse = await fetch(staticUrl);
+      if (staticResponse.ok) {
+        return await staticResponse.json();
+      }
+    } catch (error) {
+      console.warn("fetchStaticStatistic error:", error);
+    }
+
     const url = `/api/statistic?uuid=${uuid}`;
     try {
       const response = await fetch(url);

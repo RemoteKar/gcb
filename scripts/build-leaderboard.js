@@ -1,7 +1,6 @@
-const { PrismaClient } = require('@prisma/client/edge');
-const { withAccelerate } = require('@prisma/extension-accelerate');
 const { getProfileByUUID } = require('../server/services/mojang');
 const { refreshAllGameRecordsCache } = require('../server/services/github');
+const { getPrismaClient } = require('../server/services/prisma');
 const { aggregateAllPlayerStatistics } = require('../server/utils/statistics');
 
 function formatStatistics(stats) {
@@ -27,9 +26,7 @@ async function buildLeaderboard() {
 
   let prisma;
   try {
-    prisma = new PrismaClient({
-      datasources: { db: { url: process.env.DATABASE_URL } },
-    }).$extends(withAccelerate());
+    prisma = getPrismaClient();
   } catch (error) {
     console.error("❌ [빌드] Prisma 초기화 실패:", error);
     process.exit(1);
