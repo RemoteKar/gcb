@@ -29,11 +29,22 @@ document.addEventListener("DOMContentLoaded", async () => {
 
   // ──────────────────────────────
   // API 호출 함수들
+  function isUUIDInput(value) {
+    return /^[0-9a-f]{32}$/i.test(value) || /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(value);
+  }
+
   async function fetchMinecraftData(nickname) {
+    if (isUUIDInput(nickname)) {
+      return { uuid: nickname.toLowerCase() };
+    }
+
     const url = `/api/uuid?nickname=${encodeURIComponent(nickname)}`;
     try {
       const response = await fetch(url);
-      if (!response.ok) throw new Error("유저를 찾을 수 없습니다.");
+      if (!response.ok) {
+        const errorText = await response.text();
+        throw new Error(`유저를 찾을 수 없습니다. (${response.status}) ${errorText}`);
+      }
       const data = await response.json();
       return data;
     } catch (error) {
