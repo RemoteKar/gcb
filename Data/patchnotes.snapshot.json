@@ -2253,715 +2253,834 @@
    "url": "https://gall.dcinside.com/mgallery/board/view?id=steve&no=222240",
    "title": "정의의 사도 on",
    "comments": 22,
-   "date": "2023.04.16"
+   "date": "2023.04.16",
+   "body": ""
   },
   {
    "url": "https://gall.dcinside.com/mgallery/board/view?id=steve&no=221577",
    "title": "게임캐릭터배틀 체력바가 안보이는거수정버전",
    "comments": 4,
-   "date": "2023.04.10"
+   "date": "2023.04.10",
+   "body": "https://www.dropbox.com/s/2202txcgjz6lq5t/gcb.zip?dl=1"
   },
   {
    "url": "https://gall.dcinside.com/mgallery/board/view?id=steve&no=221483",
    "title": "게임캐릭터배틀 7시 20분",
    "comments": 25,
-   "date": "2023.04.09"
+   "date": "2023.04.09",
+   "body": "gamecharacterbattle.서버.한국\n\nhttps://www.dropbox.com/s/t4cfv0kmv4ko80k/%ED%8C%8C%EC%98%A4%EC%BA%905.zip?dl=1\nhttps://www.dropbox.com/s/t4cfv0kmv4ko80k/%ED%8C%8C%EC%98%A4%EC%BA%905.zip?dl=1\n\n패치노트:\n롤랑:\n로직 아틀리에:\n\n피해량: 10+최대체력의1% -> 12+최대체력의1%\n\n랜서:\n전투속행:\n\n최대체력이 20% 이하에서 피해를 입을때 -> 피해를 입어서 최대체력이 20% 이하가 될떄\n\n붉은 가시의 저주:\n\n재사용대기시간 6 -> 4\n\n찔러 뚫는 죽음의 가시 창 - 게이 볼그:\n\n피해량: 50+잃은체력의10% -> 25+잃은체력의25%\n표식의 지속시간: 5초 -> 10\n\n꿰어 뚫는 죽음의 나는 창 - 게이 볼그:\n\n피해량 350 -> 225\n시전시간 1.2초 -> 1.5"
   },
   {
    "url": "https://gall.dcinside.com/mgallery/board/view?id=steve&no=221454",
    "title": "게임캐릭터배틀 맛좀보기",
    "comments": 23,
-   "date": "2023.04.09"
+   "date": "2023.04.09",
+   "body": "오늘 서버는 안열거나 늦게 열거같음 9시까지 안열리면 안열리는거로아\n\n사용고려사항:\n\n버전은 1.19.2 버전\n\n옜널버전이기때문에 본서버랑 코드 구조 많이 다르고\n잡버그개많음, 1.19.4올리면서 다고쳤거든 ㅋ\n\n리소스팩은 내부에 동봉\n\nmodelengine 플러그인 넣어둔것은 무료 demo버전, demo버전은 단 6개의 모델만 로드하기때문에\n제대로 플레이하고싶으면 본인이 직접사서넣어야함~ 지금은 죠타로스텐드 안보이더라\n\n선택사항:\ncmi 사서 넣으면 텝창 보임\n\nhttps://www.dropbox.com/s/qcu9ld91uagjv5i/%EA%B2%8C%EC%9E%84%EC%BA%90%EB%A6%AD%ED%84%B0%EB%B0%B0%ED%8B%80.zip?dl=1"
   },
   {
    "url": "https://gall.dcinside.com/mgallery/board/view?id=steve&no=221319",
    "title": "게임캐릭터배틀 5시 40분 신규캐릭터2종 추가",
    "comments": 28,
-   "date": "2023.04.08"
+   "date": "2023.04.08",
+   "body": "gamecharacterbattle.서버.한국\n\n패치노트:\n카미조 토우마:\n이메진 브레이커:\n오늘만 테스트:\n이제 때리면 모든 버프/ 디버프 삭제!\n겐지 때리면 용검증발!\n쏘닉 때려서 슈퍼소닉 날리기\n코스틱의 가스에 당한 친구를 때려서 독 풀어주기!\ncc기 푸는게 아니고 버프/디버프 해제\n오늘 단 하루만 적용\n\n유령:\n전술핵미 사일:\n신규: 최소시전거리 16블럭\n\n세트:\n주먹다짐:\n이동속도: 25% -> 35%\n강펀치:\n투지가 두배로 오르는 버그를 수정\n보호막의 유지시간: 4초 -> 6초"
   },
   {
    "url": "https://gall.dcinside.com/mgallery/board/view?id=steve&no=221160",
    "title": "나는 최강이다",
    "comments": 18,
-   "date": "2023.04.07"
+   "date": "2023.04.07",
+   "body": "gamecharacterbattle.서버.한국\n\n패치노트:\n패링 류의 스킬들은 이제 자기장과 상호작용하지않습니다\n\n에이팩스캐릭터:\nG7 스카우트:\n피해량 35 -> 42\n윙맨:\n탄환속도 250b/s -> 300b/s\n\n패스파인더:\n피닉스키트:\n재사용대기시간 80 -> 75\n\n탈론:\n녹서스식 외교:\n\n피해량 60 -> 90\n\n카미조토우마:\n환상을 부수는 자:\n\n이제 기본공격의 재사용대기시간을 초기화시킴\n\n둠피스트:\n파멸의일격:\n중심부의 범위: 2 -> 3\n\n바리안:\n도발:\n기절 3초 -> 3.5초\n\n레밀리아:\n홍부「불야성 레드」:\n\n피해량 200 -> 280\n둔화 25% -> 20%\n\n캬루:\n배신하기:\n처치당 피해량 증가 5% -> 8%\n\n5시 30분"
   },
   {
    "url": "https://gall.dcinside.com/mgallery/board/view?id=steve&no=220794",
    "title": "강펀치",
    "comments": 23,
-   "date": "2023.04.03"
+   "date": "2023.04.03",
+   "body": "gamecharacterbattle.서버.한국\n\n5시"
   },
   {
    "url": "https://gall.dcinside.com/mgallery/board/view?id=steve&no=220649",
    "title": "4시 게임캐릭터배틀",
    "comments": 27,
-   "date": "2023.04.02"
+   "date": "2023.04.02",
+   "body": "gamecharacterbattle.서버.한국\n\n패치노트:\n겐지:\n튕겨내기:\n튕겨내기의 히트박스가 6배 증가했습니다\n이제 튕겨내기가 플레이어의 히트박스를 그대로 사용하지않습니다 f3+b 로 확인가능합니다\n히트박스의 크기: 가로3블럭,세로 2블럭\n\n코스틱:\n녹스가스:\n둔화율 30% -> 45%\n\n나나야시키:\n[閃鞘]팔천:\n\n피해량 70 -> 80\n\n유령:\n은폐:\n\n초당 에너지 소모량 2-> 2.5\n\n카미조토우마:\n이매진브레이커:\n\n지속시간 0.5초 -> 1초\n\n옥테인:\n자극제:\n체력소모 20 -> 10\n\n가렌:\n공격력 40 -> 50\n결정타:\n추가피해량 60 -> 70\n\n데스페라도:\n스커드 제노사이드:\n마지막 사격의 범위 16 -> 20\n\n둠피스트:\n파멸의일격:\n외곽피해량 100 -> 150\n\n엑스칼리버:\n익절티드 블레이드:\n재사용대기시간 70 -> 90\n\n롤랑:\n로직 아틀리에:\n\n피해량: 10+최대체력의 2% -> 10+최대체력의 1%\n\n캬루:\n이동속도 1.8 -> 2\n\n진 레인저:\n제압사격:\n\n피해량: 175 -> 200"
   },
   {
    "url": "https://gall.dcinside.com/mgallery/board/view?id=steve&no=220435",
    "title": "게임틀",
    "comments": 32,
-   "date": "2023.04.01"
+   "date": "2023.04.01",
+   "body": "지씨비.블로그.한국\n\ngamecharacterbattle.서버.한국"
   },
   {
    "url": "https://gall.dcinside.com/mgallery/board/view?id=steve&no=220411",
    "title": "만우절 게임캐릭터배틀 신캐 1.19.4 버전 4시",
    "comments": 11,
-   "date": "2023.04.01"
+   "date": "2023.04.01",
+   "body": "패치노트:\n이제 서버는 1.19.4입니다\n일부 기능을 꺼놓긴 했지만 플레이에 지장은 없음\n\n픽 대사가 없던 캐릭터 잭 빼고 전부 추가\n잭은 대신 BT에 대사 추가\n\n만우절 기념 HIDDEN 캐릭터가 등장할수도 있습니다\n\n잭:\nBT-7274:\n이제 탑승시 화면 오버레이가 추가됩니다"
   },
   {
    "url": "https://gall.dcinside.com/mgallery/board/view?id=steve&no=220164",
    "title": "왕 검기",
    "comments": 10,
-   "date": "2023.03.30"
+   "date": "2023.03.30",
+   "body": "1.19.4 로 실행 성공"
   },
   {
    "url": "https://gall.dcinside.com/mgallery/board/view?id=steve&no=219840",
    "title": "겜케베",
    "comments": 11,
-   "date": "2023.03.27"
+   "date": "2023.03.27",
+   "body": "gamecharacterbattle.서버.한국\n\n패치노트:\n많은버그수정?"
   },
   {
    "url": "https://gall.dcinside.com/mgallery/board/view?id=steve&no=219693",
    "title": "3시 겜케베",
    "comments": 28,
-   "date": "2023.03.26"
+   "date": "2023.03.26",
+   "body": "패치노트:\n요우무:\n인귀미래영겁참:\n타격속도 33% 증가\n\n옥테인:\n점프패드:\n이제 적 아군 캐릭터 제한없이 사용가능합니다\n저지불가 상태에서는 사용할수없습니다\nex 히로빈궁극기 ,용왕의턱, 칠면공격,BT-7274\n\n가렌:\n심판:\n피해량 150 -> 200\n\n잭:\nBT:\n히트박스 3x9x3 -> 4x10x4\n\n용문귀등환:\n대머리:\n체력 500 -> 600\n\n엑스칼리버:\n공격력 30 -> 40\n\n익절티드 블레이드:\n지속시간중 정면피해감소 25% -> 40%\n\n롤란드:\n묵:\n회복 40 -> 10\n뒤랑달:\n재사용대기시간 40 -> 50\n\n소닉:\n수퍼소닉:\n피해량 4- >6\n이제 지속시간중 저지불가를 얻음\n범위 3- > 6\n지속시간 4 -> 8"
   },
   {
    "url": "https://gall.dcinside.com/mgallery/board/view?id=steve&no=219629",
    "title": "12시 GCB 신캐",
    "comments": 31,
-   "date": "2023.03.25"
+   "date": "2023.03.25",
+   "body": "gamecharacterbattle.서버.한국"
   },
   {
    "url": "https://gall.dcinside.com/mgallery/board/view?id=steve&no=218906",
    "title": "12시 15분 전까지 겜케베 다시 열게",
    "comments": 27,
-   "date": "2023.03.19"
+   "date": "2023.03.19",
+   "body": "주소 gamecharacterbattle.서버.한국\n\n패치노트로는\n\n버그 고쳤다 겜안끝나는거\n\n제이스가 원거리폼에서도 망치로 떄리는버그 고침\n\n데스페라도 궁쓰면 위로 계속 올라가는거 고침\n\n체력바 0인 버그 아마도 고쳐졌을거같음\n\n그리고 2~3명정도 뽑아서\n스크립트 잘 다룬다, 내가 자바 기초라도 안다 하면 겜케베 API 뿌리고 캐릭만드는법 알려줄려고 함"
   },
   {
    "url": "https://gall.dcinside.com/mgallery/board/view?id=steve&no=218878",
    "title": "겜케베 10시",
    "comments": 64,
-   "date": "2023.03.19"
+   "date": "2023.03.19",
+   "body": "주소는열때\n\ngamecharacterbattle.서버.한국\n\n패치노트:\n버그가 있을수도\n\n아이크:\n카운터:\n피해량 100 -> 25\n\n에테르:\n피해량 100 -> 140\n\n엑스칼리버:\n익절티드 블레이드:\n\n지속시간 10 -> 15초\n\n데스페라도/진레인저:\n죽음의표식:\n확률 10% -> 12%\n\n유령:\n전술핵 투하:\n피해량 300 -> 200\n\n재사용대기시간 150 -> 120초"
   },
   {
    "url": "https://gall.dcinside.com/mgallery/board/view?id=steve&no=218722",
    "title": "게임캐릭터배틀 테스트서버 GCB 40분",
    "comments": 16,
-   "date": "2023.03.18"
+   "date": "2023.03.18",
+   "body": "gamecharacterbattle.서버.한국\n\n패치노트:\nAPI 에 많은 변경이 있어서 버그가 많을것으로 예상중\n진레인저:\n등장확률 20% -> 25%\n\n디오:\n등장확률 증가"
   },
   {
    "url": "https://gall.dcinside.com/mgallery/board/view?id=steve&no=217512",
    "title": "15분에 2차전 재오",
    "comments": 11,
-   "date": "2023.03.12"
+   "date": "2023.03.12",
+   "body": "34.64.155.37"
   },
   {
    "url": "https://gall.dcinside.com/mgallery/board/view?id=steve&no=217486",
    "title": "겜케베7시 사쿠야 두두등장",
    "comments": 42,
-   "date": "2023.03.12"
+   "date": "2023.03.12",
+   "body": "주소\n\nbattlegamecharacter.홈페이지.한국\n\n1.19.1~1.19.2\n\n패치노트:\n 리바이:\n 뇌창:\n 투사체속도 70 -> 90\n\n 카라짐:\n 칠면공격:\n 타격속도 1.5배로 증가\n\n 치르노:\n 냉부「순간냉동빔」:\n 시전시간 0.75 -> 0.6초\n\n 폴피닉스:\n 붕권:\n 이제 지속시간 종료 이후 재사용대기시간이 적용됨\n\n 유령:\n 체력 300 -> 200\n 공격력 25 -> 30\n 저격:\n 마나소모량 8 -> 7\n\n EMP:\n 마나소모량 20 -> 15\n\n 카미조토우마:\n 체력 300 -> 400\n\n 옥테인:\n 런치패드:\n 재사용대기시간 30 -> 25\n\n 가렌:\n 용기:\n 보호막지속시간 1 -> 3초\n 피해감소량 50% -> 60%\n\n 심판:\n 피해량 140 -> 150\n\n 데스페라도/진레인저:\n 건호크:\n 재사용대기시간 15 -> 11\n\n 잭:\n 페이즈 시프트:\n 재사용대기시간 30 -> 25\n\n 스모커 중령:\n 뭉게뭉게열메:\n 지속시간 1 -> 0.75초\n\n 엑스칼리버:\n 슬래시 대쉬:\n 삭제: 시전 중 무적\n\n 레이디얼 블라인드:\n 피해량 증폭 30% -> 25%\n\n 레이디얼 자벨린:\n 피해량 90 -> 80\n\n 익절티드 블레이드:\n 피해감소량 40% -> 25%\n\n 아이크:\n 카운터:\n 이제 지속시간 종료 이후 재사용대기시간이 적용됨\n\n 진레인저:\n 데스 크라이시스:\n 피해량 300 -> 420"
   },
   {
    "url": "https://gall.dcinside.com/mgallery/board/view?id=steve&no=217356",
    "title": "7시 게임캐릭터배틀 신규캐릭터2종 테스트",
    "comments": 22,
-   "date": "2023.03.11"
+   "date": "2023.03.11",
+   "body": "battlegamecharacter.홈페이지.한국\n\n패치노트:\n잭:\nBT-7274:\nXO-17 기관총:\n피해량 25 -> 20"
   },
   {
    "url": "https://gall.dcinside.com/mgallery/board/view?id=steve&no=216770",
    "title": "10시 GCB 2차전",
    "comments": 15,
-   "date": "2023.03.05"
+   "date": "2023.03.05",
+   "body": "battlegamecharacter.홈페이지.한국"
   },
   {
    "url": "https://gall.dcinside.com/mgallery/board/view?id=steve&no=216702",
    "title": "7시 GCB (30분 일찍열수도)",
    "comments": 30,
-   "date": "2023.03.05"
+   "date": "2023.03.05",
+   "body": "rpdlazpflrxjqpxmf.서버.한국\n\n패치노트:\n에이펙스캐릭터:\n윙맨:\n이제 머리를 맞출시 2.5배의 피해(113) 를 줍니다\n탄환속도 300 -> 250\n탄창용량 8 -> 6\n\n피스키퍼:\n조준시 탄퍼짐 0.6도 -> 0.45도\n탄환속도 300 -> 250\n\nG7 스카우트:\n이제 자동사격이 가능합니다\n꾹누르면 알아서 나감\n\n네메시스:\n피해량 15 -> 14\n\n제이스:\n기본공격 투사체속도 60 -> 80\n\n천둥강타:\n피해량 100 -> 30 + 최대체력의30%\n\n겐지:\n공격력 20 -> 25\n\n치르노:\n냉부「순간냉동빔」\n\n피해량 140 -> 150\n\n탈론:\n갈퀴손:\n피해량 150 -> 120\n재사용대기시간 12 -> 10\n\n목긋기:\n사거리 32 -> 48\n[삭제] 둔화\n재사용대기시간 25 -> 32\n\n가렌:\n인내심:\n회복량 4 -> 6\n\n요네:\n체력 450 -> 500\n\n영혼가르기:\n보호막지속시간 3초 ->4초\n\n레밀리아:\n뱀파이어 클로:\n\n피해량 80 -> 60\n\n신창「스피어 더 궁니르」:\n\n피해량 110 -> 120\n\n데몬 로드 워크:\n\n피해량 60 -> 40\n\n홍부「불야성 레드」:\n\n둔화 60% -> 25%\n재사용대기시간 100 -> 110\n\n갓갓갓:\n용문귀등환:\n지속시간 25 -> 30"
   },
   {
    "url": "https://gall.dcinside.com/mgallery/board/view?id=steve&no=216537",
    "title": "7시 15분 게임캐릭터배틀 신규캐릭터3종및 맵 대규모변경",
    "comments": 28,
-   "date": "2023.03.04"
+   "date": "2023.03.04",
+   "body": "rpdlazpflrxjqpxmf.서버.한국\n\n패치노트:\n없"
   },
   {
    "url": "https://gall.dcinside.com/mgallery/board/view?id=steve&no=215773",
    "title": "도태남용 깜짝게임케랙터배틀!!",
    "comments": 27,
-   "date": "2023.02.27"
+   "date": "2023.02.27",
+   "body": "9시\n\n궴퀡뷁.메인.한국\n\n패치노트:\n잭:\n시간정지로 로봇증발고 침"
   },
   {
    "url": "https://gall.dcinside.com/mgallery/board/view?id=steve&no=215584",
    "title": "게임캐릭터배틀 6시 1분",
    "comments": 30,
-   "date": "2023.02.26"
+   "date": "2023.02.26",
+   "body": "패치노트:\n요우무:\n반려령:\n피해량 30 -> 40\n\n리바이:\n입체기동:\n이제 입체기동으로 이동하는도중에 입체기동을 시전할수있음\n\n치르노:\n냉부「순간냉동빔」:\n\n피해량 120 -> 140\n\n나나야시키:\n[閃走]수월:\n\n재사용대기시간 12 -> 10\n\n옥테인:\n자극제:\n체력소모 25 -> 20\n\n가렌:\n데마시아의 정의:\n기본피해량 100 -> 120\n\n둠피스트:\n지진강타:\n범위 6 -> 8\n최대피해량 125 -> 150\n\n바리안:\n거인의강타:\n피해량 150 -> 175\n\n잭:\nBT-7274:\n패시브:\n줄이는피해 150 -> 120\n\n이제 BT-7274 가 파괴될때 탑승하고잇으면 즉사\n터지기전에 탈출해야함"
   },
   {
    "url": "https://gall.dcinside.com/mgallery/board/view?id=steve&no=215241",
    "title": "게임캐릭터배틀 8시반",
    "comments": 52,
-   "date": "2023.02.24"
+   "date": "2023.02.24",
+   "body": "패치노트:\n잭:\n패시브:\n벽 타기 추가\n\n페이즈 시프트:\n재사용대기시간 25 -> 30\n\n그래플:\n재사용대기시간 10 -> 12\n\nBT-7274:\n재사용대기시간 200 -> 240\n\n패시브:\n피해상한선 100 -> 150\n\n다중 목표 미사일 시스템:\n피해량 200 -> 160\n재사용대기시간 9 -> 10\n\n이제 로봇 사망시 사출 안해줌 직접 나가는거만 사출"
   },
   {
    "url": "https://gall.dcinside.com/mgallery/board/view?id=steve&no=215083",
    "title": "재오픈",
    "comments": 13,
-   "date": "2023.02.23"
+   "date": "2023.02.23",
+   "body": "gamechrabattle.kro.kr\n\n특이사항:\n잭 픽풀었음"
   },
   {
    "url": "https://gall.dcinside.com/mgallery/board/view?id=steve&no=215055",
    "title": "7시 게임캐릭터배틀 신캐테스트:",
    "comments": 26,
-   "date": "2023.02.23"
+   "date": "2023.02.23",
+   "body": "신캐 특이사항:\n버그랑 랙 검증될때까진 픽 불가능\n희망자에 한해서 3명만 드립니다\n\n패치노트:\n에이펙스캐릭터:\n네메시스:\n피해량 11 -> 15\n\n마스티프:\n탄속 400b/s -> 300b/s\n\n윙맨:\n탄속 400b/s -> 300b/s\n\n진 레인저:\n데들리 어프로치:\n피해량 150 -> 120"
   },
   {
    "url": "https://gall.dcinside.com/mgallery/board/view?id=steve&no=214600",
    "title": "6시 30분 게임캐릭터배틀",
    "comments": 31,
-   "date": "2023.02.20"
+   "date": "2023.02.20",
+   "body": "game캐릭터battle.서버.한국\n\n패치노트:\n\n에이펙스캐릭터:\n마스티프:\n피해량 112 -> 144\n\nG7 스카우트:\n피해량 25 -> 32\n\n나나야시키:\n[閃鞘]팔점충:\n\n피해량 125 -> 150\n\n탈론:\n녹서스식 외교:\n재사용대기시간 6 -> 5\n\n옥테인:\n자극제:\n체력소모 35 -> 25\n\n둠피스트:\n로켓주먹:\n벽 충돌 피해량 50~100 -> 50~150\n\n바리안:\n돌진:\n기절 2초 -> 1.5초\n\n피해량 30 -> 40\n\n도발:\n추가체력 200 -> 250\n기절 4초 -> 3초\n사거리 5 -> 6"
   },
   {
    "url": "https://gall.dcinside.com/mgallery/board/view?id=steve&no=214462",
    "title": "7시 게임캐릭배틀",
    "comments": 39,
-   "date": "2023.02.19"
+   "date": "2023.02.19",
+   "body": "game캐릭터battle.서버.한국\n\n패치노트:\n맵 변경\n\n에이펙스 캐릭터:\n신규총기 마스티프,G7 스카우트\n\n코스틱:\n근접무기 새거 줫음 멋짐"
   },
   {
    "url": "https://gall.dcinside.com/mgallery/board/view?id=steve&no=214262",
    "title": "[  오픈  ]   6~7시 게임캐릭터배틀",
    "comments": 63,
-   "date": "2023.02.18"
+   "date": "2023.02.18",
+   "body": "game캐릭터battle.서버.한국\n\n패치노트:\n\n적 처치시 체력회복이 이제 즉시 적용되지않고 12초에 걸쳐 회복합니다\n회복량 35% -> 60%\n\n싸움에 대한 리스크를 줄이고, 막링까지 존버하고 광역기로 날먹하는것을 겨냥하였습니다\n\n에이펙스 캐릭터:\n이제 시작시 총기를 선택할수 있습니다\n일단 지금은 같은총 두개도 되긴함\n\n신규총기: 네메시스\n4점사식 소총입니다\n\nr301:\n피해량 12 -> 13\n\n리바이:\n회전베기:\n재사용대기시간 15 -> 12\n\n진 레인저:\n등장확률 10 -> 20%"
   },
   {
    "url": "https://gall.dcinside.com/mgallery/board/view?id=steve&no=213464",
    "title": "오픈",
    "comments": 24,
-   "date": "2023.02.14"
+   "date": "2023.02.14",
+   "body": "지씨비.서버.한국"
   },
   {
    "url": "https://gall.dcinside.com/mgallery/board/view?id=steve&no=213438",
    "title": "6시 겜케베 신캐추가!!",
    "comments": 9,
-   "date": "2023.02.14"
+   "date": "2023.02.14",
+   "body": "신캐  진: 레인저, 데스페라도 선택시 10%확률로 등장!\n\n지속적인 디도스로 kt가 인터넷을 자주 끊어버리고있습니다\n\n또걸리면 걍런"
   },
   {
    "url": "https://gall.dcinside.com/mgallery/board/view?id=steve&no=213328",
    "title": "재오픈",
    "comments": 18,
-   "date": "2023.02.13"
+   "date": "2023.02.13",
+   "body": "0.tcp.ngrok.io:18148"
   },
   {
    "url": "https://gall.dcinside.com/mgallery/board/view?id=steve&no=213316",
    "title": "10시 GCB",
    "comments": 36,
-   "date": "2023.02.13"
+   "date": "2023.02.13",
+   "body": "gcb.kro.kr\n\n패치노트:\n이제 ui가 gui비율에 맞춰짐\n\n데스페라도:\n투명버그 고침\n\n찐뢰인저:\n완성전까지만 데스페라도와 스킬 공유하고 픽할수있음"
   },
   {
    "url": "https://gall.dcinside.com/mgallery/board/view?id=steve&no=213058",
    "title": "염 game character battle",
    "comments": 39,
-   "date": "2023.02.12"
+   "date": "2023.02.12",
+   "body": "gcb.kro.kr"
   },
   {
    "url": "https://gall.dcinside.com/mgallery/board/view?id=steve&no=213031",
    "title": "GCB",
    "comments": 9,
-   "date": "2023.02.12"
+   "date": "2023.02.12",
+   "body": "퀘벡겜.서버.한국\n\n패치노트:\n저지불가가 넉백을 방어하지못하는 버그수정\n\n루시안:\n꿰뚫는빛:\n폭 1.1 -> 0.8\n\n빛의심판:\n재사용대기시간 40 -> 50\n\n겐지:\n튕겨내기:\n재사용대기시간 13 -> 10\n\n카미조토우마:\n이메진전개:\n지속시간 3 ->6초\n\n바리안:\n영웅의일격:\n재사용대기시간 10 -> 6\n\n사자의송곳니:\n재사용대기시간 6 -> 4\n\n무기막기:\n이제 무기막기로 피해를 방어하는데에 성공할시 영웅의일격 재사용대기시간 초기화\n\n돌진:\n재사용대기시간 8 ->6\n돌진거리 10 -> 12\n돌진속도 25% 증가\n\n도발:\n추가체력 150 -> 200\n기절 3초 -> 4초\n재사용대기시간 30 -> 25\n\n거인의강타:\n피해량 200 -> 150\n피해증폭 30% -> 50%\n\n분뇨의쌍검:\n공격시 영웅의일격 재사용대기시간 감소 5 -> 3"
   },
   {
    "url": "https://gall.dcinside.com/mgallery/board/view?id=steve&no=211694",
    "title": "open",
    "comments": 9,
-   "date": "2023.02.05"
+   "date": "2023.02.05",
+   "body": "퀘벡겜.서버.한국"
   },
   {
    "url": "https://gall.dcinside.com/mgallery/board/view?id=steve&no=211658",
    "title": "겜케베 9시 30분!",
    "comments": 17,
-   "date": "2023.02.05"
+   "date": "2023.02.05",
+   "body": "퀘벡겜.서버.한국\n\n패치노트:\n 자기장:\n 이제 고정피해를 입힘\n\n 요우무:\n 체력 500 -> 400\n\n 인부 현세참:\n 충전시간 9 -> 8초\n\n 혼부「유령검」:\n 피해량 70 -> 90\n\n 리바이:\n 가르기:\n 기본피해 15 -> 20\n\n 히로빈:\n 시간정지:\n 지속시간 2.5 -> 3\n\n 궁:\n 이제 플레이어만 표시해주고, 플레이어에게만 시전 가능\n\n 코스틱:\n 녹스가스\n 둔화 60% -> 30%\n\n 녹스가스트랩:\n 충전시간 16 -> 20\n\n 카라짐:\n 이동속도 2 -> 2.25\n 천상의숨결:\n 재사용대기시간 20 -> 16\n 회복량 30 -> 40\n\n 루시안:\n 공격력 35 -> 40\n\n 치르노:\n 체력 500 -> 400\n 공격속도 0.9 -> 1\n\n 동부「퍼펙트 프리즈」:\n 둔화지속시간 3 -> 4초\n\n 돌격:\n 재사용대기시간 9 -> 8\n 보호막 60 -> 80\n\n 폴피닉스:\n 체력 700 -> 750\n\n 탈론:\n 갈퀴손:\n 피해량 20(120) -> 25(150)\n\n 카미조토우마:\n 이메진브레이커전개:\n 재사용대기시간 9 -> 6\n 둔화율 70% -> 50%\n\n 용왕의턱:\n 기절 1초 -> 4초\n\n 옥테인:\n 자극제:\n 체력소모 20 -> 35\n\n 런치패드:\n 재사용대기시간 20 -> 30\n\n 데스페라도:\n 건호크:\n 재사용대기시간 12 -> 15\n\n 둠피스트:\n 최선의방어는:\n 타격당보호막 25 -> 30\n\n 죠타로:\n 스타 플래티나 로 막기!:\n 재사용대기시간 5 -> 7\n\n 바리안:\n 공격력 35 -> 40\n\n 무기막기:\n 재사용대기시간 0.25 -> 7\n 이제 충전할수없습니다\n 이제 시전시 무적상태가 됩니다\n\n 돌진:\n 이제 논타게팅 기술입니다\n 사거리 12 -> 10\n 기절 1초 -> 1.5초\n\n 도발:\n 재사용대기시간 30 -> 25\n 추가체력 150 -> 200\n 기절 2.5 -> 4초\n\n 거인의강타:\n 추가공격력 35 -> 40\n\n 분노의쌍검:\n 이동속도 30% -> 40%"
   },
   {
    "url": "https://gall.dcinside.com/mgallery/board/view?id=steve&no=211563",
    "title": "전반 (타단",
    "comments": 13,
-   "date": "2023.02.05"
+   "date": "2023.02.05",
+   "body": "그래픽설정 기막하게로\n\n8.tcp.ngrok.io:11358"
   },
   {
    "url": "https://gall.dcinside.com/mgallery/board/view?id=steve&no=211554",
    "title": "게임캐릭터배틀 패치노트미리보기 저녁시간예약",
    "comments": 9,
-   "date": "2023.02.05"
+   "date": "2023.02.05",
+   "body": "패치노트:\n 자기장:\n 이제 고정피해를 입힘\n\n 요우무:\n 체력 500 -> 400\n\n 인부 현세참:\n 충전시간 9 -> 8초\n\n 혼부「유령검」:\n 피해량 70 -> 90\n\n 리바이:\n 가르기:\n 기본피해 15 -> 20\n\n 히로빈:\n 시간정지:\n 지속시간 2.5 -> 3\n\n 궁:\n 이제 플레이어만 표시해주고, 플레이어에게만 시전 가능\n\n 코스틱:\n 녹스가스\n 둔화 60% -> 30%\n\n 녹스가스트랩:\n 충전시간 16 -> 20\n\n 카라짐:\n 이동속도 2 -> 2.25\n 천상의숨결:\n 재사용대기시간 20 -> 16\n 회복량 30 -> 40\n\n 루시안:\n 공격력 35 -> 40\n\n 치르노:\n 체력 500 -> 400\n 공격속도 0.9 -> 1\n\n 동부「퍼펙트 프리즈」:\n 둔화지속시간 3 -> 4초\n\n 돌격:\n 재사용대기시간 9 -> 8\n 보호막 60 -> 80\n\n 폴피닉스:\n 체력 700 -> 750\n\n 탈론:\n 갈퀴손:\n 피해량 20(120) -> 25(150)\n\n 카미조토우마:\n 이메진브레이커전개:\n 재사용대기시간 9 -> 6\n 둔화율 70% -> 50%\n\n 용왕의턱:\n 기절 1초 -> 4초\n\n 옥테인:\n 자극제:\n 체력소모 20 -> 35\n\n 런치패드:\n 재사용대기시간 20 -> 30\n\n 데스페라도:\n 건호크:\n 재사용대기시간 12 -> 15\n\n 둠피스트:\n 최선의방어는:\n 타격당보호막 25 -> 30\n\n 죠타로:\n 스타 플래티나 로 막기!:\n 재사용대기시간 5 -> 7\n\n 바리안:\n 공격력 35 -> 40\n\n 무기막기:\n 재사용대기시간 0.25 -> 7\n 이제 충전할수없습니다\n 이제 시전시 무적상태가 됩니다\n\n 돌진:\n 이제 논타게팅 기술입니다\n 사거리 12 -> 10\n 기절 1초 -> 1.5초\n\n 도발:\n 재사용대기시간 30 -> 25\n 추가체력 150 -> 200\n 기절 2.5 -> 4초\n\n 거인의강타:\n 추가공격력 35 -> 40\n\n 분노의쌍검:\n 이동속도 30% -> 40%"
   },
   {
    "url": "https://gall.dcinside.com/mgallery/board/view?id=steve&no=211409",
    "title": "겜케베 신캐",
    "comments": 30,
-   "date": "2023.02.04"
+   "date": "2023.02.04",
+   "body": "퀘벡겜.서버.한국\n\n6시 30분 오픈\n\n패치노트:\n패스파인더, 옥테인, 코스틱\n총기 반동이 전체적으로 좀 늘고\n비조준 사격의 집탄율이 낮아졋습니다\n\n피스키퍼는 그대로입니다\n\n패스파인더:\n윙맨:\n조준배율 1.5 -> 1\n\n코스틱:\nR301:\n조준배율 1.5 -> 3\n\n옥테인:\nCAR-SMG\n조준배율 1.5 -> 2"
   },
   {
    "url": "https://gall.dcinside.com/mgallery/board/view?id=steve&no=211309",
    "title": "새로워진 조준경",
    "comments": 7,
-   "date": "2023.02.04"
+   "date": "2023.02.04",
+   "body": "위에부터\n\n1배(1.25배 줌 되긴 함)\n\n2배\n\n3배\n\n피스키퍼는 조준경 안달리고 그대로입니다"
   },
   {
    "url": "https://gall.dcinside.com/mgallery/board/view?id=steve&no=210898",
    "title": "겜케베 룬 추가할거나 적으라",
    "comments": 34,
-   "date": "2023.02.02"
+   "date": "2023.02.02",
+   "body": "룬 개념은\n\n핵심룬 있고(감전 난입 같은거) 이건 마지막에 만들거고 + 쫄룬 3개있음\n\n룬은 핵심룬 + 쫄룬3개까지 고를수 있고\n룬 분류로 공 방 유틸 3개 있음\n\n추가를 위해서 스텟도 3개 추가되는데\n\n 타격력(고정피해 제외 피해량이 타격력% 로 증가함)\n 방어력(고정피해 제외 피해량이 방어력% 로 감소함)\n 재사용대기시간감소(알다시피 쿨감, 스킬가속이 아니라 쿨감이라서 쿨감% 로 재사용대기시간 감소)\n\n 이고 각각 공 방 유틸 에 처음으로 추가될 룬으로 얻을수 있음\n\n 여기서 룬 뭘 추가하면 좋을지 아이디어를 받음\n\n예시를 들어주면\n\n공격룬 에는 공격력+5 , 공격속도+5% , 타격력+5% , 대충 피흡하는룬, 킬할때마다 타격력+5%\n\n방어룬 에는 방어력몇, 체젠몇, 체력몇 이런식\n\n유틸룬에는 이속몇 이런거\n\n이런식의 형식이니 이런식으로 적어주면 좋겠음\n\n혹시 게임이 너무 복잡해질거같아서 싫어요 하는사람 있으면\n\n룬 안하거나 핵심룬 없에고 간단하게만 하고 신캐제작으로 넘어감\n\n룬 찬성반대여부도 적어주셈\n\n룬 찬성한다면 핵심룬 있는게 좋은지 없는게좋은지도"
   },
   {
    "url": "https://gall.dcinside.com/mgallery/board/view?id=steve&no=210281",
    "title": "GCP 재오픈",
    "comments": 6,
-   "date": "2023.01.30"
+   "date": "2023.01.30",
+   "body": "8.tcp.ngrok.io:19287"
   },
   {
    "url": "https://gall.dcinside.com/mgallery/board/view?id=steve&no=210259",
    "title": "차단아이피목록",
    "comments": 14,
-   "date": "2023.01.30"
+   "date": "2023.01.30",
+   "body": "빨간선보다 높으면 디도스\n트위치 4k 이딴거 보는거 아니면 저렇게 못나옴\n\n전부다 외국ip\n45.113.130.47 홍콩 Hong Kong SAR\n\n45.113.131.7 홍콩 Hong Kong SAR\n\n209.85.137.4 미국 캘리포니아\n\n18.64.4.123 미국 워싱턴\n\n171.22.30.117 네덜란드 South Holland\n\n216.239.32.112 미국 캘리포니아\n\n172.67.72.220 미국 캘리포니아\n\n52.113.194.132 미국 워싱턴\n\n146.75.50.167 스웨덴 Stockholm County"
   },
   {
    "url": "https://gall.dcinside.com/mgallery/board/view?id=steve&no=210218",
    "title": "6시 GCB",
    "comments": 35,
-   "date": "2023.01.30"
+   "date": "2023.01.30",
+   "body": "4.tcp.ngrok.io:17239\n\n패치노트:\n패스파인더:\n피닉스키트:\n재사용대기시간 160 -> 80\n이제 시전중 점프불가\n이제 피해를 입으면 취소됨\n\n리바이:\n가르기:\n잃은체력의 5% -> 6%\n\n폴피닉스:\n머리가 짧아졌습니다\n\n이동속도 2.25 -> 2\n\n붕권:\n피해량 200 -> 150\n\n신규 패시브:\n\n이제 킬하면 머리가 길어집니다\n\n적을 처치하면 최대 3번까지, 붕권의 피해량이 50 이동속도가 0.25 상승\n\n루시안:\n기본공격의 투사체 폭:\n0.4 -> 0.8\n\n타는불길:\n재사용대기시간 10 -> 8\n\n빛의심판:\n피해량 600 -> 750\n투사체 폭 0.5 -> 1\n\n옥테인:\n자극제:\n체력소모 10 -> 20\n이제 자극제의 지속시간도중에는 패시브 회복을 받을수 없음\n\n둠피스트:\n최선의방어는..:\n최대보호막 100 -> 150"
   },
   {
    "url": "https://gall.dcinside.com/mgallery/board/view?id=steve&no=210168",
    "title": "배포: 플레이어 머리아이콘+ 색 플러그인&스크립트",
    "comments": 9,
-   "date": "2023.01.30"
+   "date": "2023.01.30",
+   "body": "스킨을 알아서 불러와서 머리 아이콘을 표시해줄 수 있는 플러그인입니다\n접속할때마다 바뀜\n덤으로 스킨 얼굴 색깔도 불러올수있습니다\n\n당연히 리소스팩 필요함\n\n플러그인만 쓸거면 상관없는데\n스크립트 기능을 이용하고싶으면 위에 잇는 플러그인은 필수입니다\n\n---스크립트 파트---\n\n주의사항\n\n채팅기능은 배포용으로 빠르고 간단하게 제작한것이기떄문에\n\n다른플러그인과 호환성은 신경안썻습니다\n\n이걸 수정없이 그대로 쓴다면 /mute 기능이 동작하지않을것입니다\n\n--사용법--\n\n플레이스홀더 지원합니다\n\n%PHDC.playerheadicon% 플레이스홀더 로 플레이어 머리 아이콘을 가져올수 있습니다\n\n위 짤에 머리만 달랑 나온게 그거\n/papi parse 본인이름 %PHDC.playerheadicon% 로 테스트가능\n\n%PHDC.playerheadcolor% 로 본인 색갈 뽑을수있습니다\n\n플레이스 홀더를 지원하는곳에서    %PHDC.playerheadcolor%뭐뭐뭐뭐     식으로 적으면 색이 바뀔것\n\n스크립트 안에\n#-----------------------------------------------------------------------------------\n\n줄 밑은 딱히 안건드려도되고 할줄모르면 건드리지마십쇼\noptions:\n ID: PHDC\n도 건들면 플레이스홀더이름도 바뀌니까 가능하면 건들지마십쇼\n\n채팅만 사용가능한것이 아니라, 텍스트가 들어가는곳에는 다 사용가능합니다\n\n텝창, 스코어보드,액션바,보스바,아이템이름,아이템로어,타이틀\n\n안써봐서 모르겠는데 아마도 이름표에도 넣을수있을것\n\n스크립트 안에서 따로 사용하고싶다면\nimport:\n org.EIQUI.GCBAPI.playerheadicon\n\n하고\nChat_getPlayerHeadColor(Player) 나\n\nChat_getPlayerHeadIcon(Player) 함수를 호출하십시오\n\n플러그인에서 사용하고싶다면\n\norg.EIQUI.GCBAPI.playerheadicon 클레스 임포트 후\n\nplayerheadicon.getPlayerHeadIcon(Player) 함수 호출하면 머리아이콘 벹습니다\n\n지금 당장은 한가지 크기의 머리아이콘만 지원하는데\n다른크기의 머리아이콘이 필요하다고하면 따로 수정해서 배포하겠습니다\n\n/머리채팅 or /headchat\n으로 머리채팅을 활성화하여 이름옆에 표시합니다\n\n/색채팅 or /colorchat\n으로 색채팅을 활성화하여 채팅색깔을 스킨에 따라 바꿉니다\n\nhttps://www.dropbox.com/s/gko1ub5a4e7363a/%EB%85%B8%EB%AF%B8%ED%98%84.zip?dl=1\n\n안에 플러그인 + 스크립트+ 리소스팩 필요한거 다 들어있음\n\nGCBAPI가 본채니까 이건 빼지마시오"
   },
   {
    "url": "https://gall.dcinside.com/mgallery/board/view?id=steve&no=210045",
    "title": "겜캅스 6시",
    "comments": 21,
-   "date": "2023.01.29"
+   "date": "2023.01.29",
+   "body": "패치노트:\n패스파인더:\n윙맨:\n장탄수 8 -> 6\n\n근라짐:\n철권:\n피해량 120% -> 140%\n초월:\n회복 35 -> 40\n\n나나야:\n이펙트 돋거함 ㅁㅌㅊ?\n\n옥테인:\nCAR:\n데미지 12 -> 10\n\n쬬:\n주먹으로마구마구떄리기:\n데미지 150 -> 200\n쿨타임 5 -> 4\n\n시간멈추기:\n쿨타임 100 -> 180"
   },
   {
    "url": "https://gall.dcinside.com/mgallery/board/view?id=steve&no=209985",
    "title": "크랙샷+ 업데이트 중단",
    "comments": 2,
-   "date": "2023.01.29"
+   "date": "2023.01.29",
+   "body": "크랙샷 본채는 1.16에서 업데이트 멈췄고\n\n에드온인 크랙샷+ 만 최근까지 업데이트 해줘서 크랙샷이 명맥 이어가는중이었는데\n\n이제 아예 크랙샷+랑 같은제작자가 만든 WeaponMechanics 플러그인으로 넘어가라고 하네요\n\n크랙샷, 크랙샷+ 와 WeaponMechanics 간 변환 도와주는 툴도 있다고는 함\n\n난 이거 돈주고삿는데 좆됬구나\n\nWeaponMechanics | Guns in Minecraft | 1.9.4 - 1.19.3 | SpigotMC - High Performance Minecraft"
   },
   {
    "url": "https://gall.dcinside.com/mgallery/board/view?id=steve&no=209847",
    "title": "겜캅스 6시",
    "comments": 13,
-   "date": "2023.01.28"
+   "date": "2023.01.28",
+   "body": "패치노트는 없긴한데\n\n코드 전면 업데이트를 해서 좆버그가 있을수도있습니다, 스킬안맞는다던지 안써진다던지 갑자기 크레쉬날수도있음\n\n주소는 열때"
   },
   {
    "url": "https://gall.dcinside.com/mgallery/board/view?id=steve&no=209133",
    "title": "겜퀘벡 reopen 6시 10분",
    "comments": 29,
-   "date": "2023.01.25"
+   "date": "2023.01.25",
+   "body": "주소는열때"
   },
   {
    "url": "https://gall.dcinside.com/mgallery/board/view?id=steve&no=209095",
    "title": "겜퀘벡 4시",
    "comments": 56,
-   "date": "2023.01.25"
+   "date": "2023.01.25",
+   "body": "주소는 열때\n\n패치노트:\n맵 저번에 지은거 적용함\n\n파티클관련기능 스크에 남아있던거 플긴으로 다 올려보냄\n\n폴피닉스:\n체력 650 -> 700\n\n카라짐:\n체력 400 -> 450\n\n요네:\n 궁판정 좀 고쳐서 좋아짐\n\n제이스:\n전류역장:\n피해량 100 -> 160\n\n코스틱:\n녹스가스:\n초당피해량 12 -> 14\n\n루시안:\n빛의 심판:\n쿨타임 50 -> 40\n\n데스페라도:\n스커드제노사이드:\n쿨타임 40 -> 50"
   },
   {
    "url": "https://gall.dcinside.com/mgallery/board/view?id=steve&no=208830",
    "title": "게임캐릭터배틀",
    "comments": 3,
-   "date": "2023.01.24"
+   "date": "2023.01.24",
+   "body": "34.64.155.37\n\n패치:\n유령:\n마나버그고침\n\n요네:\n공격력 20 -> 30\n\n운명봉인:\n쿨타임 100 -> 70"
   },
   {
    "url": "https://gall.dcinside.com/mgallery/board/view?id=steve&no=208640",
    "title": "파티클이펙트",
    "comments": 8,
-   "date": "2023.01.23"
+   "date": "2023.01.23",
+   "body": ""
   },
   {
    "url": "https://gall.dcinside.com/mgallery/board/view?id=steve&no=208621",
    "title": "겜케베",
    "comments": 1,
-   "date": "2023.01.23"
+   "date": "2023.01.23",
+   "body": "34.64.155.37"
   },
   {
    "url": "https://gall.dcinside.com/mgallery/board/view?id=steve&no=208614",
    "title": "통발연놈은 벤하고하는 겜케베 건축라디오",
    "comments": 6,
-   "date": "2023.01.23"
+   "date": "2023.01.23",
+   "body": "8.tcp.ngrok.io:18705"
   },
   {
    "url": "https://gall.dcinside.com/mgallery/board/view?id=steve&no=208379",
    "title": "라디오 겜케베건축섭",
    "comments": 5,
-   "date": "2023.01.22"
+   "date": "2023.01.22",
+   "body": "8.tcp.ngrok.io:17943\n\n짓고싶은것을 지어봅시다"
   },
   {
    "url": "https://gall.dcinside.com/mgallery/board/view?id=steve&no=208325",
    "title": "겜케베",
    "comments": 4,
-   "date": "2023.01.21"
+   "date": "2023.01.21",
+   "body": "요네만들기 스피드런 실패\n\n10시 50분 오픈\n\n패치노트:\n\n히로빈:\n공격력 35 -> 30\n이동속도 2.5 -> 3\n\n시간정지:\n지속시간 1.5 -> 2.5\n\n궁극기:\n궁쓰면 랙걸리는 버그 고친듯? 이제 하고싶음 하셈\n\n데스페라도:\n죽음의표식:\n확률 15% -> 10%"
   },
   {
    "url": "https://gall.dcinside.com/mgallery/board/view?id=steve&no=207146",
    "title": "슨노우맨다음) 스붕고딩학교에서 겜케베하기",
    "comments": 37,
-   "date": "2023.01.15"
+   "date": "2023.01.15",
+   "body": "마인고등학교에 나타나버린 사악한 슨 노우맨\n\n굉장해 엄청나\n\n사악한 슨 노우맨이 월드를 변형시켜서 건물을 부수고 곳곳에 함정을 깔아버렸다!\n\n다행히 체력을 회복시켜주는 지역이 만들어졌다\n\n저 안에 들어가면 체력을 급속히 회복시켜준다\n\n과연 스봉이들은 사악한 함정을 피해서 우승을 차지할수있을것인가?\n\n주소는\n\n4.tcp.ngrok.io:17017\n\n패치노트:\n피스키퍼:\n비조준시 탄퍼짐 0.75 -> 1도\n조준시 탄퍼짐 0.5 -> 0.7도\n\n요우무:\n이제 궁으로 킬내면 음악틀어드립니다\n\n히로빈:\n궁:\n눈알이펙트 임시삭제\n\n치르노:\n빙부 소드프리저:\n데미지 50 -> 40\n\n탈론:\n자비:\n이제 둔화에도 발동\n\n발목긋기:\n둔화및 침묵 0.25초 -> 0.5초\n\n카미조토우마:\n이제 궁 대사중에 대상이 죽을경우\n근처에 다른놈이 있으면 그놈한테 날라갑니다\n\n가렌:\n인내심:\n쿨타임 15 -> 9\n\n데스페라도:\n죽음의표식:\n이제 스킬에도 발동\n발동확률 25% -> 15%\n\n난사:\n피해량 150 -> 120\n\n둠피스트:\n로켓펀치:\n폭 1.25 -> 1"
   },
   {
    "url": "https://gall.dcinside.com/mgallery/board/view?id=steve&no=206975",
    "title": "겜케베건축섭2트",
    "comments": 1,
-   "date": "2023.01.15"
+   "date": "2023.01.15",
+   "body": "6.tcp.ngrok.io:13725"
   },
   {
    "url": "https://gall.dcinside.com/mgallery/board/view?id=steve&no=206830",
    "title": "자꾸 디도스쳐거는새끼 걍 보지잡고찢고싶은데",
    "comments": 17,
-   "date": "2023.01.14"
+   "date": "2023.01.14",
+   "body": "ㅇ"
   },
   {
    "url": "https://gall.dcinside.com/mgallery/board/view?id=steve&no=206772",
    "title": "5시 겜케베",
    "comments": 45,
-   "date": "2023.01.14"
+   "date": "2023.01.14",
+   "body": "주소는열기전에\n\n패치노트:\n요우무 카라짐 코스틱:\n이제 쿨타임바에 스킬 충전시간을 표시함\n\n패스파인더 옥테인 코스틱:\n피스키퍼:\n조준시탄퍼짐 0.325도 -> 0.5도 (비조준시는 같음 0.75도)\n\n요우무,겐지,데스페라도,둠피스트:\n돌진스킬이 안맞고 통과하던버그 진짜로고침 스크립트문법 좆버그\n\n패스파인더:\n그래플링훅:\n재사용대기시간 18 -> 20\n\n피닉스키트:\n재사용대기시간 100 -> 150\n\n겐지:\n튕겨내기:\n이제 0.5초 이후 재시전으로 취소가능\n\n카라짐:\n철권:\n피해량 100% -> 120%\n\n찬란한 질주:\n쿨타임 10 -> 8\n\n루시안:\n끈질긴 추격:\n이제 우클릭으로 시전가능\n이제 방향키로 시전방향조절가능\n(오버워치 트레이서 조작이랑 비슷함)\n\n카미조토우마:\n용왕의 턱:\n쿨타임 80 -> 60\n\n가렌:\n버그수정:\n원래 맞으면 인내심이 종료되어야하는데 안꺼지고 영구지속되던버그가 있었음\n이 버그로인해 가렌승률이 비정상적으로높았음\n\n인내심:\n회복량 초당3 -> 4\n\n용기:\n이제 지속시간동안 CC기의 지속시간을 60% 감소시켜줌\n시간정지,고정 제외\n(고정, 공중에 잠시 고정시키는효과, 나나야시키 궁극기에 보유중)\n\n데마시아의정의:\n잃은체력비례피해량 35% -> 40%\n\n데스페라도:\n이동속도 2 -> 2.25\n\n둠피스트:\n로켓펀치:\n폭 1.5 -> 1.25\n\n라이징어퍼컷:\n피해량 80 -> 90\n\n지진강타:\n범위 8 -> 6"
   },
   {
    "url": "https://gall.dcinside.com/mgallery/board/view?id=steve&no=205694",
    "title": "ㄱㅋㅂ 재오픈요 ㅅㅂ",
    "comments": 5,
-   "date": "2023.01.09"
+   "date": "2023.01.09",
+   "body": "8.tcp.ngrok.io:17991"
   },
   {
    "url": "https://gall.dcinside.com/mgallery/board/view?id=steve&no=205674",
    "title": "엔진갈은 겜케베 테스트 빅맵 10시 10분",
    "comments": 18,
-   "date": "2023.01.09"
+   "date": "2023.01.09",
+   "body": "주소는 10분전에"
   },
   {
    "url": "https://gall.dcinside.com/mgallery/board/view?id=steve&no=205464",
    "title": "마피아 도태 될 사람을 위한 겜케베 오픈",
    "comments": 5,
-   "date": "2023.01.08"
+   "date": "2023.01.08",
+   "body": "8.tcp.ngrok.io:17205"
   },
   {
    "url": "https://gall.dcinside.com/mgallery/board/view?id=steve&no=205455",
    "title": "3명정도만 와보셈",
    "comments": 0,
-   "date": "2023.01.08"
+   "date": "2023.01.08",
+   "body": "2.tcp.ngrok.io:15675\n\n오류봐야함"
   },
   {
    "url": "https://gall.dcinside.com/mgallery/board/view?id=steve&no=205426",
    "title": "겜케베)버그수정됬나보게 조금만 와봐",
    "comments": 0,
-   "date": "2023.01.08"
+   "date": "2023.01.08",
+   "body": "8.tcp.ngrok.io:16690"
   },
   {
    "url": "https://gall.dcinside.com/mgallery/board/view?id=steve&no=205397",
    "title": "겜케베 7시 30분",
    "comments": 21,
-   "date": "2023.01.08"
+   "date": "2023.01.08",
+   "body": "주소 8.tcp.ngrok.io:12758\n\n패치노트:\n\n체젠 초당 1 다시생김\n\n루시안:\n꿰뚫는빛:\n폭 1.35 -> 1.1\n\n샌즈:\n이동속도 1.8 -> 1.7\n\n뼈2:\n데미지 45 -> 35\n\n가스터블래스트:\n데미지 120 -> 100\n\n유령:\nEMP:\n침묵 7초 -> 5초\n\n전술핵투하:\n데미지 350 -> 300\n\n옥테인:\nCAR-SMG:\n데미지 10 -> 12\n\n런치패드:\n쿨타임 30 -> 20\n\n데스페라도:\n난사:\n데미지 125 -> 150\n\n가렌:\n인내심:\n쿨타임 15 -> 20\n회복량 초당 4 -> 3"
   },
   {
    "url": "https://gall.dcinside.com/mgallery/board/view?id=steve&no=205214",
    "title": "reopen 게이캐릭터배틀",
    "comments": 13,
-   "date": "2023.01.07"
+   "date": "2023.01.07",
+   "body": "34.64.155.37\n\n겐지용검모델완성"
   },
   {
    "url": "https://gall.dcinside.com/mgallery/board/view?id=steve&no=205146",
    "title": "겜케베7시",
    "comments": 28,
-   "date": "2023.01.07"
+   "date": "2023.01.07",
+   "body": "주소\n\n겜캐배.서버.한국\n\n패치노트:\n기본체젠 2초당 1 존나조금차는거 삭제\n\n적 처치시 힐량:\n최대체력의 25% -> 35%\n\n겐지:\n사이보그닌자:\n2단점프의 높이가 20% 감소했습니다\n\n용검:\n당분간 임시모델을 사용합니다\n새 용검 모델 제작중\n\n샘플:\n\n패스파인더,코스틱,옥테인 공통:\n총알 투사체의 폭 0 -> 0.2\n슬라이딩:\n이제 슬라이딩의 속도가 이동속도보다 느려질시 알아서 슬라이딩이 종료됩니다\n특히 옥테인에게 유용\n\n코스틱:\nR-301:\n반동이 절반으로 감소\n\n카라짐:\n통찰:\n통찰 쿨감이 찬란한질주의 쿨타임을 못줄이던 버그 수정\n\n루시안:\n꿰뚫는빛:\n피해량 90 -> 100\n\n치르노:\n공격력 25 -> 20\n\n냉기를다루는정도의능력:\n데미지증폭 2배 -> 1.5배\n\n빙부 소드프리저:\n데미지 25 -> 50\n\n동부 퍼팩트프리즈:\n데미지 25 -> 30\n\n냉부 순간냉동빔:\n데미지 150 -> 120\n기절시간 2.5초 -> 3초\n\n폴피닉스:\n머리가 길어짐\n\n카미조토우마:\n이매진전개:\n이제 0.5초 이후에 재시전으로 취소가능\n\n옥테인:\nCAR-SMG:\n반동이 절반으로 감소\n\n둠피스트:\n로켓펀치:\n지형충돌피해: 50~250 -> 50~100\n판정 좌우폭: 1 -> 2\n밀어내는거리: 4~16 -> 5~20"
   },
   {
    "url": "https://gall.dcinside.com/mgallery/board/view?id=steve&no=203998",
    "title": "조선에서여는마지막겜아잉 9시 40분",
    "comments": 24,
-   "date": "2023.01.02"
+   "date": "2023.01.02",
+   "body": "오늘도 여기서한다\n\n주소 겜캐배.서버.한국\n\n1.19.1 이상\n\n이맵한정패치노트:\n줄타는게이킹:\n그래플:\n18 -> 36\n피닉스:\n100 -> 160\n\n오아:\n이속 2.25 -> 2.5\n\n가붕:\n이동속도 2 -> 2.25\n\n총두개든흑인:\n레이져:\n데미지 90 -> 100\n\n빡빡이:\n찬란한 질주:\n\n쿨타임 10-> 6\n\n방귀대장:\n독까스데미지 12 -> 14\n\n이매진:\n공격력 30 -> 40\n\n던공캐릭터:\n죽음의표식:\n데미지증폭 50%- > 100%\n\n패치노트(위 패치노트랑 합쳐져서 적용되있음):\n탈론:\n목긋기:\n둔화및 침묵 시간 1 -> 0.25\n\n유령:\n핵투하:\n사거리 64 -> 80\n데미지 300 -> 350\n범위 32 -> 48\n\n이제 붉은 선이 표시됨\n\n카라짐:\n천상의 숨결:\n회복 20-> 35\n\n데스페라도:\n죽음의표식:\n확률 15% -> 25%"
   },
   {
    "url": "https://gall.dcinside.com/mgallery/board/view?id=steve&no=203825",
    "title": "진짜 롤(있는) 캐릭터배틀",
    "comments": 4,
-   "date": "2023.01.02"
+   "date": "2023.01.02",
+   "body": "211.178.195.12"
   },
   {
    "url": "https://gall.dcinside.com/mgallery/board/view?id=steve&no=203678",
    "title": "특별모드~) 여기서하는 게임캐릭터배틀  겜캐배 6시",
    "comments": 45,
-   "date": "2023.01.01"
+   "date": "2023.01.01",
+   "body": "주소 겜캐배.서버.한국\n\n1.19.1 이상\n\n스폰했는데 끼거나 자기장이 바다쪽으로 잡히는 보대같은상황이 가끔 일어날수도잇습니다\n\n이맵한정 특별핫픽스:\n패스파인더:\n그래플링훅:\n재사용대기시간 18 -> 30\n\n피닉스키트:\n재사용대기시간 100 -> 160\n\n리바이:\n체력 200 -> 150\n\n폴피닉스:\n이동속도 2.25 -> 2.5\n\n유령:\n저격:\n마나소모 8 -> 12\n\n가렌:\n이동속도 2 - > 2.25\n\n옥테인:\n자극제:\n체력소모 10 -> 25\n\n점프패드:\n쿨타임 30 -> 50"
   },
   {
    "url": "https://gall.dcinside.com/mgallery/board/view?id=steve&no=203498",
    "title": "낮에 꿀빤 내가 승자구나",
    "comments": 9,
-   "date": "2022.12.31"
+   "date": "2022.12.31",
+   "body": ""
   },
   {
    "url": "https://gall.dcinside.com/mgallery/board/view?id=steve&no=203334",
    "title": "4시 겜케베 본섭",
    "comments": 15,
-   "date": "2022.12.31"
+   "date": "2022.12.31",
+   "body": "패치노트:\n중대한 버그 수정:\n어제 혼자 놀면서 겐지 요우무 둠피스트 데스페라도 등\n몸통박치기류 스킬의 히트박스가 매우 부정확하던 버그를 확인함\n때리고 지나가는게 아니고 지나간다음에 때려지는 느낌이 들거나, 아예 안맞고 통과해버리는 버그였음\n\n이제 매우 정밀하게 히트박스를 계산하도록 했으니 체감상 위의 스킬들이 잘맞을것\n\n랙유발하는 오래된 초기 코드들을 새로 만들었음\n일부 cc기의 판정이 달라질수도 있으니 판정 달라진것을 확인했다면 신고바람\n\n요우무:\n인부「현세참」:\n\n좌우폭 3 -> 2.5  (히트박스 수정으로 체감상 비슷할것)\n\n겐지:\n질풍참:\n좌우폭 2 -> 1.5 (히트박스 수정으로 체감상 비슷할것)\n\n샌즈:\n패시브:\n확률 95% -> 96%\n\n뼈1:\n데미지 100 -> 75\n\n카미조토우마:\n공격력 40 -> 30\n\n옥테인:\n자극제:\n체력소모 25 -> 10\n\n데스페라도:\n마하킥:\n좌우폭 2 -> 1.5 (히트박스 수정으로 체감상 비슷할것)\n\n둠피스트:\n최선의방어는..:\n타격당 보호막 30 -> 25\n최대보호막 150 -> 100\n\n로켓펀치:\n좌우폭 2 -> 1 (히트박스 수정으로 체감상 비슷할것)\n\n라이징 어퍼컷:\n피해량 90 -> 80\n\n파멸의일격:\n외곽피해량 150 -> 100"
   },
   {
    "url": "https://gall.dcinside.com/mgallery/board/view?id=steve&no=203234",
    "title": "<<신캐추가>>10시 30분 예약 겜케베 테섭",
    "comments": 19,
-   "date": "2022.12.30"
+   "date": "2022.12.30",
+   "body": "주소: 열리면 댓글에\n\n패치노트:\n 겐지:\n 질풍참:\n 데미지 50 -> 100\n 쿨타임 8 -> 6\n 사거리 24 -> 16\n 돌진속도 96 -> 50\n\n 루시안:\n 빛의심판:\n 데미지 450 -> 600\n\n 치르노:\n 빙부 소드프리저:\n 데미지 30 ->25\n\n 돌격:\n 신규: 보호막 60, 3초지속\n\n 카미조 토우마:\n 이매진 브레이커:\n 신규: 피해를 가하면 적의 보호막을 파괴함\n\n이매진브레이커 전개:\n이제 70% 둔화된상태로 이동가능\n\n 가렌:\n 체력 550 -> 600\n 공격력 50 -> 40\n 공격속도 0.8 -> 0.7\n\n 인내심:\n 초당회복 5 -> 4\n\n 결정타:\n 피해량 70 -> 60\n\n 용기:\n 재사용대기시간 16 -> 12\n 지속시간 2 -> 6\n 신규: 보호막 100, 1초지속\n 피해감소 80% -> 50%\n\n 심판:\n 피해량 200 -> 140\n\n 데마시아의정의:\n 데미지 120+잃은체력의40% -> 100+잃은체력의35%\n\n 데스페라도:\n 난사:\n 데미지 100 -> 125\n\n 둠피스트:\n 궁극기 생김, 파멸의일격\n\n 체력 500 -> 450\n\n 기본공격:\n 공격력 33(3 x 11) -> 35(5 x 7)\n 탄퍼짐 25% 감소\n\n 최선의 방어는..:\n 각 보호막 지속시간 6 -> 10\n 타격당 보호막 35 -> 30\n 최대보호막 200 -> 150\n\n 로켓펀치:\n 넉백후 지형충돌피해: 50~200 -> 50~250\n 이제 지형이나 적에게 충돌시 정확한 위치에 멈춤\n\n 지진강타:\n 데미지 50~150 -> 50~125\n 시전 이전의 가속도에따라 빨라지는거 삭제"
   },
   {
    "url": "https://gall.dcinside.com/mgallery/board/view?id=steve&no=203049",
    "title": "겜케베",
    "comments": 27,
-   "date": "2022.12.29"
+   "date": "2022.12.29",
+   "body": "211.178.195.12\n\n1.19.1 이상\n\n패치노트:\n보호막시스템 테스트\n\n데미지를 입혀도 머리위 체력바가 즉시 줄어들지않던 버그 수정\n\n둠피스트:\n패시브 추가"
   },
   {
    "url": "https://gall.dcinside.com/mgallery/board/view?id=steve&no=202865",
    "title": "다단까지 테스트 다시좀",
    "comments": 4,
-   "date": "2022.12.28"
+   "date": "2022.12.28",
+   "body": "겜캐배.서버.한국\n\n네트워크 패킷 압축률 4배로 올림 핑좀 보게 테스트좀"
   },
   {
    "url": "https://gall.dcinside.com/mgallery/board/view?id=steve&no=202830",
    "title": "폭발주먹 테스트하는 겜케베",
    "comments": 3,
-   "date": "2022.12.28"
+   "date": "2022.12.28",
+   "body": "겜캐배.서버.한국\n\n패시브 없음 궁없음"
   },
   {
    "url": "https://gall.dcinside.com/mgallery/board/view?id=steve&no=202387",
    "title": "설마또디도스오진않겠지 겜케베우르프",
    "comments": 9,
-   "date": "2022.12.26"
+   "date": "2022.12.26",
+   "body": "겜캐배.서버.한국"
   },
   {
    "url": "https://gall.dcinside.com/mgallery/board/view?id=steve&no=202353",
    "title": "지금상황요약과 디도스시 증상",
    "comments": 18,
-   "date": "2022.12.25"
+   "date": "2022.12.25",
+   "body": "게임캐릭터배틀기준으로 20명풀방기준 평소 60핑정도 나오는게임임\n\n가끔 애들이 스킬 너무 난사해서 핑랙이 걸려도 애들이 느리고 부드럽게 움직일뿐이지 끊기진않음\n\n오늘은 애들이 15명 이하라서 핑랙이고 랙이고 걸릴일이 없는데도 서버 여는 나조차 핑이 70을 넘음\n\n심지어 핑랙증상도 평소처럼 부드럽고 느리게 보이는게 아니라 그냥 패킷로스되는거마냥 순간이동하고 끊김\n\n그러다가 서버여는 완장 컴퓨터+ 집전체 인터넷 다운됨\n\n뇌피셜아님? 할수도 있는데 겜케베 처음 인터넷 다나가고 두번쨰로 하는데 8분뒤에 또 집 인터넷 전체 다나감\n\n아파트라 아파트 선 문제면 우리집만 나갈수없는구조 ㅇㅇ 에초에 평소에는 이딴일도없었고\n\n마피아,컹스맨,신전(아마도) 위 증상과 완전히 똑같이 집전체 인터넷 나감\n\n오늘은 걍 열지마셈"
   },
   {
    "url": "https://gall.dcinside.com/mgallery/board/view?id=steve&no=202319",
    "title": "9겜케베)아니 디도스쳐박고있어 지금",
    "comments": 22,
-   "date": "2022.12.25"
+   "date": "2022.12.25",
+   "body": "내컴만나간게 아니라 집전체인터넷 한번에 다내려감ㅇㅇ"
   },
   {
    "url": "https://gall.dcinside.com/mgallery/board/view?id=steve&no=202280",
    "title": "(예약)겜케베 우르프모드",
    "comments": 6,
-   "date": "2022.12.25"
+   "date": "2022.12.25",
+   "body": "오픈시 말머리 (예약) -> (오픈) 로 변경함\n\n주소 겜캐배.서버.한국\n\n버전 1.19.1 이상\n\n우르프: 쿨타임 절반,  공격속도 약간 증가\n패파옥테인코스틱같은캐릭터 연사속도는 같음\n\n패치노트:\n데스페라도\n스커드제노사이드:\n쿨타임 60 -> 40"
   },
   {
    "url": "https://gall.dcinside.com/mgallery/board/view?id=steve&no=202054",
    "title": "겜케베 11시 반",
    "comments": 4,
-   "date": "2022.12.24"
+   "date": "2022.12.24",
+   "body": "술깻습니다\n\n주소 겜캐배.서버.한국\n\n패치노트:\n핑터지는거 최대한 고쳐봣는데 안고쳐지면 총캐 총알이펙트 삭제함"
   },
   {
    "url": "https://gall.dcinside.com/mgallery/board/view?id=steve&no=201961",
    "title": "겜케베 테섭 4시",
    "comments": 14,
-   "date": "2022.12.24"
+   "date": "2022.12.24",
+   "body": "어제 열라고했는데 자버려서 못염\n\n주소 겜캐배.서버.한국\n\n와이파이니까 핑랙걸리면 바꿔염\n\n패치노트:\n전체적으로 파티클 보이는 거리를 줄임 (에이팩스캐릭,리바이,코스틱,가렌)\n\n루시안:\n빛의심판:\n재사용대기시간 60 -> 50\n\n데스체라도:\n죽음의표식:\n확률 10% -> 15%\n데미지증폭 2배 -> 1.5배\n\n난사:\n데미지 80 -> 100\n\n건호크:\n데미지 60 -> 80\n\n마하킥/윈드밀:\n재사용대기시간이 윈드밀 시전 후가 아니라 마하킥 시전 시에 적용됨"
   },
   {
    "url": "https://gall.dcinside.com/mgallery/board/view?id=steve&no=201776",
    "title": "테스트한명만",
    "comments": 2,
-   "date": "2022.12.23"
+   "date": "2022.12.23",
+   "body": "겜캐배.서버.한국"
   },
   {
    "url": "https://gall.dcinside.com/mgallery/board/view?id=steve&no=201623",
    "title": "신캐추가(완성)된 겜케뵈  8시",
    "comments": 16,
-   "date": "2022.12.22"
+   "date": "2022.12.22",
+   "body": "주소 겜캐배.서버.한국\n\n1.19.1 이상\n\n패치노트:\n\n패스파인더,코스틱,옥테인 공통:\n피스키퍼의 탄퍼짐이 절반으로 감소\n\n패스파인더:\n그래플링훅:\n재사용대기시간 25 -> 18\n\n겐지:\n용검:\n재사용대기시간 80 -> 100\n\n지속시간 8-> 6\n\n카라짐:\n통찰:\n재사용대기시간 감소 1초 -> 2초\n\n루시안:\n공격력 30 -> 35\n\n치르노:\n공격력 20 -> 25\n\n소드프리저:\n데미지 35 -> 30\n\n샌즈:\n가스터연발:\n재사용대기시간 110 -> 100\n\n옥테인:\nCAR SMG:\n비조준상태의 탄퍼짐이 크게 감소함\n\n데스페라도:\n완전히 완성\n이펙트 약간 변경\n스킬 피해량 조정됨\n\n마하킥의 돌진방식이 변경됨"
   },
   {
    "url": "https://gall.dcinside.com/mgallery/board/view?id=steve&no=201496",
    "title": "겜케베  신캐테스트하는 테섭",
    "comments": 18,
-   "date": "2022.12.22"
+   "date": "2022.12.22",
+   "body": "0.tcp.jp.ngrok.io:16568\n\n신캐: 데스페라도"
   },
   {
    "url": "https://gall.dcinside.com/mgallery/board/view?id=steve&no=201300",
    "title": "겜케베 테섭",
    "comments": 6,
-   "date": "2022.12.21"
+   "date": "2022.12.21",
+   "body": "0.tcp.jp.ngrok.io:15953"
   },
   {
    "url": "https://gall.dcinside.com/mgallery/board/view?id=steve&no=201023",
    "title": "게임_캐.릭터 _베.틀 8시",
    "comments": 37,
-   "date": "2022.12.19"
+   "date": "2022.12.19",
+   "body": "주소 겜캐배.서버.한국\n\n버전 1.19.1 이상\n\n패치노트:\n패스파인더,코스틱,옥테인 공통:\n\n피스키퍼 데미지가 15 x7 (105) -> 9x 11 (99)로 변경됨\n\n대신 탄착군이 아래와같이 변경\n\n이제 조준시 탄퍼짐이 절반으로 줄어듬"
   },
   {
    "url": "https://gall.dcinside.com/mgallery/board/view?id=steve&no=200281",
    "title": "노퀴의 추억",
    "comments": 8,
-   "date": "2022.12.15"
+   "date": "2022.12.15",
+   "body": ""
   },
   {
    "url": "https://gall.dcinside.com/mgallery/board/view?id=steve&no=199763",
    "title": "겜케뵈 테스트 랙걸려도모름",
    "comments": 5,
-   "date": "2022.12.12"
+   "date": "2022.12.12",
+   "body": "34.64.155.37\n\n패치노트:\n요우무:\n무기모델바꿈, 랙 덜걸림 프레임 더 잘나올것\n\n파티클이펙트 전체적으로 티 안나게 줄임\n\n파티클 그릴때 최적화 해보려고 List 에서 collection 기능으로 넘어갔는데 더 랙걸려도 나는모름\n랙걸리면 런"
   },
   {
    "url": "https://gall.dcinside.com/mgallery/board/view?id=steve&no=199566",
    "title": "게이ㅁ캐릭터베틀",
    "comments": 9,
-   "date": "2022.12.11"
+   "date": "2022.12.11",
+   "body": "최대인원 16입니다\n\n34.64.155.37\n\n패치노트:\n겐지:\n공격력 25 -> 20\n이제 용검의 지속시간은 최대 8초를 넘을수 없음\n\n치르노:\n레이져 폭: 3-> 2.5\n데미지 175 -> 150\n기절 3초 -> 2초"
   },
   {
    "url": "https://gall.dcinside.com/mgallery/board/view?id=steve&no=199449",
    "title": "게이캐릭터베틀",
    "comments": 11,
-   "date": "2022.12.10"
+   "date": "2022.12.10",
+   "body": "34.64.155.37"
   },
   {
    "url": "https://gall.dcinside.com/mgallery/board/view?id=steve&no=199396",
    "title": "8시 겜케베",
    "comments": 8,
-   "date": "2022.12.10"
+   "date": "2022.12.10",
+   "body": "주소 34.64.155.37\n\n구글클라우드 사용으로 15명까지만 받습니다\n\n패치노트는 전 글 참조"
   },
   {
    "url": "https://gall.dcinside.com/mgallery/board/view?id=steve&no=199351",
    "title": "8시 다시오픈 게임케릭터베틀 + 패치노트",
    "comments": 6,
-   "date": "2022.12.10"
+   "date": "2022.12.10",
+   "body": "주소 겜캐배.서버.한국\n\n패치노트:\n카미조토우마:\n용왕의턱:\n지속시간 3초 -> 4초\n돌려주는 피해 2배 -> 3배\n\n가렌:\nw e r 이펙트 변경\n\n이동속도 2.25 -> 2\n\n인내심:\n쿨타임 9 -> 15\n\n결정타:\n쿨타임이 시전 시전시에 돌지않고 지속시간 후에 돌아감\n데미지 100 -> 70\n\n용기:\n데미지감소 50% -> 80%\n지속시간 6 -> 2\n\n데마시아의정의:\n데미지 150+잃은체력의50% -> 120+잃은체력의40%"
   },
   {
    "url": "https://gall.dcinside.com/mgallery/board/view?id=steve&no=199244",
    "title": "10시 신캐추가 겜케베",
    "comments": 5,
-   "date": "2022.12.09"
+   "date": "2022.12.09",
+   "body": "주소 겜캐배.서버.한국\n\n패치노트:\n신캐 가붕이\n\n샌즈:\n가스터블래스트:\n데미지 150 -> 120\n\n카미조토우마:\n용왕의턱:\n파랗게 빛나는거 삭제"
   },
   {
    "url": "https://gall.dcinside.com/mgallery/board/view?id=steve&no=198894",
    "title": "테스트하는 게임케릭터배틀 8시 40분 이후",
    "comments": 10,
-   "date": "2022.12.07"
+   "date": "2022.12.07",
+   "body": "주소 겜캐배.서버.한국\n\n패치노트:\n\n서버랙 최적화\n\n투사체 최적화\n\n일부 스킬 투사체 생성위치 변경\n\n리바이:\n회전베기:\n최초피해 40 -> 25\n\n뇌창:\n적중피해량 100 -> 75\n\n코스틱:\nr301:\n피해량 12 -> 14 (전탄명중시 300 -> 350)\n\n루시안:\n끈질긴추격:\n재사용대기시간 10 -> 8\n\n치르노:\n순간냉동빔:\n재사용대기시간 60 -> 75\n\n샌즈:\n가스터연발:\n재사용대기시간 100 -> 110\n\n카미조토우마:\n패시브:\n재사용대기시간 3 -> 2\n\n환상을부수는자:\n침묵 4초 -> 5초\n\n이메진브레이커 전개:\n재사용대기시간 12 -> 9\n\n궁극기:\n침묵 8초 -> 10초\n이제 이동기로 안피해짐\n샌즈패시브로 못막음\n\n옥테인:\nCAR-SMG:\n피해량 8 -> 10\n\n런치패드:\n\n재사용대기시간 40 -> 30"
   },
   {
    "url": "https://gall.dcinside.com/mgallery/board/view?id=steve&no=198535",
    "title": "9시~9시30분 대규모패치 겜케베요",
    "comments": 23,
-   "date": "2022.12.05"
+   "date": "2022.12.05",
+   "body": "주소: 겜캐배.서버.한국\n1.19.1 이상\n\n패치노트:\n요우무:\n2번스킬:\n시작시 중첩 3 -> 5\n\n패스파인더:\n공격력 75 -> 60\n\n그래플링훅:\n재사용대기시간 20 -> 25\n\n피닉스키트:\n재사용대기시간 80 -> 100\n\n리바이:\n뇌창:\n적중피해 120 -> 100\n폭발피해 30 -> 50\n\n제이스:\n전류역장:\n피해량 75 -> 100\n\n천둥강타:\n밀어내는거리 20 -> 32\n\n겐지:\n좌+우클 동시에 날리기 다시 막음\n\n질풍참:\n재사용대기시간 10 -> 8\n\n용검:\n재사용대기시간 100 -> 80\n\n코스틱:\n공격력 75 -> 60\n\n녹스가스:\n피해량 10 -> 12\n\n녹스가스수류탄:\n재사용대기시간 100 -> 80\n\n카라짐:\n공격력 30 -> 25\n\n찬란한질주:\n재사용대기시간 11 -> 10\n\n샌즈:\n가스터블래스트:\n재사용대기시간 16 -> 14\n\n탈론:\n녹서스식외교:\n재사용대기시간 5 -> 6\n\n갈퀴손:\n투사체 폭 1.2 -> 1.5\n\n목긋기:\n이제 1초간 90% 둔화시킴\n\n그림자공격:\n투사체 폭 1.5 -> 2\n재사용대기시간 55 -> 60\n\n옥테인:\n공격력:\n75 -> 60\n\n패시브:\n재사용대기시간 6 -> 4\n\nCAR-SMG:\n피해량 10 -> 8\n이제 조준시 명중률 100%\n\n자극제:\n이동속도 100% -> 150%\n\n런치패드:\n재사용대기시간 30 -> 40\n이제 게임시작후 즉시 사용 불가"
   },
   {
    "url": "https://gall.dcinside.com/mgallery/board/view?id=steve&no=198342",
    "title": "6시 신캐 또추가 게임게릭터배틀",
    "comments": 10,
-   "date": "2022.12.04"
+   "date": "2022.12.04",
+   "body": "주소: 겜캐배.서버.한국\n\n패치노트:\n신규캐릭터: 옥테인\n\n옥테인의 궁극기 점프패드는 옥테인,코스틱,패스파인더 만 사용할수있습니다\n\n최종링까지 자기장이 도달하는데 걸리는 시간 180 -> 210\n\n픽 확률이 60 -> 50% 로 줄어들고\n대신 픽전이 추가되었습니다\n\n리바이:\n뇌창:\n재사용대기시간 40 -> 50\n\n코스틱:\n이제 패스파인더와 동일한 패시브 + 기존패시브 를 가집니다\n\n카라짐:\n초월:\n회복량 45 -> 35\n\n찬란한질주:\n재사용대기시간 7 -> 11\n\n샌즈:\n1스:\n투사체 폭 1 -> 0.5"
   },
   {
    "url": "https://gall.dcinside.com/mgallery/board/view?id=steve&no=198157",
    "title": "4시 30분 신캐추가 게임케릭터배틀",
    "comments": 8,
-   "date": "2022.12.03"
+   "date": "2022.12.03",
+   "body": "주소: 겜캐배.서버.한국\n\n패치노트:\n없"
   },
   {
    "url": "https://gall.dcinside.com/mgallery/board/view?id=steve&no=197709",
    "title": "오줌서버",
    "comments": 13,
-   "date": "2022.11.30"
+   "date": "2022.11.30",
+   "body": "0.tcp.ngrok.io:11401"
   },
   {
    "url": "https://gall.dcinside.com/mgallery/board/view?id=steve&no=197242",
    "title": "7시30분 겜케베",
    "comments": 4,
-   "date": "2022.11.27"
+   "date": "2022.11.27",
+   "body": "주소 겜캐배.서버.한국\n\n패치노트:\n\n요우무:\n궁극기에 ㅈㄴ멋진? 이펙트 추가함\n\n리바이:\n궁 폭발피해가 랜덤으로 2~4배 사이로 들어가던 버그 수정\n\n가끔 이상할정도로 쌔게 터지는게 버그였음\n\n제이스:\n전격폭발:\n피해량 120 -> 140\n강화피해량 180 -> 210\n\n치르노:\n궁극기:\n레이져 폭: 2.5 -> 3\n\n나나야:\n팔천:\n피해량 60 -> 70\n\n극사나나야:\n투사체 폭 0 -> 1\n잃은체력계수 75% -> 100%"
   },
   {
    "url": "https://gall.dcinside.com/mgallery/board/view?id=steve&no=197007",
    "title": "게임배틀캐릭터 4시 30분",
    "comments": 1,
-   "date": "2022.11.26"
+   "date": "2022.11.26",
+   "body": "주소 겜캐배.서버.한국\n1.19.1 이상\n\n패치노트:\n신캐: 이번주는쉼\n\n없음, 저번패치노트읽기"
   },
   {
    "url": "https://gall.dcinside.com/mgallery/board/view?id=steve&no=196571",
    "title": "축구단타요약",
    "comments": 8,
-   "date": "2022.11.23"
+   "date": "2022.11.23",
+   "body": ""
   },
   {
    "url": "https://gall.dcinside.com/mgallery/board/view?id=steve&no=196551",
    "title": "게임캐릭터배틀 테스트 PBE 8시 15분",
    "comments": 6,
-   "date": "2022.11.23"
+   "date": "2022.11.23",
+   "body": "주소 0.tcp.jp.ngrok.io:12968\n\n패치노트:\n\n이제 첫 시작시 궁극기 쿨타임이 절반만 적용됨\n\n자기장속도 소폭 증가\n\n스킬설명창 폰트가 읽기 쉬워짐\n\n유령:\n기본공격:\n투사체폭: 0 -> 0.15\n\n저격:\n투사체폭 0 -> 0.15\n데미지 70 -> 75\n\n전술핵투하:\n재사용대기시간 140 -> 150\n데미지 350 -> 300"
   },
   {
    "url": "https://gall.dcinside.com/mgallery/board/view?id=steve&no=195994",
    "title": "오줌서버",
    "comments": 16,
-   "date": "2022.11.20"
+   "date": "2022.11.20",
+   "body": "8.tcp.ngrok.io:16769"
   },
   {
    "url": "https://gall.dcinside.com/mgallery/board/view?id=steve&no=195959",
    "title": "2시 30분 게임베틀케릭터",
    "comments": 4,
-   "date": "2022.11.20"
+   "date": "2022.11.20",
+   "body": "주소 0.tcp.jp.ngrok.io:19585\n\n1.19.1 이상\n\n패치노트:\n패스파인더:\n공격속도 0.5 -> 0.65\n\n그래플링훅:\n재사용대기시간 15 -> 20\n\n리바이:\n뇌창:\n적중시 피해량 100 -> 120\n폭발피해량 50 -> 30\n\n코스틱:\n공격속도 0.5 -> 0.65\n\n나나야:\n섬도 팔점충:\n피해량 150 -> 125\n\n유령:\n저격:\n피해량 100 -> 70\n최소재사용대기시간 0.1 -> 0.2\n\nEMP:\n침묵 5초 -> 6초\n마나소모 25 -> 20"
   },
   {
    "url": "https://gall.dcinside.com/mgallery/board/view?id=steve&no=195777",
    "title": "8시 25분 겜케베 PBE? +신규캐릭터",
    "comments": 9,
-   "date": "2022.11.19"
+   "date": "2022.11.19",
+   "body": "주소: 34.64.155.37\n\n패치노트:\n이제 본인이 받고있는 무적,지정불가,은신 등의 버프가 화면에 표시됩니다\n\n화면에 게임시간이 표시됩니다\n\n신규캐릭터: 유령\n\n패스파인더:\n공격속도 0.65 -> 0.5\n\n히로빈:\n공격력 45 -> 35\n\n1스:\n쿨타임 16 -> 15\n\n시간정지:\n지속시간 2초 -> 1.5초\n\n궁극기:\n피해량 200 -> 150\n\n코스틱:\n공격속도 0.65 -> 0.5\n\n녹스가스트랩:\n충전시간 20 -> 16\n\n치르노:\n소드프리저:\n시전당 재사용대기시간 0.75 -> 0.5\n\n나나야시키:\n극사나나야:\n투사체 속도 64 -> 100\n투사체 폭 0.2 -> 0"
   },
   {
    "url": "https://gall.dcinside.com/mgallery/board/view?id=steve&no=194930",
    "title": "2팀 랜덤무기 공성젼 5시 20분",
    "comments": 3,
-   "date": "2022.11.15"
+   "date": "2022.11.15",
+   "body": "34.64.155.37\n\n1.18.1 이상이면되요"
   },
   {
    "url": "https://gall.dcinside.com/mgallery/board/view?id=steve&no=194512",
    "title": "대충 게임케릭터베틀 꾸준히 인기있어서 감사하다는 글",
    "comments": 16,
-   "date": "2022.11.13"
+   "date": "2022.11.13",
+   "body": "8월중순쯤에 캐릭터 이거 단 4개로 개보대같은 스킬 판정 천지로 시작했는데\n\n사실 그때 1주일만에 고사했어도 전혀 안이상한데 계속 해준 애들 덕분에\n\n무려 3달이 지난 지금도 동접 18 찍을만큼 인기도 꾸준히 늘고 캐릭터도 14개 까지 업데이트됬음\n\n장타까지 치면 2018년부터 서버만들기시작한지 3년쯤 된거같고\n단타만 따지면 작년 7월부터 그동안 열었던 만들고 열었던 단타가 8개쯤\n\n단타 만든건 죄다 노래퀴즈빼곤 다 2주도 못가서 고사했음\n\n랜덤무기 2팀전 마지막으로 만들고 그거마저 내가해봐도 노잼이라\n\n당분간 서버 안만들다가\n\n겜케베를 이제 마지막으로 할줄아는거 다 써서 1달간 힘빡주고 만들고 이거 망하면 진짜 런할랬는데\n\n마지막으로 연게 거의 기적적으로 성공해서 기쁘고\n\n재밌게 해주는사람들한테 감사하다고 글 남깁니다\n\n그리고 에케베랑 이름만 똑같은거지 거의 다른게임이에요..."
   },
   {
    "url": "https://gall.dcinside.com/mgallery/board/view?id=steve&no=194480",
    "title": "5시 30분 겜케베",
    "comments": 6,
-   "date": "2022.11.13"
+   "date": "2022.11.13",
+   "body": "주소 겜캐배.서버.한국\n1.19.1 이상이지만 1.18도 접속자체는 가능\n\n패치노트:\n패스파인더:\n윙맨:\n공격력 50 -> 45\n\n투사체 속도 450 -> 400\n\n투사체 낙차 0.25 b/s^2 -> 0.35 b/s^2\n\n리바이:\n회전베기:\n첫 공격 피해량 50 -> 40\n입체기동:\n투사체 속도 100 -> 150\n입체기동 속도 25 -> 35\n뇌창:\n가끔 궁극기 폭발피해가 2배로 들어가던 버그 수정\n\n적중피해 60 -> 100\n\n폭발피해 80 -> 50\n\n투사체 폭 0.1 -> 0.25\n\n루시안:\n체력 500 -> 400\n\n나나야시키:\n1스:\n범위 1.5 -> 2\n\n[閃鞘]팔점충:\n\n데미지 125 -> 150\n\n3스:\n사거리 12 -> 15"
   },
   {
    "url": "https://gall.dcinside.com/mgallery/board/view?id=steve&no=194254",
    "title": "3시 30분 겜케베",
    "comments": 2,
-   "date": "2022.11.12"
+   "date": "2022.11.12",
+   "body": "주소: 겜캐배.서버.한국\n버전 1.19.1 이상\n\n패치노트:\n\n게임시작시 무적시간이 20초로 감소\n\n자기장:\n데미지가 1 - 2 - 4 - 6 - 8 - 10 에서 1 - 2 - 4 - 8 - 16 - 32 로 증가\n\n최종자기장 도달까지 걸리는 시간 5분 -> 4분\n\n히로빈:\n부활:\n이제 1킬 이상 해야 발동\n\n코스틱:\n궁극기:\n자꾸 궁+좌클릭 못쓰고 병신같이 뒤져서 누르자마자 즉발로 나가게 변경\n\n나나야시키:\n극사나나야:\n투사체 폭 0 -> 0.2\n\n탈론:\n이동속도 2.25 -> 2.5\n\n궁극기:\n쿨타임 75 -> 55"
   },
   {
    "url": "https://gall.dcinside.com/mgallery/board/view?id=steve&no=194152",
    "title": "게임캐릭터배틀",
    "comments": 0,
-   "date": "2022.11.11"
+   "date": "2022.11.11",
+   "body": "주소: 겜캐배.서버.한국\n1.19.1 이상"
   },
   {
    "url": "https://gall.dcinside.com/mgallery/board/view?id=steve&no=194129",
    "title": "8시 30분 겜케베",
    "comments": 4,
-   "date": "2022.11.11"
+   "date": "2022.11.11",
+   "body": "주소: 겜캐배.서버.한국\n1.19.1 이상\n\n패치노트:\n신규캐릭터: 탈론\n\n적 처치시 회복량:\n125 -> 최대체력의 25%\n\n이제 cc 적중유무가 화면과 이름표에 표시됨\n\n시범기능: 당분간 머리위에 체력바가 표기됨\n\n히로빈:\n이동속도 3 -> 2.5\n\n2스:\n재사용대기시간 25 -> 35\n\n리바이:\n너프 연기\n\n코스틱:\nr301:\n공격력 10 -> 12\n\n카라짐:\n공격력 25 -> 30\n\n폴피닉스:\n붕권:\n시전중 추가사거리 2 -> 1"
   },
   {
    "url": "https://gall.dcinside.com/mgallery/board/view?id=steve&no=194123",
    "title": "오줌서버",
    "comments": 2,
-   "date": "2022.11.11"
+   "date": "2022.11.11",
+   "body": "2.tcp.ngrok.io:12640"
   },
   {
    "url": "https://gall.dcinside.com/mgallery/board/view?id=steve&no=193496",
    "title": "8시45분겜케베",
    "comments": 11,
-   "date": "2022.11.07"
+   "date": "2022.11.07",
+   "body": "주소 34.64.155.37\n\n1.19.1 이상\n\n패치노트:\n몇몇 함수를 플러그인으로 새로 제작해서 크게 최적화했음\n\n다음캐릭터 후보군:\n\n탈론\n\n맥크리\n\n솔져76\n\n다리우스\n\n카미조토우마\n\n옥테인\n\n시어\n\n그 외 후보로 원하는캐릭터있으면 댓글로"
   },
   {
    "url": "https://gall.dcinside.com/mgallery/board/view?id=steve&no=193278",
    "title": "3시 겜케베",
    "comments": 6,
-   "date": "2022.11.06"
+   "date": "2022.11.06",
+   "body": "주소 34.64.155.37\n\n버전 1.19.1 이상\n\n패치노트:\n요우무:\n패시브:\n피해량 20 -> 30\n1스:\n피해량 40-> 30\n2스:\n피해량 40 -> 50\n3스:\n피해량 65 -> 70\n쿨타임 20 -> 16\n\n리바이:\n체력:\n 300 ->200 (패시브 효과로 데미지는 더 강해짐)\n\n1스:\n기본피해량 30 -> 15\n\n입체기동:\n둔화,시간정지 제외 cc기에 당할시 이동이 취소되고 8초 쿨타임 적용\n\n뇌창:\n투사체 폭:  0.2 -> 0.1블럭\n\n제이스:\n하늘로!:\n피해량 80 -> 120\n\n치르노:\n돌격:\n쿨타임 10 -> 8"
   }
  ]
 }
