@@ -61,10 +61,10 @@ async function getUUIDFromCachedData(nickname) {
     const normalizedNickname = nickname.toLowerCase();
 
     try {
-        const cachedProfiles = await prisma.mojangProfileCache.findMany({
-            select: { uuid: true, name: true },
+        const cachedProfile = await prisma.mojangProfileCache.findFirst({
+            where: { name: { equals: nickname, mode: 'insensitive' } },
+            select: { uuid: true },
         });
-        const cachedProfile = cachedProfiles.find(profile => profile.name?.toLowerCase() === normalizedNickname);
         if (cachedProfile) {
             return cachedProfile.uuid;
         }

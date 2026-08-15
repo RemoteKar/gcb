@@ -444,6 +444,48 @@ model CharacterComment {
 
 ---
 
+## 2026-08-15 작업 내용: 게임 기록 기반 데이터 전면 정적화 (빌드 타임 생성)
+
+### 개요
+게임 기록(`Data/gameHistory`, 500+ 파일)이 이 레포에 함께 커밋되는데도 서버가 런타임에 GitHub API로 전체 파일을 매번 내려받아 통계를 계산하고 있었음
+(캐릭터 통계 페이지 = 3.7MB JSON 응답, 랭킹 페이지 = 배지 API 130회 호출 등).
+게임 기록/배지/랭킹에 관련된 모든 데이터를 **Netlify 빌드 시 로컬 파일로 계산 → `client/data/*.json` 정적 파일**로 바꾸고, 관련 서버 코드는 삭제.
+
+### 생성/변경된 파일
+| 파일 | 설명 |
+|------|------|
+| `scripts/read-game-records.js` | `Data/gameHistory` 로컬 읽기 헬퍼 (빌드 스크립트 공용) |
+| `scripts/build-static-data.js` | (구 `build-user-statistics.js`) 유저별 전적 + `recent-games.json` + `augment-stats.json` + `badges.json` 생성 |
+| `scripts/build-leaderboard.js` | GitHub API 대신 로컬 파일 사용, `client/data/leaderboard.json` 출력 (DB 저장은 `/api/uuid` 닉네임 폴백용으로 유지, 실패해도 빌드 계속) |
+| `client/scripts/{ranking,character_stats,augment_stats,user}.js` | `/api/*` 대신 `/data/*.json` fetch |
+| `client/scripts/{main,user}.js` | 검색창 Enter 키 지원 |
+| `server/services/mojang.js` | 닉네임 폴백 조회를 전체 테이블 스캔 → `findFirst(insensitive)` |
+| `.gitignore` | `node_modules/` 추가 (1100여 파일 git 추적 해제) |
+
+### 삭제된 것
+- 라우트: `/api/badge`, `/api/statistic`, `/api/leaderboard`, `/api/character-stats`, `/api/augment-stats`, `/api/all_game_history`
+- 파일: `server/services/statisticsService.js`, `server/middleware/cache.js`
+- `server/services/github.js`: `getBadgeData`, `getGameHistory`, `fetchAllGameRecords` 등 게임 기록 관련 함수
+- `server/utils/statistics.js`: `computeGlobalCharacterStatistics` (미사용)
+
+### 정적 데이터 목록 (`client/data/`, gitignore 됨, 빌드 시 생성)
+| 파일 | 내용 | 사용 페이지 |
+|------|------|-----------|
+| `user-statistics/{uuid}.json` | 유저 통계 + 게임 기록 | `user.html` |
+| `recent-games.json` | 최근 60게임 원본 | `character_stats.html` |
+| `augment-stats.json` | 최근 60게임 증강 픽 수 | `augment_stats.html` |
+| `badges.json` | `{ uuid: { current, List } }` | `user.html`, `ranking.html` |
+| `leaderboard.json` | 랭킹 | `ranking.html` |
+
+**게임 기록 데이터가 바뀌면 재배포(빌드)해야 반영됨** — 기존에도 `git push`가 배포 트리거이므로 실질 동작 동일.
+로컬 확인: `node scripts/build-static-data.js && node scripts/build-leaderboard.js` (DB 없이도 동작).
+
+### 아직 GitHub API를 쓰는 부분 (추후 정적화 후보)
+- 캐릭터/증강/무기/타이탄 설명 (`Data/description/**`) — `/api/character-info` 등. 1시간 캐시라 급하진 않음
+- 피드백 Issues, OAuth, 댓글(DB)은 런타임 필요
+
+---
+
 ## 페이지 목록
 1. `index.html` - 메인 (닉네임 검색)
 2. `user.html` - 유저 프로필

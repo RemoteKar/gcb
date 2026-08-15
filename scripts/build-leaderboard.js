@@ -1,7 +1,14 @@
+// 빌드 시 Data/gameHistory 로 랭킹 계산 → client/data/leaderboard.json (+ DB: /api/uuid 닉네임 폴백용)
+const fs = require('fs');
+const path = require('path');
 const { getProfileByUUID } = require('../server/services/mojang');
-const { refreshAllGameRecordsCache } = require('../server/services/github');
-const { getPrismaClient } = require('../server/services/prisma');
+const { getPrismaClientOrNull } = require('../server/services/prisma');
 const { aggregateAllPlayerStatistics } = require('../server/utils/statistics');
+const { readGameRecords } = require('./read-game-records');
+
+const outPath = path.resolve(__dirname, '..', 'client', 'data', 'leaderboard.json');
+const MIN_GAMES = 10;
+const NICKNAME_LOOKUP_TOP = 20;
 
 function formatStatistics(stats) {
   return {
@@ -24,92 +31,49 @@ function formatStatistics(stats) {
 async function buildLeaderboard() {
   console.log("🚀 [빌드] 랭킹 데이터 계산 시작...");
 
-  let prisma;
-  try {
-    prisma = getPrismaClient();
-  } catch (error) {
-    console.error("❌ [빌드] Prisma 초기화 실패:", error);
-    process.exit(1);
-  }
+  const records = readGameRecords();
+  console.log(`🔍 [빌드] 파싱된 게임 기록 수: ${records.length}`);
 
-  try {
-    // 1. 모든 게임 기록 가져오기
-    const allParsedGameRecords = await refreshAllGameRecordsCache();
-    console.log(`🔍 [빌드] 파싱된 게임 기록 수: ${allParsedGameRecords.length}`);
-    if (allParsedGameRecords.length === 0) {
-      console.warn("⚠️ [빌드] 게임 기록 없음. 빈 데이터로 저장.");
+  const players = aggregateAllPlayerStatistics(records.map(r => r.content))
+    .filter(stats => stats.totalGames >= MIN_GAMES);
+  players.forEach(stats => {
+    stats.rankingScore = (stats.winRate / 100) * (stats.avarageRankLeast50 / 100);
+  });
+  players.sort((a, b) => b.rankingScore - a.rankingScore);
+  console.log(`🔍 [빌드] 자격 플레이어 수: ${players.length}`);
+
+  const leaderboard = await Promise.all(players.map(async (stats, index) => {
+    let nickname = stats.uuid;
+    if (index < NICKNAME_LOOKUP_TOP) {
+      try {
+        const profile = await getProfileByUUID(stats.uuid);
+        if (profile?.name) nickname = profile.name;
+      } catch (error) {
+        console.warn(`⚠️ [빌드] UUID ${stats.uuid} 닉네임 조회 실패: ${error.message}`);
+      }
+    }
+    return { uuid: stats.uuid, nickname, ...formatStatistics(stats) };
+  }));
+
+  fs.mkdirSync(path.dirname(outPath), { recursive: true });
+  fs.writeFileSync(outPath, JSON.stringify(leaderboard));
+  console.log(`✅ [빌드] leaderboard.json 저장 완료 (${leaderboard.length}명)`);
+
+  const prisma = getPrismaClientOrNull();
+  if (prisma) {
+    try {
       await prisma.leaderboardCache.upsert({
         where: { id: 'leaderboard' },
-        update: { data: [], updatedAt: new Date() },
-        create: { id: 'leaderboard', data: [] }
+        update: { data: leaderboard, updatedAt: new Date() },
+        create: { id: 'leaderboard', data: leaderboard }
       });
-      return;
+      console.log("✅ [빌드] 랭킹 DB 저장 완료.");
+    } catch (error) {
+      console.warn(`⚠️ [빌드] 랭킹 DB 저장 실패 (닉네임 폴백만 영향): ${error.message}`);
     }
-
-    // 2. 플레이어 통계 집계
-    let allPlayerStatistics = aggregateAllPlayerStatistics(
-      allParsedGameRecords.map(record => record?.content || record)
-    );
-    allPlayerStatistics = allPlayerStatistics.filter(stats => stats.totalGames >= 10);
-    console.log(`🔍 [빌드] 집계된 플레이어 통계 수: ${allPlayerStatistics.length}`);
-
-    if (allPlayerStatistics.length === 0) {
-      console.warn("⚠️ [빌드] 자격 플레이어 없음. 빈 데이터로 저장.");
-      await prisma.leaderboardCache.upsert({
-        where: { id: 'leaderboard' },
-        update: { data: [], updatedAt: new Date() },
-        create: { id: 'leaderboard', data: [] }
-      });
-      return;
-    }
-
-    // 3. 랭킹 점수 계산 및 정렬
-    allPlayerStatistics.forEach(stats => {
-      stats.rankingScore = (stats.winRate / 100) * (stats.avarageRankLeast50 / 100);
-    });
-    allPlayerStatistics.sort((a, b) => b.rankingScore - a.rankingScore);
-
-    // 4. 상위 20명 닉네임 조회
-    const calculatedLeaderboard = await Promise.all(
-      allPlayerStatistics.map(async (stats, index) => {
-        let nickname = stats.uuid;
-        if (index < 20) {
-          try {
-            const profile = await getProfileByUUID(stats.uuid);
-            if (profile && profile.name) {
-              nickname = profile.name;
-            }
-          } catch (error) {
-            console.warn(`⚠️ [빌드] UUID ${stats.uuid} 닉네임 조회 실패: ${error.message}`);
-          }
-        }
-        return {
-          uuid: stats.uuid,
-          nickname,
-          ...formatStatistics(stats)
-        };
-      })
-    );
-
-    // 5. DB에 저장
-    await prisma.leaderboardCache.upsert({
-      where: { id: 'leaderboard' },
-      update: { data: calculatedLeaderboard, updatedAt: new Date() },
-      create: { id: 'leaderboard', data: calculatedLeaderboard }
-    });
-
-    console.log(`✅ [빌드] 랭킹 데이터 DB 저장 완료. (${calculatedLeaderboard.length}명)`);
-  } catch (error) {
-    console.error("❌ [빌드] 랭킹 계산 오류:", error);
-    // 빌드 실패로 인해 배포가 중단되지 않도록 exit(0)
-    console.warn("⚠️ [빌드] 랭킹 계산 실패했지만 배포는 계속 진행합니다.");
   }
 }
 
-buildLeaderboard().then(() => {
-  console.log("✅ [빌드] 랭킹 빌드 스크립트 완료.");
-  process.exit(0);
-}).catch(error => {
-  console.error("❌ [빌드] 예기치 않은 오류:", error);
-  process.exit(0); // 배포 중단 방지
-});
+buildLeaderboard()
+  .catch(error => console.error("❌ [빌드] 랭킹 계산 오류 (배포는 계속 진행):", error))
+  .finally(() => process.exit(0));

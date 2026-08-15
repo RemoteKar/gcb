@@ -4,36 +4,12 @@ const fetch = require('node-fetch');
 const crypto = require('crypto');
 const bcrypt = require('bcryptjs');
 const { getUUID, getProfileByUUID } = require('../services/mojang');
-const { getBadgeData, getGameHistory, fetchAllGameRecords, getCharacterList, getCharacterInfo, getSkillLinks, getWeaponList, getTitanList, getTitanInfo, getAugmentList, createFeedbackIssue, getFeedbackIssues, clearFeedbackCache } = require('../services/github');
+const { getCharacterList, getCharacterInfo, getSkillLinks, getWeaponList, getTitanList, getTitanInfo, getAugmentList, createFeedbackIssue, getFeedbackIssues, clearFeedbackCache } = require('../services/github');
 const { getPrismaClient } = require('../services/prisma');
 const authMiddleware = require('../middleware/auth');
 const NodeCache = require('node-cache');
-const { computeStatistics } = require('../utils/statistics');
-const cacheMiddleware = require('../middleware/cache');
-const { formatUUID } = require('../util');
-const { toNonHyphenatedUUID } = require('../util');
 const { getClientIp, extractIpv4, getIpv4Prefix } = require('../utils/ip');
 const config = require('../../config');
-
-// 통계 데이터를 클라이언트 응답 형식으로 포맷팅하는 헬퍼 함수
-function formatStatistics(stats) {
-  return {
-    winRate: stats.winRate.toFixed(1),
-    winCount: stats.winCount.toString(),
-    avarageRankLeast50: stats.avarageRankLeast50.toFixed(1),
-    mostUsedCharacter: stats.mostUsedCharacter,
-    mostUsedAugments: stats.mostUsedAugments,
-    averageDamageDealt: stats.averageDamageDealt.toFixed(0),
-    averageDamageTaken: stats.averageDamageTaken.toFixed(0),
-    averageKillRate: stats.averageKillRate.toFixed(2),
-    averageAliveTime: stats.averageAliveTime.toFixed(1),
-    maxDamageDealt: stats.maxDamageDealt.toFixed(0),
-    maxDamageTaken: stats.maxDamageTaken.toFixed(0),
-    maxKill: stats.maxKill.toString(),
-    totalGames: stats.totalGames.toString(),
-    characterStats: stats.characterStats || []
-  };
-}
 
 //----------------------------------------
 // 📌 UUID 조회 (Mojang API 사용)
@@ -60,112 +36,6 @@ router.get('/uuid', async (req, res) => {
 });
 
 //----------------------------------------
-// 📌 배지 데이터 조회 (GitHub Private Repository 사용 + 캐싱)
-//----------------------------------------
-router.get('/badge', (req, res, next) => {
-  const { uuid } = req.query;
-  if (!uuid) {
-    return res.status(400).json({ error: "UUID를 입력하세요." });
-  }
-  req.formattedUUID = formatUUID(uuid);
-  next();
-}, cacheMiddleware('badge'), async (req, res) => {
-  console.log(`🔍 [서버] 배지 데이터 요청: UUID = ${req.query.uuid}`);
-  try {
-    const badgeData = await getBadgeData(req.formattedUUID);
-    console.log(`✅ [서버] 배지 데이터 응답: ${JSON.stringify(badgeData)}`);
-    res.json(badgeData);
-  } catch (error) {
-    console.error("❌ [서버] 배지 데이터 조회 오류:", error);
-    console.error("❌ [서버] 배지 데이터 조회 오류 상세:", error.stack);
-    // '배지 데이터를 찾을 수 없습니다.' 오류인 경우 404 응답
-    if (error.message === '배지 데이터를 찾을 수 없습니다.') {
-      return res.status(404).json({ error: error.message });
-    }
-    res.status(500).json({ error: error.message });
-  }
-});
-
-//----------------------------------------
-// 📌 게임 기록 조회 및 통계 계산 (GitHub Private Repository 사용 + 캐싱)
-//----------------------------------------
-router.get('/statistic', (req, res, next) => {
-  const { uuid } = req.query;
-  if (!uuid) {
-    return res.status(400).json({ error: "UUID를 입력하세요." });
-  }
-  req.formattedUUID = formatUUID(uuid);
-  next();
-}, cacheMiddleware('statistic'), async (req, res) => {
-  console.log(`🔍 [서버] 게임 기록 요청: UUID = ${req.query.uuid}`);
-  try {
-    const gameHistory = await getGameHistory(req.formattedUUID);
-    const statistics = computeStatistics(gameHistory.map(record => record.content), req.formattedUUID);
-    const responsePayload = {
-      statistics: formatStatistics(statistics),
-      gameRecords: gameHistory
-    };
-    res.json(responsePayload);
-  } catch (error) {
-    console.error("❌ [서버] 게임 기록 조회 오류:", error);
-    res.status(500).json({ error: error.message });
-  }
-});
-
-//----------------------------------------
-// 📌 랭킹 데이터 조회 (DB에서 읽기)
-//----------------------------------------
-router.get('/leaderboard', async (req, res) => {
-  console.log(`🔍 [서버] 랭킹 데이터 요청`);
-  try {
-    const prisma = getPrismaClient();
-
-    const cached = await prisma.leaderboardCache.findUnique({
-      where: { id: 'leaderboard' }
-    });
-
-    if (!cached || !cached.data) {
-      return res.json([]);
-    }
-
-    res.json(cached.data);
-  } catch (error) {
-    console.error("❌ [서버] 랭킹 데이터 조회 오류:", error);
-    res.status(500).json({ error: '랭킹 데이터를 가져올 수 없습니다.' });
-  }
-});
-
-const { getCharacterStats, getAugmentStats } = require('../services/statisticsService');
-
-//----------------------------------------
-// 📌 글로벌 캐릭터 통계 조회 (최신 60경기 기반)
-//----------------------------------------
-router.get('/character-stats', async (req, res) => {
-    console.log(`🔍 [서버] 글로벌 캐릭터 통계 요청`);
-    try {
-        const stats = await getCharacterStats();
-        res.json(stats);
-    } catch (error) {
-        console.error("❌ [서버] 글로벌 캐릭터 통계 조회 오류:", error);
-        res.status(500).json({ error: '서버 내부 오류가 발생했습니다.' });
-    }
-});
-
-//----------------------------------------
-// 📌 모든 게임 기록 조회
-//----------------------------------------
-router.get('/all_game_history', cacheMiddleware('all_game_history'), async (req, res) => {
-  console.log(`🔍 [서버] 모든 게임 기록 요청`);
-  try {
-    const allParsedGameRecords = await fetchAllGameRecords(); // fetchAllGameRecords 복원
-    res.json({ gameRecords: allParsedGameRecords });
-  } catch (error) {
-    console.error("❌ [서버] 모든 게임 기록 조회 오류:", error);
-    res.status(500).json({ error: error.message });
-  }
-});
-
-//----------------------------------------
 // 📌 증강 목록 조회 (이름 + 설명)
 //----------------------------------------
 router.get('/augment-list', async (req, res) => {
@@ -176,17 +46,6 @@ router.get('/augment-list', async (req, res) => {
     } catch (error) {
         console.error("❌ [서버] 증강 목록 조회 오류:", error);
         res.status(500).json({ error: '증강 목록을 가져올 수 없습니다.' });
-    }
-});
-
-router.get('/augment-stats', async (req, res) => {
-    console.log(`🔍 [서버] 증강 통계 요청`);
-    try {
-        const stats = await getAugmentStats();
-        res.json(stats);
-    } catch (error) {
-        console.error("❌ [서버] 증강 통계 조회 오류:", error);
-        res.status(500).json({ error: '서버 내부 오류가 발생했습니다.' });
     }
 });
 

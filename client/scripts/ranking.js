@@ -4,33 +4,16 @@ document.addEventListener("DOMContentLoaded", async () => {
 
     async function fetchLeaderboardData() {
         try {
-            const response = await fetch('/api/leaderboard');
+            const [response, badgeResponse] = await Promise.all([
+                fetch('/data/leaderboard.json'),
+                fetch('/data/badges.json'),
+            ]);
             if (!response.ok) {
                 throw new Error('랭킹 데이터를 가져오는 데 실패했습니다.');
             }
             const leaderboardData = await response.json();
-
-            // Extract all unique UUIDs from the leaderboard data
-            const uuids = [...new Set(leaderboardData.map(player => player.uuid))];
-
-            // Fetch all badge data in parallel
-            const badgePromises = uuids.map(async uuid => {
-                try {
-                    const badge = await fetchBadgeData(uuid);
-                    return { uuid, badge };
-                } catch (error) {
-                    console.error(`배지 데이터 fetch 오류 (UUID: ${uuid}):`, error);
-                    return { uuid, badge: null }; // Return null for failed fetches
-                }
-            });
-
-            const badgeResults = await Promise.all(badgePromises);
-
-            // Create a map for easy lookup
-            const badgeDataMap = new Map();
-            badgeResults.forEach(({ uuid, badge }) => {
-                badgeDataMap.set(uuid, badge);
-            });
+            const badges = badgeResponse.ok ? await badgeResponse.json() : {};
+            const badgeDataMap = new Map(Object.entries(badges));
 
             return { leaderboardData, badgeDataMap };
 
@@ -114,7 +97,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         return rankDiv;
     }
 
-    const { leaderboardData, badgeDataMap } = await fetchLeaderboardData(); // Destructure the returned object
+    const { leaderboardData, badgeDataMap } = (await fetchLeaderboardData()) || {};
     if (leaderboardData && leaderboardData.length > 0) {
         renderTop3(leaderboardData.slice(0, 3), badgeDataMap); // Pass badgeDataMap
         renderOtherPlayers(leaderboardData.slice(3), badgeDataMap); // Pass badgeDataMap
@@ -124,16 +107,3 @@ document.addEventListener("DOMContentLoaded", async () => {
     }
 });
 
-// 배지 데이터 가져오는 함수 (user.js에서 복사)
-async function fetchBadgeData(uuid) {
-    const url = `/api/badge?uuid=${uuid}`;
-    try {
-        const response = await fetch(url);
-        if (!response.ok) throw new Error("배지 데이터를 찾을 수 없습니다.");
-        const data = await response.json();
-        return data;
-    } catch (error) {
-        console.error("fetchBadgeData error:", error);
-        return null;
-    }
-}

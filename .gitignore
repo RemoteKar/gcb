@@ -6,3 +6,6 @@
 
 # Generated at build time
 client/data/
+
+# Dependencies (npm install at build)
+node_modules/

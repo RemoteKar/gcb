@@ -3,7 +3,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 
     async function fetchAugmentStats() {
         try {
-            const response = await fetch('/api/augment-stats');
+            const response = await fetch('/data/augment-stats.json');
             if (!response.ok) {
                 throw new Error('증강 통계를 가져오는 데 실패했습니다.');
             }

@@ -299,70 +299,6 @@ function aggregateAllPlayerStatistics(allGameRecordContents) {
     return finalStats; // 필터 제거
 }
 
-module.exports = { computeStatistics, aggregateAllPlayerStatistics, computeGlobalCharacterStatistics };
-
-function computeGlobalCharacterStatistics(gameRecords) {
-    const characterStats = {}; // { characterId: { picks, wins, totalRank, ... } }
-
-    gameRecords.forEach(record => {
-        if (!record || !record.Player) return;
-
-        const players = Object.values(record.Player);
-        const totalPlayers = record.Game.amountOfPlayers;
-
-        players.forEach(playerData => {
-            const characterId = playerData.Character;
-
-            // 캐릭터 통계: 1~100 정식 캐릭터만 집계 (창작·관리자 제외)
-            if (characterId === undefined || characterId >= CREATIVE_ID_MAX_EXCLUSIVE || isCreativeCharacter(characterId)) return;
-
-            if (!characterStats[characterId]) {
-                characterStats[characterId] = {
-                    picks: 0,
-                    wins: 0,
-                    totalRank: 0,
-                    totalKills: 0,
-                    totalDamageDealt: 0,
-                };
-            }
-
-            const stats = characterStats[characterId];
-            stats.picks++;
-            if (playerData.outCuase === "우승") {
-                stats.wins++;
-            }
-            if (typeof playerData.Ranking === 'number') {
-                stats.totalRank += playerData.Ranking;
-            }
-            if (typeof playerData.kill === 'number') {
-                stats.totalKills += playerData.kill;
-            }
-            if (playerData.Damage && typeof playerData.Damage.Dealt === 'number') {
-                stats.totalDamageDealt += playerData.Damage.Dealt;
-            }
-        });
-    });
-
-    // 최종 통계 계산
-    const finalStats = Object.entries(characterStats).map(([characterId, stats]) => {
-        const winRate = stats.picks > 0 ? (stats.wins / stats.picks) * 100 : 0;
-        const averageRank = stats.picks > 0 ? stats.totalRank / stats.picks : 0;
-        const averageKills = stats.picks > 0 ? stats.totalKills / stats.picks : 0;
-        const averageDamageDealt = stats.picks > 0 ? stats.totalDamageDealt / stats.picks : 0;
-
-        return {
-            characterId,
-            picks: stats.picks,
-            winRate: winRate.toFixed(2),
-            averageRank: averageRank.toFixed(2),
-            averageKills: averageKills.toFixed(2),
-            averageDamageDealt: averageDamageDealt.toFixed(0),
-        };
-    });
-
-    return finalStats.sort((a, b) => b.picks - a.picks); // 픽률 순으로 정렬
-}
-
 function computeGlobalAugmentStatistics(gameRecords) {
     const augmentStats = {}; // { augmentId: { picks: 0 } }
     let maxAugmentId = 0; // 최대 증강 ID 추적
@@ -408,4 +344,4 @@ function computeGlobalAugmentStatistics(gameRecords) {
     return finalStats.sort((a, b) => b.picks - a.picks); // 픽률 순으로 정렬
 }
 
-module.exports.computeGlobalAugmentStatistics = computeGlobalAugmentStatistics;
+module.exports = { computeStatistics, aggregateAllPlayerStatistics, computeGlobalAugmentStatistics };

@@ -11,7 +11,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 
     async function fetchAllGameHistory() {
         try {
-            const response = await fetch('/api/all_game_history');
+            const response = await fetch('/data/recent-games.json');
             if (!response.ok) {
                 throw new Error('모든 게임 기록을 가져오는 데 실패했습니다.');
             }

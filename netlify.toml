@@ -1,7 +1,7 @@
 [build]
   functions = "server"
   publish = "client"
-  command = "npm install && node node_modules/prisma/build/index.js generate --schema=./prisma/schema.prisma && node node_modules/prisma/build/index.js migrate deploy --schema=./prisma/schema.prisma && node scripts/build-user-statistics.js && node scripts/build-leaderboard.js"
+  command = "npm install && node node_modules/prisma/build/index.js generate --schema=./prisma/schema.prisma && node node_modules/prisma/build/index.js migrate deploy --schema=./prisma/schema.prisma && node scripts/build-static-data.js && node scripts/build-leaderboard.js"
 
 [[redirects]]
   from = "/api/*"

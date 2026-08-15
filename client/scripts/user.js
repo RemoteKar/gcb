@@ -3,13 +3,15 @@ document.addEventListener("DOMContentLoaded", async () => {
   const searchButton = document.getElementById("search-button");
   const nicknameInput = document.getElementById("nickname");
   if (searchButton && nicknameInput) {
-    searchButton.addEventListener("click", () => {
+    const goSearch = () => {
       const searchNickname = nicknameInput.value.trim();
       if (!searchNickname) {
         return;
       }
       window.location.href = `/user/${encodeURIComponent(searchNickname)}`;
-    });
+    };
+    searchButton.addEventListener("click", goSearch);
+    nicknameInput.addEventListener("keydown", (e) => { if (e.key === "Enter") goSearch(); });
   }
 
   // URL 경로에서 닉네임 추출 (예: /user/Steve)
@@ -54,12 +56,11 @@ document.addEventListener("DOMContentLoaded", async () => {
   }
 
   async function fetchBadgeData(uuid) {
-    const url = `/api/badge?uuid=${uuid}`;
     try {
-      const response = await fetch(url);
-      if (!response.ok) throw new Error("배지 데이터를 찾을 수 없습니다.");
-      const data = await response.json();
-      return data;
+      const response = await fetch('/data/badges.json');
+      if (!response.ok) return null;
+      const badges = await response.json();
+      return badges[formatUUID(uuid)] || null;
     } catch (error) {
       console.error("fetchBadgeData error:", error);
       return null;
@@ -67,22 +68,10 @@ document.addEventListener("DOMContentLoaded", async () => {
   }
 
   async function fetchStatistic(uuid) {
-    const staticUrl = `/data/user-statistics/${formatUUID(uuid)}.json`;
     try {
-      const staticResponse = await fetch(staticUrl);
-      if (staticResponse.ok) {
-        return await staticResponse.json();
-      }
-    } catch (error) {
-      console.warn("fetchStaticStatistic error:", error);
-    }
-
-    const url = `/api/statistic?uuid=${uuid}`;
-    try {
-      const response = await fetch(url);
-      if (!response.ok) throw new Error("게임 기록을 찾을 수 없습니다.");
-      const data = await response.json();
-      return data;
+      const response = await fetch(`/data/user-statistics/${formatUUID(uuid)}.json`);
+      if (!response.ok) return null;
+      return await response.json();
     } catch (error) {
       console.error("fetchStatistic error:", error);
       return null;
