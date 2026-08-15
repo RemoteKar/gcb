@@ -87,6 +87,21 @@ document.addEventListener("DOMContentLoaded", async () => {
   }
   const uuid = data.uuid;
 
+  // UUID로 진입한 경우(랭킹 페이지 링크 등) 닉네임을 조회해서 제목/URL을 닉네임으로 교체
+  if (isUUIDInput(nickname)) {
+    try {
+      const res = await fetch(`/api/profiles?uuids=${uuid.replace(/-/g, '')}`);
+      const names = res.ok ? await res.json() : {};
+      const resolved = Object.values(names)[0];
+      if (resolved) {
+        userTitle.textContent = resolved;
+        history.replaceState(null, '', `/user/${encodeURIComponent(resolved)}`);
+      }
+    } catch (e) {
+      console.warn('닉네임 조회 실패:', e);
+    }
+  }
+
   // ──────────────────────────────
   // 2. 플레이어 머리 이미지 표시
   console.log(`[DEBUG] UUID for avatar: ${uuid}`);
