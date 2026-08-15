@@ -3,6 +3,6 @@ character20:
     - gold
     selected:
         ==: org.bukkit.inventory.ItemStack
-        schema_version: 1
         id: minecraft:air
+        schema_version: 1
         DataVersion: 4440

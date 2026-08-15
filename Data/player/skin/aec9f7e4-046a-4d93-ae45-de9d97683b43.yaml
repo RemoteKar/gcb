@@ -7,3 +7,8 @@ character29:
     ownedSkins:
     - gold
     selected: gold
+
+character31:
+    ownedSkins:
+    - novel
+    selected: novel

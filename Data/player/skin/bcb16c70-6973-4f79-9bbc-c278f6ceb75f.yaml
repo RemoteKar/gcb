@@ -2,8 +2,8 @@ character63:
     selected:
         ==: org.bukkit.inventory.ItemStack
         id: minecraft:air
-        DataVersion: 4440
         schema_version: 1
+        DataVersion: 4440
 
 character49:
     selected: gold
@@ -12,5 +12,5 @@ character31:
     selected:
         ==: org.bukkit.inventory.ItemStack
         id: minecraft:air
-        DataVersion: 4440
         schema_version: 1
+        DataVersion: 4440
