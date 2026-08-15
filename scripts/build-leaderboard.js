@@ -8,7 +8,7 @@ const { readGameRecords } = require('./read-game-records');
 
 const outPath = path.resolve(__dirname, '..', 'client', 'data', 'leaderboard.json');
 const MIN_GAMES = 10;
-const NICKNAME_LOOKUP_TOP = 20;
+const NICKNAME_CONCURRENCY = 4; // Mojang 429 방지
 
 function formatStatistics(stats) {
   return {
@@ -42,17 +42,22 @@ async function buildLeaderboard() {
   players.sort((a, b) => b.rankingScore - a.rankingScore);
   console.log(`🔍 [빌드] 자격 플레이어 수: ${players.length}`);
 
-  const leaderboard = await Promise.all(players.map(async (stats, index) => {
-    let nickname = stats.uuid;
-    if (index < NICKNAME_LOOKUP_TOP) {
+  // 전원 닉네임 조회 (랭킹 전체 리스트 표시용). 실패 시 uuid 유지
+  const leaderboard = new Array(players.length);
+  let next = 0;
+  await Promise.all(Array.from({ length: NICKNAME_CONCURRENCY }, async () => {
+    while (next < players.length) {
+      const i = next++;
+      const stats = players[i];
+      let nickname = stats.uuid;
       try {
         const profile = await getProfileByUUID(stats.uuid);
         if (profile?.name) nickname = profile.name;
       } catch (error) {
         console.warn(`⚠️ [빌드] UUID ${stats.uuid} 닉네임 조회 실패: ${error.message}`);
       }
+      leaderboard[i] = { uuid: stats.uuid, nickname, ...formatStatistics(stats) };
     }
-    return { uuid: stats.uuid, nickname, ...formatStatistics(stats) };
   }));
 
   fs.mkdirSync(path.dirname(outPath), { recursive: true });

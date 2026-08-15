@@ -1,46 +1,29 @@
 document.addEventListener("DOMContentLoaded", async () => {
     const characterGrid = document.getElementById("character-grid");
 
-    // 캐릭터 ID 목록 가져오기 (1~899)
-    async function fetchCharacterList() {
+    async function fetchJson(url) {
         try {
-            const response = await fetch('/api/character-list');
-            if (!response.ok) {
-                throw new Error('캐릭터 목록을 가져오는 데 실패했습니다.');
-            }
-            const data = await response.json();
-            return data.characters;
-        } catch (error) {
-            console.error("fetchCharacterList error:", error);
-            return [];
+            const res = await fetch(url);
+            return res.ok ? await res.json() : null;
+        } catch (e) {
+            return null;
         }
     }
 
-    // 캐릭터 그리드 렌더링
-    async function renderCharacterGrid() {
-        characterGrid.textContent = "로딩 중...";
+    characterGrid.innerHTML = Array.from({ length: 24 }, () => '<div class="skeleton skeleton-tile"></div>').join('');
 
-        const characters = await fetchCharacterList();
+    const [list, names] = await Promise.all([fetchJson('/api/character-list'), fetchJson('/data/names.json')]);
+    const characters = list?.characters;
 
-        if (!characters || characters.length === 0) {
-            characterGrid.textContent = "캐릭터를 찾을 수 없습니다.";
-            return;
-        }
-
-        characterGrid.innerHTML = '';
-
-        characters.forEach(charId => {
-            const charItem = document.createElement('div');
-            charItem.classList.add('character-grid-item');
-            charItem.innerHTML = `
-                <img src="/Resource/character/${charId}.png" alt="Character ${charId}" class="character-grid-img" onerror="this.src='/Resource/character/0.png'">
-            `;
-            charItem.addEventListener('click', () => {
-                window.location.href = `/character/${charId}`;
-            });
-            characterGrid.appendChild(charItem);
-        });
+    if (!characters || characters.length === 0) {
+        characterGrid.innerHTML = '<div class="empty-state">캐릭터를 찾을 수 없습니다.</div>';
+        return;
     }
 
-    renderCharacterGrid();
+    characterGrid.innerHTML = characters.map(charId => {
+        const name = names?.characters?.[charId] || `캐릭터 ${charId}`;
+        return `<a class="character-grid-item" href="/character/${charId}" data-tip="${name.replace(/"/g, '&quot;')}" aria-label="${name.replace(/"/g, '&quot;')}">
+            <img src="/Resource/character/${charId}.png" alt="" class="character-grid-img" loading="lazy" onerror="this.src='/Resource/character/0.png'">
+        </a>`;
+    }).join('');
 });

@@ -3,29 +3,44 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>증강 통계</title>
-    <link rel="stylesheet" href="styles/main.css">
+    <title>증강 통계 - GCB.gg</title>
+    <meta property="og:title" content="증강 통계 - GCB.gg">
+    <meta property="og:description" content="게임캐릭터배틀 증강별 픽 수·승률·순방률">
+    <link rel="icon" href="/favicon.ico" type="image/x-icon">
+    <link rel="stylesheet" href="/styles/main.css">
 </head>
 <body>
     <div class="header-bar">
-        <a href="/" class="header-logo">GCB.GG</a>
-        <a href="/ranking.html" class="nav-button">랭킹</a>
-        <a href="/character.html" class="nav-button">캐릭터정보</a>
-        <a href="/augment.html" class="nav-button">증강정보</a>
-        <a href="/character_stats.html" class="nav-button">캐릭터 통계</a>
-        <a href="/augment_stats.html" class="nav-button">증강 통계</a>
-        <a href="/feedback.html" class="nav-button nav-button-red">건의/버그</a>
+      <a href="/" class="header-logo">GCB.GG</a>
+      <a href="/ranking.html" class="nav-button">랭킹</a>
+      <a href="/character.html" class="nav-button">캐릭터</a>
+      <a href="/augment.html" class="nav-button active">증강</a>
+      <a href="/patchnotes.html" class="nav-button">패치노트</a>
+      <a href="/feedback.html" class="nav-button nav-button-red">건의/버그</a>
     </div>
 
-    <div class="container">
-        <h1 id="page-title">증강 사용 횟수 통계 (최근 60게임)</h1>
-
-        <div id="augment-list" class="character-list">
-            <!-- 증강 통계가 여기에 동적으로 로드됩니다 -->
-            <p>데이터 로딩 중...</p>
+    <div class="container stats-table-container">
+        <div class="page-head">
+            <nav class="sub-tabs" aria-label="증강 메뉴">
+                <a href="/augment.html">정보</a>
+                <a href="/augment_stats.html" class="active">통계</a>
+            </nav>
+            <h1 id="page-title">증강 통계</h1>
+            <p class="page-desc">모든 캐릭터 기준 · 아이콘/이름을 누르면 설명 팝업 · 열 제목을 누르면 정렬</p>
+            <div class="sub-tabs" id="period-tabs" role="tablist">
+                <button data-period="recent60" class="active">최근 60게임</button>
+                <button data-period="recent200">최근 200게임</button>
+                <button data-period="all">전체</button>
+            </div>
         </div>
+
+        <div id="augment-table" class="table-wrap">
+            <div class="skeleton skeleton-row"></div><div class="skeleton skeleton-row"></div><div class="skeleton skeleton-row"></div><div class="skeleton skeleton-row"></div>
+        </div>
+        <p class="period-note">픽 수 = 해당 증강을 고른 플레이어 수 · 승률 = 고른 플레이어 중 우승 비율 · 순방률 = 상위 50% 이내 비율</p>
     </div>
 
+    <script src="/scripts/stats-table.js"></script>
     <script src="/scripts/augment_popup.js"></script>
     <script src="/scripts/augment_stats.js"></script>
 </body>

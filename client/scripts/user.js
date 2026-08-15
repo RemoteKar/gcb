@@ -262,6 +262,13 @@ document.addEventListener("DOMContentLoaded", async () => {
   }
 
   // ──────────────────────────────
+  // 4-2. 최근 추이 그래프 + 천적/자주 만난 유저 (왼쪽 영역 하단)
+  if (Array.isArray(gameRecords) && gameRecords.length > 0) {
+    renderTrend(gameRecords, formatUUID(uuid), statsDisplay);
+    renderPeople(gameRecords, formatUUID(uuid), statsDisplay);
+  }
+
+  // ──────────────────────────────
   // 5. 오른쪽 영역: 게임 리스트 (수직 리스트 형태) 구현
   if (Array.isArray(gameRecords) && gameRecords.length > 0) {
     initGameList(gameRecords, uuid);
@@ -271,6 +278,106 @@ document.addEventListener("DOMContentLoaded", async () => {
     document.getElementById("loadMoreButton").style.display = "none";
   }
 });
+
+// ──────────────────────────────
+// 최근 추이 그래프 (이동 평균 10게임: 승률 / 순방률) — 순수 SVG
+const TREND_GAMES = 40;
+const TREND_WINDOW = 10;
+
+function renderTrend(gameRecords, formattedUUID, mountEl) {
+  const rows = gameRecords
+    .map(r => r.content?.Player?.[formattedUUID] && r.content.Game?.amountOfPlayers
+      ? { win: r.content.Player[formattedUUID].outCuase === '우승', top: (r.content.Player[formattedUUID].Ranking / r.content.Game.amountOfPlayers) <= 0.5 }
+      : null)
+    .filter(Boolean);
+  if (rows.length < TREND_WINDOW + 2) return;
+
+  const recent = rows.slice(-(TREND_GAMES + TREND_WINDOW - 1));
+  const points = [];
+  for (let i = TREND_WINDOW - 1; i < recent.length; i++) {
+    const win = recent.slice(i - TREND_WINDOW + 1, i + 1);
+    points.push({
+      winRate: win.filter(x => x.win).length / TREND_WINDOW * 100,
+      topRate: win.filter(x => x.top).length / TREND_WINDOW * 100,
+    });
+  }
+  if (points.length < 2) return;
+
+  const W = 300, H = 90, PAD = 6;
+  const x = i => PAD + (i / (points.length - 1)) * (W - PAD * 2);
+  const y = v => H - PAD - (v / 100) * (H - PAD * 2);
+  const line = key => points.map((p, i) => `${x(i).toFixed(1)},${y(p[key]).toFixed(1)}`).join(' ');
+  const last = points[points.length - 1];
+
+  const section = document.createElement('div');
+  section.className = 'user-extra-section';
+  section.innerHTML = `
+    <h3>최근 추이 <small>최근 ${Math.min(TREND_GAMES, points.length)}게임 · 10게임 이동평균</small></h3>
+    <svg class="trend-chart" viewBox="0 0 ${W} ${H}" preserveAspectRatio="none" aria-label="최근 승률/순방률 추이">
+      <line x1="${PAD}" y1="${y(50)}" x2="${W - PAD}" y2="${y(50)}" stroke="#383838" stroke-dasharray="3 3" />
+      <polyline fill="none" stroke="#32a800" stroke-width="2" points="${line('topRate')}" />
+      <polyline fill="none" stroke="#f7a400" stroke-width="2" points="${line('winRate')}" />
+    </svg>
+    <div class="trend-legend">
+      <span><i style="background:#f7a400"></i>승률 ${last.winRate.toFixed(0)}%</span>
+      <span><i style="background:#32a800"></i>순방률 ${last.topRate.toFixed(0)}%</span>
+    </div>
+  `;
+  mountEl.appendChild(section);
+}
+
+// ──────────────────────────────
+// 천적 / 먹잇감 / 자주 만난 유저 (killedBy + 같은 게임 참가 기준)
+async function renderPeople(gameRecords, formattedUUID, mountEl) {
+  const killedMe = {};   // 나를 죽인 유저
+  const iKilled = {};    // 내가 죽인 유저
+  const together = {};   // 같은 게임 참가 횟수
+
+  for (const r of gameRecords) {
+    const players = r.content?.Player;
+    if (!players || !players[formattedUUID]) continue;
+    const me = players[formattedUUID];
+    if (me.killedBy && me.killedBy !== formattedUUID) killedMe[me.killedBy] = (killedMe[me.killedBy] || 0) + 1;
+    for (const [pUuid, pData] of Object.entries(players)) {
+      if (pUuid === formattedUUID) continue;
+      together[pUuid] = (together[pUuid] || 0) + 1;
+      if (pData.killedBy === formattedUUID) iKilled[pUuid] = (iKilled[pUuid] || 0) + 1;
+    }
+  }
+
+  const top = (obj, n = 3) => Object.entries(obj).sort((a, b) => b[1] - a[1]).slice(0, n);
+  const groups = [
+    { title: '천적', hint: '나를 가장 많이 처치', rows: top(killedMe) },
+    { title: '먹잇감', hint: '내가 가장 많이 처치', rows: top(iKilled) },
+    { title: '자주 만난 유저', hint: '같은 게임 참가', rows: top(together) },
+  ].filter(g => g.rows.length > 0);
+  if (groups.length === 0) return;
+
+  const uuids = [...new Set(groups.flatMap(g => g.rows.map(([u]) => u.replace(/-/g, ''))))];
+  let nickMap = {};
+  try {
+    const res = await fetch(`/api/profiles?uuids=${uuids.join(',')}`);
+    if (res.ok) nickMap = await res.json();
+  } catch (e) { /* 닉네임 없이 표시 */ }
+
+  const esc = (s) => String(s ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+
+  for (const g of groups) {
+    const section = document.createElement('div');
+    section.className = 'user-extra-section';
+    section.innerHTML = `<h3>${g.title} <small>${g.hint}</small></h3><div class="user-people-list">${g.rows.map(([u, count]) => {
+      const clean = u.replace(/-/g, '');
+      const nick = nickMap[clean] || clean.slice(0, 8);
+      const unit = g.title === '자주 만난 유저' ? '게임' : '회';
+      return `<a class="user-people-row" href="/user/${encodeURIComponent(nickMap[clean] || u)}">
+        <img src="https://mc-heads.net/avatar/${clean}/26" alt="" loading="lazy">
+        <span class="name">${esc(nick)}</span>
+        <span class="count">${count}${unit}</span>
+      </a>`;
+    }).join('')}</div>`;
+    mountEl.appendChild(section);
+  }
+}
 
 // ──────────────────────────────
 // 전역 변수 및 페이지네이션 관련 상수

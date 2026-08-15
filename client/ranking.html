@@ -4,28 +4,37 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>GCB.gg - 랭킹</title>
-  <link rel="icon" href="favicon.ico" type="image/x-icon">
+  <meta property="og:title" content="랭킹 - GCB.gg">
+  <meta property="og:description" content="게임캐릭터배틀 유저 랭킹 (승률 × 순방률)">
+  <link rel="icon" href="/favicon.ico" type="image/x-icon">
   <link rel="stylesheet" href="/styles/main.css">
 </head>
 <body>
   <div class="header-bar">
     <a href="/" class="header-logo">GCB.GG</a>
-    <a href="/ranking.html" class="nav-button">랭킹</a>
-    <a href="/character.html" class="nav-button">캐릭터정보</a>
-    <a href="/augment.html" class="nav-button">증강정보</a>
-    <a href="/character_stats.html" class="nav-button">캐릭터 통계</a>
-    <a href="/augment_stats.html" class="nav-button">증강 통계</a>
+    <a href="/ranking.html" class="nav-button active">랭킹</a>
+    <a href="/character.html" class="nav-button">캐릭터</a>
+    <a href="/augment.html" class="nav-button">증강</a>
+    <a href="/patchnotes.html" class="nav-button">패치노트</a>
     <a href="/feedback.html" class="nav-button nav-button-red">건의/버그</a>
   </div>
-  <div class="container">
-    <h1>랭킹</h1>
+  <div class="container ranking-container">
+    <div class="page-head">
+      <h1>랭킹</h1>
+      <p class="page-desc">10판 이상 플레이한 유저 · 점수 = 승률 × 순방률 (정식 캐릭터 게임만 집계)</p>
+    </div>
     <section id="top-3-ranking" class="section top-3-ranking">
       <!-- 상위 3명 유저 강조 표시 -->
     </section>
-    <section id="other-ranking" class="section">
-      <!-- 나머지 유저 랭킹 목록 -->
+    <div class="ranking-toolbar">
+      <h2 id="ranking-count">전체 랭킹</h2>
+      <input type="search" id="ranking-search" placeholder="닉네임 검색" autocomplete="off">
+    </div>
+    <section id="other-ranking" class="section table-wrap">
+      <div class="skeleton skeleton-row"></div><div class="skeleton skeleton-row"></div><div class="skeleton skeleton-row"></div>
     </section>
   </div>
+  <script src="/scripts/stats-table.js"></script>
   <script type="module" src="/scripts/ranking.js"></script>
 </body>
 </html>

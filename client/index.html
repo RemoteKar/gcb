@@ -3,7 +3,11 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>GCB.gg - 유저 검색</title>
+  <title>GCB.gg - 게임캐릭터배틀 전적 검색</title>
+  <meta name="description" content="게임캐릭터배틀(GCB) 유저 전적, 캐릭터·증강 통계, 랭킹">
+  <meta property="og:title" content="GCB.gg - 게임캐릭터배틀 전적 검색">
+  <meta property="og:description" content="유저 전적 · 캐릭터/증강 통계 · 랭킹">
+  <meta property="og:type" content="website">
   <link rel="icon" href="favicon.ico" type="image/x-icon">
   <link rel="stylesheet" href="styles/main.css">
 </head>
@@ -11,24 +15,59 @@
   <div class="header-bar">
     <a href="/" class="header-logo">GCB.GG</a>
     <a href="/ranking.html" class="nav-button">랭킹</a>
-    <a href="/character.html" class="nav-button">캐릭터정보</a>
-    <a href="/augment.html" class="nav-button">증강정보</a>
-    <a href="/character_stats.html" class="nav-button">캐릭터 통계</a>
-    <a href="/augment_stats.html" class="nav-button">증강 통계</a>
+    <a href="/character.html" class="nav-button">캐릭터</a>
+    <a href="/augment.html" class="nav-button">증강</a>
+    <a href="/patchnotes.html" class="nav-button">패치노트</a>
     <a href="/feedback.html" class="nav-button nav-button-red">건의/버그</a>
   </div>
-  <div class="container">
-    <!-- 유저 검색 섹션 -->
-    <section id="user-search" class="section active">
+  <div class="container home-container">
+    <!-- 유저 검색 -->
+    <section id="user-search" class="section active home-hero">
       <h1>GCB.GG</h1>
+      <p class="home-tagline">게임캐릭터배틀 전적 · 통계 · 랭킹</p>
       <div class="search-box">
-        <!-- 닉네임 또는 UUID 입력 -->
-        <input type="text" id="nickname" placeholder="닉네임을 입력하세요">
+        <input type="text" id="nickname" placeholder="닉네임을 입력하세요" autocomplete="off">
         <button id="search-button">검색</button>
       </div>
       <p id="result"></p>
+      <div id="home-stat-strip" class="home-stat-strip"></div>
     </section>
+
+    <div class="home-grid">
+      <div class="home-col">
+        <section class="home-panel">
+          <div class="home-panel-head">
+            <h2>최근 게임</h2>
+            <a href="/character_stats.html">캐릭터 통계 →</a>
+          </div>
+          <div id="home-recent-games" class="home-list">
+            <div class="skeleton skeleton-row"></div><div class="skeleton skeleton-row"></div><div class="skeleton skeleton-row"></div>
+          </div>
+        </section>
+      </div>
+      <div class="home-col">
+        <section class="home-panel">
+          <div class="home-panel-head">
+            <h2>랭킹 TOP 5</h2>
+            <a href="/ranking.html">전체 랭킹 →</a>
+          </div>
+          <div id="home-top-players" class="home-list">
+            <div class="skeleton skeleton-row"></div><div class="skeleton skeleton-row"></div><div class="skeleton skeleton-row"></div>
+          </div>
+        </section>
+        <section class="home-panel">
+          <div class="home-panel-head">
+            <h2>최근 60게임 승리 캐릭터</h2>
+            <a href="/character_stats.html">더보기 →</a>
+          </div>
+          <div id="home-top-characters" class="home-list">
+            <div class="skeleton skeleton-row"></div><div class="skeleton skeleton-row"></div><div class="skeleton skeleton-row"></div>
+          </div>
+        </section>
+      </div>
+    </div>
   </div>
+  <script src="scripts/character-config.js"></script>
   <script type="module" src="scripts/main.js"></script>
 </body>
 </html>

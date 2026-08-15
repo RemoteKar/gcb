@@ -1,179 +1,50 @@
 document.addEventListener("DOMContentLoaded", async () => {
-    const characterListDiv = document.getElementById("character-list");
-    const pageTitle = document.getElementById("page-title");
-    const sortByWinsButton = document.getElementById("sort-by-wins");
-    const sortByPlaysButton = document.getElementById("sort-by-plays");
-    const sortByKillsButton = document.getElementById("sort-by-kills");
-    const sortByDamageButton = document.getElementById("sort-by-damage");
+    const tableEl = document.getElementById("character-table");
+    const noteEl = document.getElementById("period-note");
+    const { createSortableTable, bindTabs, bar, esc } = StatsTable;
 
-    let allGameRecords = []; // 모든 게임 기록을 저장할 변수
-    let currentSortBy = 'wins'; // 현재 정렬 기준
+    const PERIOD_LABEL = { recent60: '최근 60게임', recent200: '최근 200게임', all: '전체' };
 
-    async function fetchAllGameHistory() {
-        try {
-            const response = await fetch('/data/recent-games.json');
-            if (!response.ok) {
-                throw new Error('모든 게임 기록을 가져오는 데 실패했습니다.');
-            }
-            const data = await response.json();
-            return data.gameRecords; // 서버 응답 구조에 따라 조정
-        } catch (error) {
-            console.error("fetchAllGameHistory error:", error);
-            characterListDiv.textContent = "캐릭터 통계를 불러오는 데 실패했습니다.";
-            return null;
-        }
+    let stats = null;
+    let names = null;
+
+    const nameOf = id => names?.characters?.[id] || `캐릭터 ${id}`;
+
+    const table = createSortableTable(tableEl, [
+        {
+            key: 'name', label: '캐릭터', sortable: true, defaultDir: 'asc',
+            value: r => nameOf(r.characterId),
+            render: r => `<a class="entity-cell" href="/character/${r.characterId}"><img src="/Resource/character/${r.characterId}.png" alt="" loading="lazy" onerror="this.src='/Resource/character/0.png'"><span class="entity-name">${esc(nameOf(r.characterId))}</span></a>`,
+        },
+        { key: 'picks', label: '픽 수', numeric: true, render: r => `${r.picks}` },
+        { key: 'pickRate', label: '픽률', numeric: true, render: r => `${r.pickRate}%${bar(r.pickRate * 8, 'blue')}` },
+        { key: 'wins', label: '승리', numeric: true, render: r => `${r.wins}` },
+        { key: 'winRate', label: '승률', numeric: true, render: r => `<span class="${r.winRate >= 10 ? 'rate-good' : ''}">${r.winRate}%</span>${bar(r.winRate * 3)}` },
+        { key: 'top50Rate', label: '순방률', numeric: true, render: r => `${r.top50Rate}%${bar(r.top50Rate, 'green')}` },
+        { key: 'avgKills', label: '평균 킬', numeric: true, render: r => `${r.avgKills}` },
+        { key: 'avgDamage', label: '평균 피해', numeric: true, render: r => r.avgDamage.toLocaleString() },
+    ], { defaultSort: 'wins', tableClass: 'character-stats-table' });
+
+    function show(period) {
+        if (!stats) return;
+        const rows = Object.entries(stats.characters)
+            .map(([id, periods]) => periods[period] ? { characterId: Number(id), ...periods[period] } : null)
+            .filter(Boolean);
+        table.setRows(rows);
+        const games = period === 'all' ? stats.games : Math.min(stats.games, period === 'recent60' ? 60 : 200);
+        noteEl.textContent = `${PERIOD_LABEL[period]} (${games}판) 기준 · 픽률 = 픽 수 / 전체 참가자 수 · 순방률 = 상위 50% 이내 비율`;
     }
 
-    // 캐릭터 통계 계산 및 렌더링 함수
-    async function renderCharacterStats() {
-        characterListDiv.textContent = "데이터 로딩 중...";
-        if (!allGameRecords || allGameRecords.length === 0) { // 한 번만 가져오도록 수정
-            allGameRecords = await fetchAllGameHistory();
-            if (!allGameRecords) { // fetchAllGameHistory가 null을 반환하면 여기서 종료
-                characterListDiv.textContent = "캐릭터 통계를 불러오는 데 실패했습니다.";
-                return;
-            }
-        }
+    const initial = bindTabs(document.getElementById('period-tabs'), show);
 
-        if (allGameRecords.length === 0) {
-            characterListDiv.textContent = "게임 기록이 없습니다.";
-            return;
-        }
-
-        // 최근 60게임으로 제한
-        const recentGames = allGameRecords.slice(-60);
-
-        const characterStats = {}; // { characterId: { wins: 0, plays: 0, kills: 0, totalDamage: 0, gameCount: 0 } }
-
-        recentGames.forEach(game => {
-            if (game.content && game.content.Game && game.content.Game.joinedPlayers && game.content.Player) {
-                const joinedPlayers = game.content.Game.joinedPlayers.split(',').map(s => s.trim());
-                const gameCharacterStats = {}; // 한 게임 내의 캐릭터별 통계
-
-                joinedPlayers.forEach(playerUUID => {
-                    const playerData = game.content.Player[playerUUID];
-                    if (playerData && playerData.Character !== undefined) {
-                        const characterId = playerData.Character;
-                        if (characterId > 0 && characterId < CharacterConfig.CREATIVE_ID_MAX_EXCLUSIVE && !CharacterConfig.isCreativeCharacter(characterId)) {
-                            if (!characterStats[characterId]) {
-                                characterStats[characterId] = { wins: 0, plays: 0, kills: 0, totalDamage: 0, gameCount: 0 };
-                            }
-                            if (!gameCharacterStats[characterId]) {
-                                gameCharacterStats[characterId] = { plays: 0, damage: 0 };
-                            }
-
-                            characterStats[characterId].plays++;
-                            if (playerData.outCuase === "우승") {
-                                characterStats[characterId].wins++;
-                            }
-                            if (typeof playerData.kill === "number") {
-                                characterStats[characterId].kills += playerData.kill;
-                            }
-                            if (playerData.Damage && typeof playerData.Damage.Dealt === "number") {
-                                gameCharacterStats[characterId].damage += playerData.Damage.Dealt;
-                            }
-                            gameCharacterStats[characterId].plays++;
-                        }
-                    }
-                });
-
-                // 게임별 평균 피해량을 전체 통계에 합산
-                for (const charId in gameCharacterStats) {
-                    characterStats[charId].gameCount++;
-                    const gameAvgDamage = gameCharacterStats[charId].damage / gameCharacterStats[charId].plays;
-                    characterStats[charId].totalDamage += gameAvgDamage;
-                }
-            }
-        });
-
-        let sortedCharacters = [];
-        if (currentSortBy === 'wins') {
-            sortedCharacters = Object.entries(characterStats).sort(([, statsA], [, statsB]) => statsB.wins - statsA.wins);
-            pageTitle.textContent = "캐릭터 승리 통계 (최근 60게임)";
-        } else if (currentSortBy === 'plays') {
-            sortedCharacters = Object.entries(characterStats).sort(([, statsA], [, statsB]) => statsB.plays - statsA.plays);
-            pageTitle.textContent = "캐릭터 플레이 횟수 통계 (최근 60게임)";
-        } else if (currentSortBy === 'kills') {
-            sortedCharacters = Object.entries(characterStats).sort(([, statsA], [, statsB]) => statsB.kills - statsA.kills);
-            pageTitle.textContent = "캐릭터 킬 수 통계 (최근 60게임)";
-        } else if (currentSortBy === 'damage') {
-            sortedCharacters = Object.entries(characterStats).sort(([, statsA], [, statsB]) => {
-                const avgDamageA = statsA.gameCount > 0 ? statsA.totalDamage / statsA.gameCount : 0;
-                const avgDamageB = statsB.gameCount > 0 ? statsB.totalDamage / statsB.gameCount : 0;
-                return avgDamageB - avgDamageA;
-            });
-            pageTitle.textContent = "캐릭터 평균 피해량 통계 (최근 60게임)";
-        }
-
-        characterListDiv.innerHTML = '';
-
-        if (sortedCharacters.length === 0) {
-            characterListDiv.textContent = "데이터가 없습니다.";
-            return;
-        }
-
-        sortedCharacters.forEach(([characterId, stats], index) => {
-            const charDiv = document.createElement('div');
-            charDiv.classList.add('character-stat-item');
-            let statValue = 0;
-            let statUnit = '';
-
-            if (currentSortBy === 'wins') {
-                statValue = stats.wins;
-                statUnit = '승';
-            } else if (currentSortBy === 'plays') {
-                statValue = stats.plays;
-                statUnit = '회';
-            } else if (currentSortBy === 'kills') {
-                statValue = stats.kills;
-                statUnit = '킬';
-            } else if (currentSortBy === 'damage') {
-                const avgDamage = stats.gameCount > 0 ? stats.totalDamage / stats.gameCount : 0;
-                statValue = Math.round(avgDamage);
-                statUnit = '딜';
-            }
-
-            charDiv.innerHTML = `
-                <span class="rank-number">#${index + 1}</span>
-                <img src="/Resource/character/${characterId ?? 'default'}.png" alt="Character ${characterId}" class="character-stat-img" style="cursor:pointer;">
-                <p><strong>${statValue.toLocaleString()}${statUnit}</strong></p>
-            `;
-            const charImg = charDiv.querySelector('.character-stat-img');
-            charImg.addEventListener('click', () => {
-                window.location.href = `/character/${characterId}`;
-            });
-            characterListDiv.appendChild(charDiv);
-        });
+    try {
+        const [statsRes, namesRes] = await Promise.all([fetch('/data/character-stats.json'), fetch('/data/names.json')]);
+        if (!statsRes.ok) throw new Error('통계 로드 실패');
+        stats = await statsRes.json();
+        names = namesRes.ok ? await namesRes.json() : null;
+        show(initial || 'recent60');
+    } catch (error) {
+        console.error(error);
+        tableEl.innerHTML = '<div class="empty-state">캐릭터 통계를 불러오는 데 실패했습니다.</div>';
     }
-
-    // 버튼 이벤트 리스너
-    sortByWinsButton.addEventListener('click', () => {
-        currentSortBy = 'wins';
-        document.querySelectorAll('.stat-button').forEach(btn => btn.classList.remove('active'));
-        sortByWinsButton.classList.add('active');
-        renderCharacterStats();
-    });
-
-    sortByPlaysButton.addEventListener('click', () => {
-        currentSortBy = 'plays';
-        document.querySelectorAll('.stat-button').forEach(btn => btn.classList.remove('active'));
-        sortByPlaysButton.classList.add('active');
-        renderCharacterStats();
-    });
-
-    sortByKillsButton.addEventListener('click', () => {
-        currentSortBy = 'kills';
-        document.querySelectorAll('.stat-button').forEach(btn => btn.classList.remove('active'));
-        sortByKillsButton.classList.add('active');
-        renderCharacterStats();
-    });
-
-    sortByDamageButton.addEventListener('click', () => {
-        currentSortBy = 'damage';
-        document.querySelectorAll('.stat-button').forEach(btn => btn.classList.remove('active'));
-        sortByDamageButton.classList.add('active');
-        renderCharacterStats();
-    });
-
-    renderCharacterStats(); // 초기 렌더링
 });

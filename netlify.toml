@@ -1,16 +1,17 @@
 [build]
   functions = "server"
   publish = "client"
-  command = "npm install && node node_modules/prisma/build/index.js generate --schema=./prisma/schema.prisma && node node_modules/prisma/build/index.js migrate deploy --schema=./prisma/schema.prisma && node scripts/build-static-data.js && node scripts/build-leaderboard.js"
+  command = "npm install && node node_modules/prisma/build/index.js generate --schema=./prisma/schema.prisma && node node_modules/prisma/build/index.js migrate deploy --schema=./prisma/schema.prisma && node scripts/build-static-data.js && node scripts/build-patchnotes.js && node scripts/build-leaderboard.js"
 
 [[redirects]]
   from = "/api/*"
   to = "/.netlify/functions/server/api/:splat"
   status = 200
   
+# /user/닉네임 → 서버 함수가 user.html에 OG 태그를 끼워서 응답 (링크 미리보기용)
 [[redirects]]
   from = "/user/*"
-  to = "/user.html"
+  to = "/.netlify/functions/server/user/:splat"
   status = 200
 
 [[redirects]]

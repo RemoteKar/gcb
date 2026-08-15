@@ -15,30 +15,24 @@ document.addEventListener("DOMContentLoaded", async () => {
         }
     }
 
-    async function renderAugmentGrid() {
-        augmentGrid.textContent = "로딩 중...";
+    augmentGrid.innerHTML = Array.from({ length: 24 }, () => '<div class="skeleton skeleton-tile"></div>').join('');
 
-        const augments = await fetchAugmentList();
+    const augments = await fetchAugmentList();
 
-        if (!augments || augments.length === 0) {
-            augmentGrid.textContent = "증강 정보를 찾을 수 없습니다.";
-            return;
-        }
-
-        augmentGrid.innerHTML = '';
-
-        augments.forEach(aug => {
-            const item = document.createElement('div');
-            item.classList.add('character-grid-item');
-            item.innerHTML = `
-                <img src="/Resource/augment/icon/${aug.id}.png" alt="${aug.name}" class="character-grid-img" onerror="this.src='/Resource/augment/icon/0.png'">
-            `;
-            item.addEventListener('click', () => {
-                showAugmentPopup(aug.id);
-            });
-            augmentGrid.appendChild(item);
-        });
+    if (!augments || augments.length === 0) {
+        augmentGrid.innerHTML = '<div class="empty-state">증강 정보를 찾을 수 없습니다.</div>';
+        return;
     }
 
-    renderAugmentGrid();
+    augmentGrid.innerHTML = augments.map(aug => {
+        const name = String(aug.name || `증강 ${aug.id}`).replace(/"/g, '&quot;');
+        return `<button type="button" class="character-grid-item" data-augment-id="${aug.id}" data-tip="${name}" aria-label="${name}">
+            <img src="/Resource/augment/icon/${aug.id}.png" alt="" class="character-grid-img" loading="lazy" onerror="this.src='/Resource/augment/icon/0.png'">
+        </button>`;
+    }).join('');
+
+    augmentGrid.addEventListener('click', (e) => {
+        const item = e.target.closest('.character-grid-item');
+        if (item) showAugmentPopup(Number(item.dataset.augmentId));
+    });
 });

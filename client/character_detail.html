@@ -4,18 +4,19 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>캐릭터 정보 - GCB.gg</title>
+    <meta property="og:title" content="캐릭터 정보 - GCB.gg">
+    <meta property="og:description" content="게임캐릭터배틀 캐릭터 스탯·스킬·실전 통계">
     <link rel="stylesheet" href="/styles/main.css">
     <link rel="icon" href="/favicon.ico" type="image/x-icon">
 </head>
 <body>
     <div class="header-bar">
-        <a href="/" class="header-logo">GCB.GG</a>
-        <a href="/ranking.html" class="nav-button">랭킹</a>
-        <a href="/character.html" class="nav-button">캐릭터정보</a>
-        <a href="/augment.html" class="nav-button">증강정보</a>
-        <a href="/character_stats.html" class="nav-button">캐릭터 통계</a>
-        <a href="/augment_stats.html" class="nav-button">증강 통계</a>
-        <a href="/feedback.html" class="nav-button nav-button-red">건의/버그</a>
+      <a href="/" class="header-logo">GCB.GG</a>
+      <a href="/ranking.html" class="nav-button">랭킹</a>
+      <a href="/character.html" class="nav-button active">캐릭터</a>
+      <a href="/augment.html" class="nav-button">증강</a>
+      <a href="/patchnotes.html" class="nav-button">패치노트</a>
+      <a href="/feedback.html" class="nav-button nav-button-red">건의/버그</a>
     </div>
 
     <div class="container character-detail-container">
@@ -30,6 +31,19 @@
         <div id="stats-container" class="character-stats-container">
             <!-- 스탯 정보가 여기에 동적으로 추가됨 -->
         </div>
+
+        <!-- 실전 통계 (게임 기록 기반) -->
+        <section id="live-stats" class="char-live-stats" hidden>
+            <div class="char-live-stats-head">
+                <h2>실전 통계</h2>
+                <div class="sub-tabs" id="live-period-tabs" role="tablist">
+                    <button data-period="recent60" class="active">최근 60게임</button>
+                    <button data-period="recent200">최근 200게임</button>
+                    <button data-period="all">전체</button>
+                </div>
+            </div>
+            <div id="live-stats-body"></div>
+        </section>
 
         <div id="skills-container" class="skills-container">
             <!-- 스킬 정보가 여기에 동적으로 추가됨 -->
@@ -58,6 +72,8 @@
         </div>
     </div>
 
+    <script src="/scripts/stats-table.js"></script>
+    <script src="/scripts/augment_popup.js"></script>
     <script src="/scripts/character_detail.js"></script>
 </body>
 </html>

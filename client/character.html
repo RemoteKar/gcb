@@ -9,17 +9,23 @@
 </head>
 <body>
     <div class="header-bar">
-        <a href="/" class="header-logo">GCB.GG</a>
-        <a href="/ranking.html" class="nav-button">랭킹</a>
-        <a href="/character.html" class="nav-button">캐릭터정보</a>
-        <a href="/augment.html" class="nav-button">증강정보</a>
-        <a href="/character_stats.html" class="nav-button">캐릭터 통계</a>
-        <a href="/augment_stats.html" class="nav-button">증강 통계</a>
-        <a href="/feedback.html" class="nav-button nav-button-red">건의/버그</a>
+      <a href="/" class="header-logo">GCB.GG</a>
+      <a href="/ranking.html" class="nav-button">랭킹</a>
+      <a href="/character.html" class="nav-button active">캐릭터</a>
+      <a href="/augment.html" class="nav-button">증강</a>
+      <a href="/patchnotes.html" class="nav-button">패치노트</a>
+      <a href="/feedback.html" class="nav-button nav-button-red">건의/버그</a>
     </div>
 
     <div class="container">
-        <h1 id="page-title">캐릭터정보</h1>
+        <div class="page-head">
+            <nav class="sub-tabs" aria-label="캐릭터 메뉴">
+                <a href="/character.html" class="active">정보</a>
+                <a href="/character_stats.html">통계</a>
+            </nav>
+            <h1 id="page-title">캐릭터 정보</h1>
+            <p class="page-desc">초상화에 마우스를 올리면 이름이 표시됩니다</p>
+        </div>
         <div id="character-grid" class="character-grid">
             <!-- 캐릭터 초상화가 여기에 동적으로 추가됨 -->
         </div>

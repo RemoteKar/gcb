@@ -219,6 +219,73 @@ document.addEventListener("DOMContentLoaded", async () => {
     renderCharacterInfo();
 
     // ========================================
+    // 실전 통계 (빌드 시 생성된 /data/character-stats.json)
+    // ========================================
+    async function renderLiveStats() {
+        const section = document.getElementById('live-stats');
+        const body = document.getElementById('live-stats-body');
+        const tabs = document.getElementById('live-period-tabs');
+        if (!section || !body) return;
+
+        let stats = null;
+        let names = null;
+        try {
+            const [sRes, nRes] = await Promise.all([fetch('/data/character-stats.json'), fetch('/data/names.json')]);
+            if (!sRes.ok) return;
+            stats = await sRes.json();
+            names = nRes.ok ? await nRes.json() : null;
+        } catch (e) {
+            return;
+        }
+
+        const mine = stats.characters?.[characterId];
+        if (!mine) return;
+        section.hidden = false;
+
+        const PERIOD_LABEL = { recent60: '최근 60게임', recent200: '최근 200게임', all: '전체' };
+
+        function show(period) {
+            const s = mine[period];
+            if (!s) {
+                body.innerHTML = `<div class="empty-state">${PERIOD_LABEL[period]} 동안 플레이 기록이 없습니다.</div>`;
+                return;
+            }
+            const tile = (label, value, unit = '') => `<div class="char-live-tile"><div class="label">${label}</div><div class="value">${value}<small>${unit}</small></div></div>`;
+            const augs = (s.augments || []).slice(0, 8).map(a => {
+                const name = names?.augments?.[a.augmentId] || `증강 ${a.augmentId}`;
+                return `<button type="button" class="aug-synergy" data-augment-id="${a.augmentId}">
+                    <img src="/Resource/augment/icon/${a.augmentId}.png" alt="" onerror="this.src='/Resource/augment/icon/0.png'">
+                    <span class="aug-synergy-meta"><b>${escapeHtml(name)}</b><span>${a.picks}회 · 승률 ${a.winRate}%</span></span>
+                </button>`;
+            }).join('');
+            body.innerHTML = `
+                <div class="char-live-grid">
+                    ${tile('픽 수', s.picks, '회')}
+                    ${tile('픽률', s.pickRate, '%')}
+                    ${tile('승률', s.winRate, '%')}
+                    ${tile('순방률', s.top50Rate, '%')}
+                    ${tile('평균 킬', s.avgKills, '')}
+                    ${tile('평균 피해', s.avgDamage.toLocaleString(), '')}
+                </div>
+                <div class="char-live-augments">
+                    <h3>자주 고른 증강 <small>(클릭 시 설명)</small></h3>
+                    ${augs ? `<div class="aug-synergy-list">${augs}</div>` : '<div class="empty-state">증강 데이터 없음</div>'}
+                </div>
+            `;
+        }
+
+        body.addEventListener('click', (e) => {
+            const btn = e.target.closest('.aug-synergy');
+            if (btn && typeof showAugmentPopup === 'function') showAugmentPopup(Number(btn.dataset.augmentId));
+        });
+
+        const initial = StatsTable.bindTabs(tabs, show);
+        show(initial || 'recent60');
+    }
+
+    renderLiveStats();
+
+    // ========================================
     // 댓글 시스템 (디시 스타일)
     // ========================================
     const commentForm = document.getElementById('comment-form');

@@ -486,6 +486,57 @@ model CharacterComment {
 
 ---
 
+## 2026-08-15 작업 내용 (2차): 기능 추가 + UI 개편
+
+### 개요
+메인 페이지 콘텐츠, 캐릭터 실전 통계, 증강 승률, 유저 추이/천적, 기간 선택, 패치노트, 랭킹 전체 리스트, OG 태그 등
+9개 기능 + 디자인 정비(테이블화, 툴팁, 스켈레톤, 폰트, 네비 축소, 접근성).
+게임 기록 기반 데이터는 전부 `scripts/build-static-data.js` 에서 빌드 시 생성.
+
+### 새 정적 데이터 (`client/data/`)
+| 파일 | 내용 | 사용 |
+|------|------|------|
+| `names.json` | `{ characters: {id: 이름}, augments: {id: 이름} }` (`Data/description` 에서 추출) | 툴팁, 테이블, 메인 |
+| `character-stats.json` | `{ periods, games, characters: { id: { recent60/recent200/all: { picks, pickRate, wins, winRate, top50Rate, avgKills, avgDamage, augments:[{augmentId,picks,winRate}] } } } }` | 캐릭터 통계 테이블, 캐릭터 상세 실전 통계 |
+| `augment-stats.json` | `{ recent60: [{augmentId, picks, winRate, top50Rate}], recent200, all }` | 증강 통계 테이블 |
+| `home.json` | 최근 8게임 요약(우승자 uuid/캐릭/킬) + 최근 60게임 승리 캐릭터 TOP5 + 총 게임 수 | 메인 |
+| `patchnotes.json` | `{ source, posts:[{url,title,comments,date}] }` | 패치노트 페이지 |
+| `leaderboard.json` | 전원 닉네임 조회(동시 4개) | 랭킹 전체 리스트 |
+
+- 픽률 = 픽 수 / 해당 기간 전체 참가자 수 (한 게임에 같은 캐릭 여러 명 가능하므로 게임 수가 아님)
+- 캐릭터 통계는 정식 캐릭터(0 < id ≤ 100)만, 증강 통계는 전체 캐릭터
+- `build-static-data.js` 는 `user-statistics/` 만 지우고 재생성 (leaderboard/patchnotes 산출물 보존)
+
+### 패치노트 (`scripts/build-patchnotes.js`)
+- 소스: 디시 갤로그 `https://gallog.dcinside.com/a4sanbvcxz/posting/index?cno=7` (스티브 갤러리 작성 글, `&p=N` 페이지네이션)
+- 디시가 연속 요청을 막으면 빈 응답(200, 0바이트)을 주므로 **빌드 시엔 최신 3페이지만 1.5초 간격으로** 긁고, 커밋된 스냅샷 `Data/patchnotes.json` 과 url 기준 병합
+- 스냅샷 전체 갱신: 로컬에서 `node scripts/build-patchnotes.js --refresh-snapshot` (30페이지 수집 후 `Data/patchnotes.json` 덮어씀) → 커밋
+- 페이지: `client/patchnotes.html` + `scripts/patchnotes.js` (제목 검색, 30개씩 더보기, 새 탭으로 디시 글 열기)
+
+### OG 메타태그 (`server/routes/userPage.js`)
+- `netlify.toml`: `/user/*` → `/.netlify/functions/server/user/:splat` (기존 정적 rewrite 대체)
+- 서버가 `${site}/user.html` 을 받아 `<!--OG-->` 자리에 태그 삽입 후 응답 (5분 메모리 캐시)
+- 봇 UA(discord/kakao/twitter/slack/curl 등)에게만 닉네임→UUID→`/data/user-statistics/{uuid}.json` 조회 후 "N판 · 승률 · 순방률 · 모스트" 설명 삽입, 일반 브라우저는 조회 없이 즉시 응답
+- 다른 페이지는 HTML에 정적 og:title/description 추가
+
+### 페이지별 변경
+| 페이지 | 변경 |
+|------|------|
+| `index.html` / `main.js` | 검색 + 통계 칩(총 게임/랭킹 유저/마지막 게임) + 최근 게임 8개(우승자) + 랭킹 TOP5 + 최근 60게임 승리 캐릭터 TOP5 |
+| `character_stats.html` / `.js` | 카드 리스트 → 정렬 테이블(픽수/픽률/승리/승률/순방률/평균킬/평균피해) + 기간 탭(60/200/전체) |
+| `augment_stats.html` / `.js` | 픽 수만 → 테이블(픽수/승률/순방률) + 기간 탭, 이름 클릭 시 설명 팝업 |
+| `character_detail.html` / `.js` | 스탯 아래 "실전 통계" 섹션(기간 탭 + 픽/승률/순방/킬/피해 + 자주 고른 증강 8개, 클릭 시 팝업) |
+| `character.html` / `.js`, `augment.html` / `.js` | 그리드 항목 `<a>`/`<button>` 화, hover 툴팁(`data-tip`)으로 이름 표시, 스켈레톤 로딩, "정보 | 통계" 서브탭 |
+| `ranking.html` / `.js` | TOP3 카드 유지(`<a>`, 스킨 crafatar 폴백) + 전체 랭킹 정렬 테이블 + 닉네임 검색 |
+| `user.js` | 좌측 하단에 최근 추이 SVG(승률/순방률 10게임 이동평균, 최근 40게임), 천적/먹잇감/자주 만난 유저 TOP3 (`killedBy`, 동반 참가 횟수 기반, 클라이언트 계산) |
+| 모든 HTML | 네비 5개로 축소: 랭킹 / 캐릭터 / 증강 / 패치노트 / 건의·버그 (`.active` 표시). 캐릭터·증강은 페이지 내 서브탭으로 정보↔통계 이동 |
+| `main.css` | Pretendard 폰트(jsdelivr) 추가, `.sub-tabs`, `.data-table`(정렬 표시, 미니바), `[data-tip]` 툴팁, `.skeleton`, 메인/캐릭터 상세/유저 추가 섹션/패치노트/랭킹 스타일 |
+
+### 공용 스크립트
+- `client/scripts/stats-table.js` — `StatsTable.createSortableTable(container, columns, opts)` (열 클릭 정렬, 순위 열, 미니바 `StatsTable.bar()`), `StatsTable.bindTabs(tabsEl, cb)` (기간 탭)
+
+---
+
 ## 페이지 목록
 1. `index.html` - 메인 (닉네임 검색)
 2. `user.html` - 유저 프로필
@@ -498,7 +549,8 @@ model CharacterComment {
 9. `weapon_detail.html` - 무기 상세 (상단바 미노출, 스킬 클릭으로만 진입)
 10. `titan_list.html` - 타이탄 목록 (상단바 미노출, 스킬 클릭으로만 진입)
 11. `titan_detail.html` - 타이탄 상세 (상단바 미노출, 목록에서 클릭으로 진입)
-12. `feedback.html` - 건의/버그 (Google 로그인 필요, 붉은 탭)
+12. `feedback.html` - 건의/버그 (GitHub 로그인 필요, 붉은 탭)
+13. `patchnotes.html` - 패치노트/공지 (디시 갤로그 글 목록, 새 탭으로 열림)
 
 ---
 

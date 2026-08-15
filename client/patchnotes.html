@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>패치노트 - GCB.gg</title>
+  <meta property="og:title" content="패치노트 - GCB.gg">
+  <meta property="og:description" content="게임캐릭터배틀 패치노트 · 공지 (스티브 갤러리)">
+  <link rel="icon" href="/favicon.ico" type="image/x-icon">
+  <link rel="stylesheet" href="/styles/main.css">
+</head>
+<body>
+  <div class="header-bar">
+    <a href="/" class="header-logo">GCB.GG</a>
+    <a href="/ranking.html" class="nav-button">랭킹</a>
+    <a href="/character.html" class="nav-button">캐릭터</a>
+    <a href="/augment.html" class="nav-button">증강</a>
+    <a href="/patchnotes.html" class="nav-button active">패치노트</a>
+    <a href="/feedback.html" class="nav-button nav-button-red">건의/버그</a>
+  </div>
+  <div class="container patchnotes-container">
+    <div class="page-head">
+      <h1>패치노트 · 공지</h1>
+      <p class="page-desc">스티브 갤러리에 올린 글 목록 · 클릭하면 새 탭으로 열립니다</p>
+    </div>
+    <div class="patchnotes-toolbar">
+      <input type="search" id="pn-search" placeholder="제목 검색 (예: 신캐, 밸런스, 시즌)" autocomplete="off">
+      <a id="pn-source" class="source-link" href="#" target="_blank" rel="noopener">갤로그에서 보기 ↗</a>
+    </div>
+    <div id="pn-list" class="patchnotes-list">
+      <div class="skeleton skeleton-row"></div><div class="skeleton skeleton-row"></div><div class="skeleton skeleton-row"></div>
+    </div>
+    <button id="pn-more" class="load-more-btn secondary" style="display:none;">더보기</button>
+  </div>
+  <script src="/scripts/patchnotes.js"></script>
+</body>
+</html>
