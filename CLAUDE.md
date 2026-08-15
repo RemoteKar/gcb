@@ -500,18 +500,21 @@ model CharacterComment {
 | `character-stats.json` | `{ periods, games, characters: { id: { recent60/recent200/all: { picks, pickRate, wins, winRate, top50Rate, avgKills, avgDamage, augments:[{augmentId,picks,winRate}] } } } }` | 캐릭터 통계 테이블, 캐릭터 상세 실전 통계 |
 | `augment-stats.json` | `{ recent60: [{augmentId, picks, winRate, top50Rate}], recent200, all }` | 증강 통계 테이블 |
 | `home.json` | 최근 8게임 요약(우승자 uuid/캐릭/킬) + 최근 60게임 승리 캐릭터 TOP5 + 총 게임 수 | 메인 |
-| `patchnotes.json` | `{ source, posts:[{url,title,comments,date}] }` | 패치노트 페이지 |
+| `patchnotes.json` | `{ notes:[{date,title,body,source}] }` (`Data/patchnotes/*.md` 변환) | 패치노트 페이지 |
 | `leaderboard.json` | 전원 닉네임 조회(동시 4개) | 랭킹 전체 리스트 |
 
 - 픽률 = 픽 수 / 해당 기간 전체 참가자 수 (한 게임에 같은 캐릭 여러 명 가능하므로 게임 수가 아님)
 - 캐릭터 통계는 정식 캐릭터(0 < id ≤ 100)만, 증강 통계는 전체 캐릭터
 - `build-static-data.js` 는 `user-statistics/` 만 지우고 재생성 (leaderboard/patchnotes 산출물 보존)
 
-### 패치노트 (`scripts/build-patchnotes.js`)
-- 소스: 디시 갤로그 `https://gallog.dcinside.com/a4sanbvcxz/posting/index?cno=7` (스티브 갤러리 작성 글, `&p=N` 페이지네이션)
-- 디시가 연속 요청을 막으면 빈 응답(200, 0바이트)을 주므로 **빌드 시엔 최신 3페이지만 1.5초 간격으로** 긁고, 커밋된 스냅샷 `Data/patchnotes.json` 과 url 기준 병합
-- 스냅샷 전체 갱신: 로컬에서 `node scripts/build-patchnotes.js --refresh-snapshot` (30페이지 수집 후 `Data/patchnotes.json` 덮어씀) → 커밋
-- 페이지: `client/patchnotes.html` + `scripts/patchnotes.js` (제목 검색, 30개씩 더보기, 새 탭으로 디시 글 열기)
+### 패치노트 (수동 관리, `Data/patchnotes/*.md`)
+- **패치노트는 md 파일로 수동 작성** → 빌드 시 `scripts/build-patchnotes.js` 가 `client/data/patchnotes.json` 으로 변환
+- 파일 규칙: `Data/patchnotes/YYYY-MM-DD.md` (같은 날 여러 개면 `YYYY-MM-DD-설명.md`). 파일명 정렬 역순 = 최신순 표시
+- 내용: 첫 줄 `# 제목`, 나머지 본문(줄바꿈·들여쓰기 그대로 표시). `source: URL` 한 줄 넣으면 "원문 ↗" 링크
+- 페이지(`patchnotes.html` / `scripts/patchnotes.js`): 카드형, `이름:` 으로 끝나는 줄 = 주황 헤더, `A -> B` = 새 값 강조, 12줄 넘으면 접힘, 제목+본문 검색, 15개씩 더보기
+- **최초 153개는 디시 스티브갤 글에서 일회성 가져옴**: `scripts/import-dc-patchnotes.js` + `Data/patchnotes.snapshot.json`(갤로그 글 400개 목록/본문 스냅샷).
+  2022.11~2023.04 글 119개는 디시 차단으로 본문 미수집 상태 → 차단 풀린 뒤 `node scripts/import-dc-patchnotes.js` 한 번 더 실행하면 이어서 수집·md 생성(기존 파일은 안 건드림). 다 끝나면 스크립트·스냅샷 삭제 가능
+- 디시는 연속 요청 시 빈 응답/403 → 스크립트는 3초 간격, 차단 감지 시 즉시 중단·중간 저장
 
 ### OG 메타태그 (`server/routes/userPage.js`)
 - `netlify.toml`: `/user/*` → `/.netlify/functions/server/user/:splat` (기존 정적 rewrite 대체)
@@ -550,7 +553,7 @@ model CharacterComment {
 10. `titan_list.html` - 타이탄 목록 (상단바 미노출, 스킬 클릭으로만 진입)
 11. `titan_detail.html` - 타이탄 상세 (상단바 미노출, 목록에서 클릭으로 진입)
 12. `feedback.html` - 건의/버그 (GitHub 로그인 필요, 붉은 탭)
-13. `patchnotes.html` - 패치노트/공지 (디시 갤로그 글 목록, 새 탭으로 열림)
+13. `patchnotes.html` - 패치노트 (`Data/patchnotes/*.md` 수동 관리)
 
 ---
 

@@ -2774,3 +2774,63 @@ a.top-player-card { text-decoration: none; color: inherit; }
 
 /* 1등 카드 scale(1.2)가 위 텍스트를 가리지 않도록 여백 확보 */
 .ranking-container .top-3-ranking { padding-top: 56px; }
+
+/* 패치노트 카드 (본문 표시) */
+.patchnote-card {
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: 12px;
+    padding: 14px 16px;
+    text-align: left;
+}
+
+.patchnote-head {
+    display: flex;
+    align-items: baseline;
+    gap: 12px;
+    flex-wrap: wrap;
+    margin-bottom: 10px;
+    padding-bottom: 8px;
+    border-bottom: 1px solid var(--line-soft);
+}
+
+.patchnote-head .pn-date { color: var(--brand); font-weight: 800; font-size: 13px; font-variant-numeric: tabular-nums; }
+.patchnote-head .pn-title { margin: 0; font-size: 16px; flex: 1; min-width: 0; }
+.patchnote-head .pn-source { color: var(--text-muted); font-size: 12px; text-decoration: none; }
+.patchnote-head .pn-source:hover { color: var(--text); }
+
+.patchnote-body {
+    margin: 0;
+    font: inherit;
+    font-size: 13.5px;
+    line-height: 1.6;
+    white-space: pre-wrap;
+    word-break: break-word;
+    color: var(--text);
+}
+
+.patchnote-body.collapsed {
+    max-height: 19.2em;
+    overflow: hidden;
+    -webkit-mask-image: linear-gradient(to bottom, #000 80%, transparent);
+    mask-image: linear-gradient(to bottom, #000 80%, transparent);
+}
+
+.patchnote-body .pn-h { color: var(--brand); font-weight: 800; }
+.patchnote-body .pn-old { color: var(--text-muted); }
+.patchnote-body .pn-arrow { color: var(--text-muted); }
+.patchnote-body .pn-new { color: #5ad07a; font-weight: 700; }
+
+.pn-expand {
+    margin-top: 8px;
+    background: transparent;
+    border: 1px solid var(--line);
+    color: var(--text-muted);
+    border-radius: 6px;
+    padding: 5px 10px;
+    font: inherit;
+    font-size: 12px;
+    cursor: pointer;
+}
+
+.pn-expand:hover { color: var(--text); border-color: var(--brand); }
