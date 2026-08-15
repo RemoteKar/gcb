@@ -1,5 +1,5 @@
 // [일회성] 디시 스티브갤 작성 글 → Data/patchnotes/*.md 로 가져오기 (2026-08 최초 패치노트 채우기용)
-//   1) Data/patchnotes.snapshot.json 의 글 목록 중 body 없는 글을 m.dcinside.com 에서 긁어 채움 (3초 간격, 차단되면 중단)
+//   1) Data/patchnotes.snapshot.json 의 글 목록 중 body 없는 글을 m.dcinside.com 에서 긁어 채움 (9초 간격, 차단되면 중단)
 //   2) 패치노트로 판정되는 글을 Data/patchnotes/YYYY-MM-DD[-no].md 로 씀 (이미 있는 파일은 덮어쓰지 않음)
 // 실행: node scripts/import-dc-patchnotes.js          (본문 수집 + md 생성)
 //       node scripts/import-dc-patchnotes.js --no-fetch (수집 없이 md 생성만)
@@ -12,7 +12,7 @@ const root = path.resolve(__dirname, '..');
 const snapshotPath = path.join(root, 'Data', 'patchnotes.snapshot.json');
 const outDir = path.join(root, 'Data', 'patchnotes');
 const GALL_ID = 'steve';
-const DELAY_MS = 3000;
+const DELAY_MS = 9000; // 디시 차단 방지: 글당 9초
 const NO_FETCH = process.argv.includes('--no-fetch');
 const UA_MOBILE = 'Mozilla/5.0 (Linux; Android 13; Pixel 7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126.0 Mobile Safari/537.36';
 

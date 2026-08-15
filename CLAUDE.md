@@ -514,7 +514,7 @@ model CharacterComment {
 - 페이지(`patchnotes.html` / `scripts/patchnotes.js`): 카드형, `이름:` 으로 끝나는 줄 = 주황 헤더, `A -> B` = 새 값 강조, 12줄 넘으면 접힘, 제목+본문 검색, 15개씩 더보기
 - **최초 153개는 디시 스티브갤 글에서 일회성 가져옴**: `scripts/import-dc-patchnotes.js` + `Data/patchnotes.snapshot.json`(갤로그 글 400개 목록/본문 스냅샷).
   2022.11~2023.04 글 119개는 디시 차단으로 본문 미수집 상태 → 차단 풀린 뒤 `node scripts/import-dc-patchnotes.js` 한 번 더 실행하면 이어서 수집·md 생성(기존 파일은 안 건드림). 다 끝나면 스크립트·스냅샷 삭제 가능
-- 디시는 연속 요청 시 빈 응답/403 → 스크립트는 3초 간격, 차단 감지 시 즉시 중단·중간 저장
+- 디시는 연속 요청 시 빈 응답/403 → 스크립트는 9초 간격, 차단 감지 시 즉시 중단·중간 저장
 
 ### OG 메타태그 (`server/routes/userPage.js`)
 - `netlify.toml`: `/user/*` → `/.netlify/functions/server/user/:splat` (기존 정적 rewrite 대체)
