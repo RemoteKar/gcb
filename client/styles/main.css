@@ -2834,3 +2834,61 @@ a.top-player-card { text-decoration: none; color: inherit; }
 }
 
 .pn-expand:hover { color: var(--text); border-color: var(--brand); }
+
+/* 패치노트: 게시판식 목록 */
+.patchnotes-list.board {
+    gap: 0;
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    overflow: hidden;
+    background: var(--surface);
+}
+
+.board-head, .board-row {
+    display: grid;
+    grid-template-columns: 52px 1fr 92px;
+    align-items: center;
+    gap: 10px;
+    padding: 0 12px;
+}
+
+.board-head {
+    height: 34px;
+    background: var(--surface-soft);
+    color: var(--text-muted);
+    font-size: 12px;
+    font-weight: 700;
+    border-bottom: 1px solid var(--line);
+}
+
+.board-row {
+    min-height: 42px;
+    border-bottom: 1px solid var(--line-soft);
+    cursor: pointer;
+    transition: background-color 0.12s ease;
+}
+
+.board-row:last-child { border-bottom: none; }
+.board-row:hover, .board-row.open { background: var(--surface-raised); }
+.board-row.open .board-title { color: var(--brand); }
+.board-row:focus-visible { outline: 2px solid var(--brand); outline-offset: -2px; }
+
+.board-no { color: var(--text-muted); font-size: 12px; text-align: center; font-variant-numeric: tabular-nums; }
+.board-title { font-size: 14px; font-weight: 700; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.board-date { color: var(--text-muted); font-size: 12px; text-align: right; font-variant-numeric: tabular-nums; }
+
+.board-body {
+    padding: 14px 16px 14px 74px;
+    background: var(--surface-soft);
+    border-bottom: 1px solid var(--line-soft);
+}
+
+.board-body .patchnote-body { font-size: 13.5px; }
+.board-body .pn-empty { color: var(--text-muted); }
+.board-source { display: inline-block; margin-top: 10px; color: var(--text-muted); font-size: 12px; text-decoration: none; }
+.board-source:hover { color: var(--text); }
+
+@media (max-width: 600px) {
+    .board-head, .board-row { grid-template-columns: 36px 1fr 78px; padding: 0 8px; }
+    .board-body { padding-left: 12px; }
+}

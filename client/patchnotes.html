@@ -21,13 +21,16 @@
   <div class="container patchnotes-container">
     <div class="page-head">
       <h1>패치노트</h1>
-      <p class="page-desc">캐릭터·증강 밸런스 변경 내역 · 최신순</p>
+      <p class="page-desc">글을 누르면 내용이 펼쳐집니다</p>
     </div>
     <div class="patchnotes-toolbar">
       <input type="search" id="pn-search" placeholder="검색 (캐릭터 이름, 스킬, 날짜 등)" autocomplete="off">
     </div>
-    <div id="pn-list" class="patchnotes-list">
-      <div class="skeleton skeleton-row"></div><div class="skeleton skeleton-row"></div><div class="skeleton skeleton-row"></div>
+    <div class="patchnotes-list board">
+      <div class="board-head"><span class="board-no">번호</span><span>제목</span><span class="board-date">날짜</span></div>
+      <div id="pn-list">
+        <div class="skeleton skeleton-row"></div><div class="skeleton skeleton-row"></div><div class="skeleton skeleton-row"></div>
+      </div>
     </div>
     <button id="pn-more" class="load-more-btn secondary" style="display:none;">더보기</button>
   </div>

@@ -1,9 +1,9 @@
+// 패치노트: 커뮤니티 게시판식 글 목록 → 행 클릭 시 아래로 펼쳐서 내용 표시
 document.addEventListener("DOMContentLoaded", async () => {
     const listEl = document.getElementById('pn-list');
     const searchEl = document.getElementById('pn-search');
     const moreBtn = document.getElementById('pn-more');
-    const PAGE = 15;
-    const PREVIEW_LINES = 12;
+    const PAGE = 30;
 
     const esc = (s) => String(s ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
 
@@ -21,39 +21,51 @@ document.addEventListener("DOMContentLoaded", async () => {
     let filtered = [];
     let shown = 0;
 
-    function noteHtml(n, idx) {
-        const lines = n.body.split('\n');
-        const long = lines.length > PREVIEW_LINES;
-        const preview = long ? lines.slice(0, PREVIEW_LINES).join('\n') : n.body;
+    function rowHtml(n, idx) {
+        const no = notes.length - notes.indexOf(n); // 오래된 글이 1번
         return `
-            <article class="patchnote-card" data-idx="${idx}">
-                <header class="patchnote-head">
-                    <span class="pn-date">${esc(n.date)}</span>
-                    <h2 class="pn-title">${esc(n.title)}</h2>
-                    ${n.source ? `<a class="pn-source" href="${esc(n.source)}" target="_blank" rel="noopener">원문 ↗</a>` : ''}
-                </header>
-                <pre class="patchnote-body${long ? ' collapsed' : ''}" data-full="${esc(n.body)}">${formatBody(preview)}</pre>
-                ${long ? `<button type="button" class="pn-expand">전체 보기 (${lines.length}줄)</button>` : ''}
-            </article>`;
+            <div class="board-row" data-idx="${idx}" data-id="${esc(n.file || n.date)}" role="button" tabindex="0" aria-expanded="false">
+                <span class="board-no">${no}</span>
+                <span class="board-title">${esc(n.title)}</span>
+                <span class="board-date">${esc(n.date)}</span>
+            </div>`;
     }
 
     function renderMore() {
         const slice = filtered.slice(shown, shown + PAGE);
-        listEl.insertAdjacentHTML('beforeend', slice.map((n, i) => noteHtml(n, shown + i)).join(''));
+        listEl.insertAdjacentHTML('beforeend', slice.map((n, i) => rowHtml(n, shown + i)).join(''));
         shown += slice.length;
         moreBtn.style.display = shown < filtered.length ? '' : 'none';
         moreBtn.textContent = `더보기 (${filtered.length - shown}개 남음)`;
     }
 
+    function toggleRow(row) {
+        const open = row.getAttribute('aria-expanded') === 'true';
+        const next = row.nextElementSibling;
+        if (open) {
+            row.setAttribute('aria-expanded', 'false');
+            row.classList.remove('open');
+            if (next && next.classList.contains('board-body')) next.remove();
+            return;
+        }
+        const n = filtered[Number(row.dataset.idx)];
+        row.setAttribute('aria-expanded', 'true');
+        row.classList.add('open');
+        row.insertAdjacentHTML('afterend', `
+            <div class="board-body">
+                <pre class="patchnote-body">${formatBody(n.body) || '<span class="pn-empty">내용 없음</span>'}</pre>
+                ${n.source ? `<a class="board-source" href="${esc(n.source)}" target="_blank" rel="noopener">원문 보기 ↗</a>` : ''}
+            </div>`);
+        history.replaceState(null, '', `#${encodeURIComponent(row.dataset.id)}`);
+    }
+
     listEl.addEventListener('click', (e) => {
-        const btn = e.target.closest('.pn-expand');
-        if (!btn) return;
-        const card = btn.closest('.patchnote-card');
-        const pre = card.querySelector('.patchnote-body');
-        const expanded = pre.classList.toggle('collapsed') === false;
-        const n = filtered[Number(card.dataset.idx)];
-        pre.innerHTML = formatBody(expanded ? n.body : n.body.split('\n').slice(0, PREVIEW_LINES).join('\n'));
-        btn.textContent = expanded ? '접기' : `전체 보기 (${n.body.split('\n').length}줄)`;
+        const row = e.target.closest('.board-row');
+        if (row) toggleRow(row);
+    });
+    listEl.addEventListener('keydown', (e) => {
+        const row = e.target.closest('.board-row');
+        if (row && (e.key === 'Enter' || e.key === ' ')) { e.preventDefault(); toggleRow(row); }
     });
 
     function applyFilter() {
@@ -82,4 +94,15 @@ document.addEventListener("DOMContentLoaded", async () => {
     searchEl.addEventListener('input', applyFilter);
     moreBtn.addEventListener('click', renderMore);
     applyFilter();
+
+    // #파일명 으로 진입 시 해당 글 펼치기
+    const hash = decodeURIComponent(location.hash.slice(1));
+    if (hash) {
+        const idx = filtered.findIndex(n => (n.file || n.date) === hash);
+        if (idx >= 0) {
+            while (shown <= idx) renderMore();
+            const row = listEl.querySelector(`.board-row[data-idx="${idx}"]`);
+            if (row) { toggleRow(row); row.scrollIntoView({ block: 'center' }); }
+        }
+    }
 });
