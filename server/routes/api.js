@@ -515,25 +515,4 @@ router.delete('/character-comments/:id', async (req, res) => {
     }
 });
 
-//----------------------------------------
-// 📌 [임시] 디시 모바일 글 본문 프록시 (패치노트 일회성 가져오기용, 끝나면 삭제)
-//----------------------------------------
-router.get('/dc-post/:no', async (req, res) => {
-    const no = String(req.params.no).replace(/\D/g, '');
-    if (!no) return res.status(400).send('');
-    try {
-        const r = await fetch(`https://m.dcinside.com/board/steve/${no}`, {
-            headers: {
-                'User-Agent': 'Mozilla/5.0 (Linux; Android 13; Pixel 7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126.0 Mobile Safari/537.36',
-                'Accept-Language': 'ko',
-                'Referer': 'https://m.dcinside.com/board/steve',
-            },
-        });
-        const html = await r.text();
-        res.status(r.status).set('Content-Type', 'text/html; charset=utf-8').send(html);
-    } catch (e) {
-        res.status(502).send('');
-    }
-});
-
 module.exports = router;

@@ -48,6 +48,7 @@ async function fetchBody(url) {
   const res = await fetch(`https://m.dcinside.com/board/${GALL_ID}/${no}`, {
     headers: { 'User-Agent': UA_MOBILE, 'Accept-Language': 'ko', 'Referer': `https://m.dcinside.com/board/${GALL_ID}` },
   });
+  if (res.status === 403 || res.status === 404) return ''; // 삭제/숨김된 글
   if (!res.ok) throw new Error(`HTTP ${res.status}`);
   const html = await res.text();
   if (!html) throw new Error('빈 응답 (디시 차단)');
@@ -100,7 +101,7 @@ async function main() {
         if (ok % 10 === 0) { fs.writeFileSync(snapshotPath, JSON.stringify(snap, null, 1)); console.log(`  ${ok}/${need.length}`); }
       } catch (e) {
         console.warn(`  실패 ${p.url}: ${e.message}`);
-        if (/차단|403|429/.test(e.message)) { console.warn('  디시 차단 → 중단. 나중에 다시 실행하세요.'); break; }
+        if (/차단|429/.test(e.message)) { console.warn('  디시 차단 → 중단. 나중에 다시 실행하세요.'); break; }
       }
     }
     fs.writeFileSync(snapshotPath, JSON.stringify(snap, null, 1));
