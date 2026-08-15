@@ -76,7 +76,7 @@ function renderTopPlayers(leaderboard) {
   el.innerHTML = leaderboard.slice(0, 5).map((p, i) => `
     <a class="home-row" href="/user/${encodeURIComponent(p.nickname)}">
       <span class="home-rank top${i + 1}">${i + 1}</span>
-      <img src="https://mc-heads.net/avatar/${p.uuid}/36" alt="" loading="lazy" onerror="this.onerror=null;this.src='https://crafatar.com/avatars/${p.uuid}?size=36&overlay'">
+      <img src="https://mc-heads.net/avatar/${p.uuid}/36" alt="" onerror="this.onerror=null;this.src='https://crafatar.com/avatars/${p.uuid}?size=36&overlay'">
       <div class="home-row-main">
         <span class="home-row-title">${esc(p.nickname)}</span>
         <span class="home-row-sub">${p.totalGames}판</span>
@@ -95,7 +95,7 @@ function renderTopCharacters(home, names) {
   el.innerHTML = home.topCharacters.map((c, i) => `
     <a class="home-row" href="/character/${c.characterId}">
       <span class="home-rank top${i + 1}">${i + 1}</span>
-      <img src="${portraitSrc(c.characterId)}" alt="" loading="lazy">
+      <img src="${portraitSrc(c.characterId)}" alt="">
       <div class="home-row-main">
         <span class="home-row-title">${esc(characterLabel(c.characterId, names))}</span>
         <span class="home-row-sub">${c.picks}픽 · 승률 ${c.winRate}%</span>
@@ -123,8 +123,8 @@ async function renderRecentGames(home, names) {
     return `
       <a class="home-row" href="${href}">
         <div class="home-avatar-stack">
-          <img src="${w ? portraitSrc(w.character) : '/Resource/character/0.png'}" alt="" loading="lazy" data-tip="${esc(w ? characterLabel(w.character, names) : '')}">
-          ${w ? `<img src="https://mc-heads.net/avatar/${cleanUuid}/36" alt="" loading="lazy" onerror="this.onerror=null;this.src='https://crafatar.com/avatars/${cleanUuid}?size=36&overlay'">` : ''}
+          <img src="${w ? portraitSrc(w.character) : '/Resource/character/0.png'}" alt="" data-tip="${esc(w ? characterLabel(w.character, names) : '')}">
+          ${w ? `<img src="https://mc-heads.net/avatar/${cleanUuid}/36" alt="" onerror="this.onerror=null;this.src='https://crafatar.com/avatars/${cleanUuid}?size=36&overlay'">` : ''}
         </div>
         <div class="home-row-main">
           <span class="home-row-title">🏆 ${esc(nick)}</span>
