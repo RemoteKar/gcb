@@ -7,11 +7,21 @@ document.addEventListener("DOMContentLoaded", async () => {
 
     const esc = (s) => String(s ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
 
-    // "A -> B" 수치 변경 강조, "이름:" 헤더 강조
+    // 캐릭터 이름 -> id (헤더 옆 초상화용). 로드 실패해도 패치노트는 정상 표시
+    let charIdByName = {};
+    fetch('/data/names.json').then(r => r.json()).then(d => {
+        for (const [id, name] of Object.entries(d.characters || {})) charIdByName[name] = id;
+    }).catch(() => {});
+
+    // "A -> B" 수치 변경 강조, "이름:" 헤더 강조 (캐릭터명이면 초상화 표시)
     function formatBody(body) {
         return body.split('\n').map(line => {
             const t = esc(line);
-            if (/^\S.*:\s*$/.test(line) && !/->|→/.test(line)) return `<span class="pn-h">${t}</span>`;
+            if (/^\S.*:\s*$/.test(line) && !/->|→/.test(line)) {
+                const id = charIdByName[line.replace(/:\s*$/, '').trim()];
+                const img = id ? `<img class="pn-portrait" src="/Resource/character/${id}.png" alt="" loading="lazy" onerror="this.remove()">` : '';
+                return `<span class="pn-h">${img}${t}</span>`;
+            }
             return t.replace(/(.*?)(\s*(?:->|→)\s*)(.*)/, (all, a, arrow, b) =>
                 `<span class="pn-old">${a}</span><span class="pn-arrow">${arrow}</span><span class="pn-new">${b}</span>`);
         }).join('\n');
