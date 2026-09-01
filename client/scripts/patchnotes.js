@@ -14,16 +14,22 @@ document.addEventListener("DOMContentLoaded", async () => {
     }).catch(() => {});
 
     // "A -> B" 수치 변경 강조, "이름:" 헤더 강조 (캐릭터명이면 초상화 표시)
+    // 들여쓰기(탭/공백 1문자 = 1단계)는 눈에 보이는 인덴트로 변환 — 공백 1칸 스타일 파일도 계층이 보이게
     function formatBody(body) {
         return body.split('\n').map(line => {
-            const t = esc(line);
-            if (/^\S.*:\s*$/.test(line) && !/->|→/.test(line)) {
+            const depth = (line.match(/^[\t ]*/)[0]).length;
+            const t = esc(line.slice(depth));
+            let html;
+            if (depth === 0 && /^\S.*:\s*$/.test(line) && !/->|→/.test(line)) {
                 const id = charIdByName[line.replace(/:\s*$/, '').trim()];
                 const img = id ? `<img class="pn-portrait" src="/Resource/character/${id}.png" alt="" loading="lazy" onerror="this.remove()">` : '';
-                return `<span class="pn-h">${img}${t}</span>`;
+                html = `<span class="pn-h">${img}${t}</span>`;
+            } else {
+                html = t.replace(/(.*?)(\s*(?:->|→)\s*)(.*)/, (all, a, arrow, b) =>
+                    `<span class="pn-old">${a}</span><span class="pn-arrow">${arrow}</span><span class="pn-new">${b}</span>`);
+                if (depth > 0 && /:\s*$/.test(line) && !/->|→/.test(line)) html = `<span class="pn-sh">${html}</span>`;
             }
-            return t.replace(/(.*?)(\s*(?:->|→)\s*)(.*)/, (all, a, arrow, b) =>
-                `<span class="pn-old">${a}</span><span class="pn-arrow">${arrow}</span><span class="pn-new">${b}</span>`);
+            return depth ? `<span style="padding-left:${depth * 16}px">${html}</span>` : html;
         }).join('\n');
     }
 

@@ -2818,6 +2818,7 @@ a.top-player-card { text-decoration: none; color: inherit; }
 
 .patchnote-body .pn-h { color: var(--brand); font-weight: 800; }
 .patchnote-body .pn-portrait { width: 22px; height: 22px; border-radius: 4px; object-fit: cover; vertical-align: -6px; margin-right: 6px; }
+.patchnote-body .pn-sh { font-weight: 700; }
 .patchnote-body .pn-old { color: var(--text-muted); }
 .patchnote-body .pn-arrow { color: var(--text-muted); }
 .patchnote-body .pn-new { color: #5ad07a; font-weight: 700; }
