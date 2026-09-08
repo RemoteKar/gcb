@@ -2894,3 +2894,63 @@ a.top-player-card { text-decoration: none; color: inherit; }
     .board-head, .board-row { grid-template-columns: 36px 1fr 78px; padding: 0 8px; }
     .board-body { padding-left: 12px; }
 }
+
+/* ---- 테스트 서버 상태 페이지 ---- */
+.ts-container { max-width: 640px; }
+.ts-head h1 { margin: 0 0 6px; }
+.ts-sub { color: var(--text-muted); font-size: 14px; line-height: 1.6; margin: 0 0 20px; }
+.ts-sub b { color: var(--text); }
+.ts-card {
+  background: var(--surface); border: 1px solid var(--line);
+  border-radius: 14px; padding: 22px; position: relative;
+}
+.ts-card.is-off { opacity: 0.92; }
+.ts-status { display: flex; align-items: center; gap: 12px; margin-bottom: 18px; }
+.ts-dot { width: 14px; height: 14px; border-radius: 50%; background: var(--text-muted); flex: none; }
+.ts-dot.on  { background: #46d160; box-shadow: 0 0 0 5px rgba(70,209,96,0.16); }
+.ts-dot.off { background: var(--danger); box-shadow: 0 0 0 5px rgba(232,64,87,0.14); }
+.ts-state { font-size: 22px; font-weight: 700; }
+.ts-addr {
+  display: flex; align-items: center; gap: 10px; flex-wrap: wrap;
+  background: var(--surface-soft); border: 1px solid var(--line-soft);
+  border-radius: 10px; padding: 12px 14px; margin-bottom: 16px;
+}
+.ts-addr-label { font-size: 12px; color: var(--text-muted); }
+.ts-addr code {
+  font-size: 16px; color: var(--brand); font-weight: 600;
+  letter-spacing: 0.02em; flex: 1; min-width: 140px;
+}
+.ts-copy {
+  background: var(--surface-raised); color: var(--text);
+  border: 1px solid var(--line); border-radius: 8px;
+  padding: 6px 14px; cursor: pointer; font-size: 13px;
+}
+.ts-copy:hover { border-color: var(--action); color: var(--action-hover); }
+.ts-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 14px; }
+.ts-tile { background: var(--surface-soft); border: 1px solid var(--line-soft); border-radius: 10px; padding: 12px 14px; }
+.ts-tile .ts-k { font-size: 12px; color: var(--text-muted); }
+.ts-tile .ts-v { font-size: 22px; font-weight: 700; margin-top: 3px; font-variant-numeric: tabular-nums; }
+.ts-motd {
+  background: #101010; border: 1px solid var(--line-soft); border-radius: 10px;
+  padding: 12px 14px; font-size: 13px; line-height: 1.6; margin-bottom: 14px;
+  font-family: ui-monospace, Menlo, monospace; word-break: break-all;
+}
+.ts-note { color: var(--text-muted); font-size: 13px; margin: 4px 0 0; }
+.ts-updated { color: var(--text-muted); font-size: 11px; text-align: right; margin: 12px 0 0; }
+@media (max-width: 480px) { .ts-grid { grid-template-columns: 1fr; } }
+
+/* ---- 홈 테스트 서버 배너 ---- */
+.ts-banner {
+  display: flex; align-items: center; gap: 10px;
+  max-width: 640px; margin: 16px auto 0;
+  background: var(--surface); border: 1px solid var(--line);
+  border-left: 3px solid #46d160; border-radius: 10px;
+  padding: 12px 16px; text-decoration: none; color: var(--text);
+  transition: border-color 0.15s, background 0.15s;
+}
+.ts-banner:hover { background: var(--surface-raised); }
+.ts-banner-dot { width: 10px; height: 10px; border-radius: 50%; background: #46d160; box-shadow: 0 0 0 4px rgba(70,209,96,0.16); flex: none; }
+.ts-banner-text { font-size: 14px; }
+.ts-banner-text b { color: #46d160; }
+.ts-banner-players { color: var(--text-muted); font-size: 13px; font-variant-numeric: tabular-nums; }
+.ts-banner-go { margin-left: auto; color: var(--text-muted); font-size: 13px; }

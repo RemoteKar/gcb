@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>테스트 서버 - GCB.gg</title>
+  <meta name="description" content="GCB 테스트 서버 접속 상태">
+  <link rel="stylesheet" href="/styles/main.css">
+  <link rel="icon" href="/favicon.ico" type="image/x-icon">
+</head>
+<body>
+  <div class="header-bar">
+    <a href="/" class="header-logo">GCB.GG</a>
+    <a href="/ranking.html" class="nav-button">랭킹</a>
+    <a href="/character.html" class="nav-button">캐릭터</a>
+    <a href="/augment.html" class="nav-button">증강</a>
+    <a href="/patchnotes.html" class="nav-button">패치노트</a>
+    <a href="/feedback.html" class="nav-button nav-button-red">건의/버그</a>
+  </div>
+
+  <div class="container ts-container">
+    <div class="ts-head">
+      <h1>테스트 서버</h1>
+      <p class="ts-sub">새 캐릭터·밸런스를 미리 돌려보는 서버입니다. 상시 운영이 아니며, 아래 표시가 <b>열림</b>일 때만 접속할 수 있습니다.</p>
+    </div>
+
+    <section class="ts-card" id="ts-card">
+      <div class="ts-status">
+        <span class="ts-dot" id="ts-dot"></span>
+        <span class="ts-state" id="ts-state">확인 중…</span>
+      </div>
+
+      <div class="ts-addr">
+        <span class="ts-addr-label">접속 주소</span>
+        <code id="ts-addr-value">—</code>
+        <button class="ts-copy" id="ts-copy" title="복사">복사</button>
+      </div>
+
+      <div class="ts-grid" id="ts-grid" hidden>
+        <div class="ts-tile"><div class="ts-k">접속자</div><div class="ts-v" id="ts-players">–</div></div>
+        <div class="ts-tile"><div class="ts-k">버전</div><div class="ts-v" id="ts-version">–</div></div>
+      </div>
+
+      <div class="ts-motd" id="ts-motd" hidden></div>
+
+      <p class="ts-note" id="ts-note"></p>
+      <p class="ts-updated" id="ts-updated"></p>
+    </section>
+  </div>
+
+  <script>
+    // 폰 테스트 서버 주소. duckdns 도메인 정해지면 여기만 교체.
+    const TS_ADDR = "gcbpbe.duckdns.org:25566";
+    const API = a => `https://api.mcsrvstat.us/3/${encodeURIComponent(a)}`;
+
+    const $ = id => document.getElementById(id);
+    $("ts-addr-value").textContent = TS_ADDR;
+
+    $("ts-copy").addEventListener("click", async () => {
+      try {
+        await navigator.clipboard.writeText(TS_ADDR);
+        const b = $("ts-copy"); b.textContent = "복사됨"; setTimeout(() => b.textContent = "복사", 1500);
+      } catch (e) {}
+    });
+
+    // &색코드 → span (사이트 색코드 매핑과 동일)
+    const MC = {"0":"#000","1":"#00AA","2":"#0A0","3":"#0AA","4":"#A00","5":"#A0A","6":"#FA0","7":"#AAA","8":"#555","9":"#55F","a":"#5F5","b":"#5FF","c":"#F55","d":"#F5F","e":"#FF5","f":"#FFF"};
+    function motdHtml(lines) {
+      return (lines || []).map(line => {
+        let out = "", color = "#e8e8e8";
+        const parts = String(line).split(/(§.|&[0-9a-fk-or])/i);
+        for (const p of parts) {
+          if (/^[§&][0-9a-f]$/i.test(p)) { color = MC[p[1].toLowerCase()] || color; continue; }
+          if (/^[§&][k-or]$/i.test(p)) continue;
+          if (p) out += `<span style="color:${color}">${p.replace(/</g,"&lt;")}</span>`;
+        }
+        return out;
+      }).join("<br>");
+    }
+
+    function render(d) {
+      const online = d && d.online === true;
+      $("ts-dot").className = "ts-dot " + (online ? "on" : "off");
+      $("ts-state").textContent = online ? "열림" : "닫힘";
+      $("ts-card").classList.toggle("is-off", !online);
+
+      if (online) {
+        $("ts-grid").hidden = false;
+        const pl = d.players || {};
+        $("ts-players").textContent = `${pl.online ?? 0} / ${pl.max ?? 0}`;
+        $("ts-version").textContent = (d.version || "-").toString().replace(/§./g, "");
+        const motd = d.motd && d.motd.raw;
+        if (motd && motd.length) { $("ts-motd").hidden = false; $("ts-motd").innerHTML = motdHtml(motd); }
+        else $("ts-motd").hidden = true;
+        $("ts-note").textContent = "";
+      } else {
+        $("ts-grid").hidden = true;
+        $("ts-motd").hidden = true;
+        $("ts-note").textContent = "지금은 서버가 닫혀 있습니다. 열려 있을 때 다시 시도해 주세요.";
+      }
+      $("ts-updated").textContent = "확인: " + new Date().toLocaleTimeString("ko-KR");
+    }
+
+    async function refresh() {
+      try {
+        const r = await fetch(API(TS_ADDR), { cache: "no-store" });
+        render(await r.json());
+      } catch (e) {
+        $("ts-dot").className = "ts-dot off";
+        $("ts-state").textContent = "확인 실패";
+        $("ts-note").textContent = "상태를 가져오지 못했습니다. 잠시 후 자동으로 다시 시도합니다.";
+      }
+    }
+    refresh();
+    setInterval(refresh, 30000);
+  </script>
+</body>
+</html>
