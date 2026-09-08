@@ -41,6 +41,8 @@
         <div class="ts-tile"><div class="ts-k">버전</div><div class="ts-v" id="ts-version">–</div></div>
       </div>
 
+      <div class="ts-tablist" id="ts-tablist" hidden></div>
+
       <div class="ts-motd" id="ts-motd" hidden></div>
 
       <p class="ts-note" id="ts-note"></p>
@@ -62,6 +64,20 @@
         const b = $("ts-copy"); b.textContent = "복사됨"; setTimeout(() => b.textContent = "복사", 1500);
       } catch (e) {}
     });
+
+    // 스킨 머리 초상화 (UUID 우선, 없으면 이름). 이미지라 CORS 불필요.
+    const headUrl = (p, size) => `https://mc-heads.net/avatar/${encodeURIComponent(p.uuid || p.name || "MHF_Steve")}/${size}`;
+    function tablist(list) {
+      const el = $("ts-tablist");
+      if (!list || !list.length) { el.hidden = true; el.innerHTML = ""; return; }
+      el.hidden = false;
+      el.innerHTML = list.map(p => `
+        <div class="ts-player">
+          <img class="ts-head" src="${headUrl(p, 32)}" alt="" width="24" height="24"
+               onerror="this.src='https://mc-heads.net/avatar/MHF_Steve/32'">
+          <span class="ts-pname">${(p.name || "?").replace(/</g, "&lt;")}</span>
+        </div>`).join("");
+    }
 
     // &색코드 → span (사이트 색코드 매핑과 동일)
     const MC = {"0":"#000","1":"#00AA","2":"#0A0","3":"#0AA","4":"#A00","5":"#A0A","6":"#FA0","7":"#AAA","8":"#555","9":"#55F","a":"#5F5","b":"#5FF","c":"#F55","d":"#F5F","e":"#FF5","f":"#FFF"};
@@ -89,12 +105,14 @@
         const pl = d.players || {};
         $("ts-players").textContent = `${pl.online ?? 0} / ${pl.max ?? 0}`;
         $("ts-version").textContent = (d.version || "-").toString().replace(/§./g, "");
+        tablist(pl.list);
         const motd = d.motd && d.motd.raw;
         if (motd && motd.length) { $("ts-motd").hidden = false; $("ts-motd").innerHTML = motdHtml(motd); }
         else $("ts-motd").hidden = true;
         $("ts-note").textContent = "";
       } else {
         $("ts-grid").hidden = true;
+        $("ts-tablist").hidden = true;
         $("ts-motd").hidden = true;
         $("ts-note").textContent = "지금은 서버가 닫혀 있습니다. 열려 있을 때 다시 시도해 주세요.";
       }

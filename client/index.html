@@ -38,6 +38,7 @@
       <span class="ts-banner-dot"></span>
       <span class="ts-banner-text">테스트 서버 <b>열림</b></span>
       <span class="ts-banner-players" id="ts-banner-players"></span>
+      <span class="ts-banner-heads" id="ts-banner-heads"></span>
       <span class="ts-banner-go">보기 →</span>
     </a>
 
@@ -86,6 +87,11 @@
         if (d && d.online === true) {
           const pl = d.players || {};
           document.getElementById("ts-banner-players").textContent = `${pl.online ?? 0}/${pl.max ?? 0}`;
+          const list = (pl.list || []).slice(0, 8);
+          document.getElementById("ts-banner-heads").innerHTML = list.map(p =>
+            `<img src="https://mc-heads.net/avatar/${encodeURIComponent(p.uuid || p.name)}/32" alt=""
+                  title="${(p.name || "").replace(/"/g, "")}" width="20" height="20"
+                  onerror="this.style.display='none'">`).join("");
           document.getElementById("ts-banner").hidden = false;
         }
       } catch (e) {}

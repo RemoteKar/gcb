@@ -2954,3 +2954,16 @@ a.top-player-card { text-decoration: none; color: inherit; }
 .ts-banner-text b { color: #46d160; }
 .ts-banner-players { color: var(--text-muted); font-size: 13px; font-variant-numeric: tabular-nums; }
 .ts-banner-go { margin-left: auto; color: var(--text-muted); font-size: 13px; }
+
+/* ---- 테스트 서버 접속자(TAB) 목록 ---- */
+.ts-tablist { display: flex; flex-direction: column; gap: 4px; margin-bottom: 14px; }
+.ts-player {
+  display: flex; align-items: center; gap: 10px;
+  background: var(--surface-soft); border: 1px solid var(--line-soft);
+  border-radius: 8px; padding: 6px 12px;
+}
+.ts-head { image-rendering: pixelated; border-radius: 3px; flex: none; }
+.ts-pname { font-size: 14px; }
+/* 배너 머리들 */
+.ts-banner-heads { display: inline-flex; align-items: center; gap: 3px; }
+.ts-banner-heads img { image-rendering: pixelated; border-radius: 3px; }
