@@ -540,6 +540,49 @@ model CharacterComment {
 
 ---
 
+## 2026-09-23 작업 내용 (26.3 브랜치): 26.3 데이터·이미지 교체
+
+### 개요
+26.3 버전업에 맞춰 사이트 데이터와 이미지를 새 서버 기준으로 교체 (코드 변경은 별도 작업).
+
+| 항목 | 변경 |
+|------|------|
+| `Data/gameHistory/` | 1.21.8 형식 기록 553개 전부 삭제, 폴더 유지용 `.gitkeep` 추가. 새 기록은 26.3 형식(`Core`, `killedBy: {uuid: 횟수}`, `quit`, 0값 키 생략) |
+| `Data/description/` | 26.3 개발서버 `plugins/Skript/scripts/Data/description` 통째 동기화 — 증강 1~46 (46 신규, 26개 내용 변경), `cores/` 27종 신규, 타이탄은 키 순서만 바뀜 |
+| `client/Resource/augment/icon/1~46.png` | 26.3 리소스팩 `gcb/textures/item/augment/icon` 에서 복사 (0/level/edge.png 는 사이트 것 유지) |
+| `client/Resource/core/<key>.png` | 코어 27종 정면 렌더 아이콘 256×256 RGBA (투명 배경). `0.png` = 빈 코어 UI 텍스처(불투명 슬롯 +모양) nearest 확대 |
+
+- 코어 아이콘 재생성: 자비스 `_tools/build_core_cards.py --icons <gcb>/client/Resource/core` (현행 리소스팩 모델 기준)
+
+---
+
+## 2026-09-23 작업 내용 (26.3 브랜치): 26.3 게임 기록 형식 대응 + 코어 페이지
+
+### 개요
+26.3 게임 기록(`outCuase`·`TimeSurvived` 삭제, `killedBy` = `{처치자uuid: 횟수}`, `Core`/`quit`/`death` 추가, 0 인 키 생략) 에 맞춰 코드 수정 + 증강 페이지를 본뜬 코어 목록/통계 페이지 추가.
+
+### 형식 대응
+| 파일 | 변경 |
+|------|------|
+| `scripts/build-static-data.js`, `server/utils/statistics.js`, `client/scripts/user.js` | 우승 판정 `outCuase === '우승'` → `Ranking === 1` |
+| `server/utils/statistics.js`, `scripts/build-{static-data,leaderboard}.js` | `averageAliveTime`(생존시간) → `averageDeaths`(평균 사망, `death` 없으면 0). 증강 집계에서 `null` 슬롯 제외 |
+| `client/scripts/user.js` | "평균 생존시간" → "평균 사망", 게임 카드 "생존" → "사망" + 탈주(`quit`) 표시, 모달에 `N킬 N데스`/탈주. 천적/먹잇감은 `killedBy` 맵의 횟수 합산(구 문자열 값은 1회). 미사용 `killMap` 삭제 |
+
+### 코어 페이지
+| 파일 | 설명 |
+|------|------|
+| `scripts/build-static-data.js` | `Data/description/cores/*.yaml` → `client/data/cores.json` (`[{id, index, name, description}]`, index 순, 폴더 없으면 `[]`), `names.json` 에 `cores: {key: 이름}`, `client/data/core-stats.json` (`{ recent60/recent200/all: [{coreId, picks, pickRate, wins, winRate, avgRank, avgKills, avgDamage}] }`, 전체 캐릭터 기준, 픽률 분모 = 기간 전체 참가자) |
+| `client/core.html` / `scripts/core.js` | 코어 그리드 (`/data/cores.json`, 아이콘 `/Resource/core/<key>.png`, 없으면 `0.png`), 서브탭 "목록 \| 통계" |
+| `client/core_stats.html` / `scripts/core_stats.js` | 코어 통계 정렬 테이블 + 기간 탭 (증강 통계와 동일 구조) |
+| `client/scripts/augment_popup.js` | `showCorePopup(key)` 추가 (증강 팝업 DOM/색코드 파서 공용) |
+| `client/scripts/user.js` | 게임 카드·모달의 증강 아이콘 옆에 코어 아이콘(있을 때만), 클릭 시 코어 팝업 |
+| 모든 HTML | 상단 메뉴 "증강" 뒤에 "코어" 버튼 |
+| `client/styles/main.css` | `.modal-player-kills` 좌우 여백 8px (길어진 "N킬 N데스 탈주" 가 증강 아이콘에 붙던 것) |
+
+- 검증: 합성 26.3 기록 3판(우승·코어 없음·탈주·`killedBy` 다중·키 생략·증강 null)으로 빌드 → 코어/증강/유저 통계·천적/먹잇감 수치 일치, 빈 gameHistory 빌드 무오류, headless Edge 로 코어 목록/통계·전적 카드·모달·코어 팝업 렌더 확인
+
+---
+
 ## 페이지 목록
 1. `index.html` - 메인 (닉네임 검색)
 2. `user.html` - 유저 프로필
@@ -554,6 +597,8 @@ model CharacterComment {
 11. `titan_detail.html` - 타이탄 상세 (상단바 미노출, 목록에서 클릭으로 진입)
 12. `feedback.html` - 건의/버그 (GitHub 로그인 필요, 붉은 탭)
 13. `patchnotes.html` - 패치노트 (`Data/patchnotes/*.md` 수동 관리)
+14. `core.html` - 코어 목록
+15. `core_stats.html` - 코어 통계
 
 ---
 

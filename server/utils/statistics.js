@@ -6,7 +6,7 @@ const { CREATIVE_ID_MAX_EXCLUSIVE, isCreativeCharacter } = require('../../client
     let totalDamageDealt = 0;
     let totalDamageTaken = 0;
     let totalKills = 0;
-    let totalAliveTime = 0;
+    let totalDeaths = 0;
     let maxDamageDealt = 0;
     let maxDamageTaken = 0;
     let maxKill = 0;
@@ -38,7 +38,7 @@ const { CREATIVE_ID_MAX_EXCLUSIVE, isCreativeCharacter } = require('../../client
         if (playerData.Ranking / record.Game.amountOfPlayers <= 0.5) {
           rankAtLeast50++;
         }
-        if (playerData.outCuase === "우승") {
+        if (playerData.Ranking === 1) {
           winCount++;
         }
         if (playerData.Damage) {
@@ -61,9 +61,7 @@ const { CREATIVE_ID_MAX_EXCLUSIVE, isCreativeCharacter } = require('../../client
           }
           totalKills += playerData.kill;
         }
-        if (typeof playerData.TimeSurvived === "number") {
-          totalAliveTime += playerData.TimeSurvived;
-        }
+        totalDeaths += Number(playerData.death) || 0;
   
         if (character !== undefined) {
           characterCounts[character] = (characterCounts[character] || 0) + 1;
@@ -71,13 +69,13 @@ const { CREATIVE_ID_MAX_EXCLUSIVE, isCreativeCharacter } = require('../../client
             characterDetailStats[character] = { games: 0, wins: 0, kills: 0, damage: 0 };
           }
           characterDetailStats[character].games++;
-          if (playerData.outCuase === "우승") characterDetailStats[character].wins++;
+          if (playerData.Ranking === 1) characterDetailStats[character].wins++;
           if (typeof playerData.kill === "number") characterDetailStats[character].kills += playerData.kill;
           if (playerData.Damage && typeof playerData.Damage.Dealt === "number") characterDetailStats[character].damage += playerData.Damage.Dealt;
         }
 
         if (playerData.Augment) {
-          Object.values(playerData.Augment).forEach(augmentValue => {
+          Object.values(playerData.Augment).filter(a => typeof a === 'number').forEach(augmentValue => {
             augmentCounts[augmentValue] = (augmentCounts[augmentValue] || 0) + 1;
           });
         }
@@ -94,7 +92,7 @@ const { CREATIVE_ID_MAX_EXCLUSIVE, isCreativeCharacter } = require('../../client
         averageDamageDealt: 0,
         averageDamageTaken: 0,
         averageKillRate: 0.0,
-        averageAliveTime: 0.0,
+        averageDeaths: 0.0,
         maxDamageDealt: 0,
         maxDamageTaken: 0,
         maxKill: 0,
@@ -107,7 +105,7 @@ const { CREATIVE_ID_MAX_EXCLUSIVE, isCreativeCharacter } = require('../../client
     const averageDamageDealt = totalDamageDealt / totalGames;
     const averageDamageTaken = totalDamageTaken / totalGames;
     const averageKillRate = totalKills / totalGames;
-    const averageAliveTime = totalAliveTime / totalGames;
+    const averageDeaths = totalDeaths / totalGames;
     let mostUsedCharacter = "N/A";
     let maxCharacterCount = 0;
     
@@ -145,7 +143,7 @@ const { CREATIVE_ID_MAX_EXCLUSIVE, isCreativeCharacter } = require('../../client
       averageDamageDealt,
       averageDamageTaken,
       averageKillRate,
-      averageAliveTime,
+      averageDeaths,
       maxDamageDealt,
       maxDamageTaken,
       maxKill,
@@ -171,7 +169,7 @@ function aggregateAllPlayerStatistics(allGameRecordContents) {
                         totalDamageDealt: 0,
                         totalDamageTaken: 0,
                         totalKills: 0,
-                        totalAliveTime: 0,
+                        totalDeaths: 0,
                         rankAtLeast50: 0,
                         characterCounts: {},
                         augmentCounts: {},
@@ -192,7 +190,7 @@ function aggregateAllPlayerStatistics(allGameRecordContents) {
                         if (playerData.Ranking / recordContent.Game.amountOfPlayers <= 0.5) {
                             stats.rankAtLeast50++;
                         }
-                        if (playerData.outCuase === "우승") {
+                        if (playerData.Ranking === 1) {
                             stats.winCount++;
                         }
                         if (playerData.Damage) {
@@ -215,16 +213,14 @@ function aggregateAllPlayerStatistics(allGameRecordContents) {
                                 stats.maxKill = playerData.kill;
                             }
                         }
-                        if (typeof playerData.TimeSurvived === "number") {
-                            stats.totalAliveTime += playerData.TimeSurvived;
-                        }
+                        stats.totalDeaths += Number(playerData.death) || 0;
 
                         if (character !== undefined) {
                             stats.characterCounts[character] = (stats.characterCounts[character] || 0) + 1;
                         }
 
                         if (playerData.Augment) {
-                            Object.values(playerData.Augment).forEach(augmentValue => {
+                            Object.values(playerData.Augment).filter(a => typeof a === 'number').forEach(augmentValue => {
                                 stats.augmentCounts[augmentValue] = (stats.augmentCounts[augmentValue] || 0) + 1;
                             });
                         }
@@ -248,7 +244,7 @@ function aggregateAllPlayerStatistics(allGameRecordContents) {
                 averageDamageDealt: 0,
                 averageDamageTaken: 0,
                 averageKillRate: 0.0,
-                averageAliveTime: 0.0,
+                averageDeaths: 0.0,
                 maxDamageDealt: 0,
                 maxDamageTaken: 0,
                 maxKill: 0,
@@ -261,7 +257,7 @@ function aggregateAllPlayerStatistics(allGameRecordContents) {
         const averageDamageDealt = totalGames > 0 ? stats.totalDamageDealt / totalGames : 0;
         const averageDamageTaken = totalGames > 0 ? stats.totalDamageTaken / totalGames : 0;
         const averageKillRate = totalGames > 0 ? stats.totalKills / totalGames : 0;
-        const averageAliveTime = totalGames > 0 ? stats.totalAliveTime / totalGames : 0;
+        const averageDeaths = totalGames > 0 ? stats.totalDeaths / totalGames : 0;
 
         let mostUsedCharacter = "N/A";
         let maxCharacterCount = 0;
@@ -287,7 +283,7 @@ function aggregateAllPlayerStatistics(allGameRecordContents) {
             averageDamageDealt,
             averageDamageTaken,
             averageKillRate,
-            averageAliveTime,
+            averageDeaths,
             maxDamageDealt: stats.maxDamageDealt,
             maxDamageTaken: stats.maxDamageTaken,
             maxKill: stats.maxKill,

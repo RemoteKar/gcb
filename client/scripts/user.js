@@ -173,8 +173,8 @@ document.addEventListener("DOMContentLoaded", async () => {
         </div>
       </div>
       <div class="user-survival-stat">
-        <span>평균 생존시간</span>
-        <strong>${statistics.averageAliveTime}</strong>
+        <span>평균 사망</span>
+        <strong>${statistics.averageDeaths ?? '-'}</strong>
       </div>
     `;
     
@@ -287,7 +287,7 @@ const TREND_WINDOW = 10;
 function renderTrend(gameRecords, formattedUUID, mountEl) {
   const rows = gameRecords
     .map(r => r.content?.Player?.[formattedUUID] && r.content.Game?.amountOfPlayers
-      ? { win: r.content.Player[formattedUUID].outCuase === '우승', top: (r.content.Player[formattedUUID].Ranking / r.content.Game.amountOfPlayers) <= 0.5 }
+      ? { win: r.content.Player[formattedUUID].Ranking === 1, top: (r.content.Player[formattedUUID].Ranking / r.content.Game.amountOfPlayers) <= 0.5 }
       : null)
     .filter(Boolean);
   if (rows.length < TREND_WINDOW + 2) return;
@@ -328,6 +328,9 @@ function renderTrend(gameRecords, formattedUUID, mountEl) {
 
 // ──────────────────────────────
 // 천적 / 먹잇감 / 자주 만난 유저 (killedBy + 같은 게임 참가 기준)
+// killedBy = { 처치자uuid: 횟수 } (무한부활), 구 기록의 문자열은 1회로 취급
+const killCounts = (killedBy) => typeof killedBy === 'string' ? { [killedBy]: 1 } : (killedBy || {});
+
 async function renderPeople(gameRecords, formattedUUID, mountEl) {
   const killedMe = {};   // 나를 죽인 유저
   const iKilled = {};    // 내가 죽인 유저
@@ -337,11 +340,14 @@ async function renderPeople(gameRecords, formattedUUID, mountEl) {
     const players = r.content?.Player;
     if (!players || !players[formattedUUID]) continue;
     const me = players[formattedUUID];
-    if (me.killedBy && me.killedBy !== formattedUUID) killedMe[me.killedBy] = (killedMe[me.killedBy] || 0) + 1;
+    for (const [killer, n] of Object.entries(killCounts(me.killedBy))) {
+      if (killer !== formattedUUID) killedMe[killer] = (killedMe[killer] || 0) + (Number(n) || 0);
+    }
     for (const [pUuid, pData] of Object.entries(players)) {
       if (pUuid === formattedUUID) continue;
       together[pUuid] = (together[pUuid] || 0) + 1;
-      if (pData.killedBy === formattedUUID) iKilled[pUuid] = (iKilled[pUuid] || 0) + 1;
+      const n = Number(killCounts(pData.killedBy)[formattedUUID]) || 0;
+      if (n > 0) iKilled[pUuid] = (iKilled[pUuid] || 0) + n;
     }
   }
 
@@ -479,8 +485,9 @@ function renderNextGames(uuid) {
           </p>
           <div class="game-card-info-sub">
             <span><strong>처치</strong> ${kills}</span>
-            <span><strong>생존</strong> ${playerData?.TimeSurvived ?? 'N/A'}</span>
+            <span><strong>사망</strong> ${playerData?.death ?? 0}</span>
             <span><strong>피해</strong> ${damageDealt} / ${damageTaken}</span>
+            ${playerData?.quit ? '<span style="color:var(--danger);">탈주</span>' : ''}
           </div>
         </div>
         <div class="game-card-augment">
@@ -489,6 +496,7 @@ function renderNextGames(uuid) {
             const src = aug != null ? `/Resource/augment/icon/${aug}.png` : `/Resource/augment/icon/level.png`;
             return `<img src="${src}" alt="Augment${i}" data-augment-id="${aug != null ? aug : ''}" style="${aug != null ? 'cursor:pointer;' : ''}">`;
           }).join('\n          ')}
+          ${coreIconHtml(playerData?.Core)}
         </div>
       </div>
     `;
@@ -503,6 +511,8 @@ function renderNextGames(uuid) {
         });
       }
     });
+
+    bindCorePopup(gameItem);
 
     // 게임 카드 클릭 → 모달 열기
     const gameCard = gameItem.querySelector('.game-card');
@@ -530,6 +540,22 @@ function formatUUID(uuid) {
 
 function stripHyphens(uuid) {
   return uuid.replace(/-/g, '');
+}
+
+// 코어 아이콘 (증강 아이콘 옆, 클릭 → 코어 팝업)
+function coreIconHtml(coreKey) {
+  if (!coreKey) return '';
+  const key = String(coreKey).replace(/[^\w-]/g, '');
+  return `<img src="/Resource/core/${key}.png" alt="코어" data-core-key="${key}" style="cursor:pointer;" onerror="this.onerror=null;this.src='/Resource/core/0.png'">`;
+}
+
+function bindCorePopup(rootEl) {
+  rootEl.querySelectorAll('img[data-core-key]').forEach(img => {
+    img.addEventListener('click', (e) => {
+      e.stopPropagation();
+      showCorePopup(img.dataset.coreKey);
+    });
+  });
 }
 
 // ──────────────────────────────
@@ -563,16 +589,6 @@ async function openGameDetailModal(game) {
     if (res.ok) nicknameMap = await res.json();
   } catch (e) {
     console.error('닉네임 조회 실패:', e);
-  }
-
-  // 킬 관계 맵 생성 (killerUUID → [victimUUID, ...])
-  const killMap = {};
-  for (const [puuid, pdata] of Object.entries(players)) {
-    if (pdata.killedBy) {
-      const killerUUID = pdata.killedBy;
-      if (!killMap[killerUUID]) killMap[killerUUID] = [];
-      killMap[killerUUID].push(puuid);
-    }
   }
 
   // 데미지 차트 렌더링
@@ -646,7 +662,7 @@ async function openGameDetailModal(game) {
       const aug = data?.Augment?.[i];
       const src = aug != null ? `/Resource/augment/icon/${aug}.png` : `/Resource/augment/icon/level.png`;
       return `<img src="${src}" alt="Augment${i}" data-augment-id="${aug != null ? aug : ''}" style="${aug != null ? 'cursor:pointer;' : ''}">`;
-    }).join('');
+    }).join('') + coreIconHtml(data?.Core);
 
     const row = document.createElement('div');
     row.className = 'modal-player-row';
@@ -657,7 +673,7 @@ async function openGameDetailModal(game) {
       <img class="modal-player-char" src="${modalPortrait}" alt="${modalAlt}">
       <img class="modal-player-head" src="https://mc-heads.net/avatar/${cleanUUID}/40" alt="${nickname}">
       <span class="modal-player-name">${nickname}</span>
-      <span class="modal-player-kills">${(data?.kill || 0)}킬</span>
+      <span class="modal-player-kills">${(data?.kill || 0)}킬 ${(data?.death || 0)}데스${data?.quit ? ' <span style="color:var(--danger);">탈주</span>' : ''}</span>
       <div class="modal-player-augments">${augmentHtml}</div>
     `;
 
@@ -680,6 +696,8 @@ async function openGameDetailModal(game) {
         });
       }
     });
+
+    bindCorePopup(row);
 
     // 행 클릭 → 해당 유저 전적 페이지 이동
     if (nicknameMap[cleanUUID]) {

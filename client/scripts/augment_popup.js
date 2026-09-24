@@ -1,9 +1,10 @@
-// 증강 팝업 공용 모듈
+// 증강·코어 팝업 공용 모듈
 // 다른 페이지에서 <script src="/scripts/augment_popup.js"></script> 로 로드 후
-// showAugmentPopup(augmentId) 호출
+// showAugmentPopup(augmentId) / showCorePopup(coreKey) 호출
 
 (function () {
     let augmentDataCache = null;
+    let coreDataCache = null;
     let popupEl = null;
 
     // 마인크래프트 색코드 매핑
@@ -82,9 +83,38 @@
             return;
         }
 
-        popupEl.querySelector('.augment-popup-icon').src = `/Resource/augment/icon/${augmentId}.png`;
-        popupEl.querySelector('.augment-popup-name').textContent = aug.name;
-        popupEl.querySelector('.augment-popup-desc').innerHTML = parseMcColor(aug.description);
+        openPopup(`/Resource/augment/icon/${augmentId}.png`, null, aug);
+    };
+
+    function openPopup(iconSrc, fallbackSrc, item) {
+        const icon = popupEl.querySelector('.augment-popup-icon');
+        icon.onerror = fallbackSrc ? () => { icon.onerror = null; icon.src = fallbackSrc; } : null;
+        icon.src = iconSrc;
+        popupEl.querySelector('.augment-popup-name').textContent = item.name;
+        popupEl.querySelector('.augment-popup-desc').innerHTML = parseMcColor(item.description);
         popupEl.style.display = 'flex';
+    }
+
+    async function fetchCoreData() {
+        if (coreDataCache) return coreDataCache;
+        try {
+            const res = await fetch('/data/cores.json');
+            if (!res.ok) throw new Error('코어 데이터 로드 실패');
+            coreDataCache = Object.fromEntries((await res.json()).map(core => [core.id, core]));
+            return coreDataCache;
+        } catch (e) {
+            console.error('augment_popup fetchCoreData error:', e);
+            return {};
+        }
+    }
+
+    window.showCorePopup = async function (coreKey) {
+        createPopup();
+        const core = (await fetchCoreData())[coreKey];
+        if (!core) {
+            console.warn('코어 데이터를 찾을 수 없습니다:', coreKey);
+            return;
+        }
+        openPopup(`/Resource/core/${coreKey}.png`, '/Resource/core/0.png', core);
     };
 })();

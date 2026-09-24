@@ -1,0 +1,7 @@
+id: luckydice
+
+index: 20
+
+name: 불운 보정 주사위
+
+description: "&f이동속도 &b20%\n&f피해를 받을 때마다 주사위를 굴려\n&f눈금 &71~6&f 하나당 받는 피해가 &77%&f 감소합니다"

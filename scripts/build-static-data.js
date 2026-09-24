@@ -3,7 +3,9 @@
 //   client/data/recent-games.json            최근 60게임 (캐릭터 통계 페이지)
 //   client/data/augment-stats.json           최근 60게임 증강 픽 통계
 //   client/data/badges.json                  { uuid: { current, List } }
-//   client/data/names.json                   { characters: {id: name}, augments: {id: name} }
+//   client/data/names.json                   { characters: {id: name}, augments: {id: name}, cores: {key: name} }
+//   client/data/cores.json                   코어 목록 [{ id, index, name, description }] (index 순)
+//   client/data/core-stats.json              코어별 기간 통계 { recent60: [...], recent200: [...], all: [...] }
 //   client/data/character-stats.json         캐릭터별 기간(recent60/recent200/all) 통계 + 증강 시너지
 //   client/data/augment-stats.json           증강별 기간 통계 { recent60: [...], recent200: [...], all: [...] }
 //   client/data/home.json                    메인 페이지용 (최근 게임 요약 + 최근 60게임 1등 캐릭터)
@@ -34,7 +36,7 @@ function formatStatistics(stats) {
     averageDamageDealt: stats.averageDamageDealt.toFixed(0),
     averageDamageTaken: stats.averageDamageTaken.toFixed(0),
     averageKillRate: stats.averageKillRate.toFixed(2),
-    averageAliveTime: stats.averageAliveTime.toFixed(1),
+    averageDeaths: stats.averageDeaths.toFixed(1),
     maxDamageDealt: stats.maxDamageDealt.toFixed(0),
     maxDamageTaken: stats.maxDamageTaken.toFixed(0),
     maxKill: stats.maxKill.toString(),
@@ -84,11 +86,24 @@ function loadYaml(filePath) {
   try { return yaml.load(fs.readFileSync(filePath, 'utf8')); } catch (e) { return null; }
 }
 
-// Data/description → { characters: {id: name}, augments: {id: name} }
-function buildNames() {
+// Data/description/cores/*.yaml → [{ id, index, name, description }] (index 순)
+function buildCores() {
+  const coreDir = path.join(descriptionDir, 'cores');
+  if (!fs.existsSync(coreDir)) return [];
+  return fs.readdirSync(coreDir)
+    .filter(file => file.endsWith('.yaml'))
+    .map(file => loadYaml(path.join(coreDir, file)))
+    .filter(core => core?.id != null && core.name)
+    .map(core => ({ id: String(core.id), index: Number(core.index) || 0, name: String(core.name), description: String(core.description ?? '') }))
+    .sort((a, b) => a.index - b.index);
+}
+
+// Data/description → { characters: {id: name}, augments: {id: name}, cores: {key: name} }
+function buildNames(coreList) {
   const characters = {};
   const augments = {};
-  if (!fs.existsSync(descriptionDir)) return { characters, augments };
+  const cores = Object.fromEntries(coreList.map(c => [c.id, c.name]));
+  if (!fs.existsSync(descriptionDir)) return { characters, augments, cores };
   for (const dir of fs.readdirSync(descriptionDir)) {
     if (!dir.startsWith('char_')) continue;
     const stat = loadYaml(path.join(descriptionDir, dir, 'stat.yaml'));
@@ -102,17 +117,18 @@ function buildNames() {
       if (aug?.id != null && aug.name) augments[aug.id] = String(aug.name);
     }
   }
-  return { characters, augments };
+  return { characters, augments, cores };
 }
 
 const isStatCharacter = id => Number(id) > 0 && Number(id) < CREATIVE_ID_MAX_EXCLUSIVE && isOfficialCharacter(id);
 const rate = (n, d) => d > 0 ? Number(((n / d) * 100).toFixed(1)) : 0;
 const avg = (n, d) => d > 0 ? Number((n / d).toFixed(1)) : 0;
 
-// 한 기간의 게임 기록 → 캐릭터별/증강별 원시 집계
+// 한 기간의 게임 기록 → 캐릭터별/증강별/코어별 원시 집계
 function aggregatePeriod(records) {
   const characters = {};
   const augments = {};
+  const cores = {};
   let slots = 0; // 전체 플레이어 참가 수 (픽률 분모)
   const bump = (obj, key) => obj[key] || (obj[key] = { picks: 0, wins: 0, top50: 0, kills: 0, damage: 0, augments: {} });
   for (const { content } of records) {
@@ -121,7 +137,7 @@ function aggregatePeriod(records) {
     if (!players || !total) continue;
     slots += Object.keys(players).length;
     for (const p of Object.values(players)) {
-      const win = p.outCuase === '우승';
+      const win = p.Ranking === 1;
       const top50 = typeof p.Ranking === 'number' && p.Ranking / total <= 0.5;
       const kills = typeof p.kill === 'number' ? p.kill : 0;
       const dmg = typeof p.Damage?.Dealt === 'number' ? p.Damage.Dealt : 0;
@@ -130,6 +146,10 @@ function aggregatePeriod(records) {
       for (const a of augIds) {
         const s = bump(augments, a);
         s.picks++; if (win) s.wins++; if (top50) s.top50++;
+      }
+      if (p.Core) {
+        const s = cores[p.Core] || (cores[p.Core] = { picks: 0, wins: 0, rank: 0, kills: 0, damage: 0 });
+        s.picks++; if (win) s.wins++; s.rank += Number(p.Ranking) || 0; s.kills += kills; s.damage += dmg;
       }
       if (!isStatCharacter(p.Character)) continue;
       const c = bump(characters, p.Character);
@@ -140,15 +160,16 @@ function aggregatePeriod(records) {
       }
     }
   }
-  return { characters, augments, slots };
+  return { characters, augments, cores, slots };
 }
 
 function finalizeStats(records) {
   const characterStats = {};
   const augmentStats = {};
+  const coreStats = {};
   for (const [period, size] of Object.entries(PERIODS)) {
     const slice = size === Infinity ? records : records.slice(-size);
-    const { characters, augments, slots } = aggregatePeriod(slice);
+    const { characters, augments, cores, slots } = aggregatePeriod(slice);
     for (const [id, c] of Object.entries(characters)) {
       characterStats[id] = characterStats[id] || {};
       characterStats[id][period] = {
@@ -164,15 +185,21 @@ function finalizeStats(records) {
     augmentStats[period] = Object.entries(augments)
       .map(([aid, s]) => ({ augmentId: Number(aid), picks: s.picks, winRate: rate(s.wins, s.picks), top50Rate: rate(s.top50, s.picks) }))
       .sort((a, b) => b.picks - a.picks);
+    coreStats[period] = Object.entries(cores)
+      .map(([key, s]) => ({
+        coreId: key, picks: s.picks, pickRate: rate(s.picks, slots), wins: s.wins, winRate: rate(s.wins, s.picks),
+        avgRank: avg(s.rank, s.picks), avgKills: avg(s.kills, s.picks), avgDamage: Math.round(s.damage / s.picks),
+      }))
+      .sort((a, b) => b.picks - a.picks);
   }
-  return { characterStats: { periods: Object.keys(PERIODS), games: records.length, characters: characterStats }, augmentStats };
+  return { characterStats: { periods: Object.keys(PERIODS), games: records.length, characters: characterStats }, augmentStats, coreStats };
 }
 
 // 메인 페이지: 최근 게임 요약 + 최근 60게임 1등 캐릭터
 function buildHome(records, characterStats) {
   const recentGames = records.slice(-HOME_RECENT_GAMES).reverse().map(({ fileName, content }) => {
     const players = content?.Player || {};
-    const winner = Object.entries(players).find(([, p]) => p.outCuase === '우승' || p.Ranking === 1);
+    const winner = Object.entries(players).find(([, p]) => p.Ranking === 1);
     return {
       fileName,
       players: content?.Game?.amountOfPlayers ?? Object.keys(players).length,
@@ -207,10 +234,13 @@ function main() {
   const badges = buildBadges();
   writeJson('badges.json', badges);
 
-  writeJson('names.json', buildNames());
-  const { characterStats, augmentStats } = finalizeStats(records);
+  const cores = buildCores();
+  writeJson('cores.json', cores);
+  writeJson('names.json', buildNames(cores));
+  const { characterStats, augmentStats, coreStats } = finalizeStats(records);
   writeJson('character-stats.json', characterStats);
   writeJson('augment-stats.json', augmentStats);
+  writeJson('core-stats.json', coreStats);
   writeJson('home.json', buildHome(records, characterStats));
 
   console.log(`[빌드] 정적 데이터 생성 완료: ${byPlayer.size}명, ${records.length}경기, 배지 ${Object.keys(badges).length}개`);

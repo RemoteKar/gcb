@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>코어정보 - GCB.gg</title>
+    <link rel="stylesheet" href="/styles/main.css">
+    <link rel="icon" href="/favicon.ico" type="image/x-icon">
+</head>
+<body>
+    <div class="header-bar">
+      <a href="/" class="header-logo">GCB.GG</a>
+      <a href="/ranking.html" class="nav-button">랭킹</a>
+      <a href="/character.html" class="nav-button">캐릭터</a>
+      <a href="/augment.html" class="nav-button">증강</a>
+      <a href="/core.html" class="nav-button active">코어</a>
+      <a href="/patchnotes.html" class="nav-button">패치노트</a>
+      <a href="/feedback.html" class="nav-button nav-button-red">건의/버그</a>
+    </div>
+
+    <div class="container">
+        <div class="page-head">
+            <nav class="sub-tabs" aria-label="코어 메뉴">
+                <a href="/core.html" class="active">정보</a>
+                <a href="/core_stats.html">통계</a>
+            </nav>
+            <h1 id="page-title">코어 정보</h1>
+            <p class="page-desc">아이콘에 마우스를 올리면 이름, 클릭하면 설명이 표시됩니다</p>
+        </div>
+        <div id="core-grid" class="character-grid">
+        </div>
+    </div>
+
+    <script src="/scripts/augment_popup.js"></script>
+    <script src="/scripts/core.js"></script>
+</body>
+</html>

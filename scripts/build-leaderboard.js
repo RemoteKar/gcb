@@ -20,7 +20,7 @@ function formatStatistics(stats) {
     averageDamageDealt: stats.averageDamageDealt.toFixed(0),
     averageDamageTaken: stats.averageDamageTaken.toFixed(0),
     averageKillRate: stats.averageKillRate.toFixed(2),
-    averageAliveTime: stats.averageAliveTime.toFixed(1),
+    averageDeaths: stats.averageDeaths.toFixed(1),
     maxDamageDealt: stats.maxDamageDealt.toFixed(0),
     maxDamageTaken: stats.maxDamageTaken.toFixed(0),
     maxKill: stats.maxKill.toString(),
