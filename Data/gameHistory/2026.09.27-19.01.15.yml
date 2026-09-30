@@ -1,0 +1,377 @@
+---
+Game:
+  mode: "일반"
+  version: "26.3"
+  joinedPlayers: "c4967a2f-f9d4-4882-9ebc-92be79773de5,839e3db7-eb5c-4935-9b32-81094431e3db,c4861133-0fe0-48e2-9d0e-9831f79c7a47,6f224a83-28b4-4d6e-b30c-c7785865fac6,7005bd95-62f1-4ad2-8683-183c49b0c7f8,7e9f5e9b-5008-471f-98eb-807dd3e63b8f,9ca058e6-6c29-42d9-989a-ac96d722385c,990807eb-eba9-45ef-8681-e69604cef1c9,7665b02a-c7dd-43dc-9e66-9979e5d85ced,42e30471-f805-47e1-b6ac-bde4bfc8085a,58f5c168-dec6-43f5-b3b2-125ca01a7f10,9937b375-a6cb-497d-a3c0-1395207ce7ed,829af0d3-0f33-404d-aa26-5e56117ac210,172713f0-7e87-46a9-8d3e-d2d942b71d6b,947f100b-c289-40e6-9425-4be0186c6824,fdf39b77-650f-4ad4-8ad4-271bf12e41d1,8781013f-23e8-4036-bd0d-d9d6ebc6b039,f69709e0-cfcb-4912-aba8-0d8aa3a48bba,273809c6-04c9-4fc8-a67c-a345f4cf9a6e"
+  amountOfPlayers: 19
+  totalTime: 498
+Player:
+  c4967a2f-f9d4-4882-9ebc-92be79773de5:
+    Character: 43
+    Core: "deepanchor"
+    Damage:
+      Dealt: 4457.320559883132
+      Taken: 2104.0607953071594
+    Augment:
+      "1": 13
+      "2": 21
+      "3": 39
+      "4": 8
+    Heal:
+      Taken: 1149.2371008338905
+    kill: 2
+    death: 4
+    killedBy:
+      "172713f0-7e87-46a9-8d3e-d2d942b71d6b": 1
+      "7665b02a-c7dd-43dc-9e66-9979e5d85ced": 1
+      "829af0d3-0f33-404d-aa26-5e56117ac210": 1
+    Ranking: 2
+  "839e3db7-eb5c-4935-9b32-81094431e3db":
+    Character: 7
+    Core: "deepscope"
+    Damage:
+      Dealt: 2893.5728249073027
+      Taken: 787.5699775218964
+    Heal:
+      Taken: 18.0
+    kill: 2
+    Augment:
+      "1": 32
+      "2": 44
+      "3": 26
+      "4": 45
+    death: 3
+    killedBy:
+      "990807eb-eba9-45ef-8681-e69604cef1c9": 1
+    Ranking: 5
+  c4861133-0fe0-48e2-9d0e-9831f79c7a47:
+    Character: 28
+    Core: "electrovision"
+    Damage:
+      Dealt: 9605.012338638306
+      Taken: 4424.267217636108
+    Heal:
+      Taken: 4455.044516258232
+    kill: 18
+    Augment:
+      "1": 8
+      "2": 39
+      "3": 25
+      "4": 1
+    death: 3
+    killedBy:
+      "172713f0-7e87-46a9-8d3e-d2d942b71d6b": 1
+      "273809c6-04c9-4fc8-a67c-a345f4cf9a6e": 1
+      "7665b02a-c7dd-43dc-9e66-9979e5d85ced": 1
+    Ranking: 10
+  "6f224a83-28b4-4d6e-b30c-c7785865fac6":
+    Character: 57
+    Core: "superstar"
+    Damage:
+      Dealt: 517.5349926948547
+      Taken: 1261.9999437332153
+    Augment:
+      "1": 17
+      "2": 19
+      "3": null
+      "4": null
+    death: 2
+    killedBy:
+      "172713f0-7e87-46a9-8d3e-d2d942b71d6b": 1
+      "7005bd95-62f1-4ad2-8683-183c49b0c7f8": 1
+    quit: true
+    Ranking: 19
+  "7005bd95-62f1-4ad2-8683-183c49b0c7f8":
+    Character: 5
+    Core: "gearengine"
+    Damage:
+      Dealt: 4005.8765470348303
+      Taken: 3426.0350917577744
+    death: 5
+    killedBy:
+      "839e3db7-eb5c-4935-9b32-81094431e3db": 1
+      "58f5c168-dec6-43f5-b3b2-125ca01a7f10": 1
+      c4861133-0fe0-48e2-9d0e-9831f79c7a47: 2
+      "273809c6-04c9-4fc8-a67c-a345f4cf9a6e": 1
+    Augment:
+      "1": 37
+      "2": 28
+      "3": 13
+      "4": 8
+    Heal:
+      Taken: 841.1053163051619
+    kill: 5
+    Ranking: 15
+  "7e9f5e9b-5008-471f-98eb-807dd3e63b8f":
+    Character: 37
+    Core: "deepscope"
+    Heal:
+      Taken: 604.0
+    Damage:
+      Dealt: 1243.7604293823242
+      Taken: 1866.9999975524843
+    death: 3
+    killedBy:
+      c4861133-0fe0-48e2-9d0e-9831f79c7a47: 2
+      "7005bd95-62f1-4ad2-8683-183c49b0c7f8": 1
+    Augment:
+      "1": 44
+      "2": 14
+      "3": null
+      "4": null
+    quit: true
+    Ranking: 18
+  "9ca058e6-6c29-42d9-989a-ac96d722385c":
+    Character: 15
+    Core: "deepscope"
+    Damage:
+      Dealt: 3525.9081954956073
+      Taken: 1100.4999752044678
+    Heal:
+      Taken: 192.0
+    kill: 4
+    Augment:
+      "1": 14
+      "2": 31
+      "3": 38
+      "4": 10
+    death: 5
+    killedBy:
+      "42e30471-f805-47e1-b6ac-bde4bfc8085a": 2
+      "829af0d3-0f33-404d-aa26-5e56117ac210": 1
+    Ranking: 7
+  "990807eb-eba9-45ef-8681-e69604cef1c9":
+    Character: 31
+    Core: "superstar"
+    Damage:
+      Taken: 5020.936895847321
+      Dealt: 4102.753420448329
+    Heal:
+      Taken: 3114.8620064516167
+    death: 4
+    killedBy:
+      "839e3db7-eb5c-4935-9b32-81094431e3db": 1
+      c4861133-0fe0-48e2-9d0e-9831f79c7a47: 1
+      c4967a2f-f9d4-4882-9ebc-92be79773de5: 1
+    Augment:
+      "1": 40
+      "2": 8
+      "3": 39
+      "4": 31
+    kill: 5
+    Ranking: 3
+  "7665b02a-c7dd-43dc-9e66-9979e5d85ced":
+    Character: 77
+    Core: "bangboo"
+    Damage:
+      Taken: 4423.137845516205
+      Dealt: 3028.3573196411135
+    death: 5
+    killedBy:
+      c4861133-0fe0-48e2-9d0e-9831f79c7a47: 1
+      "273809c6-04c9-4fc8-a67c-a345f4cf9a6e": 2
+      "9937b375-a6cb-497d-a3c0-1395207ce7ed": 1
+      "58f5c168-dec6-43f5-b3b2-125ca01a7f10": 1
+    Augment:
+      "1": 8
+      "2": 19
+      "3": 4
+      "4": 31
+    Heal:
+      Taken: 977.0112992858889
+    kill: 5
+    Ranking: 9
+  "42e30471-f805-47e1-b6ac-bde4bfc8085a":
+    Character: 2
+    Core: "primogem"
+    Damage:
+      Dealt: 1343.9099388122559
+      Taken: 1133.1200299263
+    Augment:
+      "1": 14
+      "2": 3
+      "3": 31
+      "4": 7
+    Heal:
+      Taken: 316.0
+    kill: 2
+    death: 2
+    killedBy:
+      c4861133-0fe0-48e2-9d0e-9831f79c7a47: 2
+    quit: true
+    Ranking: 16
+  "58f5c168-dec6-43f5-b3b2-125ca01a7f10":
+    Character: 22
+    Core: "beacon"
+    Augment:
+      "1": 8
+      "2": 37
+      "3": 28
+      "4": 41
+    Damage:
+      Dealt: 2107.665099620819
+      Taken: 3097.9399085998734
+    Heal:
+      Taken: 1008.0335832118989
+    kill: 3
+    death: 5
+    killedBy:
+      "9ca058e6-6c29-42d9-989a-ac96d722385c": 1
+      c4861133-0fe0-48e2-9d0e-9831f79c7a47: 2
+      "990807eb-eba9-45ef-8681-e69604cef1c9": 1
+    Ranking: 6
+  "9937b375-a6cb-497d-a3c0-1395207ce7ed":
+    Character: 22
+    Core: "realengine"
+    Damage:
+      Taken: 3974.9900736808777
+      Dealt: 1691.2239084243774
+    death: 5
+    killedBy:
+      "9ca058e6-6c29-42d9-989a-ac96d722385c": 1
+      "7665b02a-c7dd-43dc-9e66-9979e5d85ced": 1
+      "7005bd95-62f1-4ad2-8683-183c49b0c7f8": 1
+      "58f5c168-dec6-43f5-b3b2-125ca01a7f10": 1
+      "990807eb-eba9-45ef-8681-e69604cef1c9": 1
+    Augment:
+      "1": 15
+      "2": 9
+      "3": 30
+      "4": 37
+    Heal:
+      Taken: 420.0
+    kill: 1
+    Ranking: 1
+  "829af0d3-0f33-404d-aa26-5e56117ac210":
+    Character: 28
+    Core: "nexusemblem"
+    Augment:
+      "1": 9
+      "2": 4
+      "3": 5
+      "4": 19
+    Damage:
+      Taken: 2058.6124267578125
+      Dealt: 1630.1714099884034
+    death: 4
+    killedBy:
+      "172713f0-7e87-46a9-8d3e-d2d942b71d6b": 1
+      "9ca058e6-6c29-42d9-989a-ac96d722385c": 2
+      c4861133-0fe0-48e2-9d0e-9831f79c7a47: 1
+    Heal:
+      Taken: 130.0
+    kill: 2
+    Ranking: 11
+  "172713f0-7e87-46a9-8d3e-d2d942b71d6b":
+    Character: 55
+    Core: "luckydice"
+    Augment:
+      "1": 15
+      "2": 27
+      "3": 19
+      "4": 1
+    Damage:
+      Dealt: 2267.565376853942
+      Taken: 4734.313821911812
+    Heal:
+      Taken: 911.1994678047377
+    kill: 5
+    death: 5
+    killedBy:
+      c4861133-0fe0-48e2-9d0e-9831f79c7a47: 1
+      f69709e0-cfcb-4912-aba8-0d8aa3a48bba: 2
+      "273809c6-04c9-4fc8-a67c-a345f4cf9a6e": 1
+      "990807eb-eba9-45ef-8681-e69604cef1c9": 1
+    Ranking: 13
+  "947f100b-c289-40e6-9425-4be0186c6824":
+    Character: 13
+    Core: "beacon"
+    Damage:
+      Taken: 4365.285851478577
+      Dealt: 868.5700073242188
+    Heal:
+      Taken: 460.0
+    Augment:
+      "1": 36
+      "2": 10
+      "3": 34
+      "4": 31
+    death: 5
+    killedBy:
+      "172713f0-7e87-46a9-8d3e-d2d942b71d6b": 1
+      "273809c6-04c9-4fc8-a67c-a345f4cf9a6e": 1
+      c4861133-0fe0-48e2-9d0e-9831f79c7a47: 2
+      "7665b02a-c7dd-43dc-9e66-9979e5d85ced": 1
+    Ranking: 8
+  fdf39b77-650f-4ad4-8ad4-271bf12e41d1:
+    Character: 74
+    Core: "realengine"
+    Damage:
+      Taken: 4565.865632414818
+      Dealt: 1034.9131510347165
+    Augment:
+      "1": 18
+      "2": 28
+      "3": 13
+      "4": 15
+    death: 5
+    killedBy:
+      c4967a2f-f9d4-4882-9ebc-92be79773de5: 1
+      "273809c6-04c9-4fc8-a67c-a345f4cf9a6e": 3
+      "7005bd95-62f1-4ad2-8683-183c49b0c7f8": 1
+    Heal:
+      Taken: 500.39324802994906
+    Ranking: 14
+  "8781013f-23e8-4036-bd0d-d9d6ebc6b039":
+    Character: 6
+    Core: "gearengine"
+    Augment:
+      "1": 1
+      "2": 28
+      "3": 21
+      "4": 8
+    Damage:
+      Taken: 30.0
+    quit: true
+    Ranking: 17
+  f69709e0-cfcb-4912-aba8-0d8aa3a48bba:
+    Character: 30
+    Core: "realengine"
+    Augment:
+      "1": 13
+      "2": 5
+      "3": 18
+      "4": 37
+    Damage:
+      Dealt: 1747.609429359436
+      Taken: 2307.301280975342
+    death: 5
+    killedBy:
+      "273809c6-04c9-4fc8-a67c-a345f4cf9a6e": 1
+      "7665b02a-c7dd-43dc-9e66-9979e5d85ced": 1
+      c4861133-0fe0-48e2-9d0e-9831f79c7a47: 3
+    Heal:
+      Taken: 20.0
+    kill: 2
+    Ranking: 12
+  "273809c6-04c9-4fc8-a67c-a345f4cf9a6e":
+    Character: 19
+    Core: "superstar"
+    Augment:
+      "1": 8
+      "2": 41
+      "3": 19
+      "4": 39
+    Damage:
+      Dealt: 10018.060755968094
+      Taken: 5406.848939690001
+    Heal:
+      Taken: 3934.7256145965953
+    death: 4
+    killedBy:
+      c4861133-0fe0-48e2-9d0e-9831f79c7a47: 1
+      "7005bd95-62f1-4ad2-8683-183c49b0c7f8": 1
+      "990807eb-eba9-45ef-8681-e69604cef1c9": 1
+    kill: 10
+    Ranking: 4
+title: "일반"
