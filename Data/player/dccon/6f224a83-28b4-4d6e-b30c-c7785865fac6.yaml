@@ -1,0 +1,10 @@
+dccon:
+    List:
+    - weird_cat
+
+emote:
+    manual: weird_cat:3
+    kill: weird_cat:2
+    death: weird_cat:5
+    win: weird_cat:7
+    end: weird_cat:1

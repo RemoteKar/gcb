@@ -1,0 +1,7 @@
+dccon:
+    List:
+    - weird_cat
+    - baki_musashi
+
+emote:
+    manual: weird_cat:0

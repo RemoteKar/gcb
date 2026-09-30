@@ -1,0 +1,10 @@
+dccon:
+    List:
+    - weird_cat
+    - baki_musashi
+
+emote:
+    death: weird_cat:3
+    kill: weird_cat:1
+    win: weird_cat:2
+    manual: weird_cat:4

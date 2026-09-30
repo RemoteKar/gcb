@@ -1,0 +1,7 @@
+dccon:
+    List:
+    - weird_cat
+
+emote:
+    kill: weird_cat:6
+    manual: weird_cat:12

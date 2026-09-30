@@ -25,7 +25,11 @@ character18:
     selected: gold
 
 character31:
-    selected: novel
+    selected:
+        ==: org.bukkit.inventory.ItemStack
+        DataVersion: 5023
+        schema_version: 1
+        id: minecraft:air
 
 character54:
     selected: gold

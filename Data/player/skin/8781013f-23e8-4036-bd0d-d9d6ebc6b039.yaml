@@ -1,0 +1,6 @@
+character66:
+    selected:
+        ==: org.bukkit.inventory.ItemStack
+        DataVersion: 5023
+        schema_version: 1
+        id: minecraft:air

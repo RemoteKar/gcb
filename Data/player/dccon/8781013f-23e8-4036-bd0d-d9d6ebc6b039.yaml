@@ -1,0 +1,9 @@
+dccon:
+    List:
+    - baki_musashi
+
+emote:
+    death: baki_musashi:9
+    kill: baki_musashi:13
+    end: baki_musashi:42
+    win: baki_musashi:2
