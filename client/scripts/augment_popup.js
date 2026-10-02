@@ -19,9 +19,12 @@
         if (!text) return '';
         let html = '';
         let currentColor = '#FFFFFF';
-        const parts = text.split(/(&[0-9a-fA-F])/);
+        const hex = /^[§&]x(?:[§&][0-9a-fA-F]){6}$/;
+        const parts = text.split(/([§&]x(?:[§&][0-9a-fA-F]){6}|&[0-9a-fA-F])/);
         for (const part of parts) {
-            if (/^&[0-9a-fA-F]$/.test(part)) {
+            if (hex.test(part)) {
+                currentColor = '#' + part.slice(2).replace(/[§&]/g, ''); // §x&6&7&2&6&f&f = #6726FF
+            } else if (/^&[0-9a-fA-F]$/.test(part)) {
                 currentColor = mcColors[part[1].toLowerCase()] || '#FFFFFF';
             } else {
                 const lines = part.split('\n');
