@@ -1,0 +1,6 @@
+dccon:
+    List:
+    - dnf
+
+emote:
+    manual: dnf:2

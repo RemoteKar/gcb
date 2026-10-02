@@ -1,0 +1,5 @@
+emote:
+    kill: bleach:2
+    death: bleach:10
+    win: bleach:0
+    end: dnf:4

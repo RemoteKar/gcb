@@ -1,0 +1,184 @@
+---
+Game:
+  mode: "일반"
+  version: "26.3"
+  joinedPlayers: "bcb16c70-6973-4f79-9bbc-c278f6ceb75f,7e9f5e9b-5008-471f-98eb-807dd3e63b8f,42e30471-f805-47e1-b6ac-bde4bfc8085a,947f100b-c289-40e6-9425-4be0186c6824,273809c6-04c9-4fc8-a67c-a345f4cf9a6e,3542a486-7ac6-4a1a-9263-df3282bb5f8f,e4ddc237-07aa-493d-a89c-35b308e094d2,839e3db7-eb5c-4935-9b32-81094431e3db,fdf39b77-650f-4ad4-8ad4-271bf12e41d1"
+  amountOfPlayers: 9
+  totalTime: 430
+Player:
+  bcb16c70-6973-4f79-9bbc-c278f6ceb75f:
+    Character: 44
+    Core: "primogem"
+    Damage:
+      Dealt: 4055.8372888565063
+      Taken: 2844.3007769584656
+    Augment:
+      "1": 44
+      "2": 3
+      "3": 26
+      "4": 11
+    death: 4
+    killedBy:
+      e4ddc237-07aa-493d-a89c-35b308e094d2: 1
+      fdf39b77-650f-4ad4-8ad4-271bf12e41d1: 2
+      "273809c6-04c9-4fc8-a67c-a345f4cf9a6e": 1
+    Heal:
+      Taken: 536.25
+    kill: 4
+    Ranking: 2
+  "7e9f5e9b-5008-471f-98eb-807dd3e63b8f":
+    Character: 28
+    Core: "superstar"
+    Damage:
+      Dealt: 3676.620017051697
+      Taken: 3803.89604139328
+    Heal:
+      Taken: 1250.3959997177112
+    Augment:
+      "1": 25
+      "2": 15
+      "3": 32
+      "4": 8
+    kill: 4
+    death: 3
+    killedBy:
+      "839e3db7-eb5c-4935-9b32-81094431e3db": 1
+      bcb16c70-6973-4f79-9bbc-c278f6ceb75f: 1
+      "947f100b-c289-40e6-9425-4be0186c6824": 1
+    quit: true
+    Ranking: 6
+  "42e30471-f805-47e1-b6ac-bde4bfc8085a":
+    Character: 31
+    Core: "nexusemblem"
+    Damage:
+      Taken: 2910.350107192993
+      Dealt: 2285.2699999809265
+    Heal:
+      Taken: 1083.4920007896442
+    Augment:
+      "1": 14
+      "2": 8
+      "3": 17
+      "4": 32
+    death: 3
+    killedBy:
+      e4ddc237-07aa-493d-a89c-35b308e094d2: 1
+      fdf39b77-650f-4ad4-8ad4-271bf12e41d1: 1
+      bcb16c70-6973-4f79-9bbc-c278f6ceb75f: 1
+    Ranking: 5
+  "947f100b-c289-40e6-9425-4be0186c6824":
+    Character: 13
+    Core: "aquilahelmet"
+    Damage:
+      Taken: 5207.819959163666
+      Dealt: 3523.885987997055
+    death: 4
+    killedBy:
+      e4ddc237-07aa-493d-a89c-35b308e094d2: 1
+      "7e9f5e9b-5008-471f-98eb-807dd3e63b8f": 1
+      fdf39b77-650f-4ad4-8ad4-271bf12e41d1: 1
+      bcb16c70-6973-4f79-9bbc-c278f6ceb75f: 1
+    Augment:
+      "1": 29
+      "2": 42
+      "3": 2
+      "4": 34
+    Heal:
+      Taken: 597.0
+    kill: 1
+    Ranking: 4
+  "273809c6-04c9-4fc8-a67c-a345f4cf9a6e":
+    Character: 63
+    Core: "patchworkheart"
+    Damage:
+      Taken: 6505.766969680786
+      Dealt: 2089.600772380829
+    death: 3
+    killedBy:
+      e4ddc237-07aa-493d-a89c-35b308e094d2: 2
+      fdf39b77-650f-4ad4-8ad4-271bf12e41d1: 1
+    Augment:
+      "1": 39
+      "2": 22
+      "3": 29
+      "4": 25
+    Heal:
+      Taken: 3696.5019408044814
+    kill: 2
+    Ranking: 3
+  "3542a486-7ac6-4a1a-9263-df3282bb5f8f":
+    Character: 71
+    Core: "gearengine"
+    Damage:
+      Taken: 2343.9999980926514
+      Dealt: 371.2799987792969
+    death: 3
+    killedBy:
+      e4ddc237-07aa-493d-a89c-35b308e094d2: 1
+      "7e9f5e9b-5008-471f-98eb-807dd3e63b8f": 2
+    Augment:
+      "1": 37
+      "2": 13
+      "3": 19
+      "4": null
+    quit: true
+    Ranking: 9
+  e4ddc237-07aa-493d-a89c-35b308e094d2:
+    Character: 77
+    Core: "aquilahelmet"
+    Damage:
+      Dealt: 8993.719323158264
+      Taken: 2513.150824069977
+    Heal:
+      Taken: 1028.7500000000016
+    kill: 8
+    Augment:
+      "1": 42
+      "2": 43
+      "3": 29
+      "4": 2
+    death: 1
+    killedBy:
+      "273809c6-04c9-4fc8-a67c-a345f4cf9a6e": 1
+    quit: true
+    Ranking: 7
+  "839e3db7-eb5c-4935-9b32-81094431e3db":
+    Character: 47
+    Core: "patchworkheart"
+    Augment:
+      "1": 39
+      "2": 6
+      "3": 22
+      "4": 25
+    Damage:
+      Taken: 2366.1299533843994
+      Dealt: 584.7820453643799
+    Heal:
+      Taken: 1447.875
+    kill: 1
+    death: 1
+    killedBy:
+      e4ddc237-07aa-493d-a89c-35b308e094d2: 1
+    quit: true
+    Ranking: 8
+  fdf39b77-650f-4ad4-8ad4-271bf12e41d1:
+    Character: 32
+    Core: "primogem"
+    Augment:
+      "1": 16
+      "2": 38
+      "3": 44
+      "4": 7
+    Damage:
+      Dealt: 4838.9091255664825
+      Taken: 1924.4899291992188
+    death: 3
+    killedBy:
+      "7e9f5e9b-5008-471f-98eb-807dd3e63b8f": 1
+      e4ddc237-07aa-493d-a89c-35b308e094d2: 1
+      bcb16c70-6973-4f79-9bbc-c278f6ceb75f: 1
+    Heal:
+      Taken: 328.95833333333326
+    kill: 5
+    Ranking: 1
+title: "일반"

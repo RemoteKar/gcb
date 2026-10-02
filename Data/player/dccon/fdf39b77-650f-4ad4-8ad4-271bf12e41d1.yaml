@@ -1,6 +1,8 @@
 dccon:
     List:
     - weird_cat
+    - dnf
+    - bleach
 
 emote:
     kill: weird_cat:2
