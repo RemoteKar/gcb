@@ -1,10 +1,11 @@
 dccon:
     List:
     - weird_cat
+    - ojcm
 
 emote:
-    death: weird_cat:3
-    kill: weird_cat:13
-    end: weird_cat:11
-    win: weird_cat:7
-    manual: weird_cat:2
+    kill: ojcm:16
+    manual: ojcm:17
+    death: ojcm:8
+    end: ojcm:5
+    win: ojcm:18

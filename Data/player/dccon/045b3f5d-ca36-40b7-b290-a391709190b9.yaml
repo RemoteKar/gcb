@@ -1,0 +1,10 @@
+dccon:
+    List:
+    - ojcm
+
+emote:
+    manual: ojcm:6
+    end: ojcm:9
+    kill: ojcm:16
+    death: ojcm:20
+    win: ojcm:18

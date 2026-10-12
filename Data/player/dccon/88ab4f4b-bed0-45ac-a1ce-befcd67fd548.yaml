@@ -1,10 +1,12 @@
 dccon:
     List:
     - weird_cat
+    - eternal_return
+    - baki_musashi
 
 emote:
-    kill: weird_cat:1
-    death: weird_cat:8
-    end: weird_cat:2
-    win: weird_cat:7
-    manual: weird_cat:10
+    kill: ai:6
+    death: baki_musashi:31
+    end: eternal_return:9
+    win: ai:8
+    manual: ai:8

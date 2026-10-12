@@ -2,8 +2,14 @@ dccon:
     List:
     - weird_cat
     - baki_musashi
+    - hoechan
+    - ojcm
+    - eternal_return
+    - dnf
+    - bleach
 
 emote:
-    kill: weird_cat:13
-    win: weird_cat:2
-    manual: weird_cat:7
+    kill: hoechan:7
+    win: hoechan:0
+    death: hoechan:10
+    manual: hoechan:2

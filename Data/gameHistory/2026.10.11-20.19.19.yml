@@ -1,0 +1,342 @@
+---
+Game:
+  mode: "일반"
+  version: "26.3"
+  joinedPlayers: "8ffaa638-94bd-4bd5-b352-675f4f39e80f,7665b02a-c7dd-43dc-9e66-9979e5d85ced,6f224a83-28b4-4d6e-b30c-c7785865fac6,839e3db7-eb5c-4935-9b32-81094431e3db,fdf39b77-650f-4ad4-8ad4-271bf12e41d1,bcb16c70-6973-4f79-9bbc-c278f6ceb75f,9cb11ed6-16b6-4eb3-b2d7-79f5e224280e,c4861133-0fe0-48e2-9d0e-9831f79c7a47,c4967a2f-f9d4-4882-9ebc-92be79773de5,62ca1922-ab84-41ec-9966-31f032ef552b,829af0d3-0f33-404d-aa26-5e56117ac210,eef314d5-5641-43ad-b8d5-ec08c355a4bc,990807eb-eba9-45ef-8681-e69604cef1c9,7ab4d452-a7e4-4b79-b26c-5c455eb9ecfb,7005bd95-62f1-4ad2-8683-183c49b0c7f8,273809c6-04c9-4fc8-a67c-a345f4cf9a6e,e8f18e2b-6285-46b3-8acc-b2aae7c4dd09,c5651f7a-b562-42f8-b502-45cfe6c66bba"
+  amountOfPlayers: 18
+  totalTime: 411
+Player:
+  "9937b375-a6cb-497d-a3c0-1395207ce7ed":
+    Character: 0
+  "8ffaa638-94bd-4bd5-b352-675f4f39e80f":
+    Character: 3
+    Core: "electrovision"
+    Damage:
+      Taken: 879.8999938964844
+      Dealt: 703.06005859375
+    death: 1
+    killedBy:
+      "9cb11ed6-16b6-4eb3-b2d7-79f5e224280e": 1
+    Augment:
+      "1": 44
+      "2": 16
+      "3": 38
+      "4": null
+    Heal:
+      Taken: 337.5
+    kill: 1
+    quit: true
+    Ranking: 17
+  "7665b02a-c7dd-43dc-9e66-9979e5d85ced":
+    Character: 77
+    Core: "nexusemblem"
+    Damage:
+      Taken: 4826.0797119140625
+      Dealt: 8224.88293838501
+    death: 2
+    killedBy:
+      eef314d5-5641-43ad-b8d5-ec08c355a4bc: 1
+      "839e3db7-eb5c-4935-9b32-81094431e3db": 1
+    Augment:
+      "1": 19
+      "2": 4
+      "3": 29
+      "4": 42
+    Heal:
+      Taken: 1217.5000000000002
+    kill: 6
+    quit: true
+    Ranking: 14
+  "6f224a83-28b4-4d6e-b30c-c7785865fac6":
+    Character: 23
+    Core: "patchworkheart"
+    Damage:
+      Dealt: 3203.5499877929688
+      Taken: 3204.502248764038
+    Heal:
+      Taken: 1297.5859924316412
+    kill: 3
+    Augment:
+      "1": 8
+      "2": 34
+      "3": 41
+      "4": 1
+    death: 2
+    killedBy:
+      c4967a2f-f9d4-4882-9ebc-92be79773de5: 1
+      "829af0d3-0f33-404d-aa26-5e56117ac210": 1
+    quit: true
+    Ranking: 13
+  "839e3db7-eb5c-4935-9b32-81094431e3db":
+    Character: 3
+    Core: "superstar"
+    Augment:
+      "1": 14
+      "2": 41
+      "3": 1
+      "4": 15
+    Damage:
+      Dealt: 2348.639862060547
+      Taken: 611.9690475463867
+    Heal:
+      Taken: 580.0000000000002
+    kill: 3
+    death: 1
+    killedBy:
+      e8f18e2b-6285-46b3-8acc-b2aae7c4dd09: 1
+    Ranking: 5
+  fdf39b77-650f-4ad4-8ad4-271bf12e41d1:
+    Character: 78
+    Core: "gearengine"
+    Damage:
+      Dealt: 5931.035301208496
+      Taken: 3158.875213623047
+    Heal:
+      Taken: 391.87500000000006
+    kill: 4
+    Augment:
+      "1": 32
+      "2": 17
+      "3": 19
+      "4": 7
+    death: 3
+    killedBy:
+      "62ca1922-ab84-41ec-9966-31f032ef552b": 1
+      "829af0d3-0f33-404d-aa26-5e56117ac210": 2
+    Ranking: 8
+  bcb16c70-6973-4f79-9bbc-c278f6ceb75f:
+    Character: 39
+    Core: "gearengine"
+    Damage:
+      Dealt: 1426.909080505371
+      Taken: 2578.319999694824
+    death: 3
+    killedBy:
+      fdf39b77-650f-4ad4-8ad4-271bf12e41d1: 1
+      c4967a2f-f9d4-4882-9ebc-92be79773de5: 1
+      "7665b02a-c7dd-43dc-9e66-9979e5d85ced": 1
+    Augment:
+      "1": 17
+      "2": 29
+      "3": 26
+      "4": 7
+    Ranking: 6
+  "9cb11ed6-16b6-4eb3-b2d7-79f5e224280e":
+    Character: 78
+    Core: "controlward"
+    Damage:
+      Taken: 883.0779113769531
+      Dealt: 2679.301055908203
+    Heal:
+      Taken: 813.6302429199216
+    kill: 2
+    Augment:
+      "1": 17
+      "2": 8
+      "3": 33
+      "4": 13
+    death: 1
+    killedBy:
+      "829af0d3-0f33-404d-aa26-5e56117ac210": 1
+    Ranking: 3
+  c4861133-0fe0-48e2-9d0e-9831f79c7a47:
+    Character: 28
+    Core: "uncoloredcube"
+    Damage:
+      Dealt: 658.3199920654297
+      Taken: 892.0299987792969
+    Heal:
+      Taken: 696.0239990234376
+    Augment:
+      "1": 8
+      "2": 15
+      "3": null
+      "4": null
+    death: 1
+    killedBy:
+      "8ffaa638-94bd-4bd5-b352-675f4f39e80f": 1
+    quit: true
+    Ranking: 18
+  c4967a2f-f9d4-4882-9ebc-92be79773de5:
+    Character: 75
+    Core: "nexusemblem"
+    Damage:
+      Dealt: 2791.783987045288
+      Taken: 2532.425956726074
+    death: 2
+    killedBy:
+      fdf39b77-650f-4ad4-8ad4-271bf12e41d1: 1
+      "7665b02a-c7dd-43dc-9e66-9979e5d85ced": 1
+    Augment:
+      "1": 13
+      "2": 8
+      "3": 39
+      "4": 18
+    Heal:
+      Taken: 818.1252726936331
+    kill: 2
+    quit: true
+    Ranking: 11
+  "62ca1922-ab84-41ec-9966-31f032ef552b":
+    Character: 41
+    Core: "deepscope"
+    Damage:
+      Dealt: 1905.2473449707031
+      Taken: 2850.0
+    Heal:
+      Taken: 40.0
+    kill: 1
+    Augment:
+      "1": 40
+      "2": 23
+      "3": 12
+      "4": 31
+    death: 3
+    killedBy:
+      e8f18e2b-6285-46b3-8acc-b2aae7c4dd09: 1
+      "7665b02a-c7dd-43dc-9e66-9979e5d85ced": 1
+      "839e3db7-eb5c-4935-9b32-81094431e3db": 1
+    quit: true
+    Ranking: 12
+  "829af0d3-0f33-404d-aa26-5e56117ac210":
+    Character: 47
+    Core: "geovision"
+    Damage:
+      Taken: 5166.089813232422
+      Dealt: 7464.900123596191
+    Augment:
+      "1": 34
+      "2": 25
+      "3": 19
+      "4": 39
+    Heal:
+      Taken: 3979.588429809575
+    kill: 7
+    Ranking: 1
+  eef314d5-5641-43ad-b8d5-ec08c355a4bc:
+    Character: 12
+    Core: "poro"
+    Damage:
+      Taken: 3748.0201568603516
+      Dealt: 1014.9898071289062
+    Heal:
+      Taken: 475.0
+    kill: 1
+    Augment:
+      "1": 39
+      "2": 42
+      "3": 32
+      "4": 7
+    death: 2
+    killedBy:
+      fdf39b77-650f-4ad4-8ad4-271bf12e41d1: 1
+      "829af0d3-0f33-404d-aa26-5e56117ac210": 1
+    Ranking: 2
+  "990807eb-eba9-45ef-8681-e69604cef1c9":
+    Character: 31
+    Core: "luckydice"
+    Augment:
+      "1": 40
+      "2": 7
+      "3": 17
+      "4": 32
+    Damage:
+      Dealt: 3213.407086133957
+      Taken: 2290.380096435547
+    Heal:
+      Taken: 1015.25
+    kill: 2
+    death: 1
+    killedBy:
+      "9cb11ed6-16b6-4eb3-b2d7-79f5e224280e": 1
+    Ranking: 4
+  "7ab4d452-a7e4-4b79-b26c-5c455eb9ecfb":
+    Character: 68
+    Core: "quiver"
+    Damage:
+      Dealt: 992.7599792480469
+      Taken: 1568.1390159130096
+    death: 3
+    killedBy:
+      "6f224a83-28b4-4d6e-b30c-c7785865fac6": 1
+      "7665b02a-c7dd-43dc-9e66-9979e5d85ced": 1
+      "990807eb-eba9-45ef-8681-e69604cef1c9": 1
+    Augment:
+      "1": 17
+      "2": 41
+      "3": 28
+      "4": 1
+    Ranking: 7
+  "7005bd95-62f1-4ad2-8683-183c49b0c7f8":
+    Character: 31
+    Core: "paimon"
+    Damage:
+      Taken: 4757.819847106934
+      Dealt: 1605.9494018554688
+    Heal:
+      Taken: 2033.75
+    death: 3
+    killedBy:
+      fdf39b77-650f-4ad4-8ad4-271bf12e41d1: 1
+      "7665b02a-c7dd-43dc-9e66-9979e5d85ced": 2
+    Augment:
+      "1": 44
+      "2": 45
+      "3": 29
+      "4": 32
+    quit: true
+    Ranking: 15
+  "273809c6-04c9-4fc8-a67c-a345f4cf9a6e":
+    Character: 44
+    Core: "nexusemblem"
+    Damage:
+      Taken: 1704.0
+      Dealt: 638.7999877929688
+    Augment:
+      "1": 39
+      "2": 34
+      "3": 43
+      "4": 8
+    death: 2
+    killedBy:
+      "6f224a83-28b4-4d6e-b30c-c7785865fac6": 1
+      "990807eb-eba9-45ef-8681-e69604cef1c9": 1
+    Ranking: 9
+  e8f18e2b-6285-46b3-8acc-b2aae7c4dd09:
+    Character: 60
+    Core: "paimon"
+    Damage:
+      Taken: 3806.4450454711914
+      Dealt: 2352.0380630493164
+    Augment:
+      "1": 40
+      "2": 23
+      "3": 11
+      "4": 12
+    Heal:
+      Taken: 1051.875
+    kill: 2
+    death: 2
+    killedBy:
+      "829af0d3-0f33-404d-aa26-5e56117ac210": 2
+    quit: true
+    Ranking: 10
+  c5651f7a-b562-42f8-b502-45cfe6c66bba:
+    Character: 40
+    Core: "trailblazercan"
+    Damage:
+      Taken: 1697.5
+    death: 3
+    killedBy:
+      "6f224a83-28b4-4d6e-b30c-c7785865fac6": 1
+      "839e3db7-eb5c-4935-9b32-81094431e3db": 1
+    Heal:
+      Taken: 848.8
+    Augment:
+      "1": 40
+      "2": 6
+      "3": 22
+      "4": null
+    quit: true
+    Ranking: 16
+title: "일반"

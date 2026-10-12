@@ -1,0 +1,6 @@
+emote:
+    kill: kyaru:4
+    death: kyaru:2
+    win: ai:8
+    end: ai:5
+    manual: kyaru:5

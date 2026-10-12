@@ -4,3 +4,9 @@ emote:
     end: ai:5
     win: ai:9
     death: ai:6
+
+dccon:
+    List:
+    - weird_cat
+    - bleach
+    - eternal_return
