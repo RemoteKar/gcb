@@ -82,7 +82,7 @@
   <script>
     // 테스트 서버가 열려 있을 때만 홈 배너 노출 (testserver.html 과 동일 주소)
     (async () => {
-      const TS_ADDR = "gcbpbe.duckdns.org:25566";
+      const TS_ADDR = "gcbpbe.duckdns.org:25565";
       try {
         const d = await (await fetch(`https://api.mcsrvstat.us/3/${encodeURIComponent(TS_ADDR)}`, { cache: "no-store" })).json();
         if (d && d.online === true) {
