@@ -11,11 +11,12 @@ const { CREATIVE_ID_MAX_EXCLUSIVE, isCreativeCharacter } = require('../client/sc
 const outPath = path.resolve(__dirname, '..', 'client', 'data', 'leaderboard.json');
 const MIN_GAMES = 10;
 const PRIOR_GAMES = 20; // 모든 유저가 '50점짜리 20판'을 깔고 시작
+const MMR_AVERAGE = 1000; // 점수 50 = MMR 1000
 const NICKNAME_CONCURRENCY = 4; // Mojang 429 방지
 
 function formatStatistics(stats) {
   return {
-    rankingScore: stats.rankingScore.toFixed(1),
+    mmr: Math.round(stats.rankingScore / 50 * MMR_AVERAGE).toString(),
     averagePlacement: stats.averagePlacement.toFixed(1),
     winRate: stats.winRate.toFixed(1),
     winCount: stats.winCount.toString(),

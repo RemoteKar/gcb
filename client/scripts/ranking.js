@@ -44,7 +44,7 @@ document.addEventListener("DOMContentLoaded", async () => {
             </div>
             <p><strong>${esc(player.nickname)}</strong></p>
             <p><strong>총 게임 수:</strong> ${player.totalGames}</p>
-            <p><strong>점수:</strong> ${player.rankingScore}</p>
+            <p><strong>MMR:</strong> ${player.mmr}</p>
         `;
         return card;
     }
@@ -78,7 +78,7 @@ document.addEventListener("DOMContentLoaded", async () => {
             render: r => `<a class="entity-cell" href="/user/${encodeURIComponent(r.nickname)}">${avatar(r.uuid, 32)}<span class="entity-name">${esc(r.nickname)}</span>${badgeHtml(badgeDataMap, r.uuid, 'badge-img-other-ranking')}</a>`,
         },
         { key: 'totalGames', label: '게임', numeric: true, value: r => Number(r.totalGames), render: r => r.totalGames },
-        { key: 'rankingScore', label: '점수', numeric: true, value: r => Number(r.rankingScore), render: r => r.rankingScore },
+        { key: 'mmr', label: 'MMR', numeric: true, value: r => Number(r.mmr), render: r => r.mmr },
         { key: 'winRate', label: '승률', numeric: true, value: r => Number(r.winRate), render: r => `${r.winRate}%${StatsTable.bar(Number(r.winRate) * 3)}` },
         { key: 'avarageRankLeast50', label: '순방률', numeric: true, value: r => Number(r.avarageRankLeast50), render: r => `${r.avarageRankLeast50}%${StatsTable.bar(Number(r.avarageRankLeast50), 'green')}` },
         { key: 'averageKillRate', label: '평균 킬', numeric: true, value: r => Number(r.averageKillRate), render: r => r.averageKillRate },

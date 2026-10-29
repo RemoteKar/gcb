@@ -81,7 +81,7 @@ function renderTopPlayers(leaderboard) {
         <span class="home-row-title">${esc(p.nickname)}</span>
         <span class="home-row-sub">${p.totalGames}판</span>
       </div>
-      <div class="home-row-side"><strong>${p.rankingScore}</strong>점수</div>
+      <div class="home-row-side"><strong>${p.mmr}</strong>MMR</div>
     </a>
   `).join('');
 }
