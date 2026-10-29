@@ -2,4 +2,6 @@ badge:
     List:
     - wrath_1
     - wrath_2
+    - clutch
+    - chain
     current: wrath_2
