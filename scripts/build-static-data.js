@@ -197,11 +197,11 @@ function finalizeStats(records) {
 
 // 메인 페이지: 최근 게임 요약 + 최근 60게임 1등 캐릭터
 function buildHome(records, characterStats) {
-  const recentGames = records.slice(-HOME_RECENT_GAMES).reverse().map(({ fileName, content }) => {
+  const recentGames = records.slice(-HOME_RECENT_GAMES).reverse().map(({ time, content }) => {
     const players = content?.Player || {};
     const winner = Object.entries(players).find(([, p]) => p.Ranking === 1);
     return {
-      fileName,
+      time,
       players: content?.Game?.amountOfPlayers ?? Object.keys(players).length,
       winner: winner ? { uuid: winner[0], character: winner[1].Character ?? null, kills: winner[1].kill ?? 0 } : null,
     };

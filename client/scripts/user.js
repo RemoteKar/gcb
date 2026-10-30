@@ -425,11 +425,11 @@ function renderNextGames(uuid) {
   nextSlice.forEach(game => {
     const gameItem = document.createElement("div");
   
-    // YAML 데이터에 파일 이름이 있다면(서버에서 추가됨) 날짜 형식으로 파싱해서 사용,
+    // 빌드가 붙인 KST 시각(time, 파일명과 같은 모양)이 있으면 날짜 형식으로 파싱해서 사용,
     // 그렇지 않으면 game.Game.date 필드를 사용 (없으면 'N/A')
     let displayDate = 'N/A';
-    if (game.fileName) {
-      displayDate = parseDateFromFileName(game.fileName);
+    if (game.time) {
+      displayDate = parseDateFromFileName(game.time);
     }else if (game.content.Game.date) {
       displayDate = game.content.Game.date;
     }

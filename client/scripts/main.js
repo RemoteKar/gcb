@@ -29,10 +29,10 @@ function characterLabel(characterId, names) {
   return names?.characters?.[characterId] || `캐릭터 ${characterId}`;
 }
 
-function formatDate(fileName) {
-  // 2026.08.14-22.18.53.yml → 08.14 22:18
-  const m = fileName.match(/(\d{4})\.(\d{2})\.(\d{2})-(\d{2})\.(\d{2})/);
-  return m ? `${m[2]}.${m[3]} ${m[4]}:${m[5]}` : fileName;
+function formatDate(time) {
+  // KST 2026.08.14-22.18.53 → 08.14 22:18
+  const m = time.match(/(\d{4})\.(\d{2})\.(\d{2})-(\d{2})\.(\d{2})/);
+  return m ? `${m[2]}.${m[3]} ${m[4]}:${m[5]}` : time;
 }
 
 async function fetchJson(url) {
@@ -63,7 +63,7 @@ function renderStrip(home, leaderboard) {
   el.innerHTML = `
     <span class="home-stat-chip">기록된 게임<strong>${home.totalGames.toLocaleString()}판</strong></span>
     <span class="home-stat-chip">랭킹 등록 유저<strong>${(leaderboard || []).length}명</strong></span>
-    ${home.recentGames[0] ? `<span class="home-stat-chip">마지막 게임<strong>${esc(formatDate(home.recentGames[0].fileName))}</strong></span>` : ''}
+    ${home.recentGames[0] ? `<span class="home-stat-chip">마지막 게임<strong>${esc(formatDate(home.recentGames[0].time))}</strong></span>` : ''}
   `;
 }
 
@@ -130,7 +130,7 @@ async function renderRecentGames(home, names) {
           <span class="home-row-title">🏆 ${esc(nick)}</span>
           <span class="home-row-sub">${esc(w ? characterLabel(w.character, names) : '')} · ${w?.kills ?? 0}킬</span>
         </div>
-        <div class="home-row-side"><strong>${esc(formatDate(g.fileName))}</strong>${g.players}명</div>
+        <div class="home-row-side"><strong>${esc(formatDate(g.time))}</strong>${g.players}명</div>
       </a>
     `;
   }).join('');
