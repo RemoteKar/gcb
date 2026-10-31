@@ -1,0 +1,256 @@
+---
+Game:
+  mode: "일반"
+  version: "26.3"
+  joinedPlayers: "8ffaa638-94bd-4bd5-b352-675f4f39e80f,fdf39b77-650f-4ad4-8ad4-271bf12e41d1,bcb16c70-6973-4f79-9bbc-c278f6ceb75f,829af0d3-0f33-404d-aa26-5e56117ac210,9937b375-a6cb-497d-a3c0-1395207ce7ed,8781013f-23e8-4036-bd0d-d9d6ebc6b039,947f100b-c289-40e6-9425-4be0186c6824,42e30471-f805-47e1-b6ac-bde4bfc8085a,7e401735-70fa-474b-97e7-1517b8346142,a6476ab8-e7d3-4ac8-8d65-ce03f6d5e6e2,172713f0-7e87-46a9-8d3e-d2d942b71d6b,88ab4f4b-bed0-45ac-a1ce-befcd67fd548,7005bd95-62f1-4ad2-8683-183c49b0c7f8,c5651f7a-b562-42f8-b502-45cfe6c66bba"
+  amountOfPlayers: 14
+  totalTime: 438
+  timeZone: "UTC+09:00"
+Player:
+  "8ffaa638-94bd-4bd5-b352-675f4f39e80f":
+    Character: 71
+    Core: "electrovision"
+    Damage:
+      Dealt: 7536.422956943512
+      Taken: 3414.959892272949
+    Heal:
+      Taken: 2250.0
+    kill: 10
+    Augment:
+      "1": 28
+      "2": 15
+      "3": 7
+      "4": 18
+    death: 2
+    killedBy:
+      "7e401735-70fa-474b-97e7-1517b8346142": 1
+      "947f100b-c289-40e6-9425-4be0186c6824": 1
+    Ranking: 5
+  fdf39b77-650f-4ad4-8ad4-271bf12e41d1:
+    Character: 3
+    Core: "superstar"
+    Damage:
+      Taken: 766.9340267181396
+      Dealt: 1858.9840698242188
+    Augment:
+      "1": 15
+      "2": 1
+      "3": 24
+      "4": 7
+    death: 2
+    killedBy:
+      c5651f7a-b562-42f8-b502-45cfe6c66bba: 2
+    Heal:
+      Taken: 450.0
+    Ranking: 2
+  bcb16c70-6973-4f79-9bbc-c278f6ceb75f:
+    Character: 70
+    Core: "aquilahelmet"
+    Damage:
+      Dealt: 1815.9009094238281
+      Taken: 1501.8499450683594
+    Augment:
+      "1": 42
+      "2": 29
+      "3": 43
+      "4": 2
+    death: 2
+    killedBy:
+      "8ffaa638-94bd-4bd5-b352-675f4f39e80f": 1
+      "42e30471-f805-47e1-b6ac-bde4bfc8085a": 1
+    Heal:
+      Taken: 300
+    Ranking: 12
+  "829af0d3-0f33-404d-aa26-5e56117ac210":
+    Character: 30
+    Core: "quiver"
+    Damage:
+      Taken: 885.8000030517578
+      Dealt: 180.0999755859375
+    death: 2
+    killedBy:
+      "8ffaa638-94bd-4bd5-b352-675f4f39e80f": 1
+      "42e30471-f805-47e1-b6ac-bde4bfc8085a": 1
+    Augment:
+      "1": 13
+      "2": 24
+      "3": null
+      "4": null
+    Ranking: 13
+  "9937b375-a6cb-497d-a3c0-1395207ce7ed":
+    Character: 81
+    Core: "quiver"
+    Augment:
+      "1": 18
+      "2": 9
+      "3": 35
+      "4": 13
+    Damage:
+      Taken: 403.0
+    death: 1
+    killedBy:
+      "42e30471-f805-47e1-b6ac-bde4bfc8085a": 1
+    Ranking: 10
+  "8781013f-23e8-4036-bd0d-d9d6ebc6b039":
+    Character: 18
+    Core: "luckydice"
+    Damage:
+      Taken: 1451.2000122070312
+      Dealt: 772.0
+    Augment:
+      "1": 15
+      "2": 37
+      "3": 36
+      "4": 28
+    death: 2
+    killedBy:
+      a6476ab8-e7d3-4ac8-8d65-ce03f6d5e6e2: 1
+      "8ffaa638-94bd-4bd5-b352-675f4f39e80f": 1
+    Ranking: 6
+  "947f100b-c289-40e6-9425-4be0186c6824":
+    Character: 13
+    Core: "aquilahelmet"
+    Damage:
+      Taken: 4330.752321720123
+      Dealt: 3369.159996032715
+    death: 3
+    killedBy:
+      "8ffaa638-94bd-4bd5-b352-675f4f39e80f": 2
+      "7e401735-70fa-474b-97e7-1517b8346142": 1
+    Augment:
+      "1": 39
+      "2": 42
+      "3": 41
+      "4": 29
+    Heal:
+      Taken: 1412.34375
+    kill: 2
+    Ranking: 4
+  "42e30471-f805-47e1-b6ac-bde4bfc8085a":
+    Character: 80
+    Core: "uncoloredcube"
+    Damage:
+      Dealt: 4292.175537109375
+      Taken: 1445.3249816894531
+    Augment:
+      "1": 40
+      "2": 31
+      "3": 3
+      "4": 7
+    Heal:
+      Taken: 1481.25
+    kill: 7
+    death: 1
+    killedBy:
+      "8ffaa638-94bd-4bd5-b352-675f4f39e80f": 1
+    Ranking: 7
+  "7e401735-70fa-474b-97e7-1517b8346142":
+    Character: 18
+    Core: "gearengine"
+    Damage:
+      Taken: 2510.5799713134766
+      Dealt: 2361.972496032715
+    death: 2
+    killedBy:
+      "8ffaa638-94bd-4bd5-b352-675f4f39e80f": 1
+      c5651f7a-b562-42f8-b502-45cfe6c66bba: 1
+    Augment:
+      "1": 18
+      "2": 37
+      "3": 36
+      "4": 5
+    Heal:
+      Taken: 608.125
+    kill: 2
+    Ranking: 3
+  a6476ab8-e7d3-4ac8-8d65-ce03f6d5e6e2:
+    Character: 14
+    Core: "paimon"
+    Damage:
+      Dealt: 1939.6064071655273
+      Taken: 4393.51655960083
+    Augment:
+      "1": 25
+      "2": 19
+      "3": 6
+      "4": 41
+    Heal:
+      Taken: 2177.3369018554686
+    kill: 2
+    death: 2
+    killedBy:
+      "8ffaa638-94bd-4bd5-b352-675f4f39e80f": 1
+      "42e30471-f805-47e1-b6ac-bde4bfc8085a": 1
+    Ranking: 9
+  "172713f0-7e87-46a9-8d3e-d2d942b71d6b":
+    Character: 13
+    Core: "netherreactorcore"
+    Augment:
+      "1": 10
+      "2": 38
+      "3": 3
+      "4": 7
+    Damage:
+      Taken: 1705.0
+      Dealt: 349.6298828125
+    death: 2
+    killedBy:
+      "947f100b-c289-40e6-9425-4be0186c6824": 1
+      "88ab4f4b-bed0-45ac-a1ce-befcd67fd548": 1
+    Ranking: 11
+  "88ab4f4b-bed0-45ac-a1ce-befcd67fd548":
+    Character: 9
+    Core: "quiver"
+    Augment:
+      "1": 37
+      "2": 13
+      "3": 15
+      "4": 21
+    Damage:
+      Dealt: 2158.1129455566406
+      Taken: 1229.0600280761719
+    death: 2
+    killedBy:
+      "42e30471-f805-47e1-b6ac-bde4bfc8085a": 2
+    Heal:
+      Taken: 247.08749389648438
+    kill: 1
+    quit: true
+    Ranking: 14
+  "7005bd95-62f1-4ad2-8683-183c49b0c7f8":
+    Character: 8
+    Core: "gearengine"
+    Damage:
+      Dealt: 889.4379577636719
+      Taken: 2178.2363510131836
+    Heal:
+      Taken: 352.2363830566406
+    death: 3
+    killedBy:
+      "8ffaa638-94bd-4bd5-b352-675f4f39e80f": 2
+      a6476ab8-e7d3-4ac8-8d65-ce03f6d5e6e2: 1
+    Augment:
+      "1": 13
+      "2": 18
+      "3": 8
+      "4": 37
+    Ranking: 8
+  c5651f7a-b562-42f8-b502-45cfe6c66bba:
+    Character: 20
+    Core: "trailblazercan"
+    Augment:
+      "1": 17
+      "2": 8
+      "3": 7
+      "4": 1
+    Damage:
+      Taken: 2350.203094482422
+      Dealt: 1042.9140529632568
+    Heal:
+      Taken: 2513.776934776309
+    kill: 3
+    death: 1
+    killedBy:
+      "42e30471-f805-47e1-b6ac-bde4bfc8085a": 1
+    Ranking: 1
+title: "일반"
