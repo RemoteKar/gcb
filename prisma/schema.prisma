@@ -32,3 +32,15 @@ model CharacterComment {
 
   @@index([characterId, createdAt])
 }
+
+model Feedback {
+  id           Int      @id @default(autoincrement())
+  category     String
+  title        String
+  content      String
+  nickname     String
+  passwordHash String
+  ipPrefix     String
+  status       String   @default("open")
+  createdAt    DateTime @default(now())
+}

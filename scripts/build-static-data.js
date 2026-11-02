@@ -1,249 +1,325 @@
-// 빌드 시 Data/ 폴더를 읽어 클라이언트가 바로 fetch 할 수 있는 정적 JSON 생성
-//   client/data/user-statistics/{uuid}.json  유저별 전적 + 게임 기록
-//   client/data/recent-games.json            최근 60게임 (캐릭터 통계 페이지)
-//   client/data/augment-stats.json           최근 60게임 증강 픽 통계
-//   client/data/badges.json                  { uuid: { current, List } }
-//   client/data/names.json                   { characters: {id: name}, augments: {id: name}, cores: {key: name} }
-//   client/data/cores.json                   코어 목록 [{ id, index, name, description }] (index 순)
-//   client/data/core-stats.json              코어별 기간 통계 { recent60: [...], recent200: [...], all: [...] }
-//   client/data/character-stats.json         캐릭터별 기간(recent60/recent200/all) 통계 + 증강 시너지
-//   client/data/augment-stats.json           증강별 기간 통계 { recent60: [...], recent200: [...], all: [...] }
-//   client/data/home.json                    메인 페이지용 (최근 게임 요약 + 최근 60게임 1등 캐릭터)
+// 빌드 시 Data/ 를 읽어 클라이언트가 바로 fetch 하는 정적 JSON 을 client/data/ 에 만든다 (gitignore)
+//   names.json                  { characters: {id: 이름}, augments: {id: 이름}, cores: {key: 이름} }
+//   augments.json · cores.json  증강·코어 설명 (목록·팝업)
+//   characters/{id}.json        스탯(정식 캐릭터 중 순위)·스킬 설명 + 기간별 실전 통계 + 성향 6축 + 많이 하는 유저
+//   weapons/{id}.json · titans.json · titans/{id}.json   스킬에서 이어지는 무기·타이탄 설명
+//   character-stats.json · augment-stats.json · core-stats.json   기간별(recent60/recent200/all) 통계 표
+//   home.json · badges.json
+//   games/{id}.json             게임 하나의 참가자 전체 (전적 상세)
+//   user-statistics/{uuid}.json 유저 요약 · 플레이 성향 · 캐릭터별 · 상대 + 판별 한 줄
 const fs = require('fs');
 const path = require('path');
 const yaml = require('js-yaml');
-const { computeStatistics } = require('../server/utils/statistics');
-const { formatUUID, toNonHyphenatedUUID } = require('../server/util');
 const { readGameRecords } = require('./read-game-records');
-const { CREATIVE_ID_MAX_EXCLUSIVE, isOfficialCharacter } = require('../client/scripts/character-config');
+const { gameRows, rankTier, totals, add, summarize, rate, isStatCharacter, isUserCharacter } = require('./game-stats');
 
-const projectRoot = path.resolve(__dirname, '..');
-const badgeDir = path.join(projectRoot, 'Data', 'player', 'badge');
-const descriptionDir = path.join(projectRoot, 'Data', 'description');
-const outputDir = path.join(projectRoot, 'client', 'data');
-const userStatsDir = path.join(outputDir, 'user-statistics');
-const RECENT_GAMES = 60;
+const root = path.resolve(__dirname, '..');
+const descriptionDir = path.join(root, 'Data', 'description');
+const playerDir = path.join(root, 'Data', 'player');
+const resourceDir = path.join(root, 'client', 'Resource');
+const outputDir = path.join(root, 'client', 'data');
 const PERIODS = { recent60: 60, recent200: 200, all: Infinity };
 const HOME_RECENT_GAMES = 8;
+const STYLE_MIN_GAMES = 5;
+const GENERATED = ['user-statistics', 'games', 'characters', 'weapons', 'titans', 'recent-games.json'];
 
-function formatStatistics(stats) {
-  return {
-    winRate: stats.winRate.toFixed(1),
-    winCount: stats.winCount.toString(),
-    avarageRankLeast50: stats.avarageRankLeast50.toFixed(1),
-    mostUsedCharacter: stats.mostUsedCharacter,
-    mostUsedAugments: stats.mostUsedAugments,
-    averageDamageDealt: stats.averageDamageDealt.toFixed(0),
-    averageDamageTaken: stats.averageDamageTaken.toFixed(0),
-    averageKillRate: stats.averageKillRate.toFixed(2),
-    averageDeaths: stats.averageDeaths.toFixed(1),
-    maxDamageDealt: stats.maxDamageDealt.toFixed(0),
-    maxDamageTaken: stats.maxDamageTaken.toFixed(0),
-    maxKill: stats.maxKill.toString(),
-    totalGames: stats.totalGames.toString(),
-    characterStats: stats.characterStats || [],
-  };
+function writeJson(rel, data) {
+    const file = path.join(outputDir, rel);
+    fs.mkdirSync(path.dirname(file), { recursive: true });
+    fs.writeFileSync(file, JSON.stringify(data));
 }
 
-function writeJson(relPath, data) {
-  const fullPath = path.join(outputDir, relPath);
-  fs.mkdirSync(path.dirname(fullPath), { recursive: true });
-  fs.writeFileSync(fullPath, JSON.stringify(data));
+const loadYaml = file => { try { return yaml.load(fs.readFileSync(file, 'utf8')); } catch (e) { return null; } };
+const dirsIn = dir => (fs.existsSync(dir) ? fs.readdirSync(dir, { withFileTypes: true }).filter(d => d.isDirectory()).map(d => d.name).sort() : []);
+const text = v => String(v ?? '');
+const entry = d => ({ id: d.id != null ? String(d.id) : null, name: text(d.name), description: text(d.description) });
+
+// 폴더의 yaml → [{ key: 파일명, data }] (파일명 순)
+function yamlsIn(dir) {
+    if (!fs.existsSync(dir)) return [];
+    return fs.readdirSync(dir).filter(f => f.endsWith('.yaml')).sort()
+        .map(f => ({ key: f.slice(0, -5), data: loadYaml(path.join(dir, f)) }))
+        .filter(x => x.data);
 }
 
-function indexRecordsByPlayer(records) {
-  const byPlayer = new Map();
-  for (const record of records) {
-    const joinedPlayers = record.content?.Game?.joinedPlayers;
-    if (!joinedPlayers) continue;
-    for (const rawUuid of joinedPlayers.split(',')) {
-      const uuid = formatUUID(toNonHyphenatedUUID(rawUuid.trim()));
-      if (!uuid) continue;
-      if (!byPlayer.has(uuid)) byPlayer.set(uuid, []);
-      byPlayer.get(uuid).push(record);
+// 이미지 확장자는 빌드 때 찾아 둔다 (브라우저가 확장자를 하나씩 404 내며 시도하지 않게)
+function imagePath(relDir, id) {
+    const ext = ['webp', 'png', 'jpg', 'jpeg', 'gif'].find(e => fs.existsSync(path.join(resourceDir, relDir, `${id}.${e}`)));
+    return ext ? `/Resource/${relDir}/${id}.${ext}` : null;
+}
+
+const SKILL_SLOTS = [['0', '패시브'], ['baseattack', '기본 공격'], ['1', '스킬 1'], ['2', '스킬 2'], ['3', '스킬 3'], ['4', '궁극기']];
+
+function readDescriptions() {
+    const augments = yamlsIn(path.join(descriptionDir, 'augments')).map(x => x.data)
+        .filter(a => a.id != null && a.name)
+        .map(a => ({ id: Number(a.id), name: text(a.name), description: text(a.description) }))
+        .sort((a, b) => a.id - b.id);
+    const cores = yamlsIn(path.join(descriptionDir, 'cores')).map(x => x.data)
+        .filter(c => c.id != null && c.name)
+        .map(c => ({ id: String(c.id), index: Number(c.index) || 0, name: text(c.name), description: text(c.description) }))
+        .sort((a, b) => a.index - b.index);
+
+    const weaponDir = path.join(descriptionDir, 'weapons');
+    const weapons = Object.fromEntries(dirsIn(weaponDir).map(dir => [dir,
+        yamlsIn(path.join(weaponDir, dir)).map(x => ({ ...entry(x.data), img: imagePath(`weapon/${dir}`, x.data.id ?? x.key) }))]));
+
+    // 타이탄 폴더 yaml 은 index 순으로 0 = 타이탄 설명, 1~4 = 스킬, 5 = 무기
+    const titanDir = path.join(descriptionDir, 'titan');
+    const titans = dirsIn(titanDir).map(dir => {
+        const parts = yamlsIn(path.join(titanDir, dir)).map(x => x.data).filter(d => d.index !== undefined).sort((a, b) => a.index - b.index);
+        if (!parts.length) return null;
+        const weapon = parts[5] ? { ...entry(parts[5]), img: imagePath('titan/weapon', parts[5].id) } : null;
+        return { ...entry(parts[0]), id: dir, img: imagePath('titan', dir), skills: parts.slice(1, 5).map(entry), weapon };
+    }).filter(Boolean);
+    const titanRoot = Object.fromEntries(yamlsIn(titanDir).map(x => [x.key, entry(x.data)]));
+
+    // 스킬 id → 이어지는 페이지 (weapons 폴더 = /weapon/{id}, 타이탄이 있으면 잭4 = /titan/잭4)
+    const links = Object.fromEntries(Object.keys(weapons).map(id => [id, `/weapon/${id}`]));
+    if (titans.length) links['잭4'] = '/titan/잭4';
+
+    const characters = dirsIn(descriptionDir).filter(d => /^char_\d+$/.test(d)).map(dir => {
+        const files = Object.fromEntries(yamlsIn(path.join(descriptionDir, dir)).map(x => [x.key, x.data]));
+        const { name, ...stat } = files.stat || {};
+        if (!name) return null;
+        const skills = SKILL_SLOTS.filter(([key]) => files[key]).map(([key, type]) => {
+            const s = entry(files[key]);
+            return { type, ...s, link: links[s.id] ? `${links[s.id]}?name=${encodeURIComponent(s.name)}` : null };
+        });
+        return { id: Number(dir.slice(5)), name: text(name), stat, skills };
+    }).filter(Boolean).sort((a, b) => a.id - b.id);
+
+    return { augments, cores, weapons, titans, smartPistol: titanRoot.smartpistol || null, titanPassive: titanRoot['잭0-2'] || null, characters };
+}
+
+function readBadges() {
+    const badges = {};
+    for (const { key, data } of yamlsIn(path.join(playerDir, 'badge'))) {
+        const badge = data.badge || data;
+        if (badge?.current) badges[key] = badge;
     }
-  }
-  return byPlayer;
+    return badges;
 }
 
-function buildBadges() {
-  if (!fs.existsSync(badgeDir)) return {};
-  const badges = {};
-  for (const fileName of fs.readdirSync(badgeDir)) {
-    if (!fileName.endsWith('.yaml')) continue;
-    try {
-      const data = yaml.load(fs.readFileSync(path.join(badgeDir, fileName), 'utf8'));
-      const badge = data?.badge || data;
-      if (badge && badge.current) badges[fileName.replace('.yaml', '')] = badge;
-    } catch (e) {
-      console.warn(`[빌드] 배지 파싱 실패: ${fileName} (${e.message})`);
+// 캐릭터별 누적 우승 (황금 스킨 해금용 WinCount, 26.3 이전 포함) → { uuid: [{ id, wins }] }
+function readLifetimeWins() {
+    return Object.fromEntries(yamlsIn(path.join(playerDir, 'achieve')).map(({ key, data }) => [key,
+        Object.entries(data.WinCount || {})
+            .map(([k, n]) => ({ id: Number(String(k).replace('char', '')), wins: Number(n) || 0 }))
+            .filter(w => w.id && w.wins)
+            .sort((a, b) => b.wins - a.wins)]));
+}
+
+// 게임 기록 → [{ id(KST 시각), duration, rows }] 시간순. 참가자 없는 기록은 뺀다
+function readGames() {
+    const ids = new Set();
+    return readGameRecords().map(r => {
+        let id = r.time;
+        for (let n = 2; ids.has(id); n++) id = `${r.time}_${n}`;
+        ids.add(id);
+        return { id, duration: Number(r.content?.Game?.totalTime) || 0, rows: gameRows(r.content) };
+    }).filter(g => g.rows.length);
+}
+
+const bump = (map, key) => map[key] || (map[key] = totals());
+const byGames = (a, b) => b[1].games - a[1].games || b[1].wins - a[1].wins;
+const pick = (entries, n, idOf) => entries.sort(byGames).slice(0, n).map(([k, t]) => ({ id: idOf(k), games: t.games, winRate: rate(t.wins, t.games) }));
+const round = row => ({ ...row, dealt: Math.round(row.dealt), taken: Math.round(row.taken), heal: Math.round(row.heal) });
+
+// 기간 하나 → 캐릭터별 / 증강별 / 코어별 합계. 픽률 분모 = 기간 전체 참가자 수
+function aggregate(games) {
+    const characters = {};
+    const augments = {};
+    const cores = {};
+    let slots = 0;
+    for (const { rows } of games) {
+        for (const row of rows) {
+            slots++;
+            for (const a of row.augments) if (a != null) add(bump(augments, a), row);
+            if (row.core) add(bump(cores, row.core), row);
+            if (!isStatCharacter(row.character)) continue;
+            const c = characters[row.character] || (characters[row.character] = { t: totals(), augments: {}, cores: {}, tiers: [0, 0, 0, 0, 0] });
+            add(c.t, row);
+            c.tiers[rankTier(row)]++;
+            for (const a of row.augments) if (a != null) add(bump(c.augments, a), row);
+            if (row.core) add(bump(c.cores, row.core), row);
+        }
     }
-  }
-  return badges;
+    const table = map => Object.entries(map).sort(byGames).map(([id, t]) => ({ id, ...summarize(t), pickRate: rate(t.games, slots) }));
+    return { characters, slots, augmentTable: table(augments).map(r => ({ ...r, id: Number(r.id) })), coreTable: table(cores) };
 }
 
-function loadYaml(filePath) {
-  try { return yaml.load(fs.readFileSync(filePath, 'utf8')); } catch (e) { return null; }
-}
-
-// Data/description/cores/*.yaml → [{ id, index, name, description }] (index 순)
-function buildCores() {
-  const coreDir = path.join(descriptionDir, 'cores');
-  if (!fs.existsSync(coreDir)) return [];
-  return fs.readdirSync(coreDir)
-    .filter(file => file.endsWith('.yaml'))
-    .map(file => loadYaml(path.join(coreDir, file)))
-    .filter(core => core?.id != null && core.name)
-    .map(core => ({ id: String(core.id), index: Number(core.index) || 0, name: String(core.name), description: String(core.description ?? '') }))
-    .sort((a, b) => a.index - b.index);
-}
-
-// Data/description → { characters: {id: name}, augments: {id: name}, cores: {key: name} }
-function buildNames(coreList) {
-  const characters = {};
-  const augments = {};
-  const cores = Object.fromEntries(coreList.map(c => [c.id, c.name]));
-  if (!fs.existsSync(descriptionDir)) return { characters, augments, cores };
-  for (const dir of fs.readdirSync(descriptionDir)) {
-    if (!dir.startsWith('char_')) continue;
-    const stat = loadYaml(path.join(descriptionDir, dir, 'stat.yaml'));
-    if (stat?.name) characters[dir.replace('char_', '')] = String(stat.name);
-  }
-  const augDir = path.join(descriptionDir, 'augments');
-  if (fs.existsSync(augDir)) {
-    for (const file of fs.readdirSync(augDir)) {
-      if (!file.endsWith('.yaml')) continue;
-      const aug = loadYaml(path.join(augDir, file));
-      if (aug?.id != null && aug.name) augments[aug.id] = String(aug.name);
+// 캐릭터별 많이 하는 유저 (전체 기간, 2판 이상) → { characterId: [{ uuid, games, wins, winRate }] }
+function mainsOf(games) {
+    const byChar = {};
+    for (const { rows } of games) {
+        for (const row of rows) {
+            if (!isStatCharacter(row.character)) continue;
+            add(bump(byChar[row.character] || (byChar[row.character] = {}), row.uuid), row);
+        }
     }
-  }
-  return { characters, augments, cores };
+    return Object.fromEntries(Object.entries(byChar).map(([id, players]) => [id,
+        Object.entries(players).filter(([, t]) => t.games >= 2).sort(byGames).slice(0, 5)
+            .map(([uuid, t]) => ({ uuid, games: t.games, wins: t.wins, winRate: rate(t.wins, t.games) }))]));
 }
 
-const isStatCharacter = id => Number(id) > 0 && Number(id) < CREATIVE_ID_MAX_EXCLUSIVE && isOfficialCharacter(id);
-const rate = (n, d) => d > 0 ? Number(((n / d) * 100).toFixed(1)) : 0;
-const avg = (n, d) => d > 0 ? Number((n / d).toFixed(1)) : 0;
-
-// 한 기간의 게임 기록 → 캐릭터별/증강별/코어별 원시 집계
-function aggregatePeriod(records) {
-  const characters = {};
-  const augments = {};
-  const cores = {};
-  let slots = 0; // 전체 플레이어 참가 수 (픽률 분모)
-  const bump = (obj, key) => obj[key] || (obj[key] = { picks: 0, wins: 0, top50: 0, kills: 0, damage: 0, augments: {} });
-  for (const { content } of records) {
-    const players = content?.Player;
-    const total = content?.Game?.amountOfPlayers;
-    if (!players || !total) continue;
-    slots += Object.keys(players).length;
-    for (const p of Object.values(players)) {
-      const win = p.Ranking === 1;
-      const top50 = typeof p.Ranking === 'number' && p.Ranking / total <= 0.5;
-      const kills = typeof p.kill === 'number' ? p.kill : 0;
-      const dmg = typeof p.Damage?.Dealt === 'number' ? p.Damage.Dealt : 0;
-      const augIds = Object.values(p.Augment || {}).filter(a => typeof a === 'number');
-
-      for (const a of augIds) {
-        const s = bump(augments, a);
-        s.picks++; if (win) s.wins++; if (top50) s.top50++;
-      }
-      if (p.Core) {
-        const s = cores[p.Core] || (cores[p.Core] = { picks: 0, wins: 0, rank: 0, kills: 0, damage: 0 });
-        s.picks++; if (win) s.wins++; s.rank += Number(p.Ranking) || 0; s.kills += kills; s.damage += dmg;
-      }
-      if (!isStatCharacter(p.Character)) continue;
-      const c = bump(characters, p.Character);
-      c.picks++; if (win) c.wins++; if (top50) c.top50++; c.kills += kills; c.damage += dmg;
-      for (const a of augIds) {
-        const s = c.augments[a] || (c.augments[a] = { picks: 0, wins: 0 });
-        s.picks++; if (win) s.wins++;
-      }
+// 유저별 합계 + 상대(천적·먹잇감·자주 만난 유저). 상대는 모든 판, 통계는 관리자 캐릭터(900+) 판만 뺀다
+function aggregateUsers(games) {
+    const users = new Map();
+    for (const game of games) {
+        for (const row of game.rows) {
+            if (!users.has(row.uuid)) users.set(row.uuid, { t: totals(), games: [], characters: {}, augments: {}, cores: {}, nemesis: {}, prey: {}, mates: {} });
+            const u = users.get(row.uuid);
+            u.games.push({ game, row });
+            for (const [killer, n] of Object.entries(row.killedBy)) {
+                if (killer !== row.uuid && n) u.nemesis[killer] = (u.nemesis[killer] || 0) + n;
+            }
+            for (const other of game.rows) {
+                if (other === row) continue;
+                u.mates[other.uuid] = (u.mates[other.uuid] || 0) + 1;
+                const n = other.killedBy[row.uuid];
+                if (n) u.prey[other.uuid] = (u.prey[other.uuid] || 0) + n;
+            }
+            if (!isUserCharacter(row.character)) continue;
+            add(u.t, row);
+            add(bump(u.characters, row.character), row);
+            for (const a of row.augments) if (a != null) add(bump(u.augments, a), row);
+            if (row.core) add(bump(u.cores, row.core), row);
+        }
     }
-  }
-  return { characters, augments, cores, slots };
+    return users;
 }
 
-function finalizeStats(records) {
-  const characterStats = {};
-  const augmentStats = {};
-  const coreStats = {};
-  for (const [period, size] of Object.entries(PERIODS)) {
-    const slice = size === Infinity ? records : records.slice(-size);
-    const { characters, augments, cores, slots } = aggregatePeriod(slice);
-    for (const [id, c] of Object.entries(characters)) {
-      characterStats[id] = characterStats[id] || {};
-      characterStats[id][period] = {
-        picks: c.picks, wins: c.wins,
-        pickRate: rate(c.picks, slots), // 전체 참가자 중 이 캐릭터를 고른 비율
-        winRate: rate(c.wins, c.picks), top50Rate: rate(c.top50, c.picks),
-        avgKills: avg(c.kills, c.picks), avgDamage: Math.round(c.damage / c.picks),
-        augments: Object.entries(c.augments)
-          .map(([aid, s]) => ({ augmentId: Number(aid), picks: s.picks, winRate: rate(s.wins, s.picks) }))
-          .sort((a, b) => b.picks - a.picks),
-      };
-    }
-    augmentStats[period] = Object.entries(augments)
-      .map(([aid, s]) => ({ augmentId: Number(aid), picks: s.picks, winRate: rate(s.wins, s.picks), top50Rate: rate(s.top50, s.picks) }))
-      .sort((a, b) => b.picks - a.picks);
-    coreStats[period] = Object.entries(cores)
-      .map(([key, s]) => ({
-        coreId: key, picks: s.picks, pickRate: rate(s.picks, slots), wins: s.wins, winRate: rate(s.wins, s.picks),
-        avgRank: avg(s.rank, s.picks), avgKills: avg(s.kills, s.picks), avgDamage: Math.round(s.damage / s.picks),
-      }))
-      .sort((a, b) => b.picks - a.picks);
-  }
-  return { characterStats: { periods: Object.keys(PERIODS), games: records.length, characters: characterStats }, augmentStats, coreStats };
-}
+// 플레이 성향 6축 = 판당 값의 백분위 (STYLE_MIN_GAMES 판 이상 한 유저 사이, 0~100, 높을수록 그 성향이 강함)
+const STYLE_AXES = {
+    dealt: t => t.dealt / t.games,
+    kills: t => t.kills / t.games,
+    place: t => t.place / t.games,
+    survive: t => -t.deaths / t.games,
+    heal: t => t.heal / t.games,
+    taken: t => t.taken / t.games,
+};
 
-// 메인 페이지: 최근 게임 요약 + 최근 60게임 1등 캐릭터
-function buildHome(records, characterStats) {
-  const recentGames = records.slice(-HOME_RECENT_GAMES).reverse().map(({ time, content }) => {
-    const players = content?.Player || {};
-    const winner = Object.entries(players).find(([, p]) => p.Ranking === 1);
-    return {
-      time,
-      players: content?.Game?.amountOfPlayers ?? Object.keys(players).length,
-      winner: winner ? { uuid: winner[0], character: winner[1].Character ?? null, kills: winner[1].kill ?? 0 } : null,
+function styleScorer(users) {
+    const pool = [...users.values()].filter(u => u.t.games >= STYLE_MIN_GAMES);
+    const sorted = Object.fromEntries(Object.entries(STYLE_AXES).map(([k, f]) => [k, pool.map(u => f(u.t)).sort((a, b) => a - b)]));
+    const percentile = (k, v) => {
+        const s = sorted[k];
+        if (s.length < 2) return 50;
+        const below = s.filter(x => x < v).length;
+        const same = s.filter(x => x === v).length;
+        return Math.round((below + (same - 1) / 2) / (s.length - 1) * 100);
     };
-  });
-  const top = Object.entries(characterStats.characters)
-    .map(([id, s]) => ({ characterId: Number(id), ...(s.recent60 || {}) }))
-    .filter(s => s.picks)
-    .sort((a, b) => b.wins - a.wins || b.winRate - a.winRate);
-  return { recentGames, topCharacters: top.slice(0, 5), totalGames: records.length };
+    return u => (u.t.games >= STYLE_MIN_GAMES
+        ? { of: pool.length, pct: Object.fromEntries(Object.entries(STYLE_AXES).map(([k, f]) => [k, percentile(k, f(u.t))])) }
+        : null);
+}
+
+// 스탯별 순위 (값이 클수록 1위, 같은 값은 같은 순위, 정식 캐릭터 사이) → c => { 스탯: { rank, of, max } }
+function statRanker(characters) {
+    const pool = characters.filter(c => isStatCharacter(c.id));
+    const sorted = {};
+    for (const c of pool) {
+        for (const [k, v] of Object.entries(c.stat)) if (typeof v === 'number') (sorted[k] || (sorted[k] = [])).push(v);
+    }
+    for (const list of Object.values(sorted)) list.sort((a, b) => b - a);
+    return c => Object.fromEntries(Object.entries(c.stat).filter(([k, v]) => typeof v === 'number' && sorted[k])
+        .map(([k, v]) => [k, { rank: sorted[k].filter(x => x > v).length + 1, of: sorted[k].length, max: sorted[k][0] }]));
 }
 
 function main() {
-  console.log('[빌드] 정적 데이터 생성 시작...');
-  fs.rmSync(userStatsDir, { recursive: true, force: true }); // 다른 스크립트 산출물(leaderboard/patchnotes)은 건드리지 않음
+    console.log('[빌드] 정적 데이터 생성 시작...');
+    for (const rel of GENERATED) fs.rmSync(path.join(outputDir, rel), { recursive: true, force: true }); // leaderboard·patchnotes 산출물은 남김
 
-  const records = readGameRecords();
+    const desc = readDescriptions();
+    const names = {
+        characters: Object.fromEntries(desc.characters.map(c => [c.id, c.name])),
+        augments: Object.fromEntries(desc.augments.map(a => [a.id, a.name])),
+        cores: Object.fromEntries(desc.cores.map(c => [c.id, c.name])),
+    };
+    writeJson('names.json', names);
+    writeJson('augments.json', desc.augments);
+    writeJson('cores.json', desc.cores);
+    for (const [id, list] of Object.entries(desc.weapons)) writeJson(`weapons/${id}.json`, list);
+    writeJson('titans.json', { titans: desc.titans.map(({ skills, weapon, ...t }) => t), smartPistol: desc.smartPistol });
+    for (const t of desc.titans) writeJson(`titans/${t.id}.json`, { ...t, passive: desc.titanPassive });
 
-  const byPlayer = indexRecordsByPlayer(records);
-  for (const [uuid, gameRecords] of byPlayer.entries()) {
-    const statistics = computeStatistics(gameRecords.map(r => r.content), uuid);
-    writeJson(path.join('user-statistics', `${uuid}.json`), {
-      statistics: formatStatistics(statistics),
-      gameRecords,
+    const games = readGames();
+    const periods = Object.fromEntries(Object.entries(PERIODS).map(([p, n]) => [p, aggregate(n === Infinity ? games : games.slice(-n))]));
+    const mains = mainsOf(games);
+
+    const characterStats = {};
+    for (const [p, agg] of Object.entries(periods)) {
+        for (const [id, c] of Object.entries(agg.characters)) {
+            (characterStats[id] || (characterStats[id] = {}))[p] = { ...summarize(c.t), pickRate: rate(c.t.games, agg.slots) };
+        }
+    }
+    writeJson('character-stats.json', { games: games.length, characters: characterStats });
+    writeJson('augment-stats.json', Object.fromEntries(Object.entries(periods).map(([p, agg]) => [p, agg.augmentTable])));
+    writeJson('core-stats.json', Object.fromEntries(Object.entries(periods).map(([p, agg]) => [p, agg.coreTable])));
+
+    const statRanksOf = statRanker(desc.characters);
+    const characterStyleOf = styleScorer(new Map(Object.entries(periods.all.characters)));
+    for (const c of desc.characters) {
+        const live = Object.fromEntries(Object.entries(periods).map(([p, agg]) => {
+            const s = agg.characters[c.id];
+            return [p, s ? {
+                ...characterStats[c.id][p],
+                tiers: s.tiers,
+                augments: pick(Object.entries(s.augments), 10, Number).map(a => ({ ...a, name: names.augments[a.id] || null })),
+                cores: pick(Object.entries(s.cores), 5, String).map(a => ({ ...a, name: names.cores[a.id] || null })),
+            } : null];
+        }));
+        const all = periods.all.characters[c.id];
+        writeJson(`characters/${c.id}.json`, { ...c, statRanks: statRanksOf(c), style: all ? characterStyleOf(all) : null, live, mains: mains[c.id] || [] });
+    }
+
+    for (const g of games) {
+        const rows = g.rows.slice().sort((a, b) => (a.rank ?? Infinity) - (b.rank ?? Infinity))
+            .map(({ uuid, character, rank, kills, deaths, dealt, taken, heal, augments, core, quit }) => round({ uuid, character, rank, kills, deaths, dealt, taken, heal, augments, core, quit }));
+        writeJson(`games/${g.id}.json`, { id: g.id, players: g.rows[0].players, duration: g.duration, rows });
+    }
+
+    const badges = readBadges();
+    writeJson('badges.json', badges);
+    const lifetimeWins = readLifetimeWins();
+
+    const users = aggregateUsers(games);
+    const styleOf = styleScorer(users);
+    const top = (map, n) => Object.entries(map).sort((a, b) => b[1] - a[1]).slice(0, n).map(([uuid, count]) => ({ uuid, count }));
+    for (const [uuid, u] of users) {
+        const characters = Object.entries(u.characters).sort(byGames).map(([id, t]) => ({ id: Number(id), ...summarize(t) }));
+        writeJson(`user-statistics/${uuid}.json`, {
+            uuid,
+            stats: { ...summarize(u.t), maxKills: u.t.maxKills, maxDealt: Math.round(u.t.maxDealt), maxTaken: Math.round(u.t.maxTaken), mostCharacter: characters[0]?.id ?? null },
+            style: styleOf(u),
+            characters,
+            augments: pick(Object.entries(u.augments), 6, Number),
+            cores: pick(Object.entries(u.cores), 4, String),
+            people: { nemesis: top(u.nemesis, 3), prey: top(u.prey, 3), mates: top(u.mates, 3) },
+            badge: badges[uuid] || null,
+            lifetimeWins: lifetimeWins[uuid] || [],
+            games: u.games.slice().reverse().map(({ game, row }) => round({
+                id: game.id, players: row.players, duration: game.duration, character: row.character, rank: row.rank,
+                kills: row.kills, deaths: row.deaths, dealt: row.dealt, taken: row.taken, heal: row.heal,
+                augments: row.augments, core: row.core, quit: row.quit,
+            })),
+        });
+    }
+
+    const recent60 = periods.recent60.characters;
+    writeJson('home.json', {
+        totalGames: games.length,
+        recentGames: games.slice(-HOME_RECENT_GAMES).reverse().map(g => {
+            const w = g.rows.find(r => r.win);
+            return { id: g.id, players: g.rows[0].players, duration: g.duration, winner: w ? { uuid: w.uuid, character: w.character, kills: w.kills, deaths: w.deaths } : null };
+        }),
+        topCharacters: Object.entries(recent60)
+            .sort((a, b) => b[1].t.wins - a[1].t.wins || rate(b[1].t.wins, b[1].t.games) - rate(a[1].t.wins, a[1].t.games))
+            .slice(0, 5).map(([id, c]) => ({ id: Number(id), games: c.t.games, wins: c.t.wins, winRate: rate(c.t.wins, c.t.games) })),
     });
-  }
 
-  const recent = records.slice(-RECENT_GAMES);
-  writeJson('recent-games.json', { gameRecords: recent });
-
-  const badges = buildBadges();
-  writeJson('badges.json', badges);
-
-  const cores = buildCores();
-  writeJson('cores.json', cores);
-  writeJson('names.json', buildNames(cores));
-  const { characterStats, augmentStats, coreStats } = finalizeStats(records);
-  writeJson('character-stats.json', characterStats);
-  writeJson('augment-stats.json', augmentStats);
-  writeJson('core-stats.json', coreStats);
-  writeJson('home.json', buildHome(records, characterStats));
-
-  console.log(`[빌드] 정적 데이터 생성 완료: ${byPlayer.size}명, ${records.length}경기, 배지 ${Object.keys(badges).length}개`);
+    console.log(`[빌드] 정적 데이터 생성 완료: ${users.size}명, ${games.length}경기, 캐릭터 ${desc.characters.length}명, 배지 ${Object.keys(badges).length}개`);
 }
 
 main();

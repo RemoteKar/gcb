@@ -1,12 +1,9 @@
 const express = require('express');
 const router = express.Router();
-const fetch = require('node-fetch');
 const crypto = require('crypto');
 const bcrypt = require('bcryptjs');
 const { getUUID, getProfileByUUID } = require('../services/mojang');
-const { getCharacterList, getCharacterInfo, getSkillLinks, getWeaponList, getTitanList, getTitanInfo, getAugmentList, createFeedbackIssue, getFeedbackIssues, clearFeedbackCache } = require('../services/github');
 const { getPrismaClient } = require('../services/prisma');
-const authMiddleware = require('../middleware/auth');
 const NodeCache = require('node-cache');
 const { getClientIp, extractIpv4, getIpv4Prefix } = require('../utils/ip');
 const config = require('../../config');
@@ -36,148 +33,6 @@ router.get('/uuid', async (req, res) => {
 });
 
 //----------------------------------------
-// 📌 증강 목록 조회 (이름 + 설명)
-//----------------------------------------
-router.get('/augment-list', async (req, res) => {
-    console.log(`🔍 [서버] 증강 목록 요청`);
-    try {
-        const augments = await getAugmentList();
-        res.json({ augments });
-    } catch (error) {
-        console.error("❌ [서버] 증강 목록 조회 오류:", error);
-        res.status(500).json({ error: '증강 목록을 가져올 수 없습니다.' });
-    }
-});
-
-//----------------------------------------
-// 📌 캐릭터 목록 조회 (1~899번)
-//----------------------------------------
-router.get('/character-list', async (req, res) => {
-    console.log(`🔍 [서버] 캐릭터 목록 요청`);
-    try {
-        const characters = await getCharacterList();
-        res.json({ characters });
-    } catch (error) {
-        console.error("❌ [서버] 캐릭터 목록 조회 오류:", error);
-        res.status(500).json({ error: '캐릭터 목록을 가져올 수 없습니다.' });
-    }
-});
-
-//----------------------------------------
-// 📌 캐릭터 상세 정보 조회
-//----------------------------------------
-router.get('/character-info', async (req, res) => {
-    const { id } = req.query;
-    console.log(`🔍 [서버] 캐릭터 정보 요청: ID = ${id}`);
-
-    if (!id) {
-        return res.status(400).json({ error: "캐릭터 ID를 입력하세요." });
-    }
-
-    const characterId = parseInt(id, 10);
-    if (isNaN(characterId) || characterId < 1 || characterId >= 900) {
-        return res.status(400).json({ error: "유효하지 않은 캐릭터 ID입니다." });
-    }
-
-    try {
-        const charInfo = await getCharacterInfo(characterId);
-        if (!charInfo) {
-            return res.status(404).json({ error: "캐릭터를 찾을 수 없습니다." });
-        }
-        res.json(charInfo);
-    } catch (error) {
-        console.error("❌ [서버] 캐릭터 정보 조회 오류:", error);
-        res.status(500).json({ error: '캐릭터 정보를 가져올 수 없습니다.' });
-    }
-});
-
-//----------------------------------------
-// 📌 스킬 링크 매핑 조회 (skillId → 이동 경로)
-//----------------------------------------
-router.get('/skill-links', async (req, res) => {
-    console.log(`🔍 [서버] 스킬 링크 매핑 요청`);
-    try {
-        const skillLinks = await getSkillLinks();
-        res.json({ skillLinks });
-    } catch (error) {
-        console.error("❌ [서버] 스킬 링크 조회 오류:", error);
-        res.status(500).json({ error: '스킬 링크를 가져올 수 없습니다.' });
-    }
-});
-
-//----------------------------------------
-// 📌 무기 정보 조회
-//----------------------------------------
-router.get('/weapon-info', async (req, res) => {
-    const { id } = req.query;
-    console.log(`🔍 [서버] 무기 정보 요청: ID = ${id}`);
-
-    if (!id) {
-        return res.status(400).json({ error: "무기 ID를 입력하세요." });
-    }
-
-    // 경로 조작 방지
-    if (id.includes('/') || id.includes('\\') || id.includes('..')) {
-        return res.status(400).json({ error: "유효하지 않은 무기 ID입니다." });
-    }
-
-    try {
-        const weapons = await getWeaponList(id);
-        if (!weapons) {
-            return res.status(404).json({ error: "무기 정보를 찾을 수 없습니다." });
-        }
-        res.json({ weaponId: id, weapons });
-    } catch (error) {
-        console.error("❌ [서버] 무기 정보 조회 오류:", error);
-        res.status(500).json({ error: '무기 정보를 가져올 수 없습니다.' });
-    }
-});
-
-//----------------------------------------
-// 📌 타이탄 목록 조회
-//----------------------------------------
-router.get('/titan-list', async (req, res) => {
-    console.log(`🔍 [서버] 타이탄 목록 요청`);
-    try {
-        const result = await getTitanList();
-        if (!result) {
-            return res.status(404).json({ error: "타이탄 정보를 찾을 수 없습니다." });
-        }
-        res.json({ titans: result.titans, smartPistol: result.smartPistol });
-    } catch (error) {
-        console.error("❌ [서버] 타이탄 목록 조회 오류:", error);
-        res.status(500).json({ error: '타이탄 목록을 가져올 수 없습니다.' });
-    }
-});
-
-//----------------------------------------
-// 📌 타이탄 상세 정보 조회
-//----------------------------------------
-router.get('/titan-info', async (req, res) => {
-    const { id } = req.query;
-    console.log(`🔍 [서버] 타이탄 정보 요청: ID = ${id}`);
-
-    if (!id) {
-        return res.status(400).json({ error: "타이탄 ID를 입력하세요." });
-    }
-
-    if (id.includes('/') || id.includes('\\') || id.includes('..')) {
-        return res.status(400).json({ error: "유효하지 않은 타이탄 ID입니다." });
-    }
-
-    try {
-        const titanInfo = await getTitanInfo(id);
-        if (!titanInfo) {
-            return res.status(404).json({ error: "타이탄을 찾을 수 없습니다." });
-        }
-        res.json(titanInfo);
-    } catch (error) {
-        console.error("❌ [서버] 타이탄 정보 조회 오류:", error);
-        res.status(500).json({ error: '타이탄 정보를 가져올 수 없습니다.' });
-    }
-});
-
-//----------------------------------------
 // 📌 배치 UUID → 닉네임 조회
 //----------------------------------------
 router.get('/profiles', async (req, res) => {
@@ -204,136 +59,6 @@ router.get('/profiles', async (req, res) => {
 });
 
 //----------------------------------------
-// 📌 클라이언트 설정 (Google Client ID 등)
-//----------------------------------------
-router.get('/config', (req, res) => {
-    res.json({
-        githubClientId: process.env.GITHUB_OAUTH_CLIENT_ID || '',
-    });
-});
-
-//----------------------------------------
-// 📌 GitHub OAuth 코드 → 액세스 토큰 교환
-//----------------------------------------
-router.post('/auth/github', async (req, res) => {
-    const { code } = req.body;
-    if (!code) {
-        return res.status(400).json({ error: '인증 코드가 필요합니다.' });
-    }
-
-    try {
-        // GitHub에 코드 → 액세스 토큰 교환 요청
-        const tokenResponse = await fetch('https://github.com/login/oauth/access_token', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'Accept': 'application/json',
-            },
-            body: JSON.stringify({
-                client_id: process.env.GITHUB_OAUTH_CLIENT_ID,
-                client_secret: process.env.GITHUB_OAUTH_CLIENT_SECRET,
-                code,
-            }),
-        });
-
-        const tokenData = await tokenResponse.json();
-
-        if (tokenData.error) {
-            console.error('❌ [Auth] GitHub 토큰 교환 실패:', tokenData.error_description);
-            return res.status(401).json({ error: 'GitHub 인증에 실패했습니다.' });
-        }
-
-        // 액세스 토큰으로 유저 정보 조회
-        const userResponse = await fetch('https://api.github.com/user', {
-            headers: {
-                'Authorization': `token ${tokenData.access_token}`,
-                'User-Agent': 'GCB-App',
-            },
-        });
-
-        if (!userResponse.ok) {
-            return res.status(401).json({ error: 'GitHub 유저 정보 조회 실패' });
-        }
-
-        const user = await userResponse.json();
-
-        res.json({
-            accessToken: tokenData.access_token,
-            name: user.name || user.login,
-            login: user.login,
-            avatarUrl: user.avatar_url,
-        });
-    } catch (error) {
-        console.error('❌ [Auth] GitHub OAuth 오류:', error);
-        res.status(500).json({ error: 'GitHub 인증 처리 중 오류가 발생했습니다.' });
-    }
-});
-
-// 피드백 제출 제한 (10분에 3회)
-const feedbackRateLimit = new NodeCache({ stdTTL: 600 });
-
-//----------------------------------------
-// 📌 건의/버그 제출 (Google 로그인 필수)
-//----------------------------------------
-router.post('/feedback', authMiddleware, async (req, res) => {
-    console.log(`🔍 [서버] 피드백 제출 요청`);
-
-    // Rate limit 체크
-    const rateKey = `feedback_${req.user.sub}`;
-    const currentCount = feedbackRateLimit.get(rateKey) || 0;
-    if (currentCount >= 3) {
-        return res.status(429).json({ error: '너무 많은 요청입니다. 10분 후 다시 시도해주세요.' });
-    }
-
-    const { category, title, content } = req.body;
-
-    if (!category || !title || !content) {
-        return res.status(400).json({ error: '카테고리, 제목, 내용을 모두 입력하세요.' });
-    }
-    if (!['bug', 'enhancement', 'other', 'gcbc'].includes(category)) {
-        return res.status(400).json({ error: '유효하지 않은 카테고리입니다.' });
-    }
-    if (title.trim().length === 0 || title.length > 100) {
-        return res.status(400).json({ error: '제목은 1~100자로 입력하세요.' });
-    }
-    if (content.trim().length === 0 || content.length > 2000) {
-        return res.status(400).json({ error: '내용은 1~2000자로 입력하세요.' });
-    }
-
-    const categoryNames = { bug: '버그', enhancement: '건의', other: '기타', gcbc: 'GCBC' };
-    const issueTitle = `[${categoryNames[category]}] ${title.trim()}`;
-    const issueBody = `**카테고리**: ${categoryNames[category]}\n**작성자**: ${req.user.name}\n\n---\n\n${content.trim()}`;
-    const labels = [category, 'user-feedback'];
-
-    try {
-        const issue = await createFeedbackIssue(issueTitle, issueBody, labels);
-        clearFeedbackCache();
-        feedbackRateLimit.set(rateKey, currentCount + 1);
-        console.log(`✅ [서버] 피드백 제출 완료: Issue #${issue.number}`);
-        res.json({ success: true, issueNumber: issue.number });
-    } catch (error) {
-        console.error("❌ [서버] 피드백 제출 오류:", error);
-        res.status(500).json({ error: '제출에 실패했습니다.' });
-    }
-});
-
-//----------------------------------------
-// 📌 건의/버그 목록 조회
-//----------------------------------------
-router.get('/feedback-list', async (req, res) => {
-    const skipCache = !!req.query.t;
-    console.log(`🔍 [서버] 피드백 목록 요청${skipCache ? ' (캐시 무시)' : ''}`);
-    try {
-        if (skipCache) clearFeedbackCache();
-        const issues = await getFeedbackIssues();
-        res.json({ issues });
-    } catch (error) {
-        console.error("❌ [서버] 피드백 목록 조회 오류:", error);
-        res.status(500).json({ error: '목록을 가져올 수 없습니다.' });
-    }
-});
-
-//----------------------------------------
 // 📌 캐릭터 댓글 (디시 스타일: 비로그인, 닉네임/비밀번호 매번 입력)
 //----------------------------------------
 const COMMENTS_PER_PAGE = 20;
@@ -346,6 +71,43 @@ function timingSafeStringEqual(a, b) {
     const bBuf = Buffer.from(b);
     if (aBuf.length !== bBuf.length) return false;
     return crypto.timingSafeEqual(aBuf, bBuf);
+}
+
+// 유동 작성자 검증 (닉네임/비밀번호/IP) — 실패하면 { error }
+function parseAnonAuthor(req) {
+    const { nickname, password } = req.body || {};
+
+    const rawNick = typeof nickname === 'string' ? nickname.trim() : '';
+    if (rawNick.length > 15) {
+        return { error: '닉네임은 15자 이하로 입력하세요.' };
+    }
+    if (/\s/.test(rawNick)) {
+        return { error: '닉네임에 공백을 포함할 수 없습니다.' };
+    }
+    if (typeof password !== 'string' || !/^[a-zA-Z0-9]{4}$/.test(password)) {
+        return { error: '비밀번호는 영문/숫자 4자입니다.' };
+    }
+
+    const ipv4 = extractIpv4(getClientIp(req));
+    if (!ipv4) {
+        return { error: 'IPv4 환경에서만 작성할 수 있습니다.' };
+    }
+
+    return {
+        nickname: rawNick || config.defaultCommentNickname || 'ㅇㅇ',
+        password,
+        ipv4,
+        ipPrefix: getIpv4Prefix(ipv4),
+    };
+}
+
+function isMaster(password) {
+    return !!config.masterPassword && timingSafeStringEqual(password, config.masterPassword);
+}
+
+// 작성자 비밀번호 또는 관리자(마스터) 비밀번호면 삭제 가능
+async function canDelete(password, passwordHash) {
+    return isMaster(password) || bcrypt.compare(password, passwordHash);
 }
 
 router.get('/character-comments', async (req, res) => {
@@ -389,29 +151,16 @@ router.get('/character-comments', async (req, res) => {
 });
 
 router.post('/character-comments', async (req, res) => {
-    const { characterId, nickname, password, content } = req.body || {};
+    const { characterId, content } = req.body || {};
 
     const charId = parseInt(characterId, 10);
     if (isNaN(charId)) {
         return res.status(400).json({ error: '유효하지 않은 캐릭터 ID입니다.' });
     }
 
-    const rawNick = typeof nickname === 'string' ? nickname.trim() : '';
-    let finalNick;
-    if (rawNick.length === 0) {
-        finalNick = config.defaultCommentNickname || 'ㅇㅇ';
-    } else {
-        if (rawNick.length > 15) {
-            return res.status(400).json({ error: '닉네임은 15자 이하로 입력하세요.' });
-        }
-        if (/\s/.test(rawNick)) {
-            return res.status(400).json({ error: '닉네임에 공백을 포함할 수 없습니다.' });
-        }
-        finalNick = rawNick;
-    }
-
-    if (typeof password !== 'string' || !/^[a-zA-Z0-9]{4}$/.test(password)) {
-        return res.status(400).json({ error: '비밀번호는 영문/숫자 4자입니다.' });
+    const author = parseAnonAuthor(req);
+    if (author.error) {
+        return res.status(400).json({ error: author.error });
     }
 
     if (typeof content !== 'string') {
@@ -422,29 +171,22 @@ router.post('/character-comments', async (req, res) => {
         return res.status(400).json({ error: '내용은 1~300자로 입력하세요.' });
     }
 
-    const rawIp = getClientIp(req);
-    const ipv4 = extractIpv4(rawIp);
-    if (!ipv4) {
-        return res.status(400).json({ error: 'IPv4 환경에서만 댓글을 작성할 수 있습니다.' });
-    }
-    const ipPrefix = getIpv4Prefix(ipv4);
-
-    const rateKey = `comment_${ipv4}`;
+    const rateKey = `comment_${author.ipv4}`;
     if (commentRateLimit.get(rateKey)) {
         return res.status(429).json({ error: '30초에 한 번만 작성할 수 있습니다.' });
     }
 
     try {
-        const passwordHash = await bcrypt.hash(password, 10);
+        const passwordHash = await bcrypt.hash(author.password, 10);
 
         const prisma = getPrismaClient();
 
         const comment = await prisma.characterComment.create({
             data: {
                 characterId: charId,
-                nickname: finalNick,
+                nickname: author.nickname,
                 passwordHash,
-                ipPrefix,
+                ipPrefix: author.ipPrefix,
                 content: trimmedContent,
             },
             select: {
@@ -500,10 +242,7 @@ router.delete('/character-comments/:id', async (req, res) => {
             return res.status(404).json({ error: '댓글을 찾을 수 없습니다.' });
         }
 
-        const isMaster = !!config.masterPassword && timingSafeStringEqual(password, config.masterPassword);
-        const isOwner = !isMaster && (await bcrypt.compare(password, comment.passwordHash));
-
-        if (!isMaster && !isOwner) {
+        if (!(await canDelete(password, comment.passwordHash))) {
             return res.status(403).json({ error: '비밀번호가 일치하지 않습니다.' });
         }
 
@@ -512,6 +251,151 @@ router.delete('/character-comments/:id', async (req, res) => {
     } catch (error) {
         console.error('❌ [서버] 댓글 삭제 오류:', error);
         res.status(500).json({ error: '댓글 삭제에 실패했습니다.' });
+    }
+});
+
+//----------------------------------------
+// 📌 건의/버그 (댓글과 같은 유동 방식: 비로그인, 닉네임/비밀번호 매번 입력)
+//----------------------------------------
+router.get('/feedback-list', async (req, res) => {
+    try {
+        const prisma = getPrismaClient();
+
+        const feedbacks = await prisma.feedback.findMany({
+            orderBy: { createdAt: 'desc' },
+            take: 200,
+            select: {
+                id: true,
+                category: true,
+                title: true,
+                content: true,
+                nickname: true,
+                ipPrefix: true,
+                status: true,
+                createdAt: true,
+            },
+        });
+
+        res.json({ feedbacks });
+    } catch (error) {
+        console.error('❌ [서버] 건의 목록 조회 오류:', error);
+        res.status(500).json({ error: '목록을 가져올 수 없습니다.' });
+    }
+});
+
+router.post('/feedback', async (req, res) => {
+    const { category, title, content } = req.body || {};
+
+    if (!['bug', 'enhancement', 'other', 'gcbc'].includes(category)) {
+        return res.status(400).json({ error: '유효하지 않은 카테고리입니다.' });
+    }
+    const trimmedTitle = typeof title === 'string' ? title.trim() : '';
+    if (trimmedTitle.length === 0 || trimmedTitle.length > 100) {
+        return res.status(400).json({ error: '제목은 1~100자로 입력하세요.' });
+    }
+    const trimmedContent = typeof content === 'string' ? content.trim() : '';
+    if (trimmedContent.length === 0 || trimmedContent.length > 2000) {
+        return res.status(400).json({ error: '내용은 1~2000자로 입력하세요.' });
+    }
+
+    const author = parseAnonAuthor(req);
+    if (author.error) {
+        return res.status(400).json({ error: author.error });
+    }
+
+    try {
+        const prisma = getPrismaClient();
+
+        // 같은 IP 앞자리에서 10분에 3개까지 (함수 메모리는 콜드 스타트마다 비므로 DB로 셈)
+        const recentCount = await prisma.feedback.count({
+            where: {
+                ipPrefix: author.ipPrefix,
+                createdAt: { gt: new Date(Date.now() - 10 * 60 * 1000) },
+            },
+        });
+        if (recentCount >= 3) {
+            return res.status(429).json({ error: '너무 많은 요청입니다. 10분 후 다시 시도해주세요.' });
+        }
+
+        const passwordHash = await bcrypt.hash(author.password, 10);
+
+        await prisma.feedback.create({
+            data: {
+                category,
+                title: trimmedTitle,
+                content: trimmedContent,
+                nickname: author.nickname,
+                passwordHash,
+                ipPrefix: author.ipPrefix,
+            },
+        });
+
+        res.json({ success: true });
+    } catch (error) {
+        console.error('❌ [서버] 건의 작성 오류:', error);
+        res.status(500).json({ error: '제출에 실패했습니다.' });
+    }
+});
+
+router.delete('/feedback/:id', async (req, res) => {
+    const feedbackId = parseInt(req.params.id, 10);
+    const { password } = req.body || {};
+
+    if (isNaN(feedbackId)) {
+        return res.status(400).json({ error: '유효하지 않은 글 ID입니다.' });
+    }
+    if (typeof password !== 'string' || password.length === 0) {
+        return res.status(400).json({ error: '비밀번호가 필요합니다.' });
+    }
+
+    try {
+        const prisma = getPrismaClient();
+
+        const feedback = await prisma.feedback.findUnique({ where: { id: feedbackId } });
+        if (!feedback) {
+            return res.status(404).json({ error: '글을 찾을 수 없습니다.' });
+        }
+
+        if (!(await canDelete(password, feedback.passwordHash))) {
+            return res.status(403).json({ error: '비밀번호가 일치하지 않습니다.' });
+        }
+
+        await prisma.feedback.delete({ where: { id: feedbackId } });
+        res.json({ success: true });
+    } catch (error) {
+        console.error('❌ [서버] 건의 삭제 오류:', error);
+        res.status(500).json({ error: '삭제에 실패했습니다.' });
+    }
+});
+
+// 상태 전환(열림·해결·닫힘)은 관리자만
+router.patch('/feedback/:id/status', async (req, res) => {
+    const feedbackId = parseInt(req.params.id, 10);
+    const { status, password } = req.body || {};
+
+    if (isNaN(feedbackId)) {
+        return res.status(400).json({ error: '유효하지 않은 글 ID입니다.' });
+    }
+    if (!['open', 'resolved', 'closed'].includes(status)) {
+        return res.status(400).json({ error: '유효하지 않은 상태입니다.' });
+    }
+    if (!isMaster(password)) {
+        return res.status(403).json({ error: '관리자 비밀번호가 아닙니다.' });
+    }
+
+    try {
+        const prisma = getPrismaClient();
+
+        const feedback = await prisma.feedback.findUnique({ where: { id: feedbackId } });
+        if (!feedback) {
+            return res.status(404).json({ error: '글을 찾을 수 없습니다.' });
+        }
+
+        await prisma.feedback.update({ where: { id: feedbackId }, data: { status } });
+        res.json({ success: true });
+    } catch (error) {
+        console.error('❌ [서버] 건의 상태 변경 오류:', error);
+        res.status(500).json({ error: '상태를 바꾸지 못했습니다.' });
     }
 });
 

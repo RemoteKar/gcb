@@ -8,7 +8,7 @@ Minecraft 게임 통계 및 랭킹 API 서버 (풀스택 웹 애플리케이션)
 - **데이터베이스**: PostgreSQL + Prisma ORM
 - **프론트엔드**: Vanilla HTML/CSS/JS
 - **배포**: Netlify (Serverless Functions)
-- **외부 API**: Mojang API, GitHub API
+- **외부 API**: Mojang API (닉네임·UUID). 화면 데이터는 전부 빌드 때 만든 정적 JSON(`client/data/`), 런타임 GitHub API 없음
 
 ---
 
@@ -592,10 +592,10 @@ model CharacterComment {
 6. `character_stats.html` - 캐릭터 통계
 7. `augment.html` - 증강 목록 (증강정보)
 8. `augment_stats.html` - 증강 통계
-9. `weapon_detail.html` - 무기 상세 (상단바 미노출, 스킬 클릭으로만 진입)
-10. `titan_list.html` - 타이탄 목록 (상단바 미노출, 스킬 클릭으로만 진입)
-11. `titan_detail.html` - 타이탄 상세 (상단바 미노출, 목록에서 클릭으로 진입)
-12. `feedback.html` - 건의/버그 (GitHub 로그인 필요, 붉은 탭)
+9. `weapon_detail.html` - 무기 상세 (상단바 미노출, 스킬 '자세히'로만 진입, `skill-pages.js`)
+10. `titan_list.html` - 타이탄 목록 (상단바 미노출, 스킬 '자세히'로만 진입, `skill-pages.js`)
+11. `titan_detail.html` - 타이탄 상세 (상단바 미노출, 목록에서 클릭으로 진입, `skill-pages.js`)
+12. `feedback.html` - 건의/버그 (유동: 닉네임/비밀번호, 붉은 탭)
 13. `patchnotes.html` - 패치노트 (`Data/patchnotes/*.md` 수동 관리)
 14. `core.html` - 코어 목록
 15. `core_stats.html` - 코어 통계
@@ -616,3 +616,21 @@ model CharacterComment {
 - 서버에서 재생성한 캐릭터·증강·코어 설명을 동기화. 교체된 코어(encoretape/rubberduck)의 잔존 설명 제거.
 - 코어 아이콘을 정본 모델에서 재생성하고 기존 증강 아이콘 변경도 반영.
 - 정적 데이터/패치노트 빌드 검증. 로컬에는 DATABASE_URL이 없어 랭킹 DB 연동은 검증하지 않음.
+
+
+## 2026-10-31 건의/버그 → 유동(비로그인) 방식
+- GitHub 로그인·OAuth·GitHub Issues 연동을 없애고 캐릭터 댓글과 같은 닉네임/비밀번호(영문/숫자 4자) 방식으로 교체. 글은 Postgres `Feedback` 테이블(마이그레이션 `20261031120000_add_feedback`).
+- API: `GET /api/feedback-list`(최신 200개), `POST /api/feedback`(같은 IP 앞자리에서 10분에 3개, DB로 셈), `DELETE /api/feedback/:id`(작성자 비밀번호 또는 MASTER_PASSWORD). `/api/config`·`/api/auth/github`·`server/middleware/auth.js` 삭제.
+- 댓글과 공용 함수: `parseAnonAuthor()`(닉네임/비밀번호/IP 검증), `canDelete()`(작성자·관리자 비밀번호 확인).
+- 기존 GitHub Issues 32건은 RemoteKar/gcb 이슈에 남음. Netlify 환경변수 `GITHUB_OAUTH_CLIENT_ID`/`GITHUB_OAUTH_CLIENT_SECRET`는 더 이상 안 씀.
+- 상태 `status` = open/resolved/closed(기본 open). 목록 위 상태 탭(열림/해결/닫힘 + 지금 카테고리 안 개수, 기본 열림) × 카테고리 탭, 상세 창에 상태 표시. 변경 = `PATCH /api/feedback/:id/status`(MASTER_PASSWORD 만). 화면 아래 '관리자' → 비밀번호 입력 → 그 탭(sessionStorage) 동안 상세 창에 다시 열기·해결·닫음.
+- 옛 GitHub Issues 32건 이전 = 마이그레이션 `20261031120100_import_github_feedback`(닫힘 28 = resolved, 열림 4 = open, 작성자·작성 시각 유지, 비밀번호·IP 앞자리 없음 → 관리자만 삭제, 화면엔 닉네임만).
+- 개편 뒤 서버 환경변수 = `DATABASE_URL`·`MASTER_PASSWORD` 뿐(`GITHUB_*` 전부 안 씀).
+
+## 2026-10-31 사이트 2차 개편 (정보 확대 · 디자인 체계 · 코드 정리)
+- 화면 데이터 = 빌드(`scripts/build-static-data.js` + 공용 `scripts/game-stats.js`)가 만든 정적 JSON만. `server/services/github.js`·`server/utils/statistics.js` 와 `/api/character-*`·`/api/skill-links`·`/api/weapon-info`·`/api/titan-*`·`/api/augment-list` 삭제. 남은 API = `/api/uuid`·`/api/profiles`·댓글·건의.
+- 새 정적 데이터: `characters/{id}.json`(스탯 + 정식 캐릭터 중 순위 `statRanks`, 성향 6축 `style`, 기간별 실전 통계·순위 분포 `tiers`·자주 고른 증강/코어, 많이 하는 유저 `mains`), `user-statistics/{uuid}.json`(요약·성향 6축 백분위·캐릭터별·천적/먹잇감/자주 만난 유저·판별 기록), `games/{id}.json`(판 상세), `weapons/`·`titans/`, `nicknames.json`(빌드 때 닉네임, 화면은 없는 것만 `/api/profiles`).
+- 성향 6축 = 화력(판당 가한 피해)·처치·순위(판마다 이긴 사람 비율)·생존(판당 사망 적을수록)·회복·맷집(판당 받은 피해), 5판 이상 유저(캐릭터) 사이 백분위. 그래프는 `GCB.styleView()`(인라인 SVG).
+- 공용 스크립트: `common.js`(상단 메뉴 주입·`window.GCB` 함수: esc/json(같은 주소 한 번만)/mc 색코드/초상화·아바타/닉네임/툴팁/탭/페이지 번호/카드·타일/성향 그래프), `catalog.js`(캐릭터·증강·코어 목록, `<body data-catalog>`), `stats.js`(통계 표, `<body data-stats>`), `skill-pages.js`(무기·타이탄, `<body data-page>`), `stats-table.js`(정렬 표). 페이지 스크립트는 `type="module"`.
+- 모든 페이지 `<body>` 맨 앞에 `character-config.js` → `common.js` 순서로 넣는다(헤더가 깜빡이지 않게 동기 로드). 툴팁은 `data-tip` 속성만 달면 된다.
+- `client/styles/main.css` 전면 교체(변수 기반 디자인 체계, 2896줄 → 약 600줄). 패치노트 렌더러 클래스(pn-h·pn-portrait·pn-sh·pn-old/arrow/new)는 그대로.

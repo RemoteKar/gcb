@@ -9,17 +9,9 @@
   <link rel="icon" href="/favicon.ico" type="image/x-icon">
 </head>
 <body>
-  <div class="header-bar">
-    <a href="/" class="header-logo">GCB.GG</a>
-    <a href="/ranking.html" class="nav-button">랭킹</a>
-    <a href="/character.html" class="nav-button">캐릭터</a>
-    <a href="/augment.html" class="nav-button">증강</a>
-    <a href="/core.html" class="nav-button">코어</a>
-    <a href="/patchnotes.html" class="nav-button">패치노트</a>
-    <a href="/feedback.html" class="nav-button nav-button-red">건의/버그</a>
-  </div>
-
-  <div class="container ts-container">
+  <script src="/scripts/character-config.js"></script>
+  <script src="/scripts/common.js"></script>
+  <main class="page ts-container">
     <div class="ts-head">
       <h1>테스트 서버</h1>
       <p class="ts-sub">새 캐릭터·밸런스를 미리 돌려보는 서버입니다. 상시 운영이 아니며, 아래 표시가 <b>열림</b>일 때만 접속할 수 있습니다.</p>
@@ -49,7 +41,7 @@
       <p class="ts-note" id="ts-note"></p>
       <p class="ts-updated" id="ts-updated"></p>
     </section>
-  </div>
+  </main>
 
   <script>
     // PBE 테스트 서버 = 운영자 PC 개발 서버. 바꾸면 index.html 배너 주소도 같이.

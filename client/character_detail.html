@@ -1,80 +1,49 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>캐릭터 정보 - GCB.gg</title>
-    <meta property="og:title" content="캐릭터 정보 - GCB.gg">
-    <meta property="og:description" content="게임캐릭터배틀 캐릭터 스탯·스킬·실전 통계">
-    <link rel="stylesheet" href="/styles/main.css">
-    <link rel="icon" href="/favicon.ico" type="image/x-icon">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>캐릭터 정보 - GCB.gg</title>
+  <meta property="og:title" content="캐릭터 정보 - GCB.gg">
+  <meta property="og:description" content="게임캐릭터배틀 캐릭터 스탯·스킬·실전 통계">
+  <link rel="icon" href="/favicon.ico" type="image/x-icon">
+  <link rel="stylesheet" href="/styles/main.css">
 </head>
 <body>
-    <div class="header-bar">
-      <a href="/" class="header-logo">GCB.GG</a>
-      <a href="/ranking.html" class="nav-button">랭킹</a>
-      <a href="/character.html" class="nav-button active">캐릭터</a>
-      <a href="/augment.html" class="nav-button">증강</a>
-      <a href="/core.html" class="nav-button">코어</a>
-      <a href="/patchnotes.html" class="nav-button">패치노트</a>
-      <a href="/feedback.html" class="nav-button nav-button-red">건의/버그</a>
-    </div>
+  <script src="/scripts/character-config.js"></script>
+  <script src="/scripts/common.js"></script>
+  <main class="page">
+    <section class="card char-hero" id="char-hero"><div class="skeleton row"></div><div class="skeleton row"></div></section>
 
-    <div class="container character-detail-container">
-        <div class="character-header">
-            <img id="character-portrait" class="character-portrait-lg" src="" alt="캐릭터 초상화">
-            <h1 id="character-name">캐릭터 정보</h1>
-        </div>
-
-        <div id="loading" class="loading-text">로딩 중...</div>
-
-        <!-- 스탯 정보 -->
-        <div id="stats-container" class="character-stats-container">
-            <!-- 스탯 정보가 여기에 동적으로 추가됨 -->
-        </div>
-
-        <!-- 실전 통계 (게임 기록 기반) -->
-        <section id="live-stats" class="char-live-stats" hidden>
-            <div class="char-live-stats-head">
-                <h2>실전 통계</h2>
-                <div class="sub-tabs" id="live-period-tabs" role="tablist">
-                    <button data-period="recent60" class="active">최근 60게임</button>
-                    <button data-period="recent200">최근 200게임</button>
-                    <button data-period="all">전체</button>
-                </div>
+    <div class="char-layout" id="char-layout" hidden>
+      <div class="char-main">
+        <section class="card" id="skills-card"></section>
+        <section class="card">
+          <div class="card-head"><h2>댓글 <small id="comment-total"></small></h2></div>
+          <form id="comment-form" class="comment-form">
+            <div class="comment-form-row">
+              <input type="text" id="comment-nickname" class="input" placeholder="닉네임 (비우면 ㅇㅇ)" maxlength="15" aria-label="닉네임">
+              <input type="password" id="comment-password" class="input" placeholder="비밀번호 (영문/숫자 4자)" maxlength="4" pattern="[a-zA-Z0-9]{4}" required aria-label="비밀번호">
             </div>
-            <div id="live-stats-body"></div>
+            <textarea id="comment-content" class="input" placeholder="내용 (300자 이내)" maxlength="300" required aria-label="댓글 내용"></textarea>
+            <div class="comment-form-footer">
+              <span id="comment-error" class="form-error"></span>
+              <span id="comment-count" class="comment-count">0 / 300</span>
+              <button type="submit" id="comment-submit" class="btn btn-primary">작성</button>
+            </div>
+          </form>
+          <div id="comments-list"></div>
+          <div id="comments-pager" class="pager"></div>
         </section>
-
-        <div id="skills-container" class="skills-container">
-            <!-- 스킬 정보가 여기에 동적으로 추가됨 -->
-        </div>
-
-        <!-- 댓글 섹션 -->
-        <div class="comments-section">
-            <h2 class="comments-title">댓글</h2>
-
-            <form id="comment-form" class="comment-form">
-                <div class="comment-form-row">
-                    <input type="text" id="comment-nickname" placeholder="닉네임 (비워두면 ㅇㅇ, 최대 15자)" maxlength="15">
-                    <input type="password" id="comment-password" placeholder="비밀번호 (영문/숫자 4자)" maxlength="4" pattern="[a-zA-Z0-9]{4}" required>
-                </div>
-                <textarea id="comment-content" placeholder="내용 (300자 이내)" maxlength="300" required></textarea>
-                <div class="comment-form-footer">
-                    <span id="comment-char-count">0 / 300</span>
-                    <button type="submit" id="comment-submit">작성</button>
-                </div>
-                <div id="comment-form-error" class="comment-error"></div>
-            </form>
-
-            <div id="comments-loading" class="comments-loading">댓글을 불러오는 중...</div>
-            <div id="comments-list" class="comments-list"></div>
-            <div id="comments-pagination" class="comments-pagination"></div>
-        </div>
+      </div>
+      <aside class="char-side">
+        <section class="card" id="live-card"></section>
+        <section class="card" id="style-card"></section>
+        <section class="card" id="mains-card"></section>
+      </aside>
     </div>
-
-    <script src="/scripts/stats-table.js"></script>
-    <script src="/scripts/augment_popup.js"></script>
-    <script src="/scripts/character_detail.js"></script>
+  </main>
+  <script src="/scripts/augment_popup.js"></script>
+  <script type="module" src="/scripts/character_detail.js"></script>
 </body>
 </html>

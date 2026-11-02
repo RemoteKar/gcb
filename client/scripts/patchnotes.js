@@ -5,13 +5,13 @@ document.addEventListener("DOMContentLoaded", async () => {
     const moreBtn = document.getElementById('pn-more');
     const PAGE = 30;
 
-    const esc = (s) => String(s ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+    const { esc, json } = GCB;
 
     // 캐릭터 이름 -> id (헤더 옆 초상화용). 로드 실패해도 패치노트는 정상 표시
     let charIdByName = {};
-    fetch('/data/names.json').then(r => r.json()).then(d => {
-        for (const [id, name] of Object.entries(d.characters || {})) charIdByName[name] = id;
-    }).catch(() => {});
+    json('/data/names.json').then(d => {
+        for (const [id, name] of Object.entries(d?.characters || {})) charIdByName[name] = id;
+    });
 
     // "A -> B" 수치 변경 강조, "이름:" 헤더 강조 (캐릭터명이면 초상화 표시)
     // 들여쓰기(탭/공백 1문자 = 1단계)는 눈에 보이는 인덴트로 변환 — 공백 1칸 스타일 파일도 계층이 보이게
@@ -25,7 +25,7 @@ document.addEventListener("DOMContentLoaded", async () => {
                 const img = id ? `<img class="pn-portrait" src="/Resource/character/${id}.png" alt="" loading="lazy" onerror="this.remove()">` : '';
                 html = `<span class="pn-h">${img}${t}</span>`;
             } else {
-                html = t.replace(/(.*?)(\s*(?:->|→)\s*)(.*)/, (all, a, arrow, b) =>
+                html = t.replace(/(.*?)(\s*(?:-&gt;|→)\s*)(.*)/, (all, a, arrow, b) => // t 는 이스케이프된 줄이라 -> 가 -&gt;
                     `<span class="pn-old">${a}</span><span class="pn-arrow">${arrow}</span><span class="pn-new">${b}</span>`);
                 if (depth > 0 && /:\s*$/.test(line) && !/->|→/.test(line)) html = `<span class="pn-sh">${html}</span>`;
             }
@@ -51,7 +51,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         const slice = filtered.slice(shown, shown + PAGE);
         listEl.insertAdjacentHTML('beforeend', slice.map((n, i) => rowHtml(n, shown + i)).join(''));
         shown += slice.length;
-        moreBtn.style.display = shown < filtered.length ? '' : 'none';
+        moreBtn.hidden = shown >= filtered.length;
         moreBtn.textContent = `더보기 (${filtered.length - shown}개 남음)`;
     }
 
@@ -88,22 +88,20 @@ document.addEventListener("DOMContentLoaded", async () => {
         const q = searchEl.value.trim().toLowerCase();
         filtered = q ? notes.filter(n => (n.title + '\n' + n.body).toLowerCase().includes(q)) : notes;
         shown = 0;
-        listEl.innerHTML = filtered.length ? '' : '<div class="empty-state">검색 결과가 없습니다.</div>';
+        listEl.innerHTML = filtered.length ? '' : '<div class="empty">검색 결과가 없습니다.</div>';
         if (filtered.length) renderMore();
-        else moreBtn.style.display = 'none';
+        else moreBtn.hidden = true;
     }
 
-    try {
-        const res = await fetch('/data/patchnotes.json');
-        if (!res.ok) throw new Error('load failed');
-        notes = (await res.json()).notes || [];
-    } catch (e) {
-        listEl.innerHTML = '<div class="empty-state">패치노트를 불러오지 못했습니다.</div>';
+    const data = await json('/data/patchnotes.json');
+    if (!data) {
+        listEl.innerHTML = '<div class="empty">패치노트를 불러오지 못했습니다.</div>';
         return;
     }
+    notes = data.notes || [];
 
     if (notes.length === 0) {
-        listEl.innerHTML = '<div class="empty-state">등록된 패치노트가 없습니다.</div>';
+        listEl.innerHTML = '<div class="empty">등록된 패치노트가 없습니다.</div>';
         return;
     }
 

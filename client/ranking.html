@@ -10,31 +10,22 @@
   <link rel="stylesheet" href="/styles/main.css">
 </head>
 <body>
-  <div class="header-bar">
-    <a href="/" class="header-logo">GCB.GG</a>
-    <a href="/ranking.html" class="nav-button active">랭킹</a>
-    <a href="/character.html" class="nav-button">캐릭터</a>
-    <a href="/augment.html" class="nav-button">증강</a>
-    <a href="/core.html" class="nav-button">코어</a>
-    <a href="/patchnotes.html" class="nav-button">패치노트</a>
-    <a href="/feedback.html" class="nav-button nav-button-red">건의/버그</a>
-  </div>
-  <div class="container ranking-container">
+  <script src="/scripts/character-config.js"></script>
+  <script src="/scripts/common.js"></script>
+  <main class="page">
     <div class="page-head">
-      <h1>랭킹</h1>
-      <p class="page-desc">10판 이상 플레이한 유저 · MMR = 판마다 이긴 사람 비율로 매긴 점수 (평균 1000, 판수가 적을수록 1000 쪽으로 보정) · 정식 캐릭터 게임만 집계</p>
+      <h1 class="page-title">랭킹</h1>
+      <p class="page-desc">10판 이상 플레이한 유저 · 정식 캐릭터 게임 기준</p>
     </div>
-    <section id="top-3-ranking" class="section top-3-ranking">
-      <!-- 상위 3명 유저 강조 표시 -->
+    <section class="podium" id="podium"></section>
+    <section class="card">
+      <div class="card-head">
+        <h2 id="ranking-count">전체 랭킹</h2>
+        <input type="search" id="ranking-search" class="input input-sm" placeholder="닉네임 검색" autocomplete="off" aria-label="랭킹에서 닉네임 검색">
+      </div>
+      <div id="ranking-table" class="table-wrap"><div class="skeleton row"></div><div class="skeleton row"></div><div class="skeleton row"></div></div>
     </section>
-    <div class="ranking-toolbar">
-      <h2 id="ranking-count">전체 랭킹</h2>
-      <input type="search" id="ranking-search" placeholder="닉네임 검색" autocomplete="off">
-    </div>
-    <section id="other-ranking" class="section table-wrap">
-      <div class="skeleton skeleton-row"></div><div class="skeleton skeleton-row"></div><div class="skeleton skeleton-row"></div>
-    </section>
-  </div>
+  </main>
   <script src="/scripts/stats-table.js"></script>
   <script type="module" src="/scripts/ranking.js"></script>
 </body>

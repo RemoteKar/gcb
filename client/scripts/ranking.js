@@ -1,97 +1,58 @@
-document.addEventListener("DOMContentLoaded", async () => {
-    const top3RankingSection = document.getElementById("top-3-ranking");
-    const otherRankingSection = document.getElementById("other-ranking");
-    const searchInput = document.getElementById("ranking-search");
-    const countEl = document.getElementById("ranking-count");
-    const { createSortableTable, esc } = StatsTable;
+// 랭킹: TOP 3 단상 + 전체 정렬 표 (닉네임 검색)
+const { esc, json, portrait, charName, avatar, num } = GCB;
+const { createSortableTable, bar } = StatsTable;
+const $ = id => document.getElementById(id);
 
-    const avatar = (uuid, size, cls = '') => `<img class="${cls}" src="https://mc-heads.net/avatar/${uuid}/${size}" alt="" loading="lazy" onerror="this.onerror=null;this.src='https://crafatar.com/avatars/${uuid}?size=${size}&overlay'">`;
+const [leaderboard, badges, names] = await Promise.all([json('/data/leaderboard.json'), json('/data/badges.json'), json('/data/names.json')]);
 
-    async function fetchLeaderboardData() {
-        try {
-            const [response, badgeResponse] = await Promise.all([
-                fetch('/data/leaderboard.json'),
-                fetch('/data/badges.json'),
-            ]);
-            if (!response.ok) {
-                throw new Error('랭킹 데이터를 가져오는 데 실패했습니다.');
-            }
-            const leaderboardData = await response.json();
-            const badges = badgeResponse.ok ? await badgeResponse.json() : {};
-            return { leaderboardData, badgeDataMap: new Map(Object.entries(badges)) };
-        } catch (error) {
-            console.error("랭킹 데이터 fetch 오류:", error);
-            return null;
-        }
-    }
+const badge = (uuid, cls) => {
+    const b = badges?.[uuid]?.current;
+    return b ? `<img class="${cls}" src="/Resource/badge/${esc(b)}.png" alt="" onerror="this.remove()">` : '';
+};
+const href = p => `/user/${encodeURIComponent(p.nickname)}`;
+const MMR_TIP = '판마다 이긴 사람 비율로 매긴 점수. 평균 1000, 판수가 적을수록 1000 쪽으로 보정';
 
-    function badgeHtml(badgeDataMap, uuid, cls) {
-        const badgeData = badgeDataMap.get(uuid);
-        if (!badgeData || !badgeData.current) return '';
-        return `<img src="/Resource/badge/${badgeData.current}.png" alt="${esc(badgeData.current)}" class="${cls}">`;
-    }
+if (!leaderboard?.length) {
+    $('podium').innerHTML = '';
+    $('ranking-table').innerHTML = '<div class="empty">랭킹 데이터를 찾을 수 없습니다.</div>';
+} else {
+    const ranked = leaderboard.map((p, i) => ({ ...p, rank: i + 1 }));
 
-    // 랭킹 카드 생성 헬퍼 함수 (1~3위)
-    function createRankCard(player, rank, badgeDataMap) {
-        const card = document.createElement('a');
-        card.href = `/user/${encodeURIComponent(player.nickname)}`;
-        card.classList.add('top-player-card', `rank-${rank}`);
-        card.innerHTML = `
-            <h3>#${rank}</h3>
-            <div class="player-info-row">
-                ${avatar(player.uuid, 100, 'player-head-lg')}
-                ${badgeHtml(badgeDataMap, player.uuid, 'badge-img-ranking')}
-            </div>
-            <p><strong>${esc(player.nickname)}</strong></p>
-            <p><strong>총 게임 수:</strong> ${player.totalGames}</p>
-            <p><strong>MMR:</strong> ${player.mmr}</p>
-        `;
-        return card;
-    }
+    // 2등 · 1등 · 3등 순서로 배치
+    $('podium').innerHTML = [ranked[1], ranked[0], ranked[2]].filter(Boolean).map(p => `
+        <a class="podium-card r${p.rank}" href="${href(p)}">
+            <span class="podium-rank">${p.rank}</span>
+            ${avatar(p.uuid, 72)}
+            <b class="podium-name">${esc(p.nickname)}${badge(p.uuid, 'badge-img')}</b>
+            <span class="podium-mmr" data-tip="${MMR_TIP}">${num(p.mmr)} <small>MMR</small></span>
+            <span class="podium-meta">${p.games}판 · 승률 ${p.winRate}% · 순방 ${p.top50Rate}%</span>
+            <img class="podium-main" src="${portrait(p.mostCharacter)}" alt="" data-tip="모스트 ${esc(charName(p.mostCharacter, names))}">
+        </a>`).join('');
 
-    function renderTop3(players, badgeDataMap) {
-        top3RankingSection.innerHTML = '';
-        const [player1, player2, player3] = players;
-        // 2등, 1등, 3등 순서로 배치
-        if (player2) top3RankingSection.appendChild(createRankCard(player2, 2, badgeDataMap));
-        if (player1) top3RankingSection.appendChild(createRankCard(player1, 1, badgeDataMap));
-        if (player3) top3RankingSection.appendChild(createRankCard(player3, 3, badgeDataMap));
-    }
-
-    const result = await fetchLeaderboardData();
-    if (!result || !result.leaderboardData || result.leaderboardData.length === 0) {
-        top3RankingSection.textContent = "랭킹 데이터를 찾을 수 없습니다.";
-        otherRankingSection.innerHTML = "";
-        return;
-    }
-    const { leaderboardData, badgeDataMap } = result;
-
-    // 원래 순위(점수순) 보존
-    const ranked = leaderboardData.map((p, i) => ({ ...p, rank: i + 1 }));
-
-    renderTop3(ranked.slice(0, 3), badgeDataMap);
-
-    const table = createSortableTable(otherRankingSection, [
-        { key: 'rank', label: '순위', numeric: true, defaultDir: 'asc', value: r => r.rank, render: r => `<span class="rank-cell top${r.rank}">${r.rank}</span>` },
+    const table = createSortableTable($('ranking-table'), [
+        { key: 'rank', label: '순위', numeric: true, defaultDir: 'asc', render: r => `<span class="rank-num r${r.rank}">${r.rank}</span>` },
         {
             key: 'nickname', label: '유저', defaultDir: 'asc',
-            render: r => `<a class="entity-cell" href="/user/${encodeURIComponent(r.nickname)}">${avatar(r.uuid, 32)}<span class="entity-name">${esc(r.nickname)}</span>${badgeHtml(badgeDataMap, r.uuid, 'badge-img-other-ranking')}</a>`,
+            render: r => `<a class="entity" href="${href(r)}">${avatar(r.uuid, 28)}<span>${esc(r.nickname)}</span>${badge(r.uuid, 'badge-sm')}</a>`,
         },
-        { key: 'totalGames', label: '게임', numeric: true, value: r => Number(r.totalGames), render: r => r.totalGames },
-        { key: 'mmr', label: 'MMR', numeric: true, value: r => Number(r.mmr), render: r => r.mmr },
-        { key: 'winRate', label: '승률', numeric: true, value: r => Number(r.winRate), render: r => `${r.winRate}%${StatsTable.bar(Number(r.winRate) * 3)}` },
-        { key: 'avarageRankLeast50', label: '순방률', numeric: true, value: r => Number(r.avarageRankLeast50), render: r => `${r.avarageRankLeast50}%${StatsTable.bar(Number(r.avarageRankLeast50), 'green')}` },
-        { key: 'averageKillRate', label: '평균 킬', numeric: true, value: r => Number(r.averageKillRate), render: r => r.averageKillRate },
-        { key: 'averageDamageDealt', label: '평균 피해', numeric: true, value: r => Number(r.averageDamageDealt), render: r => Number(r.averageDamageDealt).toLocaleString() },
+        { key: 'mostCharacter', label: '모스트', sortable: false, render: r => `<img class="portrait" src="${portrait(r.mostCharacter)}" alt="" loading="lazy" data-tip="${esc(charName(r.mostCharacter, names))}">` },
+        { key: 'games', label: '게임', numeric: true, render: r => r.games },
+        { key: 'mmr', label: 'MMR', tip: MMR_TIP, numeric: true, render: r => `<b>${num(r.mmr)}</b>` },
+        { key: 'winRate', label: '승률', numeric: true, render: r => `${r.winRate}%${bar(r.winRate * 3)}` },
+        { key: 'top50Rate', label: '순방률', tip: '상위 50% 이내로 끝낸 비율', numeric: true, render: r => `${r.top50Rate}%${bar(r.top50Rate, 'green')}` },
+        { key: 'avgRank', label: '평균 순위', numeric: true, defaultDir: 'asc', render: r => r.avgRank },
+        { key: 'avgKills', label: '처치', numeric: true, render: r => r.avgKills },
+        { key: 'avgDeaths', label: '사망', numeric: true, defaultDir: 'asc', render: r => r.avgDeaths },
+        { key: 'avgDamage', label: '가한 피해', numeric: true, render: r => num(r.avgDamage) },
     ], { defaultSort: 'rank', defaultDir: 'asc', rank: false, tableClass: 'ranking-table', emptyText: '검색 결과가 없습니다.' });
 
-    function applyFilter() {
-        const q = searchInput.value.trim().toLowerCase();
+    const search = $('ranking-search');
+    const apply = () => {
+        const q = search.value.trim().toLowerCase();
         const rows = q ? ranked.filter(r => r.nickname.toLowerCase().includes(q)) : ranked;
         table.setRows(rows);
-        countEl.textContent = q ? `검색 결과 ${rows.length}명` : `전체 랭킹 (${ranked.length}명)`;
-    }
-
-    searchInput.addEventListener('input', applyFilter);
-    applyFilter();
-});
+        $('ranking-count').textContent = q ? `검색 결과 ${rows.length}명` : `전체 랭킹 ${ranked.length}명`;
+    };
+    search.addEventListener('input', apply);
+    apply();
+}

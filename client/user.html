@@ -5,55 +5,50 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>GCB.gg - 유저 프로필</title>
   <!--OG-->
-  <link rel="icon" href="favicon.ico" type="image/x-icon">
+  <link rel="icon" href="/favicon.ico" type="image/x-icon">
   <link rel="stylesheet" href="/styles/main.css">
 </head>
 <body>
-  <div class="header-bar">
-    <a href="/" class="header-logo">GCB.GG</a>
-    <a href="/ranking.html" class="nav-button">랭킹</a>
-    <a href="/character.html" class="nav-button">캐릭터</a>
-    <a href="/augment.html" class="nav-button">증강</a>
-    <a href="/core.html" class="nav-button">코어</a>
-    <a href="/patchnotes.html" class="nav-button">패치노트</a>
-    <a href="/feedback.html" class="nav-button nav-button-red">건의/버그</a>
-  </div>
-  <!-- 최상위 래퍼 -->
-  <div class="wrapper">
-    <!-- 왼쪽 영역 -->
-    <div class="left-panel">
-      <!-- 검색 섹션 (원한다면 숨기거나 유지) -->
-      <section id="user-search" class="section active">
-        <h1>GCB.GG</h1>
-        <div class="search-box">
-            <input type="text" id="nickname" placeholder="닉네임을 입력하세요">
-            <button id="search-button">검색</button>
-        </div>
-      </section>
-
-      <!-- 유저 정보 표시 -->
-      <h2 id="user-title"></h2>
-      <div id="player-head" class="player-head"></div>
-      <div id="badge-display" class="badge-display"></div>
-      <div id="stats-display" class="stats-display"></div>
-    </div>
-
-    <!-- 오른쪽 영역: 게임 리스트 -->
-    <div class="right-panel">
-      <div id="gameList" class="game-list"></div>
-      <button id="loadMoreButton" class="load-more-btn">더보기</button>
-    </div>
-  </div>
-
-  <!-- 게임 상세 모달 -->
-  <div id="gameDetailModal" class="modal-overlay" style="display:none;">
-    <div class="modal-content">
-      <button class="modal-close">&times;</button>
-      <div id="modalPlayerList" class="modal-player-list"></div>
-    </div>
-  </div>
-
   <script src="/scripts/character-config.js"></script>
+  <script src="/scripts/common.js"></script>
+  <main class="page">
+    <section class="card profile" id="profile"><div class="skeleton row"></div></section>
+
+    <div class="user-layout" id="user-layout" hidden>
+      <aside class="user-side">
+        <section class="card" id="summary-card"></section>
+        <section class="card" id="style-card"></section>
+        <section class="card" id="prefs-card"></section>
+        <section class="card" id="people-card"></section>
+        <section class="card" id="wins-card"></section>
+      </aside>
+      <div class="user-main">
+        <section class="card" id="form-card"></section>
+        <section class="card">
+          <div class="card-head">
+            <div class="tabs" id="user-tabs" role="tablist">
+              <button data-period="games" class="active">전적</button>
+              <button data-period="characters">캐릭터별</button>
+            </div>
+          </div>
+          <div id="tab-games">
+            <div class="game-list" id="game-list"></div>
+            <button class="btn btn-ghost load-more" id="load-more" hidden>더보기</button>
+          </div>
+          <div id="tab-characters" class="table-wrap" hidden></div>
+        </section>
+      </div>
+    </div>
+  </main>
+
+  <div class="modal-overlay" id="game-modal" style="display:none">
+    <div class="modal game-modal" role="dialog" aria-modal="true">
+      <button class="modal-close" aria-label="닫기">&times;</button>
+      <div id="game-modal-body"></div>
+    </div>
+  </div>
+
+  <script src="/scripts/stats-table.js"></script>
   <script src="/scripts/augment_popup.js"></script>
   <script type="module" src="/scripts/user.js"></script>
 </body>

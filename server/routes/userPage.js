@@ -28,9 +28,9 @@ async function buildBotDescription(base, name) {
     if (!uuid) return null;
     const res = await fetch(`${base}/data/user-statistics/${formatUUID(uuid)}.json`);
     if (!res.ok) return { uuid, description: '기록된 게임이 없습니다.' };
-    const { statistics: s } = await res.json();
-    const most = s.mostUsedCharacter && s.mostUsedCharacter !== 'N/A' ? ` · 모스트 캐릭터 #${s.mostUsedCharacter}` : '';
-    return { uuid, description: `${s.totalGames}판 · 승률 ${s.winRate}% (${s.winCount}승) · 순방률 ${s.avarageRankLeast50}% · 평균 ${s.averageKillRate}킬${most}` };
+    const [{ stats: s }, names] = await Promise.all([res.json(), fetch(`${base}/data/names.json`).then(r => (r.ok ? r.json() : null)).catch(() => null)]);
+    const most = s.mostCharacter != null ? ` · 모스트 ${names?.characters?.[s.mostCharacter] || `#${s.mostCharacter}`}` : '';
+    return { uuid, description: `${s.games}판 · 승률 ${s.winRate}% (${s.wins}승) · 순방률 ${s.top50Rate}% · 평균 ${s.avgKills}킬${most}` };
 }
 
 router.get('/:name', async (req, res) => {

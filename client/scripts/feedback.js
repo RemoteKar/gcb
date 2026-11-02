@@ -1,70 +1,4 @@
 document.addEventListener("DOMContentLoaded", () => {
-    let currentUser = null; // { name, token, login }
-    let config = null;
-
-    // --- 설정 로드 ---
-    async function loadConfig() {
-        try {
-            const res = await fetch('/api/config');
-            if (res.ok) return await res.json();
-        } catch (e) { }
-        return { githubClientId: '' };
-    }
-
-    // =============================================
-    // GitHub 인증
-    // =============================================
-    function initGithubAuth() {
-        if (!config.githubClientId) {
-            document.getElementById('github-signin-btn').style.display = 'none';
-            return;
-        }
-
-        document.getElementById('github-signin-btn').addEventListener('click', () => {
-            const redirectUri = window.location.origin + '/feedback.html';
-            const githubAuthUrl = `https://github.com/login/oauth/authorize?client_id=${config.githubClientId}&redirect_uri=${encodeURIComponent(redirectUri)}&scope=read:user`;
-            window.location.href = githubAuthUrl;
-        });
-
-        // GitHub OAuth 콜백 처리
-        const urlParams = new URLSearchParams(window.location.search);
-        const code = urlParams.get('code');
-        if (code) {
-            handleGithubCallback(code);
-            window.history.replaceState({}, document.title, window.location.pathname);
-        }
-    }
-
-    async function handleGithubCallback(code) {
-        try {
-            const res = await fetch('/api/auth/github', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ code }),
-            });
-
-            if (!res.ok) {
-                const err = await res.json();
-                console.error('GitHub 로그인 실패:', err.error);
-                return;
-            }
-
-            const data = await res.json();
-            const session = {
-                token: data.accessToken,
-                name: data.name,
-                login: data.login,
-                provider: 'github',
-                exp: null,
-            };
-            localStorage.setItem('gcb_session', JSON.stringify(session));
-            setLoggedIn(session);
-            openPopup('write-popup');
-        } catch (e) {
-            console.error('GitHub 인증 처리 오류:', e);
-        }
-    }
-
     // =============================================
     // 팝업 관리
     // =============================================
@@ -77,64 +11,27 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     // 작성하기 버튼 클릭
-    document.getElementById('write-btn').addEventListener('click', () => {
-        if (currentUser) {
-            openPopup('write-popup');
-        } else {
-            openPopup('login-popup');
-        }
-    });
+    document.getElementById('write-btn').addEventListener('click', () => openPopup('write-popup'));
 
     // 팝업 닫기 버튼
-    document.getElementById('login-popup-close').addEventListener('click', () => closePopup('login-popup'));
     document.getElementById('write-popup-close').addEventListener('click', () => closePopup('write-popup'));
     document.getElementById('detail-popup-close').addEventListener('click', () => closePopup('detail-popup'));
 
     // 오버레이 클릭으로 닫기
-    ['login-popup', 'write-popup', 'detail-popup'].forEach(id => {
+    ['write-popup', 'detail-popup'].forEach(id => {
         document.getElementById(id).addEventListener('click', (e) => {
             if (e.target === e.currentTarget) closePopup(id);
         });
     });
 
     // =============================================
-    // 로그인/로그아웃
-    // =============================================
-    function setLoggedIn(session) {
-        currentUser = session;
-        document.getElementById('user-name').textContent = session.name;
-    }
-
-    function logout() {
-        currentUser = null;
-        localStorage.removeItem('gcb_session');
-        closePopup('write-popup');
-    }
-
-    function restoreSession() {
-        const saved = localStorage.getItem('gcb_session');
-        if (!saved) return;
-
-        try {
-            const session = JSON.parse(saved);
-            setLoggedIn(session);
-        } catch (e) {
-            localStorage.removeItem('gcb_session');
-        }
-    }
-
-    function getAuthHeader() {
-        if (!currentUser) return {};
-        return { 'Authorization': `GitHub ${currentUser.token}` };
-    }
-
-    // =============================================
     // 폼 제출
     // =============================================
     document.getElementById('feedback-form').addEventListener('submit', async (e) => {
         e.preventDefault();
-        if (!currentUser) return;
 
+        const nickname = document.getElementById('feedback-nickname').value.trim();
+        const password = document.getElementById('feedback-password').value;
         const category = document.getElementById('feedback-category').value;
         const title = document.getElementById('feedback-title').value.trim();
         const content = document.getElementById('feedback-content').value.trim();
@@ -150,31 +47,19 @@ document.addEventListener("DOMContentLoaded", () => {
         try {
             const res = await fetch('/api/feedback', {
                 method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    ...getAuthHeader(),
-                },
-                body: JSON.stringify({ category, title, content })
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ nickname, password, category, title, content })
             });
 
             if (!res.ok) {
                 const err = await res.json();
-                if (res.status === 401) {
-                    logout();
-                    closePopup('write-popup');
-                    openPopup('login-popup');
-                    return;
-                }
-                if (res.status === 403) {
-                    throw new Error('차단된 사용자입니다.');
-                }
                 throw new Error(err.error || '제출에 실패했습니다.');
             }
 
             statusEl.textContent = '제출되었습니다!';
             statusEl.style.color = '#55FF55';
             document.getElementById('feedback-form').reset();
-            loadFeedbackList(true);
+            loadFeedbackList();
 
             setTimeout(() => {
                 closePopup('write-popup');
@@ -189,21 +74,21 @@ document.addEventListener("DOMContentLoaded", () => {
     });
 
     // =============================================
-    // 목록 로드 + 필터 + 페이지네이션
+    // 목록 로드 + 상태·카테고리 필터 + 페이지네이션
     // =============================================
-    let allIssues = [];
+    let allFeedbacks = [];
+    let currentStatus = 'open';
     let currentFilter = 'all';
     let currentPage = 1;
     const PAGE_SIZE = 15;
 
-    async function loadFeedbackList(skipCache) {
+    async function loadFeedbackList() {
         const listEl = document.getElementById('feedback-list');
         try {
-            const url = skipCache ? `/api/feedback-list?t=${Date.now()}` : '/api/feedback-list';
-            const res = await fetch(url);
+            const res = await fetch('/api/feedback-list');
             if (!res.ok) throw new Error('목록 로드 실패');
             const data = await res.json();
-            allIssues = data.issues || [];
+            allFeedbacks = data.feedbacks || [];
             renderFeedbackList();
         } catch (err) {
             listEl.innerHTML = '<p class="loading-text">목록을 불러올 수 없습니다.</p>';
@@ -212,13 +97,15 @@ document.addEventListener("DOMContentLoaded", () => {
 
     function renderFeedbackList() {
         const listEl = document.getElementById('feedback-list');
-        const filtered = currentFilter === 'all'
-            ? allIssues
-            : allIssues.filter(issue => issue.category === currentFilter);
+        const inCategory = currentFilter === 'all'
+            ? allFeedbacks
+            : allFeedbacks.filter(feedback => feedback.category === currentFilter);
+        renderStatusCounts(inCategory);
+        const filtered = inCategory.filter(feedback => feedback.status === currentStatus);
 
         if (filtered.length === 0) {
-            const filterName = { all: '', bug: '버그', enhancement: '건의', other: '기타', gcbc: 'GCBC' }[currentFilter] || '';
-            listEl.innerHTML = `<p class="loading-text">등록된 ${filterName} 건의/버그가 없습니다.</p>`;
+            const filterName = { all: '', bug: '버그 ', enhancement: '건의 ', other: '기타 ', gcbc: 'GCBC ' }[currentFilter] || '';
+            listEl.innerHTML = `<p class="loading-text">${statusName(currentStatus)} 상태인 ${filterName}글이 없습니다.</p>`;
             document.getElementById('pagination').innerHTML = '';
             return;
         }
@@ -228,93 +115,167 @@ document.addEventListener("DOMContentLoaded", () => {
         const start = (currentPage - 1) * PAGE_SIZE;
         const pageItems = filtered.slice(start, start + PAGE_SIZE);
 
-        listEl.innerHTML = pageItems.map((issue, idx) => `
+        listEl.innerHTML = pageItems.map((feedback, idx) => `
             <div class="feedback-item" data-idx="${start + idx}">
-                <span class="feedback-label feedback-label-${issue.category}">${categoryName(issue.category)}</span>
-                <span class="feedback-item-title">${escapeHtml(issue.title)}</span>
-                <span class="feedback-item-author">${escapeHtml(issue.author)}</span>
-                <span class="feedback-item-date">${formatDate(issue.created_at)}</span>
+                <span class="feedback-label feedback-label-${feedback.category}">${categoryName(feedback.category)}</span>
+                <span class="feedback-item-title">${escapeHtml(feedback.title)}</span>
+                <span class="feedback-item-author">${escapeHtml(authorText(feedback))}</span>
+                <span class="feedback-item-date">${formatDate(feedback.createdAt)}</span>
             </div>
         `).join('');
 
         listEl.querySelectorAll('.feedback-item').forEach(el => {
             el.addEventListener('click', () => {
                 const idx = parseInt(el.dataset.idx);
-                const issue = filtered[idx];
-                showDetailPopup(issue);
+                showDetailPopup(filtered[idx]);
             });
         });
 
         renderPagination(totalPages);
     }
 
-    function renderPagination(totalPages) {
-        const pagEl = document.getElementById('pagination');
-        if (totalPages <= 1) { pagEl.innerHTML = ''; return; }
-
-        let html = '';
-        if (currentPage > 1) html += `<button class="page-btn" data-page="${currentPage - 1}">&lt;</button>`;
-        for (let i = 1; i <= totalPages; i++) {
-            html += `<button class="page-btn${i === currentPage ? ' active' : ''}" data-page="${i}">${i}</button>`;
-        }
-        if (currentPage < totalPages) html += `<button class="page-btn" data-page="${currentPage + 1}">&gt;</button>`;
-        pagEl.innerHTML = html;
-
-        pagEl.querySelectorAll('.page-btn').forEach(btn => {
-            btn.addEventListener('click', () => {
-                currentPage = parseInt(btn.dataset.page);
-                renderFeedbackList();
-                window.scrollTo({ top: 0, behavior: 'smooth' });
-            });
+    // 상태 탭 숫자 = 지금 카테고리 안에서 상태별 글 수
+    function renderStatusCounts(list) {
+        document.querySelectorAll('.status-tabs button').forEach(btn => {
+            btn.querySelector('.tab-count').textContent = list.filter(feedback => feedback.status === btn.dataset.status).length;
         });
     }
 
-    function showDetailPopup(issue) {
-        document.getElementById('detail-label').className = `feedback-label feedback-label-${issue.category}`;
-        document.getElementById('detail-label').textContent = categoryName(issue.category);
-        document.getElementById('detail-date').textContent = formatDate(issue.created_at);
-        document.getElementById('detail-title').textContent = issue.title;
-        document.getElementById('detail-body').textContent = issue.body;
-        document.getElementById('detail-author').textContent = issue.author;
+    function renderPagination(totalPages) {
+        GCB.pager(document.getElementById('pagination'), currentPage, totalPages, page => {
+            currentPage = page;
+            renderFeedbackList();
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        });
+    }
+
+    function showDetailPopup(feedback) {
+        document.getElementById('detail-label').className = `feedback-label feedback-label-${feedback.category}`;
+        document.getElementById('detail-label').textContent = categoryName(feedback.category);
+        document.getElementById('detail-status').className = `feedback-label feedback-status-${feedback.status}`;
+        document.getElementById('detail-status').textContent = statusName(feedback.status);
+        document.getElementById('detail-date').textContent = formatDate(feedback.createdAt);
+        document.getElementById('detail-title').textContent = feedback.title;
+        document.getElementById('detail-body').textContent = feedback.content;
+        document.getElementById('detail-author').textContent = authorText(feedback);
+        document.getElementById('detail-delete').dataset.id = feedback.id;
+        const admin = document.getElementById('detail-admin');
+        admin.dataset.id = feedback.id;
+        admin.querySelectorAll('button').forEach(btn => { btn.hidden = btn.dataset.status === feedback.status; });
         openPopup('detail-popup');
     }
 
-    // 필터 버튼 이벤트
-    document.querySelectorAll('.filter-buttons .stat-button').forEach(btn => {
-        btn.addEventListener('click', () => {
-            document.querySelectorAll('.filter-buttons .stat-button').forEach(b => b.classList.remove('active'));
-            btn.classList.add('active');
-            currentFilter = btn.dataset.filter;
-            currentPage = 1;
-            renderFeedbackList();
+    // 삭제 (작성자 비밀번호, 관리자는 마스터 비밀번호)
+    document.getElementById('detail-delete').addEventListener('click', async () => {
+        const password = prompt('비밀번호를 입력하세요.');
+        if (!password) return;
+
+        try {
+            const res = await fetch(`/api/feedback/${document.getElementById('detail-delete').dataset.id}`, {
+                method: 'DELETE',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ password }),
+            });
+            const data = await res.json();
+            if (!res.ok) {
+                alert(data.error || '삭제에 실패했습니다.');
+                return;
+            }
+            closePopup('detail-popup');
+            loadFeedbackList();
+        } catch (error) {
+            alert('삭제 처리 중 오류가 발생했습니다.');
+        }
+    });
+
+    // =============================================
+    // 관리자: 상태 전환 (마스터 비밀번호를 이 탭이 열려 있는 동안 기억)
+    // =============================================
+    const ADMIN_KEY = 'gcb_feedback_admin';
+    let adminPassword = '';
+    try { adminPassword = sessionStorage.getItem(ADMIN_KEY) || ''; } catch (e) { }
+
+    function setAdmin(password) {
+        adminPassword = password;
+        try {
+            if (password) sessionStorage.setItem(ADMIN_KEY, password);
+            else sessionStorage.removeItem(ADMIN_KEY);
+        } catch (e) { }
+        document.getElementById('admin-btn').textContent = password ? '관리자 끝내기' : '관리자';
+        document.getElementById('detail-admin').hidden = !password;
+    }
+
+    document.getElementById('admin-btn').addEventListener('click', () => {
+        if (adminPassword) {
+            setAdmin('');
+            return;
+        }
+        const password = prompt('관리자 비밀번호를 입력하세요.');
+        if (password) setAdmin(password);
+    });
+
+    document.querySelectorAll('#detail-admin button').forEach(btn => {
+        btn.addEventListener('click', async () => {
+            const id = Number(document.getElementById('detail-admin').dataset.id);
+            try {
+                const res = await fetch(`/api/feedback/${id}/status`, {
+                    method: 'PATCH',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ status: btn.dataset.status, password: adminPassword }),
+                });
+                const data = await res.json();
+                if (!res.ok) {
+                    if (res.status === 403) setAdmin('');
+                    alert(data.error || '상태를 바꾸지 못했습니다.');
+                    return;
+                }
+                const feedback = allFeedbacks.find(f => f.id === id);
+                feedback.status = btn.dataset.status;
+                renderFeedbackList();
+                showDetailPopup(feedback);
+            } catch (error) {
+                alert('상태 변경 중 오류가 발생했습니다.');
+            }
         });
     });
 
+    // 탭 이벤트 (상태·카테고리)
+    function bindTabs(selector, pick) {
+        document.querySelectorAll(`${selector} button`).forEach(btn => {
+            btn.addEventListener('click', () => {
+                document.querySelectorAll(`${selector} button`).forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+                pick(btn.dataset);
+                currentPage = 1;
+                renderFeedbackList();
+            });
+        });
+    }
+    bindTabs('.status-tabs', data => { currentStatus = data.status; });
+    bindTabs('.filter-buttons', data => { currentFilter = data.filter; });
+
     function categoryName(cat) {
         return { bug: '버그', enhancement: '건의', other: '기타', gcbc: 'GCBC' }[cat] || cat;
+    }
+
+    function statusName(status) {
+        return { open: '열림', resolved: '해결', closed: '닫힘' }[status] || status;
+    }
+
+    // 옛 GitHub 에서 옮긴 글은 IP 앞자리가 없어 닉네임만
+    function authorText(feedback) {
+        return feedback.ipPrefix ? `${feedback.nickname} (${feedback.ipPrefix})` : feedback.nickname;
     }
 
     function formatDate(dateStr) {
         return new Date(dateStr).toLocaleDateString('ko-KR');
     }
 
-    function escapeHtml(text) {
-        const div = document.createElement('div');
-        div.textContent = text;
-        return div.innerHTML;
-    }
+    const escapeHtml = GCB.esc;
 
     // =============================================
     // 초기화
     // =============================================
-    document.getElementById('logout-btn').addEventListener('click', logout);
-
-    async function init() {
-        config = await loadConfig();
-        restoreSession();
-        initGithubAuth();
-        loadFeedbackList();
-    }
-
-    init();
+    setAdmin(adminPassword);
+    loadFeedbackList();
 });

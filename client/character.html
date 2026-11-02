@@ -1,37 +1,25 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>캐릭터정보 - GCB.gg</title>
-    <link rel="stylesheet" href="/styles/main.css">
-    <link rel="icon" href="/favicon.ico" type="image/x-icon">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>캐릭터 - GCB.gg</title>
+  <meta property="og:title" content="캐릭터 - GCB.gg">
+  <meta property="og:description" content="게임캐릭터배틀 캐릭터 목록">
+  <link rel="icon" href="/favicon.ico" type="image/x-icon">
+  <link rel="stylesheet" href="/styles/main.css">
 </head>
-<body>
-    <div class="header-bar">
-      <a href="/" class="header-logo">GCB.GG</a>
-      <a href="/ranking.html" class="nav-button">랭킹</a>
-      <a href="/character.html" class="nav-button active">캐릭터</a>
-      <a href="/augment.html" class="nav-button">증강</a>
-      <a href="/core.html" class="nav-button">코어</a>
-      <a href="/patchnotes.html" class="nav-button">패치노트</a>
-      <a href="/feedback.html" class="nav-button nav-button-red">건의/버그</a>
+<body data-catalog="character">
+  <script src="/scripts/character-config.js"></script>
+  <script src="/scripts/common.js"></script>
+  <main class="page">
+    <div class="page-head">
+      <h1 class="page-title">캐릭터</h1>
+      <nav class="tabs" aria-label="캐릭터 메뉴"><a href="/character.html" class="active">정보</a><a href="/character_stats.html">통계</a></nav>
     </div>
-
-    <div class="container">
-        <div class="page-head">
-            <nav class="sub-tabs" aria-label="캐릭터 메뉴">
-                <a href="/character.html" class="active">정보</a>
-                <a href="/character_stats.html">통계</a>
-            </nav>
-            <h1 id="page-title">캐릭터 정보</h1>
-            <p class="page-desc">초상화에 마우스를 올리면 이름이 표시됩니다</p>
-        </div>
-        <div id="character-grid" class="character-grid">
-            <!-- 캐릭터 초상화가 여기에 동적으로 추가됨 -->
-        </div>
-    </div>
-
-    <script src="/scripts/character.js"></script>
+    <div class="toolbar"><input type="search" id="catalog-search" class="input" placeholder="이름 검색" autocomplete="off" aria-label="캐릭터 이름 검색"></div>
+    <div id="catalog-grid" class="icon-grid"><div class="skeleton tile-skel"></div><div class="skeleton tile-skel"></div><div class="skeleton tile-skel"></div><div class="skeleton tile-skel"></div><div class="skeleton tile-skel"></div><div class="skeleton tile-skel"></div><div class="skeleton tile-skel"></div><div class="skeleton tile-skel"></div><div class="skeleton tile-skel"></div><div class="skeleton tile-skel"></div><div class="skeleton tile-skel"></div><div class="skeleton tile-skel"></div></div>
+  </main>
+  <script type="module" src="/scripts/catalog.js"></script>
 </body>
 </html>

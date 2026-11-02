@@ -10,31 +10,19 @@
   <link rel="stylesheet" href="/styles/main.css">
 </head>
 <body>
-  <div class="header-bar">
-    <a href="/" class="header-logo">GCB.GG</a>
-    <a href="/ranking.html" class="nav-button">랭킹</a>
-    <a href="/character.html" class="nav-button">캐릭터</a>
-    <a href="/augment.html" class="nav-button">증강</a>
-    <a href="/core.html" class="nav-button">코어</a>
-    <a href="/patchnotes.html" class="nav-button active">패치노트</a>
-    <a href="/feedback.html" class="nav-button nav-button-red">건의/버그</a>
-  </div>
-  <div class="container patchnotes-container">
+  <script src="/scripts/character-config.js"></script>
+  <script src="/scripts/common.js"></script>
+  <main class="page page-narrow">
     <div class="page-head">
-      <h1>패치노트</h1>
-      <p class="page-desc">글을 누르면 내용이 펼쳐집니다</p>
+      <h1 class="page-title">패치노트</h1>
+      <input type="search" id="pn-search" class="input" placeholder="검색 (캐릭터, 스킬, 날짜)" autocomplete="off" aria-label="패치노트 검색">
     </div>
-    <div class="patchnotes-toolbar">
-      <input type="search" id="pn-search" placeholder="검색 (캐릭터 이름, 스킬, 날짜 등)" autocomplete="off">
-    </div>
-    <div class="patchnotes-list board">
+    <div class="board">
       <div class="board-head"><span class="board-no">번호</span><span>제목</span><span class="board-date">날짜</span></div>
-      <div id="pn-list">
-        <div class="skeleton skeleton-row"></div><div class="skeleton skeleton-row"></div><div class="skeleton skeleton-row"></div>
-      </div>
+      <div id="pn-list"><div class="skeleton row"></div><div class="skeleton row"></div><div class="skeleton row"></div></div>
     </div>
-    <button id="pn-more" class="load-more-btn secondary" style="display:none;">더보기</button>
-  </div>
+    <button id="pn-more" class="btn btn-ghost load-more" hidden>더보기</button>
+  </main>
   <script src="/scripts/patchnotes.js"></script>
 </body>
 </html>
